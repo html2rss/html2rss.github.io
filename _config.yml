@@ -1,0 +1,52 @@
+# Required changes
+# - the subpath of your site, e.g. /blog
+baseurl: "/"
+# - the base hostname & protocol for your site, e.g. http://example.com
+url: "https://html2rss.github.io"
+
+permalink: /blog/:year/:title
+
+title: html2rss
+
+twitter_username: ""
+github_username: ""
+
+description: |
+  html2rss brings back RSS. It is an open source project with decentralised
+  instances. These instances provide RSS feeds for websites which do not offer
+  them.
+
+theme: minima
+
+sass:
+  style: compressed
+  sass_dir: assets/css/sass
+
+plugins:
+  - jekyll-feed
+  - jekyll-loading-lazy
+  - jekyll-sitemap
+  - jekyll-target-blank
+
+exclude:
+  - .git/
+  - .github/
+  - .gitignore
+  - .jekyll-cache/
+  - .nvmrc
+  - .ruby-version
+  - .sass-cache/
+  - .stylelintrc.json
+  - Gemfile
+  - Gemfile.lock
+  - gemfiles/
+  - Makefile
+  - node_modules/
+  - package.json
+  - vendor
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - yarn.error
+  - yarn.lock
