@@ -39,7 +39,7 @@ noindex: true
            rel="noopener noreferrer"
            >{{ config.channel.url }}</a>
         {%- else -%}
-          {{ config.channel.url }}
+          {{ config.channel.url | xml_escape }}
         {%- endif -%}
       </li>
       {%- endif -%}
