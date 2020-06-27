@@ -3,7 +3,7 @@ name: build and deploy artifact to gh-pages branch
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
