@@ -30,9 +30,9 @@ jobs:
         run: |
           gem install bundler -v '~> 2.0'
           bundle config path vendor/bundle
+          make update
           bundle config --global frozen 1
           bundle install --jobs 4 --retry 3
-          make update
           bundle exec jekyll build
 
       - name: deploy
