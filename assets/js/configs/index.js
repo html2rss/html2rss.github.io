@@ -29,8 +29,6 @@
     }
   })
 
-  instanceEl.addEventListener("keydown", event => {
-    onChangeInstanceUrl()
-  })
+  instanceEl.addEventListener("blur", onChangeInstanceUrl)
   onChangeInstanceUrl()
 })()
