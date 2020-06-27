@@ -81,8 +81,8 @@ nav_order: 1
         to find out which values are possible.
         <br>
         <code class="d-block w-100 py-2 bg-grey-lt-200 text-grey-dk-200 fs-4">
-          <span class="config__url">
-            <span class="instance"></span>{{ config.domain }}/{{ config.name }}.rss?{% for params in config.url_parameters %}{{ params[0] }}={{ params[1] | humanize_format_type }}<span class="config__url-amp">&</span>{% endfor %}
+          <span class="config__url"
+          ><span class="instance"></span>{{ config.domain }}/{{ config.name }}.rss?{% for params in config.url_parameters %}{{ params[0] }}={{ params[1] | humanize_format_type }}<span class="config__url-amp">&</span>{% endfor %}
           </span>
         </code>
       </p>
