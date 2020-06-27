@@ -63,17 +63,26 @@ nav_order: 1
     </dl>
 
     {%- if config.valid_channel_url -%}
-    <a href="#"
-      data-bind-click="show"
-      data-path="{{ config.domain }}/{{ config.name }}.rss"
-      class="btn btn-primary fs-3 mb-4 mb-md-0 mr-2"
-      rel="noopener noreferrer"
-      >Show RSS</a>
+    <div>
+      <a href="#"
+        data-bind-click="show"
+        data-path="{{ config.domain }}/{{ config.name }}.rss"
+        class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle"
+        rel="noopener noreferrer"
+        >Show RSS</a>
 
-    <a href="https://github.com/gildesmarais/html2rss-configs/blob/master/lib/html2rss/configs/{{ config.domain }}/{{ config.name }}.yml"
-      class="btn fs-3 mb-4 mb-md-0">
-      View on Github
-    </a>
+      <button
+        data-bind-click="copy"
+        data-path="{{ config.domain }}/{{ config.name }}.rss"
+        class="btn fs-3 mb-4 mr-2 v-align-middle"
+        rel="noopener noreferrer"
+        >Copy URL</button>
+
+      <a href="https://github.com/gildesmarais/html2rss-configs/blob/master/lib/html2rss/configs/{{ config.domain }}/{{ config.name }}.yml"
+        class="btn fs-3 mb-4 v-align-middle">
+        View on Github
+      </a>
+    </div>
     {%- else -%}
       <p class="bg-grey-lt-100 text-red-200 p-2">
         This config requires parameters to work.
