@@ -22,3 +22,17 @@
 .config__url .config__url-amp:last-child {
   display: none;
 }
+
+button[data-bind-click="copy"] {
+  border: 2px solid transparent;
+  transition: border-color 0.2s linear;
+}
+
+button[data-bind-click="copy"].copied {
+  &,
+  &:hover,
+  &:active {
+    border-color: rgba(0, 128, 0, 0.5);
+    box-shadow: inset 0 2px 4px rgba(0, 128, 0, 0.15);
+  }
+}

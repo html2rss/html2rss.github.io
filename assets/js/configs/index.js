@@ -22,10 +22,42 @@
     return false
   }
 
+  function onCopyClick(event) {
+    const href = [instanceUrl(), event.target.dataset.path].join("")
+    const el = document.createElement("span")
+    el.innerText = href
+    el.style.position = "fixed"
+    el.style.top = 0
+    el.style.left = 0
+    el.style.height = 0
+    el.style.width = 0
+    el.style.opacity = 0
+
+    document.body.appendChild(el)
+    copyElementContents(el, event.target)
+    return false
+  }
+
+  function copyElementContents(el, triggerEl) {
+    el.focus()
+    window.getSelection().selectAllChildren(el)
+    document.execCommand("copy")
+
+    triggerEl.classList.add("copied")
+    window.setTimeout(function() {
+      el.blur()
+      el.remove()
+      triggerEl.classList.remove("copied")
+      triggerEl.blur()
+    }, 1000)
+  }
+
   // init
   document.querySelector("#configs").addEventListener("click", event => {
     if (event.target.dataset.bindClick === "show") {
       return onShowClick(event)
+    } else if (event.target.dataset.bindClick === "copy") {
+      return onCopyClick(event)
     }
   })
 
