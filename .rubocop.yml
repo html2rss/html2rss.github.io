@@ -1,0 +1,8 @@
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 2.6
+  DisplayCopNames: true
+
+Style/DoubleNegation:
+  Exclude:
+    - bin/data-update

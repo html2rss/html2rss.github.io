@@ -32,6 +32,7 @@ jobs:
           bundle config path vendor/bundle
           bundle config --global frozen 1
           bundle install --jobs 4 --retry 3
+          make update
           bundle exec jekyll build
 
       - name: deploy

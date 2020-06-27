@@ -8,15 +8,17 @@ permalink: /blog/:year/:title
 
 title: html2rss
 
-twitter_username: ""
-github_username: ""
-
 description: |
-  html2rss brings back RSS. It is an open source project with decentralised
-  instances. These instances provide RSS feeds for websites which do not offer
+  html2rss brings back RSS. It's an open source project with decentralised
+  instances. These instances generate RSS feeds for websites which do not offer
   them.
 
-theme: minima
+github_username: "html2rss"
+
+theme: just-the-docs
+
+header_pages:
+  - configs/index.html
 
 sass:
   style: compressed
@@ -34,9 +36,11 @@ exclude:
   - .gitignore
   - .jekyll-cache/
   - .nvmrc
+  - .rubocop.yml
   - .ruby-version
   - .sass-cache/
   - .stylelintrc.json
+  - bin/
   - Gemfile
   - Gemfile.lock
   - gemfiles/

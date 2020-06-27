@@ -1,0 +1,83 @@
+---
+layout: page
+title: Configs
+noindex: true
+---
+
+<noscript>
+  This site needs JavaScript to link to the feed URL!
+</noscript>
+
+<div id="configs">
+  <fieldset>
+    <legend>Instance Setup</legend>
+
+    <p>
+      Find publicly available instances in the
+      <a href="https://github.com/gildesmarais/html2rss-web/wiki/Instances"
+         target="_blank"
+         >wiki</a>.
+    </p>
+
+    <label>
+      Instance URL:
+      <input type="text" name="instance" value="https://1.h2r.workers.dev">
+    </label>
+  </fieldset>
+
+
+  {% for config in site.data.configs %}
+  <details>
+    <summary>{{ config.domain }}/{{ config.name }}</summary>
+
+    <ul>
+      {%- if config.channel.url -%}
+      <li>
+        {%- if config.valid_channel_url -%}
+        <a href="{{ config.channel.url }}"
+           target="_blank"
+           rel="noopener noreferrer"
+           >{{ config.channel.url }}</a>
+        {%- else -%}
+          {{ config.channel.url }}
+        {%- endif -%}
+      </li>
+      {%- endif -%}
+
+      {%- if config.channel.description -%}
+      <li>{{ config.channel.description }}</li>
+      {%- endif -%}
+
+      {%- if config.channel.time_zone -%}
+      <li>{{ config.channel.time_zone }}</li>
+      {%- endif -%}
+
+      {%- if config.channel.ttl -%}
+      <li>{{ config.channel.ttl }}</li>
+      {%- endif -%}
+
+      {%- if config.channel.language -%}
+      <li>{{ config.channel.language }}</li>
+      {%- endif -%}
+    </ul>
+
+    {%- if config.valid_channel_url -%}
+    <a href="#"
+      data-bind-click="show"
+      data-path="{{ config.domain }}/{{ config.name }}.rss"
+      rel="noopener noreferrer"
+      >Show</a>
+    {%- else -%}
+      <p>
+        <em>This channel requires parameters to function.</em>
+        <br>
+        <code>
+          <span class="instance"></span>{{ config.domain }}/{{ config.name }}.rss
+        </code>
+      </p>
+    {%- endif -%}
+  </details>
+{% endfor %}
+</div>
+
+<script src="/assets/js/configs/index.js" async defer></script>

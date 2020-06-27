@@ -4,8 +4,10 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem 'jekyll', '~> 4.1.0'
-# This is the default theme for new Jekyll sites. You may change this to anything you like.
-gem 'minima', '~> 2.5'
+gem 'just-the-docs'
+
+gem 'html2rss', git: 'https://github.com/gildesmarais/html2rss.git'
+gem 'html2rss-configs', git: 'https://github.com/gildesmarais/html2rss-configs.git'
 
 group :jekyll_plugins do
   gem 'jekyll-feed', '~> 0.12'

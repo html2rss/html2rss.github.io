@@ -3,6 +3,7 @@ default: setup clean fix serve
 setup:
 	yarn check || yarn
 	bundle check || bundle
+	make update
 
 fix:
 	prettier --write --no-semi "**/*.yml" "**/*.md" "**/*.scss" "**/*.rb" "assets/**/*.js"  "**/*.mdx"
@@ -13,8 +14,11 @@ clean:
 	find . -type d -empty -delete
 	find . -type f -empty -delete
 
-serve:
-	bundle check || bundle
+update:
+	bundle update html2rss-configs
+	bin/data-update
+
+serve: setup
 	open http://127.0.0.1:4000/
 	bundle exec jekyll s --drafts --trace
 

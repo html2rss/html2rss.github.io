@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'rubygems'
+require 'bundler/setup'
+
+require 'html2rss'
+require 'html2rss/configs'
+require 'yaml'
+
+file_names = Html2rss::Configs.file_names.sort
+
+def valid_url(url)
+  !!URI(url)
+rescue StandardError
+  false
+end
+
+output = file_names.map do |file_name|
+  config = YAML.safe_load(File.open(file_name), symbolize_names: false)
+
+  file_name_splits = file_name.split('/')
+
+  {
+    'domain' => file_name_splits[-2..-2].join,
+    'name' => File.basename(file_name_splits[-1..].join, '.*'),
+    'valid_channel_url' => valid_url(config['channel']['url']),
+    'channel' => config['channel']
+  }
+end
+
+config_file = File.join(__dir__, '..', '_data/configs.yml')
+File.write(config_file, output.to_yaml)
