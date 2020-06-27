@@ -16,9 +16,22 @@ description: |
 github_username: "html2rss"
 
 theme: just-the-docs
+logo: assets/images/logo.png
+
+aux_links:
+  "GitHub":
+    - "https://github.com/html2rss"
 
 header_pages:
   - configs/index.html
+  - contributing.md
+
+# Footer "Edit this page on GitHub" link text
+gh_edit_link: true # show or hide edit this page link
+gh_edit_link_text: "Edit this page on GitHub."
+gh_edit_repository: "https://github.com/html2rss/html2rss.github.io" # the github URL for your repo
+gh_edit_branch: "main" # the branch that your docs is served from
+gh_edit_view_mode: "tree"
 
 sass:
   style: compressed

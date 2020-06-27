@@ -1,7 +1,8 @@
 ---
-layout: page
-title: Configs
+layout: default
+title: All feeds
 noindex: true
+nav_order: 1
 ---
 
 <noscript>
@@ -9,30 +10,35 @@ noindex: true
 </noscript>
 
 <div id="configs">
-  <fieldset>
-    <legend>Instance Setup</legend>
+  <fieldset class="bg-grey-lt-000 mb-4 py-1 px-2">
+    <legend class="fs-5">Instance URL</legend>
 
-    <p>
-      Find publicly available instances in the
-      <a href="https://github.com/gildesmarais/html2rss-web/wiki/Instances"
-         target="_blank"
-         >wiki</a>.
-    </p>
-
-    <label>
-      Instance URL:
-      <input type="text" name="instance" value="https://1.h2r.workers.dev">
-    </label>
+    <input type="text" name="instance" value="https://1.h2r.workers.dev" autofocus="true" class="bg-grey-lt-100 p-2">
   </fieldset>
 
+  <p class="fs-4">
+    Find publicly available instances in the
+    <a href="https://github.com/gildesmarais/html2rss-web/wiki/Instances"
+       target="_blank"
+       >wiki</a>
+    or
+    <a href="https://github.com/gildesmarais/html2rss-web"
+       target="_blank"
+       >host your own</a>.
+  </p>
 
   {% for config in site.data.configs %}
-  <details>
-    <summary>{{ config.domain }}/{{ config.name }}</summary>
+  <article class="bg-grey-lt-000 my-8 py-1 px-2">
+    <h2>
+      <span>{{ config.domain }}</span
+      ><span class="text-yellow-300">/</span
+      ><span>{{ config.name }}</span>
+    </h2>
 
-    <ul>
+    <dl>
       {%- if config.channel.url -%}
-      <li>
+      <dt>URL to scrape</dt>
+      <dd>
         {%- if config.valid_channel_url -%}
         <a href="{{ config.channel.url }}"
            target="_blank"
@@ -41,32 +47,27 @@ noindex: true
         {%- else -%}
           {{ config.channel.url | xml_escape }}
         {%- endif -%}
-      </li>
-      {%- endif -%}
-
-      {%- if config.channel.description -%}
-      <li>{{ config.channel.description }}</li>
+      </dd>
       {%- endif -%}
 
       {%- if config.channel.time_zone -%}
-      <li>{{ config.channel.time_zone }}</li>
-      {%- endif -%}
-
-      {%- if config.channel.ttl -%}
-      <li>{{ config.channel.ttl }}</li>
+      <dt>Time zone</dt>
+      <dd>{{ config.channel.time_zone }}</dd>
       {%- endif -%}
 
       {%- if config.channel.language -%}
-      <li>{{ config.channel.language }}</li>
+      <dt>Language</dt>
+      <dd>{{ config.channel.language }}</dd>
       {%- endif -%}
-    </ul>
+    </dl>
 
     {%- if config.valid_channel_url -%}
     <a href="#"
       data-bind-click="show"
       data-path="{{ config.domain }}/{{ config.name }}.rss"
+      class="btn btn-primary fs-3 mb-4 mb-md-0 mr-2"
       rel="noopener noreferrer"
-      >Show</a>
+      >Show RSS</a>
     {%- else -%}
       <p>
         <em>This channel requires parameters to function.</em>
@@ -76,7 +77,12 @@ noindex: true
         </code>
       </p>
     {%- endif -%}
-  </details>
+
+    <a href="https://github.com/gildesmarais/html2rss-configs/blob/master/lib/html2rss/configs/{{ config.domain }}/{{ config.name }}.yml"
+      class="btn fs-3 mb-4 mb-md-0">
+      View on Github
+    </a>
+  </article>
 {% endfor %}
 </div>
 
