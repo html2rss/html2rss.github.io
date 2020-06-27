@@ -17,6 +17,10 @@ rescue StandardError
   false
 end
 
+def parameters(url)
+  url.to_s.scan(/%<([\w_\d]+)>(\w)?/).to_h
+end
+
 output = file_names.map do |file_name|
   config = YAML.safe_load(File.open(file_name), symbolize_names: false)
 
@@ -26,6 +30,7 @@ output = file_names.map do |file_name|
     'domain' => file_name_splits[-2..-2].join,
     'name' => File.basename(file_name_splits[-1..].join, '.*'),
     'valid_channel_url' => valid_url(config['channel']['url']),
+    'url_parameters' => parameters(config['channel']['url']),
     'channel' => config['channel']
   }
 end

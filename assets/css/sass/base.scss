@@ -5,3 +5,19 @@
   border: 0;
   border-radius: 0;
 }
+
+.config__url.config__url {
+  hyphens: none;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.config__url em {
+  padding-right: 0.125em;
+  letter-spacing: -0.05em;
+  opacity: 0.75;
+}
+
+.config__url .config__url-amp:last-child {
+  display: none;
+}

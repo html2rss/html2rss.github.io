@@ -37,6 +37,10 @@ GEM
     builder (3.2.4)
     colorator (1.1.0)
     concurrent-ruby (1.1.6)
+    countries (3.0.1)
+      i18n_data (~> 0.10.0)
+      sixarm_ruby_unaccent (~> 1.1)
+      unicode_utils (~> 1.4)
     crass (1.0.6)
     em-websocket (0.5.1)
       eventmachine (>= 0.12.9)
@@ -51,6 +55,7 @@ GEM
     http_parser.rb (0.6.0)
     i18n (1.8.3)
       concurrent-ruby (~> 1.0)
+    i18n_data (0.10.0)
     jekyll (4.1.1)
       addressable (~> 2.4)
       colorator (~> 1.0)
@@ -140,6 +145,7 @@ GEM
       nokogumbo (~> 2.0)
     sassc (2.4.0)
       ffi (~> 1.9)
+    sixarm_ruby_unaccent (1.2.0)
     terminal-table (1.8.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
     thread_safe (0.3.6)
@@ -147,12 +153,14 @@ GEM
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     unicode-display_width (1.7.0)
+    unicode_utils (1.4.0)
     zeitwerk (2.3.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  countries
   html2rss!
   html2rss-configs!
   jekyll (~> 4.1.0)
