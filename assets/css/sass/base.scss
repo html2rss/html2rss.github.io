@@ -23,6 +23,19 @@
   display: none;
 }
 
+.js__copy-element {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+
+  &::selection {
+    background-color: transparent;
+  }
+}
+
 button[data-bind-click="copy"] {
   border: 2px solid transparent;
   transition: border-color 0.2s linear;

@@ -25,13 +25,8 @@
   function onCopyClick(event) {
     const href = [instanceUrl(), event.target.dataset.path].join("")
     const el = document.createElement("span")
+    el.classList.add("js__copy-element")
     el.innerText = href
-    el.style.position = "fixed"
-    el.style.top = 0
-    el.style.left = 0
-    el.style.height = 0
-    el.style.width = 0
-    el.style.opacity = 0
 
     document.body.appendChild(el)
     copyElementContents(el, event.target)
