@@ -36,6 +36,11 @@
   }
 }
 
+.noscript {
+  font-weight: 600;
+  color: #f00;
+}
+
 button[data-bind-click="copy"] {
   border: 2px solid transparent;
   transition: border-color 0.2s linear;
