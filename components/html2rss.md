@@ -27,6 +27,6 @@ Scraping involves a tad more than just selecting an HTML element's text contents
 
 The documentation covers everything the gem is capable of. If you want to dive deeper, read the [gem's README](https://github.com/gildesmarais/html2rss/blob/master/README.md) or check [the YARD Docs](https://www.rubydoc.info/gems/html2rss).
 
-The gem's code is automatically tested. There's also code documentation for the API, usually with examples. However, looking inside the test suite to find tto find more complex examples is recommended.
+The gem's code is automatically tested. There's also code documentation for the API, usually with examples. However, looking inside the test suite to find to find more complex examples is recommended.
 
 [See the project on Github](https://github.com/gildesmarais/html2rss){: .btn .btn-purple }
