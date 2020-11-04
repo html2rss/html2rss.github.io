@@ -8,7 +8,7 @@ There are many ways to contribute. Contributions are very welcome!
 
 ## Create a feed config
 
-Are you missing an RSS for a site? Create your config and add make it available in the ecosystem. [It's easy, just have a look and try it out!](https://github.com/gildesmarais/html2rss-configs)
+Are you missing an RSS for a site? Create your config and add make it available in the ecosystem. [It's easy, just have a look and try it out!](https://github.com/html2rss/html2rss-configs)
 
 ## Improve this website
 
