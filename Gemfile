@@ -9,7 +9,7 @@ gem 'just-the-docs'
 gem 'countries'
 
 gem 'html2rss', git: 'https://github.com/gildesmarais/html2rss.git'
-gem 'html2rss-configs', git: 'https://github.com/gildesmarais/html2rss-configs.git'
+gem 'html2rss-configs', git: 'https://github.com/html2rss/html2rss-configs.git'
 
 group :jekyll_plugins do
   gem 'jekyll-feed', '~> 0.15'
