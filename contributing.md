@@ -22,4 +22,4 @@ Setup and maintain your instance. Do not forget to add your instance to [the ins
 
 ## Improve the html2rss gem
 
-Are you missing a feature in the [html2rss gem](https://github.com/gildesmarais/html2rss)? Did you find a bug? Head to the [repository on Github](https://github.com/gildesmarais/html2rss) and start working on it.
+Are you missing a feature in the [html2rss gem](https://github.com/html2rss/html2rss)? Did you find a bug? Head to the [repository on Github](https://github.com/html2rss/html2rss) and start working on it.
