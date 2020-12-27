@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem 'jekyll', '~> 4.1.0'
 gem 'just-the-docs'
 
 gem 'countries'
 
-gem 'html2rss', git: 'https://github.com/gildesmarais/html2rss.git'
+gem 'html2rss', git: 'https://github.com/html2rss/html2rss.git'
 gem 'html2rss-configs', git: 'https://github.com/html2rss/html2rss-configs.git'
 
 group :jekyll_plugins do
