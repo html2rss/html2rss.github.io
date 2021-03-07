@@ -4,6 +4,7 @@
 require 'rubygems'
 require 'bundler/setup'
 
+require 'uri'
 require 'fileutils'
 require 'html2rss'
 require 'html2rss/configs'
