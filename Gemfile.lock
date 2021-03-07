@@ -1,12 +1,12 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: 7a4a12ec00afbb95a94849fc37e808e2dc91cbf2
+  revision: 6e736b7668a006223f7e2bdfb8f310060885e706
   specs:
     html2rss-configs (0.2.0)
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: 9feb746a50f9d3991bcb15e739ad2f5956d1b121
+  revision: baa2fef0fb694c1ed5293c026feda66bc771e15e
   specs:
     html2rss (0.9.0)
       activesupport (>= 5, < 7)
@@ -20,13 +20,14 @@ GIT
       reverse_markdown (~> 2.0)
       rss
       sanitize (~> 5.0)
+      thor
       to_regexp
       zeitwerk
 
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (6.1.0)
+    activesupport (6.1.3)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -34,10 +35,10 @@ GEM
       zeitwerk (~> 2.3)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    ast (2.4.1)
+    ast (2.4.2)
     builder (3.2.4)
     colorator (1.1.0)
-    concurrent-ruby (1.1.7)
+    concurrent-ruby (1.1.8)
     countries (3.0.1)
       i18n_data (~> 0.10.0)
       sixarm_ruby_unaccent (~> 1.1)
@@ -47,15 +48,17 @@ GEM
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
     eventmachine (1.2.7)
-    faraday (1.2.0)
+    faraday (1.3.0)
+      faraday-net_http (~> 1.0)
       multipart-post (>= 1.2, < 3)
       ruby2_keywords
+    faraday-net_http (1.0.1)
     faraday_middleware (1.0.0)
       faraday (~> 1.0)
-    ffi (1.13.1)
+    ffi (1.15.0)
     forwardable-extended (2.6.0)
     http_parser.rb (0.6.0)
-    i18n (1.8.5)
+    i18n (1.8.9)
       concurrent-ruby (~> 1.0)
     i18n_data (0.10.0)
     jekyll (4.1.1)
@@ -98,55 +101,55 @@ GEM
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
     liquid (4.0.3)
-    listen (3.3.3)
+    listen (3.4.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     mercenary (0.4.0)
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2020.1104)
+    mime-types-data (3.2021.0225)
     mini_portile2 (2.5.0)
-    minitest (5.14.2)
+    minitest (5.14.4)
     multipart-post (2.1.1)
-    nokogiri (1.11.0)
+    nokogiri (1.11.1)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     nokogumbo (2.0.4)
       nokogiri (~> 1.8, >= 1.8.4)
     parallel (1.20.1)
-    parser (2.7.2.0)
+    parser (3.0.0.0)
       ast (~> 2.4.1)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
     public_suffix (4.0.6)
     racc (1.5.2)
     rainbow (3.0.0)
-    rake (13.0.1)
+    rake (13.0.3)
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    regexp_parser (2.0.0)
+    regexp_parser (2.1.1)
     reverse_markdown (2.0.0)
       nokogiri
     rexml (3.2.4)
-    rouge (3.25.0)
+    rouge (3.26.0)
     rss (0.2.9)
       rexml
-    rubocop (1.5.0)
+    rubocop (1.11.0)
       parallel (~> 1.10)
-      parser (>= 2.7.1.5)
+      parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 2.0)
+      regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.2.0)
+      rubocop-ast (>= 1.2.0, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (1.3.0)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.4.1)
       parser (>= 2.7.1.5)
-    ruby-progressbar (1.10.1)
-    ruby2_keywords (0.0.2)
+    ruby-progressbar (1.11.0)
+    ruby2_keywords (0.0.4)
     safe_yaml (1.0.5)
-    sanitize (5.2.1)
+    sanitize (5.2.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.8.0)
       nokogumbo (~> 2.0)
@@ -155,6 +158,7 @@ GEM
     sixarm_ruby_unaccent (1.2.0)
     terminal-table (1.8.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
+    thor (1.1.0)
     to_regexp (0.2.1)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
