@@ -6,7 +6,7 @@ setup:
 	make update
 
 fix:
-	prettier --write --no-semi "**/*.yml" "**/*.md" "**/*.scss" "**/*.rb" "assets/**/*.js"  "**/*.mdx"
+	prettier --write --no-semi "**/*.yml" "**/*.md" "**/*.scss" "assets/**/*.js"
 	yarn run stylelint --fix "assets/**/*.scss" || echo 'stylelint: found no scss files to lint'
 	bundle exec rubocop -a
 
