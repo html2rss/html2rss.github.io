@@ -1,12 +1,12 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: 6e736b7668a006223f7e2bdfb8f310060885e706
+  revision: 2754e9f21875433a98a6476894e09c86d643bef5
   specs:
     html2rss-configs (0.2.0)
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: baa2fef0fb694c1ed5293c026feda66bc771e15e
+  revision: f183dcaef0041168cc274c289691182c194aa67a
   specs:
     html2rss (0.9.0)
       activesupport (>= 5, < 7)
@@ -27,7 +27,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (6.1.3)
+    activesupport (6.1.3.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -39,8 +39,8 @@ GEM
     builder (3.2.4)
     colorator (1.1.0)
     concurrent-ruby (1.1.8)
-    countries (3.0.1)
-      i18n_data (~> 0.10.0)
+    countries (3.1.0)
+      i18n_data (~> 0.11.0)
       sixarm_ruby_unaccent (~> 1.1)
       unicode_utils (~> 1.4)
     crass (1.0.6)
@@ -60,7 +60,7 @@ GEM
     http_parser.rb (0.6.0)
     i18n (1.8.9)
       concurrent-ruby (~> 1.0)
-    i18n_data (0.10.0)
+    i18n_data (0.11.0)
     jekyll (4.1.1)
       addressable (~> 2.4)
       colorator (~> 1.0)
@@ -96,12 +96,12 @@ GEM
       jekyll (>= 3.8.5)
       jekyll-seo-tag (~> 2.0)
       rake (>= 12.3.1, < 13.1.0)
-    kramdown (2.3.0)
+    kramdown (2.3.1)
       rexml
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
     liquid (4.0.3)
-    listen (3.4.1)
+    listen (3.5.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     mercenary (0.4.0)
@@ -111,10 +111,10 @@ GEM
     mini_portile2 (2.5.0)
     minitest (5.14.4)
     multipart-post (2.1.1)
-    nokogiri (1.11.1)
+    nokogiri (1.11.2)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
-    nokogumbo (2.0.4)
+    nokogumbo (2.0.5)
       nokogiri (~> 1.8, >= 1.8.4)
     parallel (1.20.1)
     parser (3.0.0.0)
@@ -135,7 +135,7 @@ GEM
     rouge (3.26.0)
     rss (0.2.9)
       rexml
-    rubocop (1.11.0)
+    rubocop (1.12.0)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
