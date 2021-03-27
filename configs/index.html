@@ -30,12 +30,21 @@ nav_order: 1
   </p>
 
   {% for config in site.data.configs %}
-  <article class="bg-grey-lt-000 my-8 py-1 px-2">
-    <h2 class="config__headline">
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
       <span>{{ config.domain }}</span
       ><span class="text-yellow-300">/</span
       ><span>{{ config.name }}</span>
-    </h2>
+
+       {%- if config.valid_channel_url -%}
+      <a href="#"
+        data-bind-click="show"
+        data-path="{{ config.domain }}/{{ config.name }}.rss"
+        class="float-right"
+        rel="noopener noreferrer"
+        > RSS</a>
+        {% endif %}
+    </summary>
 
     <dl>
       {%- if config.channel.url -%}
@@ -93,12 +102,12 @@ nav_order: 1
         <br>
         <code class="d-block w-100 py-2 bg-grey-lt-200 text-grey-dk-200 fs-4">
           <span class="config__url"
-          ><span class="instance"></span>{{ config.domain }}/{{ config.name }}.rss?{% for params in config.url_parameters %}{{ params[0] }}={{ params[1] | humanize_format_type }}<span class="config__url-amp">&</span>{% endfor %}
+          ><span class="instance"></span>{{ config.domain }}/{{ config.name }}.rss?{% for params in config.url_parameters %}{{ params[0] }}=<em>{{ params[1] }}</em><span class="config__url-amp">&</span>{% endfor %}
           </span>
         </code>
       </p>
     {%- endif -%}
-  </article>
+  </details>
 {% endfor %}
 </div>
 
