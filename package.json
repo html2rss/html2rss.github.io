@@ -5,7 +5,6 @@
     "lintfix": "stylelint --fix assets/**/*.scss"
   },
   "devDependencies": {
-    "prettier": "^2.3.0",
     "stylelint": "^13.13.1",
     "stylelint-config-recess-order": "^2.4.0",
     "stylelint-config-recommended-scss": "^4.2",
