@@ -25,4 +25,4 @@ html2rss-web builds and serves RSS feeds via HTTP. It's a small Sinatra-based ap
   There are public instances for those who can't or won't.
 </p>
 
-[See the project on Github](https://github.com/gildesmarais/html2rss-web){: .btn .btn-purple }
+[See the project on Github](https://github.com/html2rss/html2rss-web){: .btn .btn-purple }
