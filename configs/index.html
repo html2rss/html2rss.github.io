@@ -1,0 +1,1548 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  
+    <title>All feeds - html2rss</title>
+
+    
+  
+
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+  <link rel="stylesheet" href="/assets/css/just-the-docs-default.css">
+
+  
+
+  
+    <script type="text/javascript" src="/assets/js/vendor/lunr.min.js"></script>
+  
+  <script type="text/javascript" src="/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>All feeds | html2rss</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="All feeds" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="html2rss brings back RSS. It’s an open source project with decentralised instances. These instances generate RSS feeds for websites which do not offer them." />
+<meta property="og:description" content="html2rss brings back RSS. It’s an open source project with decentralised instances. These instances generate RSS feeds for websites which do not offer them." />
+<link rel="canonical" href="https://html2rss.github.io/configs/" />
+<meta property="og:url" content="https://html2rss.github.io/configs/" />
+<meta property="og:site_name" content="html2rss" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="All feeds" />
+<script type="application/ld+json">
+{"description":"html2rss brings back RSS. It’s an open source project with decentralised instances. These instances generate RSS feeds for websites which do not offer them.","@type":"WebPage","headline":"All feeds","url":"https://html2rss.github.io/configs/","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://html2rss.github.io/assets/images/logo.png"}},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="referrer" content="no-referrer" />
+<meta
+  name="robots"
+  content="noindex, noarchive, follow"
+/>
+<link rel="stylesheet" href="/assets/css/main.css" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16x16.png">
+<link rel="manifest" href="/assets/images/site.webmanifest">
+<link rel="mask-icon" href="/assets/images/safari-pinned-tab.svg" color="#111111">
+<link rel="shortcut icon" href="/assets/images/favicon.ico">
+<meta name="msapplication-TileColor" content="#111111">
+<meta name="msapplication-config" content="/assets/images/browserconfig.xml">
+<meta name="theme-color" content="#111111">
+<script data-goatcounter="https://html2rss.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+
+</head>
+
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="svg-link" viewbox="0 0 24 24">
+      <title>Link</title>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+      </svg>
+    </symbol>
+    <symbol id="svg-search" viewbox="0 0 24 24">
+      <title>Search</title>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+        <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    </symbol>
+    <symbol id="svg-menu" viewbox="0 0 24 24">
+      <title>Menu</title>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+        <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </symbol>
+    <symbol id="svg-arrow-right" viewbox="0 0 24 24">
+      <title>Expand</title>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </symbol>
+    <symbol id="svg-doc" viewbox="0 0 24 24">
+      <title>Document</title>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+      </svg>
+    </symbol>
+  </svg>
+
+  <div class="side-bar">
+    <div class="site-header">
+      <a href="https://html2rss.github.io/" class="site-title lh-tight">
+  <div class="site-logo"></div>
+
+</a>
+      <a href="#" id="menu-button" class="site-button">
+        <svg viewbox="0 0 24 24" class="icon"><use xlink:href="#svg-menu"></use></svg>
+      </a>
+    </div>
+    <nav role="navigation" aria-label="Main" id="site-nav" class="site-nav">
+      
+        <ul class="nav-list">
+<li class="nav-list-item"><a href="https://html2rss.github.io/" class="nav-list-link">html2rss - Home</a></li>
+<li class="nav-list-item active"><a href="https://html2rss.github.io/configs/" class="nav-list-link active">All feeds</a></li>
+<li class="nav-list-item">
+<a href="#" class="nav-list-expander"><svg viewbox="0 0 24 24"><use xlink:href="#svg-arrow-right"></use></svg></a><a href="https://html2rss.github.io/components/" class="nav-list-link">Components</a><ul class="nav-list ">
+<li class="nav-list-item "><a href="https://html2rss.github.io/components/html2rss" class="nav-list-link">html2rss gem</a></li>
+<li class="nav-list-item "><a href="https://html2rss.github.io/components/html2rss-web" class="nav-list-link">html2rss-web</a></li>
+<li class="nav-list-item "><a href="https://html2rss.github.io/components/html2rss-configs" class="nav-list-link">html2rss-configs</a></li>
+</ul>
+</li>
+<li class="nav-list-item"><a href="https://html2rss.github.io/contributing" class="nav-list-link">Contributing</a></li>
+</ul>
+
+      
+    </nav>
+    <footer class="site-footer">
+      This site uses <a href="https://github.com/pmarsceill/just-the-docs" target="_blank" rel="noopener noreferrer">Just the Docs</a>, a documentation theme for Jekyll.
+    </footer>
+  </div>
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+      
+        <div class="search">
+          <div class="search-input-wrap">
+            <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search html2rss" aria-label="Search html2rss" autocomplete="off">
+            <label for="search-input" class="search-label"><svg viewbox="0 0 24 24" class="search-icon"><use xlink:href="#svg-search"></use></svg></label>
+          </div>
+          <div id="search-results" class="search-results"></div>
+        </div>
+      
+      
+      
+        <nav aria-label="Auxiliary" class="aux-nav">
+          <ul class="aux-nav-list">
+            
+              <li class="aux-nav-list-item">
+                <a href="https://github.com/html2rss" class="site-button" target="_blank" rel="noopener noreferrer">
+                  GitHub
+                </a>
+              </li>
+            
+          </ul>
+        </nav>
+      
+    </div>
+    <div id="main-content-wrap" class="main-content-wrap">
+      
+        
+      
+      <div id="main-content" class="main-content" role="main">
+        
+          <noscript>
+  <span class="noscript">
+    This site needs JavaScript to link to the feed URL!
+  </span>
+</noscript>
+
+<div id="configs">
+  <fieldset class="bg-grey-lt-000 mb-4 py-1 px-2">
+    <legend class="fs-5">Instance URL</legend>
+
+    <input type="text" name="instance" value="https://1.h2r.workers.dev" class="bg-grey-lt-100 p-2">
+  </fieldset>
+
+  <p class="fs-4">
+    Find publicly available instances in the
+    <a href="https://github.com/html2rss/html2rss-web/wiki/Instances" target="_blank" rel="noopener noreferrer">wiki</a>
+    or
+    <a href="https://github.com/html2rss/html2rss-web" target="_blank" rel="noopener noreferrer">host your own</a>.
+  </p>
+
+  
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>adfc.de</span><span class="text-yellow-300">/</span><span>pressemitteilungen</span><a href="#" data-bind-click="show" data-path="adfc.de/pressemitteilungen.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.adfc.de/presse/pressemitteilungen/" class="config__url" target="_blank" rel="noopener noreferrer">https://www.adfc.de/presse/pressemitteilungen/</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="adfc.de/pressemitteilungen.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="adfc.de/pressemitteilungen.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/adfc.de/pressemitteilungen.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>airliners.de</span><span class="text-yellow-300">/</span><span>meistgelesen</span><a href="#" data-bind-click="show" data-path="airliners.de/meistgelesen.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.airliners.de" class="config__url" target="_blank" rel="noopener noreferrer">https://www.airliners.de</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="airliners.de/meistgelesen.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="airliners.de/meistgelesen.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/airliners.de/meistgelesen.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>bbc.co.uk</span><span class="text-yellow-300">/</span><span>available_episodes</span>
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><span class="config__url">https://www.bbc.co.uk/programmes/%&lt;id&gt;s/episodes/player</span></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+</dl>
+<p class="bg-grey-lt-100 text-red-200 p-2">
+        This config requires parameters to work.
+        <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/bbc.co.uk/available_episodes.yml" target="_blank" rel="noopener noreferrer">View the config</a>
+        to find out which values are possible.
+        <br>
+        <code class="d-block w-100 py-2 bg-grey-lt-200 text-grey-dk-200 fs-4">
+          <span class="config__url"><span class="instance"></span>bbc.co.uk/available_episodes.rss?id=<em>String</em><span class="config__url-amp">&amp;</span>
+          </span>
+        </code>
+      </p></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>bbc.com</span><span class="text-yellow-300">/</span><span>news_stories</span><a href="#" data-bind-click="show" data-path="bbc.com/news_stories.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://bbc.com/news/stories" class="config__url" target="_blank" rel="noopener noreferrer">https://bbc.com/news/stories</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/London</dd>
+<dt>Language</dt>
+      <dd>en</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="bbc.com/news_stories.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="bbc.com/news_stories.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/bbc.com/news_stories.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>canarianweekly.com</span><span class="text-yellow-300">/</span><span>front</span><a href="#" data-bind-click="show" data-path="canarianweekly.com/front.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.canarianweekly.com/" class="config__url" target="_blank" rel="noopener noreferrer">https://www.canarianweekly.com/</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/London</dd>
+<dt>Language</dt>
+      <dd>en</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="canarianweekly.com/front.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="canarianweekly.com/front.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/canarianweekly.com/front.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>cinemascore.com</span><span class="text-yellow-300">/</span><span>index</span><a href="#" data-bind-click="show" data-path="cinemascore.com/index.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://api.cinemascore.com/guest/surveys" class="config__url" target="_blank" rel="noopener noreferrer">https://api.cinemascore.com/guest/surveys</a></dd>
+<dt>Time zone</dt>
+      <dd>America/Los_Angeles</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="cinemascore.com/index.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="cinemascore.com/index.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/cinemascore.com/index.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>cleanenergywire.org</span><span class="text-yellow-300">/</span><span>news</span><a href="#" data-bind-click="show" data-path="cleanenergywire.org/news.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.cleanenergywire.org/news-archive" class="config__url" target="_blank" rel="noopener noreferrer">https://www.cleanenergywire.org/news-archive</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="cleanenergywire.org/news.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="cleanenergywire.org/news.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/cleanenergywire.org/news.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>computerbase.de</span><span class="text-yellow-300">/</span><span>meistgelesen</span><a href="#" data-bind-click="show" data-path="computerbase.de/meistgelesen.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.computerbase.de" class="config__url" target="_blank" rel="noopener noreferrer">https://www.computerbase.de</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="computerbase.de/meistgelesen.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="computerbase.de/meistgelesen.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/computerbase.de/meistgelesen.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>cutle.fish</span><span class="text-yellow-300">/</span><span>index</span><a href="#" data-bind-click="show" data-path="cutle.fish/index.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://cutle.fish/" class="config__url" target="_blank" rel="noopener noreferrer">https://cutle.fish/</a></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="cutle.fish/index.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="cutle.fish/index.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/cutle.fish/index.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>deraktionaer.de</span><span class="text-yellow-300">/</span><span>meistgelesen</span><a href="#" data-bind-click="show" data-path="deraktionaer.de/meistgelesen.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://deraktionaer.de/" class="config__url" target="_blank" rel="noopener noreferrer">https://deraktionaer.de/</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="deraktionaer.de/meistgelesen.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="deraktionaer.de/meistgelesen.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/deraktionaer.de/meistgelesen.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>deutschlandfunk.de</span><span class="text-yellow-300">/</span><span>meistgelesen</span><a href="#" data-bind-click="show" data-path="deutschlandfunk.de/meistgelesen.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.deutschlandfunk.de" class="config__url" target="_blank" rel="noopener noreferrer">https://www.deutschlandfunk.de</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="deutschlandfunk.de/meistgelesen.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="deutschlandfunk.de/meistgelesen.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/deutschlandfunk.de/meistgelesen.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>deutschlandfunkkultur.de</span><span class="text-yellow-300">/</span><span>meistgelesen</span><a href="#" data-bind-click="show" data-path="deutschlandfunkkultur.de/meistgelesen.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.deutschlandfunkkultur.de" class="config__url" target="_blank" rel="noopener noreferrer">https://www.deutschlandfunkkultur.de</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="deutschlandfunkkultur.de/meistgelesen.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="deutschlandfunkkultur.de/meistgelesen.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/deutschlandfunkkultur.de/meistgelesen.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>dfs.de</span><span class="text-yellow-300">/</span><span>pressemitteilungen</span><a href="#" data-bind-click="show" data-path="dfs.de/pressemitteilungen.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.dfs.de/dfs_homepage/de/Presse/Pressemitteilungen/" class="config__url" target="_blank" rel="noopener noreferrer">https://www.dfs.de/dfs_homepage/de/Presse/Pressemitteilungen/</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="dfs.de/pressemitteilungen.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="dfs.de/pressemitteilungen.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/dfs.de/pressemitteilungen.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>dsw-info.de</span><span class="text-yellow-300">/</span><span>presse</span><a href="#" data-bind-click="show" data-path="dsw-info.de/presse.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.dsw-info.de/presse" class="config__url" target="_blank" rel="noopener noreferrer">https://www.dsw-info.de/presse</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="dsw-info.de/presse.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="dsw-info.de/presse.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/dsw-info.de/presse.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>en.m.wikipedia.org</span><span class="text-yellow-300">/</span><span>timeline_of_the_21st_century</span><a href="#" data-bind-click="show" data-path="en.m.wikipedia.org/timeline_of_the_21st_century.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://en.m.wikipedia.org/wiki/Timeline_of_the_21st_century" class="config__url" target="_blank" rel="noopener noreferrer">https://en.m.wikipedia.org/wiki/Timeline_of_the_21st_century</a></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+<dt>Language</dt>
+      <dd>en</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="en.m.wikipedia.org/timeline_of_the_21st_century.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="en.m.wikipedia.org/timeline_of_the_21st_century.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/en.m.wikipedia.org/timeline_of_the_21st_century.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>entwickler.de</span><span class="text-yellow-300">/</span><span>jobs</span><a href="#" data-bind-click="show" data-path="entwickler.de/jobs.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://entwickler.de/jobs" class="config__url" target="_blank" rel="noopener noreferrer">https://entwickler.de/jobs</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="entwickler.de/jobs.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="entwickler.de/jobs.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/entwickler.de/jobs.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>espn.com</span><span class="text-yellow-300">/</span><span>f1</span><a href="#" data-bind-click="show" data-path="espn.com/f1.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.espn.com/f1/" class="config__url" target="_blank" rel="noopener noreferrer">https://www.espn.com/f1/</a></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="espn.com/f1.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="espn.com/f1.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/espn.com/f1.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>faz.net</span><span class="text-yellow-300">/</span><span>meistempfohlen</span><a href="#" data-bind-click="show" data-path="faz.net/meistempfohlen.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.faz.net/uebersichten/beliebte-inhalte/?time=HOUR_24&amp;statistics=article&amp;ranking=suggested" class="config__url" target="_blank" rel="noopener noreferrer">https://www.faz.net/uebersichten/beliebte-inhalte/?time=HOUR_24&amp;statistics=article&amp;ranking=suggested</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="faz.net/meistempfohlen.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="faz.net/meistempfohlen.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/faz.net/meistempfohlen.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>faz.net</span><span class="text-yellow-300">/</span><span>meistgelesen</span><a href="#" data-bind-click="show" data-path="faz.net/meistgelesen.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.faz.net/uebersichten/beliebte-inhalte/?time=HOUR_24&amp;statistics=article&amp;ranking=suggested" class="config__url" target="_blank" rel="noopener noreferrer">https://www.faz.net/uebersichten/beliebte-inhalte/?time=HOUR_24&amp;statistics=article&amp;ranking=suggested</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="faz.net/meistgelesen.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="faz.net/meistgelesen.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/faz.net/meistgelesen.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>formula1.com</span><span class="text-yellow-300">/</span><span>latest</span><a href="#" data-bind-click="show" data-path="formula1.com/latest.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.formula1.com/en/latest/all.html" class="config__url" target="_blank" rel="noopener noreferrer">https://www.formula1.com/en/latest/all.html</a></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="formula1.com/latest.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="formula1.com/latest.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/formula1.com/latest.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>github.com</span><span class="text-yellow-300">/</span><span>releases</span>
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><span class="config__url">https://github.com/%&lt;username&gt;s/%&lt;repository&gt;s/releases</span></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+</dl>
+<p class="bg-grey-lt-100 text-red-200 p-2">
+        This config requires parameters to work.
+        <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/github.com/releases.yml" target="_blank" rel="noopener noreferrer">View the config</a>
+        to find out which values are possible.
+        <br>
+        <code class="d-block w-100 py-2 bg-grey-lt-200 text-grey-dk-200 fs-4">
+          <span class="config__url"><span class="instance"></span>github.com/releases.rss?username=<em>String</em><span class="config__url-amp">&amp;</span>repository=<em>String</em><span class="config__url-amp">&amp;</span>
+          </span>
+        </code>
+      </p></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>github.com</span><span class="text-yellow-300">/</span><span>trending</span><a href="#" data-bind-click="show" data-path="github.com/trending.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://github.com/trending" class="config__url" target="_blank" rel="noopener noreferrer">https://github.com/trending</a></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="github.com/trending.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="github.com/trending.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/github.com/trending.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>goodjobs.eu</span><span class="text-yellow-300">/</span><span>de_jobs</span><a href="#" data-bind-click="show" data-path="goodjobs.eu/de_jobs.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://goodjobs.eu/de/jobs" class="config__url" target="_blank" rel="noopener noreferrer">https://goodjobs.eu/de/jobs</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="goodjobs.eu/de_jobs.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="goodjobs.eu/de_jobs.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/goodjobs.eu/de_jobs.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>iaapa.org</span><span class="text-yellow-300">/</span><span>news</span><a href="#" data-bind-click="show" data-path="iaapa.org/news.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.iaapa.org/news" class="config__url" target="_blank" rel="noopener noreferrer">https://www.iaapa.org/news</a></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="iaapa.org/news.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="iaapa.org/news.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/iaapa.org/news.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>ifo.de</span><span class="text-yellow-300">/</span><span>newsroom</span><a href="#" data-bind-click="show" data-path="ifo.de/newsroom.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.ifo.de/get-template/pressemitteilungen/false/de" class="config__url" target="_blank" rel="noopener noreferrer">https://www.ifo.de/get-template/pressemitteilungen/false/de</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="ifo.de/newsroom.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="ifo.de/newsroom.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/ifo.de/newsroom.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>imdb.com</span><span class="text-yellow-300">/</span><span>ratings</span>
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><span class="config__url">https://www.imdb.com/user/%&lt;user_id&gt;s/ratings</span></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+</dl>
+<p class="bg-grey-lt-100 text-red-200 p-2">
+        This config requires parameters to work.
+        <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/imdb.com/ratings.yml" target="_blank" rel="noopener noreferrer">View the config</a>
+        to find out which values are possible.
+        <br>
+        <code class="d-block w-100 py-2 bg-grey-lt-200 text-grey-dk-200 fs-4">
+          <span class="config__url"><span class="instance"></span>imdb.com/ratings.rss?user_id=<em>String</em><span class="config__url-amp">&amp;</span>
+          </span>
+        </code>
+      </p></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>kinocheck.de</span><span class="text-yellow-300">/</span><span>filmstarts</span><a href="#" data-bind-click="show" data-path="kinocheck.de/filmstarts.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://kinocheck.de/filmstarts" class="config__url" target="_blank" rel="noopener noreferrer">https://kinocheck.de/filmstarts</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="kinocheck.de/filmstarts.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="kinocheck.de/filmstarts.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/kinocheck.de/filmstarts.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>metacritic.com</span><span class="text-yellow-300">/</span><span>movies_release_date</span><a href="#" data-bind-click="show" data-path="metacritic.com/movies_release_date.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.metacritic.com/browse/movies/release-date/theaters/date" class="config__url" target="_blank" rel="noopener noreferrer">https://www.metacritic.com/browse/movies/release-date/theaters/date</a></dd>
+<dt>Time zone</dt>
+      <dd>America/Los_Angeles</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="metacritic.com/movies_release_date.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="metacritic.com/movies_release_date.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/metacritic.com/movies_release_date.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>morgenpost.de</span><span class="text-yellow-300">/</span><span>bezirk_fh_kb</span><a href="#" data-bind-click="show" data-path="morgenpost.de/bezirk_fh_kb.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.morgenpost.de/bezirke/friedrichshain-kreuzberg/" class="config__url" target="_blank" rel="noopener noreferrer">https://www.morgenpost.de/bezirke/friedrichshain-kreuzberg/</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="morgenpost.de/bezirk_fh_kb.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="morgenpost.de/bezirk_fh_kb.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/morgenpost.de/bezirk_fh_kb.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>newyorker.com</span><span class="text-yellow-300">/</span><span>magazine</span><a href="#" data-bind-click="show" data-path="newyorker.com/magazine.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.newyorker.com/magazine" class="config__url" target="_blank" rel="noopener noreferrer">https://www.newyorker.com/magazine</a></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+<dt>Language</dt>
+      <dd>en</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="newyorker.com/magazine.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="newyorker.com/magazine.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/newyorker.com/magazine.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>nwzonline.de</span><span class="text-yellow-300">/</span><span>ammerland</span><a href="#" data-bind-click="show" data-path="nwzonline.de/ammerland.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.nwzonline.de/ammerland" class="config__url" target="_blank" rel="noopener noreferrer">https://www.nwzonline.de/ammerland</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="nwzonline.de/ammerland.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="nwzonline.de/ammerland.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/nwzonline.de/ammerland.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>phys.org</span><span class="text-yellow-300">/</span><span>weekly</span><a href="#" data-bind-click="show" data-path="phys.org/weekly.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://phys.org/weekly-news/" class="config__url" target="_blank" rel="noopener noreferrer">https://phys.org/weekly-news/</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/London</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="phys.org/weekly.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="phys.org/weekly.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/phys.org/weekly.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>pinboard.in</span><span class="text-yellow-300">/</span><span>user</span>
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><span class="config__url">https://pinboard.in/u:%&lt;username&gt;s?per_page=160</span></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+<dt>Language</dt>
+      <dd>en</dd>
+</dl>
+<p class="bg-grey-lt-100 text-red-200 p-2">
+        This config requires parameters to work.
+        <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/pinboard.in/user.yml" target="_blank" rel="noopener noreferrer">View the config</a>
+        to find out which values are possible.
+        <br>
+        <code class="d-block w-100 py-2 bg-grey-lt-200 text-grey-dk-200 fs-4">
+          <span class="config__url"><span class="instance"></span>pinboard.in/user.rss?username=<em>String</em><span class="config__url-amp">&amp;</span>
+          </span>
+        </code>
+      </p></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>rbb24.de</span><span class="text-yellow-300">/</span><span>meistgeklickt</span><a href="#" data-bind-click="show" data-path="rbb24.de/meistgeklickt.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://rbb24.de/" class="config__url" target="_blank" rel="noopener noreferrer">https://rbb24.de/</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="rbb24.de/meistgeklickt.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="rbb24.de/meistgeklickt.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/rbb24.de/meistgeklickt.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>rinse.fm</span><span class="text-yellow-300">/</span><span>podcasts</span><a href="#" data-bind-click="show" data-path="rinse.fm/podcasts.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://rinse.fm/podcasts/" class="config__url" target="_blank" rel="noopener noreferrer">https://rinse.fm/podcasts/</a></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="rinse.fm/podcasts.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="rinse.fm/podcasts.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/rinse.fm/podcasts.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>rnd.de</span><span class="text-yellow-300">/</span><span>newsroom</span><a href="#" data-bind-click="show" data-path="rnd.de/newsroom.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.rnd.de/" class="config__url" target="_blank" rel="noopener noreferrer">https://www.rnd.de/</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="rnd.de/newsroom.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="rnd.de/newsroom.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/rnd.de/newsroom.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>rnd.de</span><span class="text-yellow-300">/</span><span>themen</span>
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><span class="config__url">https://www.rnd.de/themen/%&lt;thema&gt;s/</span></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<p class="bg-grey-lt-100 text-red-200 p-2">
+        This config requires parameters to work.
+        <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/rnd.de/themen.yml" target="_blank" rel="noopener noreferrer">View the config</a>
+        to find out which values are possible.
+        <br>
+        <code class="d-block w-100 py-2 bg-grey-lt-200 text-grey-dk-200 fs-4">
+          <span class="config__url"><span class="instance"></span>rnd.de/themen.rss?thema=<em>String</em><span class="config__url-amp">&amp;</span>
+          </span>
+        </code>
+      </p></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>robinwood.de</span><span class="text-yellow-300">/</span><span>aktuelles</span><a href="#" data-bind-click="show" data-path="robinwood.de/aktuelles.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.robinwood.de/was-gibt-es-neues/aktuelles" class="config__url" target="_blank" rel="noopener noreferrer">https://www.robinwood.de/was-gibt-es-neues/aktuelles</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="robinwood.de/aktuelles.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="robinwood.de/aktuelles.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/robinwood.de/aktuelles.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>s3.amazonaws.com</span><span class="text-yellow-300">/</span><span>popular_movies</span><a href="#" data-bind-click="show" data-path="s3.amazonaws.com/popular_movies.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://s3.amazonaws.com/popular-movies/movies.json" class="config__url" target="_blank" rel="noopener noreferrer">https://s3.amazonaws.com/popular-movies/movies.json</a></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="s3.amazonaws.com/popular_movies.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="s3.amazonaws.com/popular_movies.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/s3.amazonaws.com/popular_movies.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>softwareleadweekly.com</span><span class="text-yellow-300">/</span><span>issues</span><a href="#" data-bind-click="show" data-path="softwareleadweekly.com/issues.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://softwareleadweekly.com/issues" class="config__url" target="_blank" rel="noopener noreferrer">https://softwareleadweekly.com/issues</a></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="softwareleadweekly.com/issues.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="softwareleadweekly.com/issues.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/softwareleadweekly.com/issues.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>solarthermalworld.org</span><span class="text-yellow-300">/</span><span>news</span><a href="#" data-bind-click="show" data-path="solarthermalworld.org/news.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://solarthermalworld.org/news" class="config__url" target="_blank" rel="noopener noreferrer">https://solarthermalworld.org/news</a></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="solarthermalworld.org/news.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="solarthermalworld.org/news.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/solarthermalworld.org/news.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>spaceweathergallery.com</span><span class="text-yellow-300">/</span><span>index</span><a href="#" data-bind-click="show" data-path="spaceweathergallery.com/index.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://spaceweathergallery.com/" class="config__url" target="_blank" rel="noopener noreferrer">https://spaceweathergallery.com/</a></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="spaceweathergallery.com/index.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="spaceweathergallery.com/index.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/spaceweathergallery.com/index.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>spektrum.de</span><span class="text-yellow-300">/</span><span>meistgelesen</span><a href="#" data-bind-click="show" data-path="spektrum.de/meistgelesen.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.spektrum.de/" class="config__url" target="_blank" rel="noopener noreferrer">https://www.spektrum.de/</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="spektrum.de/meistgelesen.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="spektrum.de/meistgelesen.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/spektrum.de/meistgelesen.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>spiegel.de</span><span class="text-yellow-300">/</span><span>impressum_autor</span>
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><span class="config__url">https://www.spiegel.de/impressum/autor-%&lt;id&gt;s</span></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<p class="bg-grey-lt-100 text-red-200 p-2">
+        This config requires parameters to work.
+        <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/spiegel.de/impressum_autor.yml" target="_blank" rel="noopener noreferrer">View the config</a>
+        to find out which values are possible.
+        <br>
+        <code class="d-block w-100 py-2 bg-grey-lt-200 text-grey-dk-200 fs-4">
+          <span class="config__url"><span class="instance"></span>spiegel.de/impressum_autor.rss?id=<em>String</em><span class="config__url-amp">&amp;</span>
+          </span>
+        </code>
+      </p></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>stackoverflow.com</span><span class="text-yellow-300">/</span><span>hot_network_questions</span><a href="#" data-bind-click="show" data-path="stackoverflow.com/hot_network_questions.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://stackoverflow.com/questions" class="config__url" target="_blank" rel="noopener noreferrer">https://stackoverflow.com/questions</a></dd>
+<dt>Time zone</dt>
+      <dd>America/New_York</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="stackoverflow.com/hot_network_questions.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="stackoverflow.com/hot_network_questions.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/stackoverflow.com/hot_network_questions.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>steuerzahler.de</span><span class="text-yellow-300">/</span><span>news</span><a href="#" data-bind-click="show" data-path="steuerzahler.de/news.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.steuerzahler.de/news" class="config__url" target="_blank" rel="noopener noreferrer">https://www.steuerzahler.de/news</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="steuerzahler.de/news.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="steuerzahler.de/news.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/steuerzahler.de/news.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>support.apple.com</span><span class="text-yellow-300">/</span><span>exchange_repair</span><a href="#" data-bind-click="show" data-path="support.apple.com/exchange_repair.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://support.apple.com/exchange_repair" class="config__url" target="_blank" rel="noopener noreferrer">https://support.apple.com/exchange_repair</a></dd>
+<dt>Time zone</dt>
+      <dd>America/Los_Angeles</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="support.apple.com/exchange_repair.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="support.apple.com/exchange_repair.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/support.apple.com/exchange_repair.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>t-online.de</span><span class="text-yellow-300">/</span><span>meistgelesen</span><a href="#" data-bind-click="show" data-path="t-online.de/meistgelesen.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.t-online.de/" class="config__url" target="_blank" rel="noopener noreferrer">https://www.t-online.de/</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="t-online.de/meistgelesen.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="t-online.de/meistgelesen.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/t-online.de/meistgelesen.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>tagesspiegel.de</span><span class="text-yellow-300">/</span><span>mostread</span><a href="#" data-bind-click="show" data-path="tagesspiegel.de/mostread.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.tagesspiegel.de" class="config__url" target="_blank" rel="noopener noreferrer">https://www.tagesspiegel.de</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="tagesspiegel.de/mostread.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="tagesspiegel.de/mostread.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/tagesspiegel.de/mostread.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>teneriffa-news.com</span><span class="text-yellow-300">/</span><span>news</span><a href="#" data-bind-click="show" data-path="teneriffa-news.com/news.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.teneriffa-news.com/news" class="config__url" target="_blank" rel="noopener noreferrer">https://www.teneriffa-news.com/news</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Lisbon</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="teneriffa-news.com/news.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="teneriffa-news.com/news.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/teneriffa-news.com/news.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>theguardian.com</span><span class="text-yellow-300">/</span><span>international_mostpopular</span><a href="#" data-bind-click="show" data-path="theguardian.com/international_mostpopular.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.theguardian.com/international" class="config__url" target="_blank" rel="noopener noreferrer">https://www.theguardian.com/international</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/London</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="theguardian.com/international_mostpopular.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="theguardian.com/international_mostpopular.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/theguardian.com/international_mostpopular.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>tourismusnetzwerk-brandenburg.de</span><span class="text-yellow-300">/</span><span>aktuelle_nachrichten</span><a href="#" data-bind-click="show" data-path="tourismusnetzwerk-brandenburg.de/aktuelle_nachrichten.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.tourismusnetzwerk-brandenburg.de/nc/aktuelle-nachrichten/" class="config__url" target="_blank" rel="noopener noreferrer">https://www.tourismusnetzwerk-brandenburg.de/nc/aktuelle-nachrichten/</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="tourismusnetzwerk-brandenburg.de/aktuelle_nachrichten.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="tourismusnetzwerk-brandenburg.de/aktuelle_nachrichten.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/tourismusnetzwerk-brandenburg.de/aktuelle_nachrichten.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>trakt.tv</span><span class="text-yellow-300">/</span><span>section</span>
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><span class="config__url">https://trakt.tv/%&lt;section&gt;s/%&lt;filter&gt;s</span></dd>
+<dt>Time zone</dt>
+      <dd>UTC</dd>
+</dl>
+<p class="bg-grey-lt-100 text-red-200 p-2">
+        This config requires parameters to work.
+        <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/trakt.tv/section.yml" target="_blank" rel="noopener noreferrer">View the config</a>
+        to find out which values are possible.
+        <br>
+        <code class="d-block w-100 py-2 bg-grey-lt-200 text-grey-dk-200 fs-4">
+          <span class="config__url"><span class="instance"></span>trakt.tv/section.rss?section=<em>String</em><span class="config__url-amp">&amp;</span>filter=<em>String</em><span class="config__url-amp">&amp;</span>
+          </span>
+        </code>
+      </p></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>truthdig.com</span><span class="text-yellow-300">/</span><span>most_popular</span><a href="#" data-bind-click="show" data-path="truthdig.com/most_popular.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://truthdig.com/" class="config__url" target="_blank" rel="noopener noreferrer">https://truthdig.com/</a></dd>
+<dt>Time zone</dt>
+      <dd>America/Los_Angeles</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="truthdig.com/most_popular.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="truthdig.com/most_popular.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/truthdig.com/most_popular.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>webentwickler-jobs.de</span><span class="text-yellow-300">/</span><span>in</span>
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><span class="config__url">https://www.webentwickler-jobs.de/in/%&lt;region&gt;s</span></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<p class="bg-grey-lt-100 text-red-200 p-2">
+        This config requires parameters to work.
+        <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/webentwickler-jobs.de/in.yml" target="_blank" rel="noopener noreferrer">View the config</a>
+        to find out which values are possible.
+        <br>
+        <code class="d-block w-100 py-2 bg-grey-lt-200 text-grey-dk-200 fs-4">
+          <span class="config__url"><span class="instance"></span>webentwickler-jobs.de/in.rss?region=<em>String</em><span class="config__url-amp">&amp;</span>
+          </span>
+        </code>
+      </p></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>welt.de</span><span class="text-yellow-300">/</span><span>meistgelesen</span><a href="#" data-bind-click="show" data-path="welt.de/meistgelesen.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.welt.de" class="config__url" target="_blank" rel="noopener noreferrer">https://www.welt.de</a></dd>
+<dt>Time zone</dt>
+      <dd>Europe/Berlin</dd>
+<dt>Language</dt>
+      <dd>🇩🇪</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="welt.de/meistgelesen.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="welt.de/meistgelesen.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/welt.de/meistgelesen.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+  <details class="bg-grey-lt-000 py-1 px-2">
+    <summary class="config__headline text-mono">
+      <span>wired.com</span><span class="text-yellow-300">/</span><span>most_popular</span><a href="#" data-bind-click="show" data-path="wired.com/most_popular.rss" class="float-right" rel="noopener noreferrer"> RSS</a>
+        
+    </summary>
+
+    <dl>
+<dt>URL to scrape</dt>
+      <dd><a href="https://www.wired.com/most-popular/" class="config__url" target="_blank" rel="noopener noreferrer">https://www.wired.com/most-popular/</a></dd>
+<dt>Time zone</dt>
+      <dd>America/Los_Angeles</dd>
+</dl>
+<div>
+      <a href="#" data-bind-click="show" data-path="wired.com/most_popular.rss" class="btn btn-primary fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Show RSS</a>
+
+      <button data-bind-click="copy" data-path="wired.com/most_popular.rss" class="btn fs-3 mb-4 mr-2 v-align-middle" rel="noopener noreferrer">Copy URL</button>
+
+      <a href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/wired.com/most_popular.yml" class="btn fs-3 mb-4 v-align-middle" target="_blank" rel="noopener noreferrer">
+        View on Github
+      </a>
+    </div></details>
+
+</div>
+
+<script src="/assets/js/configs/index.js" async defer></script>
+
+        
+
+        
+
+        
+        
+          <hr>
+          <footer>
+            
+
+            
+
+            
+              <div class="d-flex mt-2">
+                
+                
+                  <p class="text-small text-grey-dk-000 mb-0">
+                    <a href="https://github.com/html2rss/html2rss.github.io/tree/main/configs/index.html" id="edit-this-page" target="_blank" rel="noopener noreferrer">Edit this page on GitHub.</a>
+                  </p>
+                
+              </div>
+            
+          </footer>
+        
+
+      </div>
+    </div>
+
+    
+      
+
+      <div class="search-overlay"></div>
+    
+  </div>
+</body>
+</html>
+

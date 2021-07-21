@@ -1,0 +1,14 @@
+{
+	"version": 3,
+	"file": "main.css",
+	"sources": [
+		"main.scss",
+		"assets/css/sass/base.scss"
+	],
+	"sourcesContent": [
+		"// You need to include this stylesheet in your pages <head> manually with:\n//\n// <link rel=\"stylesheet\" href=\"/assets/css/main.css\" />\n//\n// @import files directly from the sass/ directory:;\n\n@import \"base\";\n\n// Don't write any SCSS in this file as stylelint does not fix it,\n// just use the sass directory.\n",
+		"#configs input {\n  width: 100%;\n  font-family: monospace;\n  background-color: transparent;\n  border: 0;\n  border-radius: 0;\n}\n\n.config__headline > span,\n.config__url.config__url {\n  hyphens: none;\n  word-break: break-word;\n  white-space: pre-wrap;\n}\n\n.config__url em {\n  padding-right: 0.125em;\n  letter-spacing: -0.05em;\n  opacity: 0.75;\n}\n\n.config__url .config__url-amp:last-child {\n  display: none;\n}\n\n.js__copy-element {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 0;\n  height: 0;\n  opacity: 0;\n\n  &::selection {\n    background-color: transparent;\n  }\n}\n\n.noscript {\n  font-weight: 600;\n  color: #f00;\n}\n\nbutton[data-bind-click=\"copy\"] {\n  border: 2px solid transparent;\n  transition: border-color 0.2s linear;\n}\n\nbutton[data-bind-click=\"copy\"].copied {\n  &,\n  &:hover,\n  &:active {\n    border-color: rgba(0, 128, 0, 0.5);\n    box-shadow: inset 0 2px 4px rgba(0, 128, 0, 0.15);\n  }\n}\n"
+	],
+	"names": [],
+	"mappings": "ACAA,AAAA,QAAQ,CAAC,KAAK,AAAC,CACb,KAAK,CAAE,IAAI,CACX,WAAW,CAAE,SAAS,CACtB,gBAAgB,CAAE,WAAW,CAC7B,MAAM,CAAE,CAAC,CACT,aAAa,CAAE,CAAC,CACjB,AAED,AAAA,iBAAiB,CAAG,IAAI,CACxB,YAAY,AAAA,YAAY,AAAC,CACvB,OAAO,CAAE,IAAI,CACb,UAAU,CAAE,UAAU,CACtB,WAAW,CAAE,QAAQ,CACtB,AAED,AAAA,YAAY,CAAC,EAAE,AAAC,CACd,aAAa,CAAE,OAAO,CACtB,cAAc,CAAE,OAAO,CACvB,OAAO,CAAE,IAAI,CACd,AAED,AAAA,YAAY,CAAC,gBAAgB,CAAC,UAAU,AAAC,CACvC,OAAO,CAAE,IAAI,CACd,AAED,AAAA,iBAAiB,AAAC,CAChB,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,CAAC,CACR,MAAM,CAAE,CAAC,CACT,OAAO,CAAE,CAAC,CAKX,AAXD,AAQE,iBARe,EAQZ,SAAS,AAAC,CACX,gBAAgB,CAAE,WAAW,CAC9B,AAGH,AAAA,SAAS,AAAC,CACR,WAAW,CAAE,GAAG,CAChB,KAAK,CAAE,IAAI,CACZ,AAED,AAAA,MAAM,CAAA,AAAA,eAAC,CAAgB,MAAM,AAAtB,CAAwB,CAC7B,MAAM,CAAE,qBAAqB,CAC7B,UAAU,CAAE,wBAAwB,CACrC,AAED,AACE,MADI,AAAwB,OAAO,CAA/B,AAAA,eAAC,CAAgB,MAAM,AAAtB,EAAP,MAAM,AAAwB,OAAO,CAA/B,AAAA,eAAC,CAAgB,MAAM,AAAtB,EAEH,KAAK,CAFT,MAAM,AAAwB,OAAO,CAA/B,AAAA,eAAC,CAAgB,MAAM,AAAtB,EAGH,MAAM,AAAC,CACP,YAAY,CAAE,iBAAoB,CAClC,UAAU,CAAE,KAAK,CAAC,CAAC,CAAC,GAAG,CAAC,GAAG,CAAC,kBAAqB,CAClD"
+}
