@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: d3b3a7e734cc2d72e82d35250dc77bbf29c1cabc
+  revision: d407e0399a923862d0181bc5362fe42443eef41d
   specs:
     html2rss (0.9.0)
       activesupport (>= 5, < 7)
@@ -74,7 +74,7 @@ GEM
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     i18n_data (0.13.0)
-    jekyll (4.2.0)
+    jekyll (4.2.1)
       addressable (~> 2.4)
       colorator (~> 1.0)
       em-websocket (~> 0.5)
@@ -182,7 +182,7 @@ DEPENDENCIES
   countries
   html2rss!
   html2rss-configs!
-  jekyll (~> 4.2.0)
+  jekyll (~> 4.2.1)
   jekyll-feed (~> 0.15)
   jekyll-loading-lazy
   jekyll-sitemap
