@@ -146,7 +146,7 @@ GEM
     rouge (3.26.1)
     rss (0.2.9)
       rexml
-    rubocop (1.22.0)
+    rubocop (1.22.1)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
