@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: 43085a8afb5e2cc2ad3277eca44c19b5efd4167b
+  revision: 85af887d7658507fa2c7c5dfd1ba3891d5ff277e
   specs:
     html2rss-configs (0.2.0)
 
@@ -128,7 +128,7 @@ GEM
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
     parallel (1.21.0)
-    parser (3.0.3.0)
+    parser (3.0.3.1)
       ast (~> 2.4.1)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
