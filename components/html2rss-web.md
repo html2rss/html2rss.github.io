@@ -3,8 +3,8 @@ layout: default
 parent: Components
 nav_order: 2
 title: html2rss-web
-description: html2rss-web app is a minimal Sinatra-based application which serves feeds via HTTP.
-summary: serves feeds via HTTP
+description: html2rss-web app is a small application which serves RSS feeds via HTTP.
+summary: serves RSS feeds via HTTP
 ---
 
 {{ page.description }}
