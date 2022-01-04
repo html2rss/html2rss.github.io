@@ -91,7 +91,7 @@ GEM
       rouge (~> 3.0)
       safe_yaml (~> 1.0)
       terminal-table (~> 2.0)
-    jekyll-feed (0.15.1)
+    jekyll-feed (0.16.0)
       jekyll (>= 3.7, < 5.0)
     jekyll-loading-lazy (0.1.1)
       jekyll (>= 3.0, < 5.0)
@@ -186,7 +186,7 @@ DEPENDENCIES
   html2rss!
   html2rss-configs!
   jekyll (~> 4.2.1)
-  jekyll-feed (~> 0.15)
+  jekyll-feed (~> 0.16)
   jekyll-loading-lazy
   jekyll-sitemap
   jekyll-target-blank
