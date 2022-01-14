@@ -6,6 +6,6 @@ queue_rules:
 pull_request_rules:
   - name: automatic merge for Dependabot pull requests
     actions:
-      merge:
+      queue:
         method: squash
         name: default
