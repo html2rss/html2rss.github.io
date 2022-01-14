@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: 5c423d45e47c4348cb990598088b0436fef4ebf6
+  revision: 91c163c8918dda8eeaf6a7c537657a06c92538c6
   specs:
     html2rss (0.9.0)
       activesupport (>= 5, < 8)
@@ -120,7 +120,7 @@ GEM
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
     liquid (4.0.3)
-    listen (3.7.0)
+    listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     mercenary (0.4.0)
