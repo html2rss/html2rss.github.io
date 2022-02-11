@@ -20,4 +20,3 @@ update:
 
 serve: setup
 	bundle exec jekyll s --drafts --trace
-

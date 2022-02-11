@@ -2,6 +2,8 @@ queue_rules:
   - name: dependabot
     conditions:
       - author=dependabot[bot]
+      - status-success=build
+      - base=main
 
 pull_request_rules:
   - name: automatic merge for Dependabot pull requests
