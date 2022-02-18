@@ -5,8 +5,6 @@ source 'https://rubygems.org'
 gem 'jekyll', '~> 4.2.1'
 gem 'just-the-docs'
 
-gem 'countries'
-
 gem 'html2rss', git: 'https://github.com/html2rss/html2rss.git'
 gem 'html2rss-configs', git: 'https://github.com/html2rss/html2rss-configs.git'
 
