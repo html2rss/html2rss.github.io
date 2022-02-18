@@ -31,9 +31,6 @@ GEM
     ast (2.4.2)
     colorator (1.1.0)
     concurrent-ruby (1.1.9)
-    countries (4.2.2)
-      i18n_data (~> 0.15.0)
-      sixarm_ruby_unaccent (~> 1.1)
     crass (1.0.6)
     em-websocket (0.5.3)
       eventmachine (>= 0.12.9)
@@ -69,8 +66,6 @@ GEM
     http_parser.rb (0.8.0)
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
-    i18n_data (0.15.0)
-      simple_po_parser (~> 1.1)
     jekyll (4.2.1)
       addressable (~> 2.4)
       colorator (~> 1.0)
@@ -161,8 +156,6 @@ GEM
       nokogiri (>= 1.12.0)
     sassc (2.4.0)
       ffi (~> 1.9)
-    simple_po_parser (1.1.5)
-    sixarm_ruby_unaccent (1.2.0)
     terminal-table (2.0.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
     thor (1.2.1)
@@ -176,7 +169,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  countries
   html2rss!
   html2rss-configs!
   jekyll (~> 4.2.1)
