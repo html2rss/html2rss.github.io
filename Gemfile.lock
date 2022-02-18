@@ -31,7 +31,7 @@ GEM
     ast (2.4.2)
     colorator (1.1.0)
     concurrent-ruby (1.1.9)
-    countries (4.2.1)
+    countries (4.2.2)
       i18n_data (~> 0.15.0)
       sixarm_ruby_unaccent (~> 1.1)
     crass (1.0.6)
