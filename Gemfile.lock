@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: 7085346dcdcb516748e509bad990dcc24add9b3a
+  revision: 76c4a80f1022c65b18bb3020c1d9453b66d535aa
   specs:
     html2rss-configs (0.2.0)
 
@@ -137,7 +137,7 @@ GEM
     rouge (3.29.0)
     rss (0.2.9)
       rexml
-    rubocop (1.30.0)
+    rubocop (1.30.1)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
