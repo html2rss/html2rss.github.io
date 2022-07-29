@@ -36,7 +36,7 @@ GEM
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0)
     eventmachine (1.2.7)
-    faraday (2.3.0)
+    faraday (2.4.0)
       faraday-net_http (~> 2.0)
       ruby2_keywords (>= 0.0.4)
     faraday-follow_redirects (0.3.0)
