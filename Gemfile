@@ -9,7 +9,7 @@ gem 'html2rss', git: 'https://github.com/html2rss/html2rss.git'
 gem 'html2rss-configs', git: 'https://github.com/html2rss/html2rss-configs.git'
 
 group :jekyll_plugins do
-  gem 'jekyll-feed', '~> 0.16'
+  gem 'jekyll-feed', '~> 0.17'
   gem 'jekyll-loading-lazy'
   gem 'jekyll-sitemap'
   gem 'jekyll-target-blank'
