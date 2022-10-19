@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: f4feed552def2d56f8137d89439e27a6a3bb0147
+  revision: 25d3904cf72df04ecbf1f578df2298f89a35dd57
   specs:
     html2rss (0.9.0)
       addressable (~> 2.7)
@@ -96,7 +96,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2022.0105)
     mini_portile2 (2.8.0)
-    nokogiri (1.13.8)
+    nokogiri (1.13.9)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     parallel (1.22.1)
