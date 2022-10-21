@@ -47,21 +47,22 @@ GEM
     http_parser.rb (0.8.0)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
-    jekyll (4.2.2)
+    jekyll (4.3.0)
       addressable (~> 2.4)
       colorator (~> 1.0)
       em-websocket (~> 0.5)
       i18n (~> 1.0)
-      jekyll-sass-converter (~> 2.0)
+      jekyll-sass-converter (>= 2.0, < 4.0)
       jekyll-watch (~> 2.0)
-      kramdown (~> 2.3)
+      kramdown (~> 2.3, >= 2.3.1)
       kramdown-parser-gfm (~> 1.0)
       liquid (~> 4.0)
-      mercenary (~> 0.4.0)
+      mercenary (>= 0.3.6, < 0.5)
       pathutil (~> 0.9)
-      rouge (~> 3.0)
+      rouge (>= 3.0, < 5.0)
       safe_yaml (~> 1.0)
-      terminal-table (~> 2.0)
+      terminal-table (>= 1.8, < 4.0)
+      webrick (~> 1.7)
     jekyll-feed (0.17.0)
       jekyll (>= 3.7, < 5.0)
     jekyll-loading-lazy (0.1.1)
@@ -115,7 +116,7 @@ GEM
     reverse_markdown (2.1.1)
       nokogiri
     rexml (3.2.5)
-    rouge (3.30.0)
+    rouge (4.0.0)
     rss (0.2.9)
       rexml
     rubocop (1.36.0)
@@ -138,12 +139,13 @@ GEM
       nokogiri (>= 1.12.0)
     sassc (2.4.0)
       ffi (~> 1.9)
-    terminal-table (2.0.0)
-      unicode-display_width (~> 1.1, >= 1.1.1)
+    terminal-table (3.0.2)
+      unicode-display_width (>= 1.1.1, < 3)
     thor (1.2.1)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (1.8.0)
+    unicode-display_width (2.3.0)
+    webrick (1.7.0)
     zeitwerk (2.6.1)
 
 PLATFORMS
@@ -152,7 +154,7 @@ PLATFORMS
 DEPENDENCIES
   html2rss!
   html2rss-configs!
-  jekyll (~> 4.2.2)
+  jekyll (~> 4.3.0)
   jekyll-feed (~> 0.17)
   jekyll-loading-lazy
   jekyll-sitemap
