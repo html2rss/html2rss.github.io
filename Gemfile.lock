@@ -120,7 +120,7 @@ GEM
     rouge (4.0.1)
     rss (0.2.9)
       rexml
-    rubocop (1.44.0)
+    rubocop (1.44.1)
       json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.2.0.0)
