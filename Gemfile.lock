@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: cfbffe84c199533a601f74bd259fff0fce84676f
+  revision: 1ebb38a8863f9f7a7425db46e2430da009b9512b
   specs:
     html2rss (0.9.0)
       addressable (~> 2.7)
@@ -144,10 +144,10 @@ GEM
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
     thor (1.2.1)
-    tzinfo (2.0.5)
+    tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
-    webrick (1.8.0)
+    webrick (1.8.1)
     zeitwerk (2.6.6)
 
 PLATFORMS
