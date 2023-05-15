@@ -117,7 +117,7 @@ GEM
     reverse_markdown (2.1.1)
       nokogiri
     rexml (3.2.5)
-    rouge (4.1.0)
+    rouge (4.1.1)
     rss (0.2.9)
       rexml
     rubocop (1.51.0)
