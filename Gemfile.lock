@@ -143,7 +143,7 @@ GEM
     sanitize (6.0.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    sass-embedded (1.66.0)
+    sass-embedded (1.66.1)
       google-protobuf (~> 3.23)
       rake (>= 13.0.0)
     terminal-table (3.0.2)
