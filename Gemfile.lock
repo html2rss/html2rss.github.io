@@ -50,7 +50,7 @@ GEM
     http_parser.rb (0.8.0)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
-    jekyll (4.3.2)
+    jekyll (4.3.3)
       addressable (~> 2.4)
       colorator (~> 1.0)
       em-websocket (~> 0.5)
@@ -164,7 +164,7 @@ PLATFORMS
 DEPENDENCIES
   html2rss!
   html2rss-configs!
-  jekyll (~> 4.3.2)
+  jekyll (~> 4.3.3)
   jekyll-feed (~> 0.17)
   jekyll-loading-lazy
   jekyll-sitemap
