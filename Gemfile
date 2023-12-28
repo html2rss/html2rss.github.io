@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'jekyll', '~> 4.3.2'
+gem 'jekyll', '~> 4.3.3'
 gem 'just-the-docs'
 
 gem 'html2rss', git: 'https://github.com/html2rss/html2rss.git'
