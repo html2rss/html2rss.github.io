@@ -127,7 +127,7 @@ GEM
     rouge (4.2.0)
     rss (0.3.0)
       rexml
-    rubocop (1.62.0)
+    rubocop (1.62.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
