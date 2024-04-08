@@ -128,7 +128,7 @@ GEM
     rouge (4.2.1)
     rss (0.3.0)
       rexml
-    rubocop (1.62.1)
+    rubocop (1.63.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -171,7 +171,7 @@ DEPENDENCIES
   jekyll-sitemap
   jekyll-target-blank
   just-the-docs
-  rubocop (~> 1.62)
+  rubocop (~> 1.63)
   tzinfo (~> 2.0)
   tzinfo-data
   wdm (~> 0.1.1)
