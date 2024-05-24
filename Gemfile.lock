@@ -29,6 +29,7 @@ GEM
     addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
     ast (2.4.2)
+    bigdecimal (3.1.8)
     colorator (1.1.0)
     concurrent-ruby (1.2.3)
     crass (1.0.6)
@@ -44,7 +45,8 @@ GEM
       net-http
     ffi (1.16.3)
     forwardable-extended (2.6.0)
-    google-protobuf (4.26.1)
+    google-protobuf (4.27.0)
+      bigdecimal
       rake (>= 13)
     http_parser.rb (0.8.0)
     i18n (1.14.5)
