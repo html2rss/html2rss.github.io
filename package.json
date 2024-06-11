@@ -5,9 +5,9 @@
     "lintfix": "stylelint --fix assets/**/*.scss"
   },
   "devDependencies": {
-    "stylelint": "15.10.1",
-    "stylelint-config-recess-order": "3.0.0",
-    "stylelint-config-recommended-scss": "5.0.2",
-    "stylelint-scss": "4.1.0"
+    "stylelint": "16.6.1",
+    "stylelint-config-recess-order": "5.0.1",
+    "stylelint-config-recommended-scss": "14.0.0",
+    "stylelint-scss": "6.3.1"
   }
 }
