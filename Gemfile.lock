@@ -126,7 +126,7 @@ GEM
     regexp_parser (2.9.2)
     reverse_markdown (2.1.1)
       nokogiri
-    rexml (3.2.9)
+    rexml (3.3.0)
       strscan
     rouge (4.2.1)
     rss (0.3.0)
