@@ -14,3 +14,7 @@ updates:
     interval: weekly
   allow:
     - dependency-type: direct
+  groups:
+    all:
+      patterns:
+        - "*"
