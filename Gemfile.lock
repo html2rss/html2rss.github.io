@@ -111,7 +111,7 @@ GEM
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     parallel (1.25.1)
-    parser (3.3.2.0)
+    parser (3.3.3.0)
       ast (~> 2.4.1)
       racc
     pathutil (0.16.2)
@@ -149,7 +149,7 @@ GEM
     sanitize (6.1.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    sass-embedded (1.77.4)
+    sass-embedded (1.77.5)
       google-protobuf (>= 3.25, < 5.0)
       rake (>= 13)
     strscan (3.1.0)
