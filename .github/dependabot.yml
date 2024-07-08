@@ -8,6 +8,10 @@ updates:
   allow:
     - dependency-type: direct
     - dependency-type: indirect
+  groups:
+    ruby:
+      patterns:
+        - "*"
 - package-ecosystem: 'npm'
   directory: "/"
   schedule:
@@ -15,6 +19,6 @@ updates:
   allow:
     - dependency-type: direct
   groups:
-    all:
+    npm:
       patterns:
         - "*"
