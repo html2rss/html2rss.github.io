@@ -16,6 +16,8 @@ description: |
 github_username: "html2rss"
 
 theme: just-the-docs
+color_scheme: dark
+
 logo: assets/images/logo.png
 
 aux_links:
