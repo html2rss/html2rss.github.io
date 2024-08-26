@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: 27f9f9adcd0a85310f5dfe1a61ed2f96b6638697
+  revision: 560c66c8fb08abdc2e485a9576b8b414480b377d
   specs:
     html2rss-configs (0.2.0)
       html2rss
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: 278c9511e23f673a28c195d2d0422596368695b5
+  revision: d4b8b566d9e443d1a8605d3f4d3da4965758f5b2
   specs:
     html2rss (0.13.0)
       addressable (~> 2.7)
@@ -111,7 +111,7 @@ GEM
     mercenary (0.4.0)
     mime-types (3.5.2)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2024.0806)
+    mime-types-data (3.2024.0820)
     net-http (0.4.1)
       uri
     nokogiri (1.16.7-arm64-darwin)
