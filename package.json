@@ -6,9 +6,9 @@
   },
   "devDependencies": {
     "stylelint": "16.8.2",
-    "stylelint-config-recess-order": "5.0.1",
+    "stylelint-config-recess-order": "5.1.0",
     "stylelint-config-recommended-scss": "14.1.0",
-    "stylelint-scss": "6.5.0"
+    "stylelint-scss": "6.5.1"
   },
   "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }
