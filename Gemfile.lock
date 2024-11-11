@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: adac4c3f99c4b322ce918ef7f6bb3d19727b36e5
+  revision: 4206a013d1afe66373c3c1b0a4cc7984b06b2e67
   specs:
     html2rss (0.15.0)
       addressable (~> 2.7)
@@ -93,7 +93,7 @@ GEM
       nokogiri (~> 1.10)
     jekyll-watch (2.2.1)
       listen (~> 3.0)
-    json (2.7.5)
+    json (2.8.1)
     just-the-docs (0.10.0)
       jekyll (>= 3.8.5)
       jekyll-include-cache
@@ -113,15 +113,15 @@ GEM
     mime-types (3.6.0)
       logger
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2024.1001)
-    net-http (0.4.1)
+    mime-types-data (3.2024.1105)
+    net-http (0.5.0)
       uri
     nokogiri (1.16.7-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
     parallel (1.26.3)
-    parser (3.3.5.1)
+    parser (3.3.6.0)
       ast (~> 2.4.1)
       racc
     pathutil (0.16.2)
@@ -137,7 +137,7 @@ GEM
     reverse_markdown (2.1.1)
       nokogiri
     rexml (3.3.9)
-    rouge (4.4.0)
+    rouge (4.5.0)
     rss (0.3.1)
       rexml
     rubocop (1.68.0)
@@ -150,7 +150,7 @@ GEM
       rubocop-ast (>= 1.32.2, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.33.1)
+    rubocop-ast (1.34.1)
       parser (>= 3.3.1.0)
     ruby-progressbar (1.13.0)
     safe_yaml (1.0.5)
@@ -167,7 +167,7 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
-    uri (0.13.1)
+    uri (1.0.1)
     webrick (1.9.0)
     zeitwerk (2.7.1)
 
