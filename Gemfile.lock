@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: f63f74f8805177d0237a04f64235785906fa54ba
+  revision: 905ca2a7da7d5cbf63d5265f8b70c64563957252
   specs:
     html2rss-configs (0.2.0)
       html2rss
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: 4206a013d1afe66373c3c1b0a4cc7984b06b2e67
+  revision: c686d733f1f56b0aad7c9817d33c97327490c094
   specs:
     html2rss (0.15.0)
       addressable (~> 2.7)
@@ -99,8 +99,8 @@ GEM
       jekyll-include-cache
       jekyll-seo-tag (>= 2.0)
       rake (>= 12.3.1)
-    kramdown (2.4.0)
-      rexml
+    kramdown (2.5.1)
+      rexml (>= 3.3.9)
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
     language_server-protocol (3.17.0.3)
