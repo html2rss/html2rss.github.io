@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: 09dfa93d87e703bbee3f928cb7744b0ba365a52e
+  revision: 19957e05b8859c7c7680a9319a90c560661cf439
   specs:
     html2rss (0.17.0)
       addressable (~> 2.7)
@@ -135,7 +135,7 @@ GEM
       nokogiri (~> 1.10)
     jekyll-watch (2.2.1)
       listen (~> 3.0)
-    json (2.9.1)
+    json (2.10.1)
     just-the-docs (0.10.1)
       jekyll (>= 3.8.5)
       jekyll-include-cache
@@ -146,11 +146,12 @@ GEM
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
     language_server-protocol (3.17.0.4)
+    lint_roller (1.1.0)
     liquid (4.0.4)
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    logger (1.6.5)
+    logger (1.6.6)
     mercenary (0.4.0)
     mime-types (3.6.0)
       logger
@@ -182,13 +183,14 @@ GEM
     regexp_parser (2.10.0)
     reverse_markdown (3.0.0)
       nokogiri
-    rexml (3.4.0)
+    rexml (3.4.1)
     rouge (4.5.1)
     rss (0.3.1)
       rexml
-    rubocop (1.71.2)
+    rubocop (1.72.1)
       json (~> 2.3)
-      language_server-protocol (>= 3.17.0)
+      language_server-protocol (~> 3.17.0.2)
+      lint_roller (~> 1.1.0)
       parallel (~> 1.10)
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
@@ -203,9 +205,9 @@ GEM
     sanitize (7.0.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.16.8)
-    sass-embedded (1.83.4-arm64-darwin)
+    sass-embedded (1.85.0-arm64-darwin)
       google-protobuf (~> 4.29)
-    sass-embedded (1.83.4-x86_64-linux-gnu)
+    sass-embedded (1.85.0-x86_64-linux-gnu)
       google-protobuf (~> 4.29)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
@@ -234,7 +236,7 @@ DEPENDENCIES
   jekyll-sitemap
   jekyll-target-blank
   just-the-docs
-  rubocop (~> 1.71)
+  rubocop (~> 1.72)
   tzinfo (~> 2.0)
   tzinfo-data
   wdm (~> 0.1.1)
