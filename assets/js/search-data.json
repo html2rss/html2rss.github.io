@@ -1,0 +1,86 @@
+{"0": {
+    "doc": "Contributing",
+    "title": "Create a feed config",
+    "content": "Are you missing an RSS for a site? Create your config and add make it available in the ecosystem. It’s easy, just have a look and try it out! . ",
+    "url": "/contributing#create-a-feed-config",
+    
+    "relUrl": "/contributing#create-a-feed-config"
+  },"1": {
+    "doc": "Contributing",
+    "title": "Improve this website",
+    "content": "This website is build with Jekyll and Github Actions. Find the source code here. ",
+    "url": "/contributing#improve-this-website",
+    
+    "relUrl": "/contributing#improve-this-website"
+  },"2": {
+    "doc": "Contributing",
+    "title": "Host your own public instance",
+    "content": "The html2rss-web project is a rolling release web application which comes with the latest html2rss-configs build in. Setup and maintain your instance. Do not forget to add your instance to the instances list in the wiki so that others can start using it. ",
+    "url": "/contributing#host-your-own-public-instance",
+    
+    "relUrl": "/contributing#host-your-own-public-instance"
+  },"3": {
+    "doc": "Contributing",
+    "title": "Improve the html2rss gem",
+    "content": "Are you missing a feature in the html2rss gem? Did you find a bug? Head to the repository on Github and start working on it. ",
+    "url": "/contributing#improve-the-html2rss-gem",
+    
+    "relUrl": "/contributing#improve-the-html2rss-gem"
+  },"4": {
+    "doc": "Contributing",
+    "title": "Contributing",
+    "content": "There are many ways to contribute. Contributions are very welcome! . ",
+    "url": "/contributing",
+    
+    "relUrl": "/contributing"
+  },"5": {
+    "doc": "html2rss-configs",
+    "title": "html2rss-configs",
+    "content": "html2rss-configs is a a growing repository of html2rss feed configs. The html2rss-config repository contains feed configs. Each feed config contains the instructions for the html2rss gem on how to build the RSS feed. Thus, to create a config, you need write CSS selectors and express them in YAML. The feed config must reside in a folder named after the fully qualified domain name of the website. The repository has its own test suite. It automatically tests each config and requires them to adhere to the conventions. A generator scaffolds a feed config and a test for that config. It gets you started in a breeze and let’s you focus on writing the selectors. See the project on Github . ",
+    "url": "/components/html2rss-configs",
+    
+    "relUrl": "/components/html2rss-configs"
+  },"6": {
+    "doc": "html2rss-web",
+    "title": "html2rss-web",
+    "content": "html2rss-web app is a small application which serves RSS feeds via HTTP. html2rss-web builds and serves RSS feeds via HTTP. It’s a small application which serves feeds via HTTP. It uses the feed configs from html2rss-configs and expose the html2rss generated feeds via HTTP. Generate your own feeds, or start instantly with the included configs. | It’s deployable without much hassle (also via Docker). | It has a file-based application cache to prevent hammering websites | It handles with client-side HTTP cache headers. | . Everyone can host their own html2rss-web instance. There are [public instances](https://github.com/html2rss/html2rss-web/wiki/Instances) for those who can't. See the project on Github . ",
+    "url": "/components/html2rss-web",
+    
+    "relUrl": "/components/html2rss-web"
+  },"7": {
+    "doc": "html2rss gem",
+    "title": "html2rss gem",
+    "content": "html2rss build RSS 2.0 feeds from websites (and JSON APIs) with a few CSS selectors. The html2rss gem generates a Ruby RSS object from a feed config. It does so by scraping and extracting the website. Scraping involves a tad more than just selecting an HTML element’s text contents. | You want to sanitize HTML. | You might find useful information in a data attribute in the page’s source. | You need to convert relative URLs to absolute ones. | You want to parse dates &amp; times in the publishers’ time zone. | Maybe the website is a JSON API and you want that response converted to a RSS feed? | You might need to send requests with Authorization or Cookie HTTP headers. | You want to scrape several syntactically equal pages on one website without duplicating the configs. | You want to create a custom item description from other attributes. | . The documentation covers everything the gem is capable of. If you want to dive deeper, read the gem’s README or check the YARD Docs. The gem’s code is automatically tested. There’s also code documentation for the API, usually with examples. However, looking inside the test suite to find to find more complex examples is recommended. See the project on Github . ",
+    "url": "/components/html2rss",
+    
+    "relUrl": "/components/html2rss"
+  },"8": {
+    "doc": "All feeds",
+    "title": "All feeds",
+    "content": "This site needs JavaScript to link to the feed URL! Instance URL Find publicly available instances in the wiki or host your own. adfc.de/pressemitteilungen RSS URL to scrape https://www.adfc.de/presse/pressemitteilungen/Time zone Europe/BerlinLanguage de Show RSS Copy URL View on Github apnews.com/hub URL to scrape https://apnews.com/%&lt;section&gt;sTime zone UTCLanguage en This config requires parameters to work. View the config to find out which values are possible. apnews.com/hub.rss?section=String& . avherald.com/index RSS URL to scrape https://avherald.com/Time zone UTCLanguage en Show RSS Copy URL View on Github bbc.co.uk/available_episodes URL to scrape https://www.bbc.co.uk/programmes/%&lt;id&gt;s/episodes/playerTime zone UTC This config requires parameters to work. View the config to find out which values are possible. bbc.co.uk/available_episodes.rss?id=String& . bbc.com/mundo RSS URL to scrape https://www.bbc.com/mundoTime zone UTCLanguage es Show RSS Copy URL View on Github bbc.com/news_stories RSS URL to scrape https://bbc.com/news/storiesTime zone Europe/LondonLanguage en Show RSS Copy URL View on Github canarianweekly.com/front RSS URL to scrape https://www.canarianweekly.com/Time zone Europe/LondonLanguage en Show RSS Copy URL View on Github cinemascore.com/index RSS URL to scrape https://webapp.cinemascore.com/guest/surveysTime zone America/Los_Angeles Show RSS Copy URL View on Github cleanenergywire.org/news RSS URL to scrape https://www.cleanenergywire.org/news-archiveTime zone Europe/Berlin Show RSS Copy URL View on Github cnet.com/section_sub URL to scrape https://www.cnet.com/%&lt;section&gt;s/%&lt;sub&gt;s/Time zone UTCLanguage en This config requires parameters to work. View the config to find out which values are possible. cnet.com/section_sub.rss?section=String&sub=String& . computerbase.de/meistgelesen RSS URL to scrape https://www.computerbase.deTime zone Europe/BerlinLanguage de Show RSS Copy URL View on Github cutle.fish/index RSS URL to scrape https://cutle.fish/Time zone UTC Show RSS Copy URL View on Github deraktionaer.de/meistgelesen RSS URL to scrape https://deraktionaer.de/Time zone Europe/BerlinLanguage de Show RSS Copy URL View on Github developer.apple.com/tutorials_data_documentation_technotes_json RSS URL to scrape https://developer.apple.com/tutorials/data/documentation/Technotes.jsonTime zone UTC Show RSS Copy URL View on Github dfs.de/pressemitteilungen RSS URL to scrape https://www.dfs.de/homepage/de/medien/presse/Time zone Europe/BerlinLanguage de Show RSS Copy URL View on Github dsw-info.de/presse RSS URL to scrape https://www.dsw-info.de/presseTime zone Europe/BerlinLanguage de Show RSS Copy URL View on Github espn.com/f1 RSS URL to scrape https://www.espn.com/f1/Time zone UTC Show RSS Copy URL View on Github fia.com/documents RSS URL to scrape https://www.fia.com/documents/championships/fia-formula-one-world-championship-14/season/season-2024-2043Time zone UTC Show RSS Copy URL View on Github formula1.com/latest RSS URL to scrape https://www.formula1.com/en/latest/all.htmlTime zone UTC Show RSS Copy URL View on Github github.com/releases URL to scrape https://github.com/%&lt;username&gt;s/%&lt;repository&gt;s/releasesTime zone UTC This config requires parameters to work. View the config to find out which values are possible. github.com/releases.rss?username=String&repository=String& . iaapa.org/news RSS URL to scrape https://www.iaapa.org/newsTime zone UTC Show RSS Copy URL View on Github ifo.de/newsroom RSS URL to scrape https://www.ifo.de/get-template/pressemitteilungen/false/deTime zone Europe/BerlinLanguage de Show RSS Copy URL View on Github imdb.com/ratings URL to scrape https://www.imdb.com/user/%&lt;user_id&gt;s/ratingsTime zone UTC This config requires parameters to work. View the config to find out which values are possible. imdb.com/ratings.rss?user_id=String& . ingenieur.de/karriere_arbeitsleben_heiko_mell RSS URL to scrape https://www.ingenieur.de/karriere/arbeitsleben/heiko-mell/Time zone UTCLanguage de-DE Show RSS Copy URL View on Github kinocheck.de/filmstarts RSS URL to scrape https://kinocheck.de/filmstartsTime zone Europe/BerlinLanguage de Show RSS Copy URL View on Github metacritic.com/movies_release_date RSS URL to scrape https://www.metacritic.com/browse/movies/release-date/theaters/dateTime zone America/Los_Angeles Show RSS Copy URL View on Github newyorker.com/magazine RSS URL to scrape https://www.newyorker.com/magazineTime zone UTCLanguage en Show RSS Copy URL View on Github nomanssky.com/news RSS URL to scrape https://www.nomanssky.com/news/Time zone UTCLanguage en-GB Show RSS Copy URL View on Github pankow.lebensmittel-kontrollergebnisse.de/search RSS URL to scrape https://pankow.lebensmittel-kontrollergebnisse.de/SearchTime zone Europe/BerlinLanguage de Show RSS Copy URL View on Github philomag.de/index RSS URL to scrape https://www.philomag.de/Time zone Europe/BerlinLanguage de Show RSS Copy URL View on Github phys.org/weekly RSS URL to scrape https://phys.org/weekly-news/Time zone Europe/London Show RSS Copy URL View on Github pinboard.in/user URL to scrape https://pinboard.in/u:%&lt;username&gt;s?per_page=160Time zone UTCLanguage en This config requires parameters to work. View the config to find out which values are possible. pinboard.in/user.rss?username=String& . rbb24.de/meistgeklickt RSS URL to scrape https://rbb24.de/Time zone Europe/BerlinLanguage de Show RSS Copy URL View on Github rnd.de/themen URL to scrape https://www.rnd.de/themen/%&lt;thema&gt;s/Time zone Europe/BerlinLanguage de This config requires parameters to work. View the config to find out which values are possible. rnd.de/themen.rss?thema=String& . robinwood.de/aktuelles RSS URL to scrape https://www.robinwood.de/was-gibt-es-neues/aktuellesTime zone Europe/BerlinLanguage de Show RSS Copy URL View on Github s3.amazonaws.com/popular_movies RSS URL to scrape https://s3.amazonaws.com/popular-movies/movies.jsonTime zone UTC Show RSS Copy URL View on Github sebastianvettel.de/news RSS URL to scrape https://sebastianvettel.de/news/Time zone Europe/BerlinLanguage de-DE Show RSS Copy URL View on Github softwareleadweekly.com/issues RSS URL to scrape https://softwareleadweekly.com/issuesTime zone UTC Show RSS Copy URL View on Github solarthermalworld.org/news RSS URL to scrape https://solarthermalworld.org/newsTime zone UTC Show RSS Copy URL View on Github spektrum.de/meistgelesen RSS URL to scrape https://www.spektrum.de/Time zone Europe/BerlinLanguage de Show RSS Copy URL View on Github spiegel.de/impressum_autor URL to scrape https://www.spiegel.de/impressum/autor-%&lt;id&gt;sTime zone Europe/BerlinLanguage de This config requires parameters to work. View the config to find out which values are possible. spiegel.de/impressum_autor.rss?id=String& . stackoverflow.com/hot_network_questions RSS URL to scrape https://stackoverflow.com/questionsTime zone America/New_York Show RSS Copy URL View on Github steuerzahler.de/news RSS URL to scrape https://www.steuerzahler.de/newsTime zone Europe/BerlinLanguage de Show RSS Copy URL View on Github stripes.com/index RSS URL to scrape https://www.stripes.com/Time zone America/New_YorkLanguage en Show RSS Copy URL View on Github support.apple.com/en_gb_ht201222 RSS URL to scrape https://support.apple.com/en-gb/HT201222Time zone UTCLanguage en Show RSS Copy URL View on Github support.apple.com/exchange_repair RSS URL to scrape https://support.apple.com/exchange_repairTime zone America/Los_Angeles Show RSS Copy URL View on Github teneriffa-news.com/news RSS URL to scrape https://www.teneriffa-news.com/newsTime zone Europe/LisbonLanguage de Show RSS Copy URL View on Github test.de/archiv RSS URL to scrape https://www.test.de/archiv/Time zone Europe/BerlinLanguage de Show RSS Copy URL View on Github theguardian.com/international_mostpopular RSS URL to scrape https://www.theguardian.com/internationalTime zone Europe/London Show RSS Copy URL View on Github thoughtworks.com/insights RSS URL to scrape https://www.thoughtworks.com/insightsTime zone UTCLanguage en Show RSS Copy URL View on Github tourismusnetzwerk-brandenburg.de/aktuelle_nachrichten RSS URL to scrape https://www.tourismusnetzwerk-brandenburg.de/nc/aktuelle-nachrichten/Time zone Europe/BerlinLanguage de Show RSS Copy URL View on Github webentwickler-jobs.de/in URL to scrape https://www.webentwickler-jobs.de/in/%&lt;region&gt;sTime zone Europe/BerlinLanguage de This config requires parameters to work. View the config to find out which values are possible. webentwickler-jobs.de/in.rss?region=String& . ",
+    "url": "/configs/",
+    
+    "relUrl": "/configs/"
+  },"9": {
+    "doc": "html2rss - Home",
+    "title": "html2rss builds RSS feeds from websites which do not have one.",
+    "content": "Start using RSS feeds right away or find out what html2rss has to offer. View the feeds How it works . html2rss is a ecosystem of components with the goals to: . | generate RSS feeds by scraping websites (and JSON APIs). | make it easy to build and use a feed config. | have multiple decentralized and always up to date instances. | . Read more about the involved components. ",
+    "url": "/",
+    
+    "relUrl": "/"
+  },"10": {
+    "doc": "html2rss - Home",
+    "title": "html2rss - Home",
+    "content": " ",
+    "url": "/",
+    
+    "relUrl": "/"
+  },"11": {
+    "doc": "Components",
+    "title": "Components",
+    "content": " ",
+    "url": "/components/",
+    
+    "relUrl": "/components/"
+  }
+}
