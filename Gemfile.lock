@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: 077f27c87c44454ef5411fd8d4d2054447ff26b7
+  revision: 6aadc0cf35c10642a4f15022e3ee9902360d3171
   specs:
     html2rss-configs (0.2.0)
       html2rss
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: 19957e05b8859c7c7680a9319a90c560661cf439
+  revision: a21ca4f131ff5cb77c1b4a89083913f4d4b28be3
   specs:
     html2rss (0.17.0)
       addressable (~> 2.7)
@@ -89,10 +89,10 @@ GEM
     ffi (1.17.1-arm64-darwin)
     ffi (1.17.1-x86_64-linux-gnu)
     forwardable-extended (2.6.0)
-    google-protobuf (4.30.0-arm64-darwin)
+    google-protobuf (4.30.1-arm64-darwin)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.30.0-x86_64-linux)
+    google-protobuf (4.30.1-x86_64-linux)
       bigdecimal
       rake (>= 13)
     http_parser.rb (0.8.0)
@@ -159,9 +159,9 @@ GEM
     mime-types-data (3.2025.0304)
     net-http (0.6.0)
       uri
-    nokogiri (1.18.3-arm64-darwin)
+    nokogiri (1.18.4-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.18.3-x86_64-linux-gnu)
+    nokogiri (1.18.4-x86_64-linux-gnu)
       racc (~> 1.4)
     parallel (1.26.3)
     parser (3.3.7.1)
@@ -187,7 +187,7 @@ GEM
     rouge (4.5.1)
     rss (0.3.1)
       rexml
-    rubocop (1.73.2)
+    rubocop (1.74.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -198,7 +198,7 @@ GEM
       rubocop-ast (>= 1.38.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.38.1)
+    rubocop-ast (1.39.0)
       parser (>= 3.3.1.0)
     ruby-progressbar (1.13.0)
     safe_yaml (1.0.5)
@@ -236,7 +236,7 @@ DEPENDENCIES
   jekyll-sitemap
   jekyll-target-blank
   just-the-docs
-  rubocop (~> 1.73)
+  rubocop (~> 1.74)
   tzinfo (~> 2.0)
   tzinfo-data
   wdm (~> 0.1.1)
