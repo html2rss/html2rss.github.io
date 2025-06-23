@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: 6aadc0cf35c10642a4f15022e3ee9902360d3171
+  revision: de1958d781d74f0e466b622471140577547f7f11
   specs:
     html2rss-configs (0.2.0)
       html2rss
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: f4e080c7de7e54ec83453192c434e6e40b5db7ea
+  revision: 9ed4ec489c8e19631a532804ec4541e22b12fd8f
   specs:
     html2rss (0.17.0)
       addressable (~> 2.7)
@@ -156,7 +156,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0610)
+    mime-types-data (3.2025.0617)
     net-http (0.6.0)
       uri
     nokogiri (1.18.8-arm64-darwin)
@@ -188,7 +188,7 @@ GEM
     rouge (4.5.2)
     rss (0.3.1)
       rexml
-    rubocop (1.76.1)
+    rubocop (1.77.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -196,7 +196,7 @@ GEM
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
-      rubocop-ast (>= 1.45.0, < 2.0)
+      rubocop-ast (>= 1.45.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.45.1)
@@ -238,7 +238,7 @@ DEPENDENCIES
   jekyll-sitemap
   jekyll-target-blank
   just-the-docs
-  rubocop (~> 1.76)
+  rubocop (~> 1.77)
   tzinfo (~> 2.0)
   tzinfo-data
   wdm (~> 0.1.1)
