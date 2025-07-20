@@ -1,25 +1,55 @@
+:root {
+  --color-text: inherit;
+  --color-accent: rgba(0, 128, 0, 0.5);
+  --color-accent-bg: rgba(0, 128, 0, 0.15);
+  --color-error: #f00;
+  --color-error-bg: #fff0f0;
+  --font-family-mono: monospace;
+  --font-size-base: 1rem;
+  --line-height-base: 1.5;
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --button-padding-y: 0.4em;
+  --button-padding-x: 0.75em;
+  --border-radius-sm: 0.25em;
+  --transition-border: border-color 0.2s linear;
+  --transition-shadow: box-shadow 0.2s ease-in-out;
+}
+
 #configs input {
   width: 100%;
-  font-family: monospace;
+  padding: var(--spacing-xs);
+  box-sizing: border-box;
+  line-height: var(--line-height-base);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  font-family: var(--font-family-mono);
   background-color: transparent;
   border: 0;
   border-radius: 0;
+  outline: none;
+  appearance: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .config__headline > span,
-.config__url.config__url {
+.config__url {
   hyphens: none;
   word-break: break-word;
+  overflow-wrap: break-word;
+  text-wrap: wrap;
 }
 
 .config__url em {
   padding-right: 0.125em;
   letter-spacing: -0.05em;
   opacity: 0.75;
+  font-style: italic;
 }
 
 .config__url .config__url-amp:last-child {
-  display: none;
+  display: none !important;
 }
 
 .js__copy-element {
@@ -29,27 +59,42 @@
   width: 0;
   height: 0;
   opacity: 0;
+  pointer-events: none;
+  user-select: text;
+}
 
-  &::selection {
-    background-color: transparent;
-  }
+.js__copy-element::selection {
+  background-color: transparent;
 }
 
 .noscript {
   font-weight: 600;
-  color: #f00;
+  color: var(--color-error);
+  background: var(--color-error-bg);
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-error);
 }
 
 button[data-bind-click="copy"] {
+  padding: var(--button-padding-y) var(--button-padding-x);
   border: 2px solid transparent;
-  transition: border-color 0.2s linear;
+  border-radius: var(--border-radius-sm);
+  background-color: #fff;
+  color: var(--color-text);
+  cursor: pointer;
+  font: inherit;
+  line-height: 1.2;
+  transition: var(--transition-border), var(--transition-shadow);
 }
 
-button[data-bind-click="copy"].copied {
-  &,
-  &:hover,
-  &:active {
-    border-color: rgba(0, 128, 0, 0.5);
-    box-shadow: inset 0 2px 4px rgba(0, 128, 0, 0.15);
-  }
+button[data-bind-click="copy"]:focus-visible {
+  outline: 2px dashed var(--color-accent);
+  outline-offset: 2px;
+}
+
+button[data-bind-click="copy"].copied,
+button[data-bind-click="copy"].copied:hover,
+button[data-bind-click="copy"].copied:active {
+  border-color: var(--color-accent);
+  box-shadow: inset 0 2px 4px var(--color-accent-bg);
 }
