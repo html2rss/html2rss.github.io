@@ -1,13 +1,22 @@
-default: setup clean fix serve
+default: setup clean lintfix serve
 
 setup:
 	yarn check || yarn
 	bundle check || bundle
 	make update
 
-fix:
-	prettier --write --no-semi "**/*.yml" "**/*.md" "**/*.scss" "assets/**/*.js"
-	yarn run stylelint --fix "assets/**/*.scss" || echo 'stylelint: found no scss files to lint'
+lint:
+	yarn lint
+	make lint-ruby
+
+lintfix:
+	yarn lintfix
+	make lintfix-ruby
+
+lint-ruby:
+	bundle exec rubocop
+
+lintfix-ruby:
 	bundle exec rubocop -a
 
 clean:

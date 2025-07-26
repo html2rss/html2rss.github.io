@@ -1,18 +1,75 @@
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <meta name="referrer" content="no-referrer" />
+<meta
+  name="description"
+  content="{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}"
+/>
 <meta
   name="robots"
   content="{% if page.noindex %}noindex, noarchive, follow{% else %}index, follow{% endif %}"
 />
+
+<meta
+  property="og:url"
+  content="{{ page.url | replace:'index.html','' | absolute_url }}"
+/>
+<meta
+  property="og:title"
+  content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}"
+/>
+<meta
+  property="og:description"
+  content="{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}"
+/>
+<meta property="og:site_name" content="{{ site.title }}" />
+<meta
+  property="og:image"
+  content="{{ '/assets/images/logo.png' | absolute_url }}"
+/>
+<meta property="og:type" content="website" />
+
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}" />
-<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16x16.png">
-<link rel="manifest" href="/assets/images/site.webmanifest">
-<link rel="mask-icon" href="/assets/images/safari-pinned-tab.svg" color="#111111">
-<link rel="shortcut icon" href="/assets/images/favicon.ico">
-<meta name="msapplication-TileColor" content="#111111">
-<meta name="msapplication-config" content="/assets/images/browserconfig.xml">
-<meta name="theme-color" content="#111111">
-<script data-goatcounter="https://html2rss.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<link
+  rel="apple-touch-icon"
+  sizes="180x180"
+  href="/assets/images/apple-touch-icon.png"
+/>
+<link
+  rel="icon"
+  type="image/png"
+  sizes="32x32"
+  href="/assets/images/favicon-32x32.png"
+/>
+<link
+  rel="icon"
+  type="image/png"
+  sizes="16x16"
+  href="/assets/images/favicon-16x16.png"
+/>
+<link rel="manifest" href="/assets/images/site.webmanifest" />
+<link
+  rel="mask-icon"
+  href="/assets/images/safari-pinned-tab.svg"
+  color="#111111"
+/>
+<link rel="shortcut icon" href="/assets/images/favicon.ico" />
+<meta name="msapplication-TileColor" content="#111111" />
+<meta name="msapplication-config" content="/assets/images/browserconfig.xml" />
+<meta name="theme-color" content="#111111" />
+<script
+  data-goatcounter="https://html2rss.goatcounter.com/count"
+  async
+  src="//gc.zgo.at/count.js"
+></script>
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+  <symbol id="copy-icon" viewBox="0 0 16 16">
+    <path
+      d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"
+    />
+    <path
+      d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zM9 2H7v.5a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V2z"
+    />
+  </symbol>
+</svg>

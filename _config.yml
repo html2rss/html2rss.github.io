@@ -24,10 +24,6 @@ aux_links:
   "GitHub":
     - "https://github.com/html2rss"
 
-header_pages:
-  - configs/index.html
-  - contributing.md
-
 # Footer "Edit this page on GitHub" link text
 gh_edit_link: true # show or hide edit this page link
 gh_edit_link_text: "Edit this page on GitHub."
