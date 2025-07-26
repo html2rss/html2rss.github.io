@@ -2,6 +2,9 @@
 layout: default
 title: Post Processors
 parent: Selectors
+grand_parent: Configuration
+nav_order: 2
+permalink: /ruby-gem/configuration/selectors/post-processors
 ---
 
 # Post Processors

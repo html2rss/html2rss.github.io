@@ -2,6 +2,9 @@
 layout: default
 title: Extractors
 parent: Selectors
+grand_parent: Configuration
+nav_order: 1
+permalink: /ruby-gem/configuration/selectors/extractors
 ---
 
 # Extractors

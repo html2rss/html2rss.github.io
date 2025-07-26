@@ -1,8 +1,10 @@
 ---
 layout: default
 title: Simple Blog List
+nav_order: 5
 parent: Examples
-nav_order: 1
+grand_parent: Ruby Gem
+permalink: /ruby-gem/examples/simple-blog-list
 ---
 
 # Example: Scraping a Simple Blog List

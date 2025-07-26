@@ -1,8 +1,10 @@
 ---
 layout: default
 title: Strategy
-nav_order: 2
+nav_order: 4
 parent: Configuration
+grand_parent: Ruby Gem
+permalink: /ruby-gem/configuration/strategy
 ---
 
 # `strategy`

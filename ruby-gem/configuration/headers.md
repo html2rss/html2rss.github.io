@@ -1,8 +1,10 @@
 ---
 layout: default
 title: Headers
-nav_order: 1
+nav_order: 3
 parent: Configuration
+grand_parent: Ruby Gem
+permalink: /ruby-gem/configuration/headers
 ---
 
 # `headers`
@@ -17,7 +19,7 @@ headers:
 
 You can also set headers for APIs that require authorization or custom headers.
 
-Dynamic parameters can be used in headers to pass values at runtime. See [Advanced Topics](/configuration/advanced-topics/) for more details.
+Dynamic parameters can be used in headers to pass values at runtime. See [Dynamic Parameters]({{ '/ruby-gem/examples/dynamic-parameters' | relative_url }}) for more details.
 
 ## Example Configuration
 

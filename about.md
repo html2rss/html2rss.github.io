@@ -41,4 +41,4 @@ The `html2rss` project is more than just a single tool. It's a collection of too
 
 `html2rss` is maintained by a dedicated group of volunteers and contributors from around the world. We are passionate about open source and committed to continuously improving the project.
 
-Want to join us? Check out our [Contributing Guide]({{ '/contributing/' | relative_url }})!
+Want to join us? Check out our [Contributing Guide]({{ '/contributing' | relative_url }})!

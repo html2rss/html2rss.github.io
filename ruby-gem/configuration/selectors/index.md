@@ -1,8 +1,11 @@
 ---
 layout: default
 title: Selectors
-nav_order: 5
+nav_order: 6
 parent: Configuration
+grand_parent: Ruby Gem
+has_children: true
+permalink: /ruby-gem/configuration/selectors
 ---
 
 # `selectors`
@@ -65,8 +68,8 @@ Each selector can have the following attributes:
 | Name           | Value                                                                                                   |
 | :------------- | :------------------------------------------------------------------------------------------------------ |
 | `selector`     | The CSS selector to select the element with the information.                                            |
-| `extractor`    | The name of the extractor to use. See [Extractors](/configuration/selectors/extractors/).               |
-| `post_process` | An array of post processors to apply. See [Post Processors](/configuration/selectors/post-processors/). |
+| `extractor`    | The name of the extractor to use. See [Extractors]({{ '/ruby-gem/configuration/selectors/extractors' | relative_url }}).               |
+| `post_process` | An array of post processors to apply. See [Post Processors]({{ '/ruby-gem/configuration/selectors/post-processors' | relative_url }}). |
 
 ---
 

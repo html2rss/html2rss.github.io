@@ -1,8 +1,10 @@
 ---
 layout: default
 title: Auto Source
-nav_order: 4
+nav_order: 1
 parent: Configuration
+grand_parent: Ruby Gem
+permalink: /ruby-gem/configuration/auto_source
 ---
 
 # `auto_source`

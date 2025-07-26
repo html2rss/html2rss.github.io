@@ -1,8 +1,9 @@
 ---
 layout: default
 title: Installation
-parent: Getting Started
-nav_order: 1
+nav_order: 2
+parent: Ruby Gem
+permalink: /ruby-gem/installation
 ---
 
 # Installation
@@ -63,10 +64,10 @@ To ensure html2rss is installed correctly, open your terminal and run:
 html2rss --version
 ```
 
-You should see the installed version number. If you encounter any issues, please refer to the [Troubleshooting Guide]({{ "/support/troubleshooting/" | relative_url }}).
+You should see the installed version number. If you encounter any issues, please refer to the [Troubleshooting Guide]({{ "/support/troubleshooting" | relative_url }}).
 
 ---
 
 ### Next Steps
 
-Now that html2rss is installed, let's create your [first RSS feed]({{ "/getting-started/your-first-feed/" | relative_url }})!
+Now that html2rss is installed, let's create your [first RSS feed]({{ '/ruby-gem/your-first-feed' | relative_url }})!

@@ -1,8 +1,10 @@
 ---
 layout: default
 title: Stylesheets
-nav_order: 3
+nav_order: 5
 parent: Configuration
+grand_parent: Ruby Gem
+permalink: /ruby-gem/configuration/stylesheets
 ---
 
 # `stylesheets`

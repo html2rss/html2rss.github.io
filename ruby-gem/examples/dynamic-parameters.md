@@ -1,8 +1,10 @@
 ---
 layout: default
-title: Dynamic Parameters in URLs and Headers
-nav_order: 9
+title: Dynamic Parameters
+nav_order: 3
 parent: Examples
+grand_parent: Ruby Gem
+permalink: /ruby-gem/examples/dynamic-parameters
 ---
 
 # Dynamic Parameters in URLs and Headers

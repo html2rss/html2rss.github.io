@@ -1,8 +1,10 @@
 ---
 layout: default
 title: Channel
-nav_order: 1
+nav_order: 2
 parent: Configuration
+grand_parent: Ruby Gem
+permalink: /ruby-gem/configuration/channel
 ---
 
 # `channel`

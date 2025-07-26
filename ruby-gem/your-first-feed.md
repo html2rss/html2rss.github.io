@@ -1,8 +1,9 @@
 ---
 layout: default
 title: Your First Feed
-nav_order: 1
-parent: Getting Started
+nav_order: 3
+parent: Ruby Gem
+permalink: /ruby-gem/your-first-feed
 ---
 
 # Your First Feed: A Step-by-Step Guide
@@ -62,4 +63,4 @@ This configuration tells `html2rss`:
 - The `title` of each item is the text of the `<a>` tag.
 - The `url` of each item is the `href` attribute of the `<a>` tag.
 
-This is just the beginning! From here, you can dive deep into the full range of [configuration options]({{ '/configuration/' | relative_url }}) to create the perfect feed.
+This is just the beginning! From here, you can dive deep into the full range of [configuration options]({{ '/ruby-gem/configuration' | relative_url }}) to create the perfect feed.

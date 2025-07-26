@@ -1,8 +1,10 @@
 ---
 layout: default
 title: Examples
-nav_order: 6
+nav_order: 5
+parent: Ruby Gem
 has_children: true
+permalink: /ruby-gem/examples
 ---
 
 # Examples: Practical `html2rss` Configurations
