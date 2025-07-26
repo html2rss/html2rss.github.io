@@ -65,10 +65,10 @@ The following selectors can be used to extract content for the RSS feed:
 
 Each selector can have the following attributes:
 
-| Name           | Value                                                                                                   |
-| :------------- | :------------------------------------------------------------------------------------------------------ |
-| `selector`     | The CSS selector to select the element with the information.                                            |
-| `extractor`    | The name of the extractor to use. See [Extractors]({{ '/ruby-gem/configuration/selectors/extractors' | relative_url }}).               |
+| Name           | Value                                                                                                              |
+| :------------- | :----------------------------------------------------------------------------------------------------------------- | ----------------- |
+| `selector`     | The CSS selector to select the element with the information.                                                       |
+| `extractor`    | The name of the extractor to use. See [Extractors]({{ '/ruby-gem/configuration/selectors/extractors'               | relative_url }}). |
 | `post_process` | An array of post processors to apply. See [Post Processors]({{ '/ruby-gem/configuration/selectors/post-processors' | relative_url }}). |
 
 ---

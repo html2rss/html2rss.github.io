@@ -1,59 +1,66 @@
-;(() => {
-  const instanceEl = document.querySelector('input[name="instance"]')
+const App = {
+  init() {
+    this.instanceEl = document.querySelector('input[name="instance"]');
+    if (!this.instanceEl) return;
 
-  function instanceUrl() {
-    const url = instanceEl.value
+    this.configsEl = document.querySelector("#configs");
+    this.bindEvents();
+    this.updateInstanceUrl();
+  },
 
-    return url.substr(-1) === "/" ? url : `${url}/`
-  }
+  bindEvents() {
+    this.configsEl.addEventListener("click", (event) => {
+      const { bindClick } = event.target.dataset;
+      if (bindClick === "show") {
+        this.handleShowClick(event);
+      } else if (bindClick === "copy") {
+        this.handleCopyClick(event);
+      }
+    });
 
-  function onChangeInstanceUrl() {
-    const url = instanceUrl()
+    this.instanceEl.addEventListener("blur", this.updateInstanceUrl.bind(this));
+  },
 
-    Array.from(document.querySelectorAll(".instance")).forEach((el) => {
-      el.innerText = url
-    })
-  }
+  getInstanceUrl() {
+    const url = this.instanceEl.value;
+    return url.endsWith("/") ? url : `${url}/`;
+  },
 
-  function onShowClick({ target }) {
-    target.href = [instanceUrl(), target.dataset.path].join("")
-    return false
-  }
+  updateInstanceUrl() {
+    const url = this.getInstanceUrl();
+    document.querySelectorAll(".instance").forEach((el) => {
+      if (el instanceof HTMLElement) {
+        el.innerText = url;
+      }
+    });
+  },
 
-  function onCopyClick({ target }) {
-    const href = [instanceUrl(), target.dataset.path].join("")
-    const el = document.createElement("span")
-    el.classList.add("js__copy-element")
-    el.innerText = href
+  handleShowClick(event) {
+    const { target } = event;
+    target.href = `${this.getInstanceUrl()}${target.dataset.path}`;
+  },
 
-    document.body.appendChild(el)
-    copyElementContents(el, target)
-    return false
-  }
+  async handleCopyClick(event) {
+    const { target } = event;
+    const href = `${this.getInstanceUrl()}${target.dataset.path}`;
 
-  function copyElementContents(el, triggerEl) {
-    el.focus()
-    window.getSelection().selectAllChildren(el)
-    document.execCommand("copy")
-
-    triggerEl.classList.add("copied")
-    window.setTimeout(() => {
-      el.blur()
-      el.remove()
-      triggerEl.classList.remove("copied")
-      triggerEl.blur()
-    }, 1000)
-  }
-
-  // init
-  document.querySelector("#configs").addEventListener("click", (event) => {
-    if (event.target.dataset.bindClick === "show") {
-      return onShowClick(event)
-    } else if (event.target.dataset.bindClick === "copy") {
-      return onCopyClick(event)
+    try {
+      await navigator.clipboard.writeText(href);
+      this.showCopiedState(target);
+    } catch (err) {
+      console.error("Failed to copy: ", err);
     }
-  })
+  },
 
-  instanceEl.addEventListener("blur", onChangeInstanceUrl)
-  onChangeInstanceUrl()
-})()
+  showCopiedState(triggerEl) {
+    triggerEl.classList.add("copied");
+    setTimeout(() => {
+      triggerEl.classList.remove("copied");
+      triggerEl.blur();
+    }, 1000);
+  },
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  App.init();
+});

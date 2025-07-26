@@ -16,9 +16,9 @@ Tired of missing updates from websites that don't offer RSS feeds? `html2rss` is
 
 `html2rss` is a suite of tools designed to help you create and manage RSS feeds.
 
-*   **[html2rss-web]({{ '/web-application' | relative_url }}):** A user-friendly web application that makes it easy to create, manage, and share RSS feeds. This is the recommended starting point for most users.
-*   **[html2rss (Ruby Gem)]({{ '/ruby-gem' | relative_url }}):** The core library that powers the web application. It provides a powerful and flexible command-line interface for creating custom RSS feeds.
-*   **[html2rss-configs](https://github.com/html2rss/html2rss-configs):** A community-driven repository of pre-built feed configurations for popular websites.
+- **[html2rss-web]({{ '/web-application' | relative_url }}):** A user-friendly web application that makes it easy to create, manage, and share RSS feeds. This is the recommended starting point for most users.
+- **[html2rss (Ruby Gem)]({{ '/ruby-gem' | relative_url }}):** The core library that powers the web application. It provides a powerful and flexible command-line interface for creating custom RSS feeds.
+- **[html2rss-configs](https://github.com/html2rss/html2rss-configs):** A community-driven repository of pre-built feed configurations for popular websites.
 
 ---
 

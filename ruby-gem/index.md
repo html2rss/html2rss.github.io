@@ -14,6 +14,6 @@ If you are looking for the easiest way to get started with `html2rss`, we recomm
 
 This documentation is for developers who want to:
 
-*   Use the `html2rss` gem directly from the command line.
-*   Integrate the `html2rss` gem into their own Ruby applications.
-*   Contribute to the development of `html2rss`.
+- Use the `html2rss` gem directly from the command line.
+- Integrate the `html2rss` gem into their own Ruby applications.
+- Contribute to the development of `html2rss`.
