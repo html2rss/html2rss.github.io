@@ -1,39 +1,29 @@
 ---
 layout: default
 title: About html2rss
-# nav_order: 2
+nav_order: 2
 ---
 
 # About html2rss
 
-`html2rss` is an open-source project dedicated to empowering users to take control of their web content consumption. In an age where many websites no longer offer traditional RSS feeds, `html2rss` bridges this gap by providing a robust and flexible solution for converting any HTML content into a structured RSS format.
+`html2rss` is an open-source project dedicated to empowering you to take control of your web content. In an age where traditional RSS feeds are often missing, `html2rss` provides a robust and flexible solution to convert almost any HTML content into a structured RSS format.
 
-The project was started in 2018 and has since grown into a suite of tools that help users create and consume RSS feeds.
+Started in 2018, the project has evolved into a comprehensive suite of tools designed to help you create and consume RSS feeds effortlessly.
 
 ---
 
-### Our Mission
+## Our Vision and Principles
 
 Our mission is to provide a simple, powerful, and accessible tool that enables individuals and developers to create custom RSS feeds from any web page. We believe in the power of open standards and the freedom to access information on your own terms.
 
----
+Our project is guided by these core principles:
 
-### The html2rss Ecosystem
+- **User Empowerment:** Giving you the tools to customize your web experience.
+- **Simplicity & Power:** Offering an easy-to-use interface with powerful underlying capabilities.
+- **Open Source:** Fostering a collaborative environment where the community can contribute and improve the project.
+- **Reliability:** Striving for a stable and dependable tool that consistently delivers.
 
-The `html2rss` project is more than just a single tool. It's a collection of tools that work together to provide a complete RSS solution:
-
-- **[`html2rss`](https://github.com/html2rss/html2rss):** The core Ruby gem that provides the main functionality for converting HTML to RSS.
-- **[`html2rss-web`](https://github.com/html2rss/html2rss-web):** A web application that allows you to create and manage your RSS feeds through a user-friendly interface.
-- **[`html2rss-configs`](https://github.com/html2rss/html2rss-configs):** A collection of pre-built feed configs for popular websites, so you can get started quickly.
-
----
-
-### Project Philosophy
-
-- **User Empowerment:** Give users the tools to customize their web experience.
-- **Simplicity & Power:** Offer an easy-to-use interface with powerful underlying capabilities.
-- **Open Source:** Foster a collaborative environment where the community can contribute and improve the project.
-- **Reliability:** Strive for a stable and dependable tool that consistently delivers.
+For insights into our ongoing development, project roadmap, and how you can get involved, please visit our [Get Involved]({{ '/get-involved' | relative_url }}) page.
 
 ---
 
