@@ -3,6 +3,7 @@ layout: default
 title: Your First Feed
 nav_order: 3
 parent: Tutorials
+grand_parent: Ruby Gem
 permalink: /ruby-gem/tutorials/your-first-feed
 ---
 

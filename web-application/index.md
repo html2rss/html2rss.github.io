@@ -8,7 +8,7 @@ permalink: /web-application
 
 # html2rss-web
 
-This web application scrapes websites to build and deliver RSS 2.0 feeds.
+This web application scrapes websites to build and deliver RSS 2.0 feeds. ([GitHub Repo](https://github.com/html2rss/html2rss-web))
 
 ## Features
 

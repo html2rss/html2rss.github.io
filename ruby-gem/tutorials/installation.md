@@ -3,6 +3,7 @@ layout: default
 title: Installation
 nav_order: 2
 parent: Tutorials
+grand_parent: Ruby Gem
 permalink: /ruby-gem/tutorials/installation
 ---
 

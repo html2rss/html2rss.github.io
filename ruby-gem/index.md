@@ -6,7 +6,7 @@ has_children: true
 permalink: /ruby-gem
 ---
 
-# The html2rss Ruby Gem
+# The html2rss Ruby Gem ([GitHub Repo](https://github.com/html2rss/html2rss))
 
 This section provides detailed documentation for the `html2rss` Ruby gem. The gem is the core library that powers the `html2rss-web` application.
 

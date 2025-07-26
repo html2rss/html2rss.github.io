@@ -87,35 +87,32 @@ noindex: true
         {%- endif -%}
       </div>
       <div class="card-body">
-        <details>
-          <summary>Details</summary>
-          <dl>
-            {%- if config.channel.url -%}
-            <dt>URL to scrape</dt>
-            <dd>
-              {%- if config.valid_channel_url -%}
-              <a
-                href="{{ config.channel.url }}"
-                class="config__url"
-                target="_blank"
-                rel="noopener noreferrer"
-                >{{ config.channel.url }}</a
-              >
-              {%- else -%}
-              <span class="config__url"
-                >{{ config.channel.url | xml_escape }}</span
-              >
-              {%- endif -%}
-            </dd>
-            {%- endif -%} {%- if config.channel.time_zone -%}
-            <dt>Time zone</dt>
-            <dd>{{ config.channel.time_zone }}</dd>
-            {%- endif -%} {%- if config.channel.language -%}
-            <dt>Language</dt>
-            <dd>{{ config.channel.language }}</dd>
+        <dl>
+          {%- if config.channel.url -%}
+          <dt>URL to scrape</dt>
+          <dd>
+            {%- if config.valid_channel_url -%}
+            <a
+              href="{{ config.channel.url }}"
+              class="config__url"
+              target="_blank"
+              rel="noopener noreferrer"
+              >{{ config.channel.url }}</a
+            >
+            {%- else -%}
+            <span class="config__url"
+              >{{ config.channel.url | xml_escape }}</span
+            >
             {%- endif -%}
-          </dl>
-        </details>
+          </dd>
+          {%- endif -%} {%- if config.channel.time_zone -%}
+          <dt>Time zone</dt>
+          <dd>{{ config.channel.time_zone }}</dd>
+          {%- endif -%} {%- if config.channel.language -%}
+          <dt>Language</dt>
+          <dd>{{ config.channel.language }}</dd>
+          {%- endif -%}
+        </dl>
 
         {%- if config.valid_channel_url -%}
         <div class="mt-4 d-flex-justify-content-between">

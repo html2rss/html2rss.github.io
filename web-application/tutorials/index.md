@@ -1,12 +1,12 @@
 ---
 layout: default
-title: Tutorials
+title: Getting Started
 nav_order: 1
 permalink: /web-application/tutorials
 parent: Web Application
 ---
 
-# Tutorials: Getting Started with html2rss-web
+# Getting Started with html2rss-web
 
 In this guide, you'll launch the `html2rss-web` application on your local machine. By the end, you'll have a running instance and your first live RSS feed.
 
