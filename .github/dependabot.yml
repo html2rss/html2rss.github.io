@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: bundler
-    directory: "/"
+    directory: '/'
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
@@ -11,9 +11,9 @@ updates:
     groups:
       ruby:
         patterns:
-          - "*"
-  - package-ecosystem: "npm"
-    directory: "/"
+          - '*'
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
       interval: weekly
     allow:
@@ -21,4 +21,4 @@ updates:
     groups:
       npm:
         patterns:
-          - "*"
+          - '*'
