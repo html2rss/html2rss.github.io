@@ -16,39 +16,9 @@
   --transition-shadow: box-shadow 0.2s ease-in-out;
 }
 
-#configs input {
-  box-sizing: border-box;
+#configs input[name="instance"],
+#configs input[name="search"] {
   width: 100%;
-  padding: var(--spacing-xs);
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-base);
-  color: var(--color-text);
-  appearance: none;
-  outline: none;
-  background-color: transparent;
-  border: 0;
-  border-radius: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.config__headline > span,
-.config__url {
-  hyphens: none;
-  text-wrap: wrap;
-  overflow-wrap: break-word;
-}
-
-.config__url em {
-  padding-right: 0.125em;
-  font-style: italic;
-  letter-spacing: -0.05em;
-  opacity: 0.75;
-}
-
-.config__url .config__url-amp:last-child {
-  display: none !important;
 }
 
 .js__copy-element {
@@ -80,7 +50,6 @@ button[data-bind-click="copy"] {
   line-height: 1.2;
   color: var(--color-text);
   cursor: pointer;
-  background-color: #fff;
   border: 2px solid transparent;
   border-radius: var(--border-radius-sm);
   transition: var(--transition-border), var(--transition-shadow);
@@ -96,4 +65,72 @@ button[data-bind-click="copy"].copied:hover,
 button[data-bind-click="copy"].copied:active {
   border-color: var(--color-accent);
   box-shadow: inset 0 2px 4px var(--color-accent-bg);
+}
+
+.card-deck {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 100%;
+}
+.card-header {
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0;
+  background-color: var(--table-background-color);
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+.badge {
+  position: absolute;
+  right: 0;
+  animation: 0;
+
+  display: inline-block;
+  padding: 0.2em 0.4em;
+  font-size: 75%;
+  border-radius: 0.25rem;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.btn-icon {
+  padding: 0.1rem 0.2rem;
+  font-size: 0.8rem;
+  line-height: 1;
+  border-radius: var(--border-radius);
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: var(--link-color);
+}
+
+.btn-icon svg {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  fill: currentColor;
+}
+
+.d-flex-justify-content-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+details {
+  transition: all 0.2s ease-in-out;
+}
+
+summary {
+  cursor: pointer;
+  outline: none;
+}
+
+summary:hover {
+  color: var(--link-color);
 }

@@ -1,0 +1,228 @@
+---
+layout: default
+title: Feed Directory
+nav_order: 2
+noindex: true
+---
+
+<div class="text-center">
+  <h1 class="fs-9">Welcome to the Feed Directory!</h1>
+  <p class="fs-5">
+    This directory contains a list of pre-built configurations to create RSS
+    feeds for various websites.
+  </p>
+</div>
+
+<div class="mt-6">
+  <h2 class="fs-6">What is an Instance URL?</h2>
+  <p>
+    An "Instance URL" is the address of a running `html2rss-web` application.
+    You can use a publicly available instance or, for a more decentralized and
+    robust web, you can host your own.
+  </p>
+  <p>
+    By hosting your own instance, you contribute to the resilience of the
+    html2rss ecosystem and help keep the web open and accessible to everyone.
+  </p>
+  <a
+    href="{{ '/web-application/guides/deployment' | relative_url }}"
+    class="btn btn-primary"
+  >
+    🚀 Host Your Own Instance
+  </a>
+  <p class="mt-2">
+    Or, find a publicly available instance on the
+    <a
+      href="https://github.com/html2rss/html2rss-web/wiki/Instances"
+      target="_blank"
+      >community-run wiki</a
+    >.
+  </p>
+</div>
+
+<hr class="my-6" />
+
+{%- assign ob = '{' -%} {%- assign cb = '}' -%}
+
+<noscript>
+  <span class="noscript">
+    This site needs JavaScript to link to the feed URL!
+  </span>
+</noscript>
+
+<div id="configs">
+  <fieldset class="mb-4 py-1 px-2">
+    <legend class="fs-5">Instance URL</legend>
+
+    <input
+      type="text"
+      name="instance"
+      value="https://1.h2r.workers.dev"
+      class="bg-grey-dk-100 p-2"
+    />
+  </fieldset>
+
+  <fieldset class="mb-4 py-1 px-2">
+    <legend class="fs-5">Search</legend>
+
+    <input
+      type="search"
+      name="search"
+      placeholder="e.g. heise"
+      class="bg-grey-dk-100 p-2"
+    />
+  </fieldset>
+
+  <div class="card-deck">
+    {% for config in site.data.configs %}
+    <div class="card mb-4">
+      <div class="card-header d-flex-justify-content-between">
+        <h3 class="card-title mb-0 text-mono fs-5">
+          {{ config.domain }}/{{ config.name }}
+        </h3>
+        {%- if config.valid_channel_url -%}
+        <span class="badge text-green-000">Ready to use</span>
+        {%- else -%}
+        <span class="badge text-yellow-000">Requires parameters</span>
+        {%- endif -%}
+      </div>
+      <div class="card-body">
+        <details>
+          <summary>Details</summary>
+          <dl>
+            {%- if config.channel.url -%}
+            <dt>URL to scrape</dt>
+            <dd>
+              {%- if config.valid_channel_url -%}
+              <a
+                href="{{ config.channel.url }}"
+                class="config__url"
+                target="_blank"
+                rel="noopener noreferrer"
+                >{{ config.channel.url }}</a
+              >
+              {%- else -%}
+              <span class="config__url"
+                >{{ config.channel.url | xml_escape }}</span
+              >
+              {%- endif -%}
+            </dd>
+            {%- endif -%} {%- if config.channel.time_zone -%}
+            <dt>Time zone</dt>
+            <dd>{{ config.channel.time_zone }}</dd>
+            {%- endif -%} {%- if config.channel.language -%}
+            <dt>Language</dt>
+            <dd>{{ config.channel.language }}</dd>
+            {%- endif -%}
+          </dl>
+        </details>
+
+        {%- if config.valid_channel_url -%}
+        <div class="mt-4 d-flex-justify-content-between">
+          <a
+            href="#"
+            data-bind-click="show"
+            data-path="{{ config.domain }}/{{ config.name }}.rss"
+            class="btn btn-primary"
+            rel="noopener noreferrer"
+            >Show RSS</a
+          >
+          <button
+            data-bind-click="copy"
+            data-path="{{ config.domain }}/{{ config.name }}.rss"
+            class="btn btn-icon"
+            rel="noopener noreferrer"
+            title="Copy URL"
+          >
+            <svg><use xlink:href="#copy-icon"></use></svg>
+          </button>
+          <a
+            href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/{{ config.domain }}/{{ config.name }}.yml"
+            class="btn"
+            target="_blank"
+          >
+            View YAML
+          </a>
+        </div>
+        {%- else -%}
+        <div class="mt-4" data-dynamic-form>
+          <form>
+            {% for param in config.url_parameters %}
+            <div class="form-group">
+              <label for="{{ config.domain }}-{{ config.name }}-{{ param[0] }}"
+                >{{ param[0] }}</label
+              >
+              <input
+                type="text"
+                id="{{ config.domain }}-{{ config.name }}-{{ param[0] }}"
+                name="{{ param[0] }}"
+                class="form-control"
+                placeholder="{{ param[1] }}"
+                data-param
+              />
+            </div>
+            {% endfor %}
+          </form>
+          <div class="mt-2 d-flex-justify-content-between">
+            <a
+              href="#"
+              data-bind-click="show"
+              data-path-template="{{ config.domain }}/{{ config.name }}.rss?{% for param in config.url_parameters %}{{ param[0] }}={{ ob }}{{ param[0] }}{{ cb }}&{% endfor %}"
+              class="btn btn-primary"
+              rel="noopener noreferrer"
+              >Show RSS</a
+            >
+            <button
+              data-bind-click="copy"
+              data-path-template="{{ config.domain }}/{{ config.name }}.rss?{% for param in config.url_parameters %}{{ param[0] }}={{ ob }}{{ param[0] }}{{ cb }}&{% endfor %}"
+              class="btn btn-icon"
+              rel="noopener noreferrer"
+              title="Copy URL"
+            >
+              <svg><use xlink:href="#copy-icon"></use></svg>
+            </button>
+            <a
+              href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/{{ config.domain }}/{{ config.name }}.yml"
+              class="btn"
+              target="_blank"
+            >
+              View YAML
+            </a>
+          </div>
+          <div class="mt-2">
+            <code class="d-block w-100 p-2 bg-grey-dk-300 text-grey-dk-000">
+              <span class="instance"></span
+              ><span data-path-preview
+                >{{ config.domain }}/{{ config.name }}.rss?{% for param in
+                config.url_parameters %}{{ param[0] }}={{ ob }}{{ param[1] }}{{
+                cb }}&{% endfor %}</span
+              >
+            </code>
+          </div>
+        </div>
+        {%- endif -%}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<hr class="my-6" />
+
+<div class="text-center">
+  <h2 class="fs-6">Contribute to the Directory</h2>
+  <p class="fs-5">
+    The feed configurations in this directory are community-driven. If you've
+    created a new feed configuration, we encourage you to share it with the
+    community.
+  </p>
+  <a
+    href="https://github.com/html2rss/html2rss-configs"
+    class="btn btn-primary"
+    target="_blank"
+  >
+    Contribute on GitHub
+  </a>
+</div>
+
+<script src="/assets/js/feed-directory/index.js" async defer></script>
