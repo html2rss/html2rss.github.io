@@ -50,14 +50,20 @@ noindex: true
   </span>
 </noscript>
 
-<div id="configs">
+<script>
+  // Define global data for Alpine.js to consume, processed by Jekyll
+  // The `site.data.configs` is already JSONified by Jekyll, so we just need to assign it.
+  window.feedDirectoryData = {{ site.data.configs | jsonify }};
+</script>
+
+<div id="configs" x-data="feedDirectory()">
   <fieldset class="mb-4 py-1 px-2">
     <legend class="fs-5">Instance URL</legend>
 
     <input
       type="text"
       name="instance"
-      value="https://1.h2r.workers.dev"
+      x-model="instanceUrl"
       class="bg-grey-dk-100 p-2"
     />
   </fieldset>
@@ -69,13 +75,17 @@ noindex: true
       type="search"
       name="search"
       placeholder="e.g. heise"
+      x-model="searchQuery"
       class="bg-grey-dk-100 p-2"
     />
   </fieldset>
 
   <div class="card-deck">
     {% for config in site.data.configs %}
-    <div class="card mb-4">
+    <div
+      class="card mb-4"
+      x-show="filterConfig('{{ config.domain }}/{{ config.name }}')"
+    >
       <div class="card-header d-flex-justify-content-between">
         <h3 class="card-title mb-0 text-mono fs-5">
           {{ config.domain }}/{{ config.name }}
@@ -118,15 +128,14 @@ noindex: true
         <div class="mt-4 d-flex-justify-content-between">
           <a
             href="#"
-            data-bind-click="show"
-            data-path="{{ config.domain }}/{{ config.name }}.rss"
+            x-bind:href="getFeedUrl(JSON.parse('{{ config | jsonify | escape }}'))"
             class="btn btn-primary"
             rel="noopener noreferrer"
+            target="_blank"
             >Show RSS</a
           >
           <button
-            data-bind-click="copy"
-            data-path="{{ config.domain }}/{{ config.name }}.rss"
+            x-on:click.prevent="copyUrl(JSON.parse('{{ config | jsonify | escape }}'), {}, $event)"
             class="btn btn-icon"
             rel="noopener noreferrer"
             title="Copy URL"
@@ -142,7 +151,40 @@ noindex: true
           </a>
         </div>
         {%- else -%}
-        <div class="mt-4" data-dynamic-form>
+        <div
+          class="mt-4"
+          x-data="{ params: {}, pathPreview: '' }"
+          x-init="
+          const currentConfig = JSON.parse('{{ config | jsonify | escape }}');
+          console.log('{{ config | jsonify | escape }}');
+          $watch('params', () => {
+            let template = `${currentConfig.domain}/${currentConfig.name}.rss?`;
+            let previewTemplate = template;
+            if (Array.isArray(currentConfig.url_parameters)) {
+              currentConfig.url_parameters.forEach(param => {
+                const key = param[0];
+                const value = params[key];
+                template += `${key}=${encodeURIComponent(value || '')}&`;
+                previewTemplate += `${key}=${value || `{${param[1]}}`}&`;
+              });
+              template = template.slice(0, -1); // Remove trailing '&'
+              previewTemplate = previewTemplate.slice(0, -1); // Remove trailing '&'
+            }
+            pathPreview = previewTemplate;
+            $refs.showBtn.href = getFeedUrl(currentConfig, params);
+            $refs.copyBtn.dataset.url = getFeedUrl(currentConfig, params);
+          });
+          $nextTick(() => {
+            let initialParams = {};
+            if (Array.isArray(currentConfig.url_parameters)) {
+              currentConfig.url_parameters.forEach(param => {
+                initialParams[param[0]] = '';
+              });
+            }
+            params = initialParams;
+          });
+        "
+        >
           <form>
             {% for param in config.url_parameters %}
             <div class="form-group">
@@ -155,7 +197,7 @@ noindex: true
                 name="{{ param[0] }}"
                 class="form-control"
                 placeholder="{{ param[1] }}"
-                data-param
+                x-model="params.{{ param[0] }}"
               />
             </div>
             {% endfor %}
@@ -163,18 +205,19 @@ noindex: true
           <div class="mt-2 d-flex-justify-content-between">
             <a
               href="#"
-              data-bind-click="show"
-              data-path-template="{{ config.domain }}/{{ config.name }}.rss?{% for param in config.url_parameters %}{{ param[0] }}={{ ob }}{{ param[0] }}{{ cb }}&{% endfor %}"
+              x-bind:href="getFeedUrl(JSON.parse('{{ config | jsonify | escape }}'), params)"
               class="btn btn-primary"
               rel="noopener noreferrer"
+              target="_blank"
+              x-ref="showBtn"
               >Show RSS</a
             >
             <button
-              data-bind-click="copy"
-              data-path-template="{{ config.domain }}/{{ config.name }}.rss?{% for param in config.url_parameters %}{{ param[0] }}={{ ob }}{{ param[0] }}{{ cb }}&{% endfor %}"
+              x-on:click.prevent="copyUrl(JSON.parse('{{ config | jsonify | escape }}'), params, $event)"
               class="btn btn-icon"
               rel="noopener noreferrer"
               title="Copy URL"
+              x-ref="copyBtn"
             >
               <svg><use xlink:href="#copy-icon"></use></svg>
             </button>
@@ -188,12 +231,11 @@ noindex: true
           </div>
           <div class="mt-2">
             <code class="d-block w-100 p-2 bg-grey-dk-300 text-grey-dk-000">
-              <span class="instance"></span
-              ><span data-path-preview
-                >{{ config.domain }}/{{ config.name }}.rss?{% for param in
-                config.url_parameters %}{{ param[0] }}={{ ob }}{{ param[1] }}{{
-                cb }}&{% endfor %}</span
-              >
+              <span
+                class="instance"
+                x-text="instanceUrl.endsWith('/') ? instanceUrl : instanceUrl + '/'"
+              ></span
+              ><span x-text="pathPreview"></span>
             </code>
           </div>
         </div>
@@ -222,4 +264,11 @@ noindex: true
   </a>
 </div>
 
-<script src="/assets/js/feed-directory/index.js" async defer></script>
+<script
+  src="{{ '/assets/js/feed-directory/index.js' | relative_url }}"
+  defer
+></script>
+<script
+  defer
+  src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"
+></script>
