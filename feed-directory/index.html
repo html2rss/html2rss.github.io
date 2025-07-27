@@ -16,9 +16,9 @@ noindex: true
 <div class="mt-6">
   <h2 class="fs-6">What is an Instance URL?</h2>
   <p>
-    An "Instance URL" is the address of a running `html2rss-web` application.
-    You can use a publicly available instance or, for a more decentralized and
-    robust web, you can host your own.
+    An "Instance URL" is the address of a running
+    <code>html2rss-web</code> application. You can use a publicly available
+    instance or host your own.
   </p>
   <p>
     By hosting your own instance, you contribute to the resilience of the
@@ -35,211 +35,180 @@ noindex: true
     <a
       href="https://github.com/html2rss/html2rss-web/wiki/Instances"
       target="_blank"
-      >community-run wiki</a
+      rel="noopener noreferrer"
+    >
+      community-run wiki</a
     >.
   </p>
 </div>
 
 <hr class="my-6" />
 
-{%- assign ob = '{' -%} {%- assign cb = '}' -%}
-
 <noscript>
-  <span class="noscript">
-    This site needs JavaScript to link to the feed URL!
-  </span>
+  <span class="noscript"
+    >This site needs JavaScript to link to the feed URL!</span
+  >
 </noscript>
 
 <script>
-  // Define global data for Alpine.js to consume, processed by Jekyll
-  // The `site.data.configs` is already JSONified by Jekyll, so we just need to assign it.
   window.feedDirectoryData = {{ site.data.configs | jsonify }};
 </script>
 
-<div id="configs" x-data="feedDirectory()">
-  <fieldset class="mb-4 py-1 px-2">
-    <legend class="fs-5">Instance URL</legend>
+<svg style="display: none">
+  <symbol id="copy-icon" viewBox="0 0 24 24" fill="currentColor">
+    <path
+      d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
+    />
+  </symbol>
+</svg>
 
+<div id="configs" x-data="feedDirectory()">
+  <fieldset class="feed-directory__fieldset mb-4 py-1 px-2">
+    <legend class="fs-5">Instance URL</legend>
     <input
       type="text"
       name="instance"
       x-model="instanceUrl"
-      class="bg-grey-dk-100 p-2"
+      class="feed-directory__input bg-grey-dk-100 p-2"
+      aria-label="Instance URL"
     />
   </fieldset>
 
-  <fieldset class="mb-4 py-1 px-2">
+  <fieldset class="feed-directory__fieldset mb-4 py-1 px-2">
     <legend class="fs-5">Search</legend>
-
     <input
       type="search"
       name="search"
       placeholder="e.g. heise"
       x-model="searchQuery"
-      class="bg-grey-dk-100 p-2"
+      class="feed-directory__input bg-grey-dk-100 p-2"
+      aria-label="Search feeds"
     />
   </fieldset>
 
-  <div class="card-deck">
+  <div>
     {% for config in site.data.configs %}
     <div
-      class="card mb-4"
-      x-show="filterConfig('{{ config.domain }}/{{ config.name }}')"
+      class="feed-directory__item"
+      x-show="filterConfig('{{ config.domain | escape }}/{{ config.name | escape }}')"
+      x-data="{ configIndex: {{ forloop.index0 }}, params: {}, pathPreview: '', copied: false }"
+      x-init="
+        const currentConfig = window.feedDirectoryData[configIndex];
+        {%- unless config.valid_channel_url -%}
+        $watch('params', (value) => {
+          let previewTemplate = `${currentConfig.domain}/${currentConfig.name}.rss?`;
+          if (Array.isArray(currentConfig.url_parameters)) {
+            currentConfig.url_parameters.forEach(param => {
+              const key = param[0];
+              const val = value[key];
+              previewTemplate += `${key}=${val || `{${param[1]}}`}&`;
+            });
+            previewTemplate = previewTemplate.slice(0, -1);
+          }
+          pathPreview = previewTemplate;
+        });
+        $nextTick(() => {
+          let initialParams = {};
+          if (Array.isArray(currentConfig.url_parameters)) {
+            currentConfig.url_parameters.forEach(param => {
+              initialParams[param[0]] = '';
+            });
+          }
+          params = initialParams;
+        });
+        {%- endunless -%}
+      "
+      x-cloak
     >
-      <div class="card-header d-flex-justify-content-between">
-        <h3 class="card-title mb-0 text-mono fs-5">
-          {{ config.domain }}/{{ config.name }}
-        </h3>
-        {%- if config.valid_channel_url -%}
-        <span class="badge text-green-000">Ready to use</span>
-        {%- else -%}
-        <span class="badge text-yellow-000">Requires parameters</span>
-        {%- endif -%}
-      </div>
-      <div class="card-body">
-        <dl>
-          {%- if config.channel.url -%}
-          <dt>URL to scrape</dt>
-          <dd>
-            {%- if config.valid_channel_url -%}
-            <a
-              href="{{ config.channel.url }}"
-              class="config__url"
-              target="_blank"
-              rel="noopener noreferrer"
-              >{{ config.channel.url }}</a
-            >
-            {%- else -%}
-            <span class="config__url"
-              >{{ config.channel.url | xml_escape }}</span
-            >
-            {%- endif -%}
-          </dd>
-          {%- endif -%} {%- if config.channel.time_zone -%}
-          <dt>Time zone</dt>
-          <dd>{{ config.channel.time_zone }}</dd>
-          {%- endif -%} {%- if config.channel.language -%}
-          <dt>Language</dt>
-          <dd>{{ config.channel.language }}</dd>
-          {%- endif -%}
-        </dl>
-
-        {%- if config.valid_channel_url -%}
-        <div class="mt-4 d-flex-justify-content-between">
+      <div class="feed-directory__item-info">
+        {% if config.channel.url %}
+        <h3 class="feed-directory__item-name">
+          {% if config.valid_channel_url %}
           <a
-            href="#"
-            x-bind:href="getFeedUrl(JSON.parse('{{ config | jsonify | escape }}'))"
-            class="btn btn-primary"
-            rel="noopener noreferrer"
+            href="{{ config.channel.url | escape }}"
             target="_blank"
-            >Show RSS</a
-          >
-          <button
-            x-on:click.prevent="copyUrl(JSON.parse('{{ config | jsonify | escape }}'), {}, $event)"
-            class="btn btn-icon"
             rel="noopener noreferrer"
-            title="Copy URL"
           >
-            <svg><use xlink:href="#copy-icon"></use></svg>
-          </button>
-          <a
-            href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/{{ config.domain }}/{{ config.name }}.yml"
-            class="btn"
-            target="_blank"
-          >
-            View YAML
+            {{ config.channel.url | escape }}
           </a>
-        </div>
-        {%- else -%}
-        <div
-          class="mt-4"
-          x-data="{ params: {}, pathPreview: '' }"
-          x-init="
-          const currentConfig = JSON.parse('{{ config | jsonify | escape }}');
-          console.log('{{ config | jsonify | escape }}');
-          $watch('params', () => {
-            let template = `${currentConfig.domain}/${currentConfig.name}.rss?`;
-            let previewTemplate = template;
-            if (Array.isArray(currentConfig.url_parameters)) {
-              currentConfig.url_parameters.forEach(param => {
-                const key = param[0];
-                const value = params[key];
-                template += `${key}=${encodeURIComponent(value || '')}&`;
-                previewTemplate += `${key}=${value || `{${param[1]}}`}&`;
-              });
-              template = template.slice(0, -1); // Remove trailing '&'
-              previewTemplate = previewTemplate.slice(0, -1); // Remove trailing '&'
-            }
-            pathPreview = previewTemplate;
-            $refs.showBtn.href = getFeedUrl(currentConfig, params);
-            $refs.copyBtn.dataset.url = getFeedUrl(currentConfig, params);
-          });
-          $nextTick(() => {
-            let initialParams = {};
-            if (Array.isArray(currentConfig.url_parameters)) {
-              currentConfig.url_parameters.forEach(param => {
-                initialParams[param[0]] = '';
-              });
-            }
-            params = initialParams;
-          });
-        "
-        >
-          <form>
+          {% else %}
+          <span>{{ config.channel.url | escape }}</span>
+          {% endif %}
+        </h3>
+        {% endif %} {% unless config.valid_channel_url %}
+        <div class="feed-directory__item-param-form">
+          <form role="form">
             {% for param in config.url_parameters %}
-            <div class="form-group">
-              <label for="{{ config.domain }}-{{ config.name }}-{{ param[0] }}"
-                >{{ param[0] }}</label
+            <div class="feed-directory__item-param-form__group form-group">
+              <label
+                for="{{ config.domain | escape }}-{{ config.name | escape }}-{{ param[0] | escape }}"
+                class="feed-directory__item-param-form__label"
               >
+                {{ param[0] | escape }}
+              </label>
               <input
                 type="text"
-                id="{{ config.domain }}-{{ config.name }}-{{ param[0] }}"
-                name="{{ param[0] }}"
-                class="form-control"
-                placeholder="{{ param[1] }}"
-                x-model="params.{{ param[0] }}"
+                id="{{ config.domain | escape }}-{{ config.name | escape }}-{{ param[0] | escape }}"
+                name="{{ param[0] | escape }}"
+                class="feed-directory__item-param-form__input form-control"
+                placeholder="{{ param[1] | escape }}"
+                x-model="params['{{ param[0] }}']"
+                aria-label="{{ param[0] | escape }}"
               />
             </div>
             {% endfor %}
           </form>
-          <div class="mt-2 d-flex-justify-content-between">
-            <a
-              href="#"
-              x-bind:href="getFeedUrl(JSON.parse('{{ config | jsonify | escape }}'), params)"
-              class="btn btn-primary"
-              rel="noopener noreferrer"
-              target="_blank"
-              x-ref="showBtn"
-              >Show RSS</a
-            >
-            <button
-              x-on:click.prevent="copyUrl(JSON.parse('{{ config | jsonify | escape }}'), params, $event)"
-              class="btn btn-icon"
-              rel="noopener noreferrer"
-              title="Copy URL"
-              x-ref="copyBtn"
-            >
-              <svg><use xlink:href="#copy-icon"></use></svg>
-            </button>
-            <a
-              href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/{{ config.domain }}/{{ config.name }}.yml"
-              class="btn"
-              target="_blank"
-            >
-              View YAML
-            </a>
-          </div>
           <div class="mt-2">
-            <code class="d-block w-100 p-2 bg-grey-dk-300 text-grey-dk-000">
+            <code
+              class="feed-directory__item-param-form__code d-block w-100 p-2 bg-grey-dk-300 text-grey-dk-000"
+            >
               <span
                 class="instance"
                 x-text="instanceUrl.endsWith('/') ? instanceUrl : instanceUrl + '/'"
-              ></span
-              ><span x-text="pathPreview"></span>
+              ></span>
+              <span x-text="pathPreview"></span>
             </code>
           </div>
         </div>
-        {%- endif -%}
+        {% endunless %}
+      </div>
+
+      <div class="feed-directory__item-actions">
+        <a
+          :href="getFeedUrl(currentConfig, params)"
+          rel="noopener noreferrer"
+          target="_blank"
+          title="Show RSS"
+          aria-label="Open RSS feed"
+        >
+          <svg
+            class="rss-icon"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            width="24"
+            height="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19.199 2.001H4.801C3.805 2.001 3 2.805 3 3.801v15.398c0 .996.805 1.801 1.801 1.801h14.398c.996 0 1.801-.805 1.801-1.801V3.801c0-.996-.805-1.8-1.801-1.8zm-1.501 15.4c-1.38 0-2.5-1.12-2.5-2.5 0-1.379 1.12-2.5 2.5-2.5s2.5 1.121 2.5 2.5c0 1.38-1.12 2.5-2.5 2.5zm.001-6.5c-3.154 0-5.738 2.584-5.738 5.738 0 .552.447 1 1 1s1-.448 1-1c0-2.031 1.638-3.669 3.669-3.669.553 0 1-.448 1-1s-.447-1-1-1zm0-6.5c-6.191 0-11.238 5.047-11.238 11.238 0 .552.447 1 1 1s1-.448 1-1c0-5.088 4.15-9.238 9.238-9.238.553 0 1-.448 1-1s-.447-1-1-1z"
+            />
+          </svg>
+        </a>
+        <button
+          class="btn btn-icon"
+          aria-label="Copy URL"
+          @click.prevent="copyUrl(currentConfig, params, $event); copied = true; setTimeout(() => copied = false, 1500)"
+          :title="copied ? 'Copied!' : 'Copy URL'"
+        >
+          <svg><use xlink:href="#copy-icon"></use></svg>
+        </button>
+        <a
+          href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/{{ config.domain | uri_escape }}/{{ config.name | uri_escape }}.yml"
+          class="edit-link"
+          target="_blank"
+        >
+          Edit on GitHub
+        </a>
       </div>
     </div>
     {% endfor %}
@@ -269,6 +238,6 @@ noindex: true
   defer
 ></script>
 <script
-  defer
   src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"
+  defer
 ></script>
