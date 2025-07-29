@@ -14,24 +14,20 @@ noindex: true
 </div>
 
 <div class="mt-6">
-  <h2 class="fs-6">What is an Instance URL?</h2>
+  <h2 class="fs-6">Instance URL</h2>
   <p>
     An "Instance URL" is the address of a running
-    <code>html2rss-web</code> application. You can use a publicly available
-    instance or host your own.
-  </p>
-  <p>
-    By hosting your own instance, you contribute to the resilience of the
-    html2rss ecosystem and help keep the web open and accessible to everyone.
+    <code>html2rss-web</code> application. You can use a public instance, but we
+    encourage you to host your own.
   </p>
   <a
-    href="{{ '/web-application/guides/deployment' | relative_url }}"
+    href="{{ '/web-application/how-to/self-hosting' | relative_url }}"
     class="btn btn-primary"
   >
-    🚀 Host Your Own Instance
+    🚀 Host Your Own Instance (and share it!)
   </a>
   <p class="mt-2">
-    Or, find a publicly available instance on the
+    Find more public instances on the
     <a
       href="https://github.com/html2rss/html2rss-web/wiki/Instances"
       target="_blank"
@@ -54,70 +50,40 @@ noindex: true
   window.feedDirectoryData = {{ site.data.configs | jsonify }};
 </script>
 
-<svg style="display: none">
-  <symbol id="copy-icon" viewBox="0 0 24 24" fill="currentColor">
-    <path
-      d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
-    />
-  </symbol>
-</svg>
-
 <div id="configs" x-data="feedDirectory()">
-  <fieldset class="feed-directory__fieldset mb-4 py-1 px-2">
-    <legend class="fs-5">Instance URL</legend>
-    <input
-      type="text"
-      name="instance"
-      x-model="instanceUrl"
-      class="feed-directory__input bg-grey-dk-100 p-2"
-      aria-label="Instance URL"
-    />
-  </fieldset>
+  <div class="feed-directory__filters bg-grey-dk-300">
+    <fieldset class="feed-directory__fieldset py-1 px-2">
+      <legend class="fs-5">Instance URL</legend>
+      <input
+        type="text"
+        name="instance"
+        x-model="instanceUrl"
+        class="feed-directory__input bg-grey-dk-100 p-2"
+        aria-label="Instance URL"
+      />
+    </fieldset>
 
-  <fieldset class="feed-directory__fieldset mb-4 py-1 px-2">
-    <legend class="fs-5">Search</legend>
-    <input
-      type="search"
-      name="search"
-      placeholder="e.g. heise"
-      x-model="searchQuery"
-      class="feed-directory__input bg-grey-dk-100 p-2"
-      aria-label="Search feeds"
-    />
-  </fieldset>
-
+    <fieldset class="feed-directory__fieldset py-1 px-2">
+      <legend class="fs-5">Search</legend>
+      <input
+        type="search"
+        name="search"
+        autofocus
+        placeholder="fia, apple, news or blog"
+        x-on:input.debounce.500ms="searchQuery = $event.target.value"
+        x-model="searchQuery"
+        class="feed-directory__input bg-grey-dk-100 p-2"
+        aria-label="Search feeds"
+      />
+    </fieldset>
+  </div>
   <div>
     {% for config in site.data.configs %}
     <div
       class="feed-directory__item"
       x-show="filterConfig('{{ config.domain | escape }}/{{ config.name | escape }}')"
-      x-data="{ configIndex: {{ forloop.index0 }}, params: {}, pathPreview: '', copied: false }"
-      x-init="
-        const currentConfig = window.feedDirectoryData[configIndex];
-        {%- unless config.valid_channel_url -%}
-        $watch('params', (value) => {
-          let previewTemplate = `${currentConfig.domain}/${currentConfig.name}.rss?`;
-          if (Array.isArray(currentConfig.url_parameters)) {
-            currentConfig.url_parameters.forEach(param => {
-              const key = param[0];
-              const val = value[key];
-              previewTemplate += `${key}=${val || `{${param[1]}}`}&`;
-            });
-            previewTemplate = previewTemplate.slice(0, -1);
-          }
-          pathPreview = previewTemplate;
-        });
-        $nextTick(() => {
-          let initialParams = {};
-          if (Array.isArray(currentConfig.url_parameters)) {
-            currentConfig.url_parameters.forEach(param => {
-              initialParams[param[0]] = '';
-            });
-          }
-          params = initialParams;
-        });
-        {%- endunless -%}
-      "
+      x-data="feedItemData({{ forloop.index0 }})"
+      x-init="init()"
       x-cloak
     >
       <div class="feed-directory__item-info">
@@ -132,11 +98,16 @@ noindex: true
             {{ config.channel.url | escape }}
           </a>
           {% else %}
-          <span>{{ config.channel.url | escape }}</span>
+          <span x-show="!pathPreview">{{ config.channel.url | escape }}</span>
+          <a
+            x-bind:href="pathPreview"
+            x-show="pathPreview"
+            x-text="pathPreview"
+          ></a>
           {% endif %}
         </h3>
         {% endif %} {% unless config.valid_channel_url %}
-        <div class="feed-directory__item-param-form">
+        <div class="feed-directory__item-param-form" x-show="showParamsForm">
           <form role="form">
             {% for param in config.url_parameters %}
             <div class="feed-directory__item-param-form__group form-group">
@@ -157,57 +128,63 @@ noindex: true
               />
             </div>
             {% endfor %}
+            <div class="feed-directory__item-param-form__buttons">
+              <button x-on:click="showParamsForm = false" class="btn btn-sm">
+                Close
+              </button>
+            </div>
           </form>
-          <div class="mt-2">
-            <code
-              class="feed-directory__item-param-form__code d-block w-100 p-2 bg-grey-dk-300 text-grey-dk-000"
-            >
-              <span
-                class="instance"
-                x-text="instanceUrl.endsWith('/') ? instanceUrl : instanceUrl + '/'"
-              ></span>
-              <span x-text="pathPreview"></span>
-            </code>
-          </div>
         </div>
         {% endunless %}
       </div>
 
       <div class="feed-directory__item-actions">
+        {% if config.valid_channel_url %}
         <a
-          :href="getFeedUrl(currentConfig, params)"
+          :href="getFeedUrl(config, params)"
           rel="noopener noreferrer"
           target="_blank"
           title="Show RSS"
           aria-label="Open RSS feed"
         >
-          <svg
-            class="rss-icon"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            width="24"
-            height="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19.199 2.001H4.801C3.805 2.001 3 2.805 3 3.801v15.398c0 .996.805 1.801 1.801 1.801h14.398c.996 0 1.801-.805 1.801-1.801V3.801c0-.996-.805-1.8-1.801-1.8zm-1.501 15.4c-1.38 0-2.5-1.12-2.5-2.5 0-1.379 1.12-2.5 2.5-2.5s2.5 1.121 2.5 2.5c0 1.38-1.12 2.5-2.5 2.5zm.001-6.5c-3.154 0-5.738 2.584-5.738 5.738 0 .552.447 1 1 1s1-.448 1-1c0-2.031 1.638-3.669 3.669-3.669.553 0 1-.448 1-1s-.447-1-1-1zm0-6.5c-6.191 0-11.238 5.047-11.238 11.238 0 .552.447 1 1 1s1-.448 1-1c0-5.088 4.15-9.238 9.238-9.238.553 0 1-.448 1-1s-.447-1-1-1z"
-            />
+          <svg class="feed-directory__item-actions__rss-icon">
+            <use xlink:href="#rss-icon"></use>
           </svg>
         </a>
+        {% else %}
         <button
-          class="btn btn-icon"
-          aria-label="Copy URL"
-          @click.prevent="copyUrl(currentConfig, params, $event); copied = true; setTimeout(() => copied = false, 1500)"
-          :title="copied ? 'Copied!' : 'Copy URL'"
+          x-show="!showParamsForm"
+          x-on:click="toggleParamsForm"
+          title="Start setting parameters and get the RSS URL"
+          aria-label="Start setting parameters and get the RSS URL"
         >
-          <svg><use xlink:href="#copy-icon"></use></svg>
+          <svg class="feed-directory__item-actions__settings-icon">
+            <use xlink:href="#settings-icon"></use>
+          </svg>
         </button>
+        <a
+          :href="getFeedUrl(config, params)"
+          rel="noopener noreferrer"
+          target="_blank"
+          title="Show RSS"
+          aria-label="Open RSS feed"
+          x-show="showParamsForm"
+        >
+          <svg class="feed-directory__item-actions__rss-icon">
+            <use xlink:href="#rss-icon"></use>
+          </svg>
+        </a>
+        {% endif %}
         <a
           href="https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/{{ config.domain | uri_escape }}/{{ config.name | uri_escape }}.yml"
           class="edit-link"
           target="_blank"
+          title="Edit on GitHub"
+          aria-label="Edit on GitHub"
         >
-          Edit on GitHub
+          <svg class="feed-directory__item-actions__edit-icon">
+            <use xlink:href="#edit-icon"></use>
+          </svg>
         </a>
       </div>
     </div>
