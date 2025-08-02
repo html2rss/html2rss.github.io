@@ -6,9 +6,9 @@ parent: Reference
 grand_parent: Ruby Gem
 ---
 
-# `channel`
+# Channel
 
-The `channel` key contains information about the RSS feed itself, such as its title, URL, and description.
+The `channel` configuration block defines the metadata for your RSS feed.
 
 ```yaml
 channel:
@@ -21,16 +21,14 @@ channel:
   time_zone: "Europe/Berlin"
 ```
 
----
+## Options
 
-## Channel Options
-
-| Attribute     | Required     | Type    | Default        | Remark                                                                                                                                  |
-| :------------ | :----------- | :------ | :------------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
-| `url`         | **Required** | String  |                | The URL of the website to scrape.                                                                                                       |
-| `title`       | Optional     | String  | Auto-generated | The title of the RSS feed.                                                                                                              |
-| `description` | Optional     | String  | Auto-generated | Retrieved from meta description tags.                                                                                                   |
-| `author`      | Optional     | String  | Blank          | Format: `email (Name)`.                                                                                                                 |
-| `ttl`         | Optional     | Integer | Auto-generated | Time to live in minutes. `html2rss` will use the `max-age` from the response headers if available, otherwise it will default to `360`.  |
-| `language`    | Optional     | String  | Auto-generated | Determined by the `lang` attribute of the `<html>` tag.                                                                                 |
-| `time_zone`   | Optional     | String  | `'UTC'`        | The time zone to use for parsing dates. See a [list of valid time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). |
+| Attribute     | Required     | Description                                                                                                                              |
+| :------------ | :----------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
+| `url`         | **Required** | The URL of the website to scrape.                                                                                                        |
+| `title`       | Optional     | The title of the RSS feed. Defaults to the website's title.                                                                              |
+| `description` | Optional     | A description for the RSS feed. Defaults to the website's meta description.                                                              |
+| `author`      | Optional     | The author of the feed, in the format `email (Name)`.                                                                                    |
+| `ttl`         | Optional     | The "time to live" for the feed in minutes. Defaults to the `max-age` from the response headers, or `360`.                               |
+| `language`    | Optional     | The language of the feed. Defaults to the `lang` attribute of the `<html>` tag.                                                          |
+| `time_zone`   | Optional     | The time zone for parsing dates. See the [list of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). |

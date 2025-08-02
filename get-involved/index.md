@@ -1,11 +1,13 @@
 ---
 layout: default
 title: Get Involved
+nav_order: 5
 has_children: true
-nav_order: 4
 ---
 
 # Get Involved
+
+- [**Sponsoring**]({{ '/get-involved/sponsoring' | relative_url }})
 
 Engage with the `html2rss` project. Contribute and connect with the community.
 

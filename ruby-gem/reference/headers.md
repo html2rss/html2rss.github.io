@@ -6,47 +6,21 @@ parent: Reference
 grand_parent: Ruby Gem
 ---
 
-# `headers`
+# Headers
 
-The `headers` key allows you to set custom HTTP headers for your requests. This is useful for accessing protected content or interacting with APIs.
+The `headers` key allows you to set custom HTTP headers for your requests. This is useful for accessing APIs or other protected content.
+
+## Configuration
+
+You can add any number of headers to your configuration:
 
 ```yaml
 headers:
   User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
   Authorization: "Bearer YOUR_TOKEN"
+  Accept: "application/json"
 ```
 
-You can also set headers for APIs that require authorization or custom headers.
+## Dynamic Parameters
 
-Dynamic parameters can be used in headers to pass values at runtime. See [Dynamic Parameters]({{ '/ruby-gem/how-to/dynamic-parameters' | relative_url }}) for more details.
-
-## Example Configuration
-
-This example demonstrates how to add custom HTTP headers to your feed request:
-
-```yaml
-channel:
-  url: https://example.com/protected-content
-  headers:
-    User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
-    Authorization: "Bearer your_api_token_here"
-selectors:
-  items:
-    selector: ".article"
-  title:
-    selector: "h2.title"
-  url:
-    selector: "h2.title a"
-    extractor: "href"
-  description:
-    selector: ".summary"
-```
-
-### Explanation
-
-- **`channel.headers`**: Defines custom HTTP headers to include in the request.
-- **`User-Agent`**: Some websites require a specific user agent string.
-- **`Authorization`**: Example of an API token for protected content.
-- The rest of the configuration extracts articles as usual.
-
-Use this configuration to access content that requires authentication or specific headers.
+You can also use dynamic parameters in your headers to pass values at runtime. See [Dynamic Parameters]({{ '/ruby-gem/how-to/dynamic-parameters' | relative_url }}) for more information.

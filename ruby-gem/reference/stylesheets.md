@@ -7,68 +7,25 @@ grand_parent: Ruby Gem
 permalink: /ruby-gem/reference/stylesheets
 ---
 
-# `stylesheets`
+# Stylesheets
 
-The `stylesheets` key allows you to add CSS or XSLT stylesheets to your RSS feed to improve its appearance in a web browser.
+The `stylesheets` key allows you to add CSS or XSLT stylesheets to your RSS feed, improving its appearance in web browsers.
+
+## Configuration
+
+You can add multiple stylesheets to your configuration:
 
 ```yaml
 stylesheets:
-  - href: "/relative/base/path/to/style.xls"
+  - href: "/path/to/style.xls"
     media: "all"
     type: "text/xsl"
-  - href: "http://example.com/rss.css"
+  - href: "https://example.com/rss.css"
     media: "all"
     type: "text/css"
 ```
 
----
+## Further Reading
 
-### Explanation
-
-You can add plain CSS stylesheets or XSLT (eXtensible Stylesheet Language Transformations) to style your RSS feed when viewed in a web browser.
-
-- CSS stylesheets use element selectors to apply styles.
-- XSLT allows you to use HTML templates and add JavaScript or external resources for advanced styling.
-
----
-
-### Examples
-
-#### Ruby example
-
-```ruby
-Html2rss.feed(
-  stylesheets: [
-    {
-      href: '/relative/base/path/to/style.xsl', media: :all, type: 'text/xsl'
-    },
-    {
-      href: 'http://example.com/rss.css', media: :all, type: 'text/css'
-    }
-  ],
-  channel: {},
-  selectors: {}
-)
-```
-
-#### YAML example
-
-```yaml
-stylesheets:
-  - href: "/relative/base/path/to/style.xsl"
-    media: "all"
-    type: "text/xsl"
-  - href: "http://example.com/rss.css"
-    media: "all"
-    type: "text/css"
-feeds:
-  # your feed configs here
-```
-
----
-
-### Further Reading
-
-- [How to format RSS with CSS on lifewire.com](https://www.lifewire.com/how-to-format-rss-3469302)
-- [XSLT: Extensible Stylesheet Language Transformations on MDN](https://developer.mozilla.org/en-US/docs/Web/XSLT)
-- [The XSLT used by html2rss-web](https://github.com/html2rss/html2rss-web/blob/master/public/rss.xsl)
+- [How to Format RSS with CSS](https://www.lifewire.com/how-to-format-rss-3469302)
+- [XSLT: Extensible Stylesheet Language Transformations](https://developer.mozilla.org/en-US/docs/Web/XSLT)
