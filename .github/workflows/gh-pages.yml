@@ -42,7 +42,7 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     permissions:
-      contents: read
+      contents: write
       pages: write
       id-token: write
     steps:
