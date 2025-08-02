@@ -33,7 +33,7 @@ After you're done, you can test your feed config by running `bundle exec html2rs
 
 #### Prefered way: manually
 
-1. Fork this repo and run `bundle install` (you need to have Ruby >= 3.1 installed).
+1. Fork the `html2rss-config` git repository and run `bundle install` (you need to have Ruby >= 3.3 installed).
 2. Create a new folder and file following ths convention: `lib/html2rss/configs/<domainname.tld>/<path>.yml`
 3. Create the feed config in the `<path>.yml` file.
 4. Add this spec file in the `spec/html2rss/configs/<domainname.tld>/<path>_spec.rb` file.
