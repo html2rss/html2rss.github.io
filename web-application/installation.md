@@ -90,5 +90,5 @@ Congratulations! Your personal `html2rss-web` instance is now running. You can a
 
 ## Next Steps
 
-- Now that your instance is running, head over to the **[Tutorials]({{ '/web-application/tutorials' | relative_url }})** to learn how to create your first feed.
+- Now that your instance is running, head over to the **[How-To Guides]({{ '/web-application/how-to/' | relative_url }})** to learn how to create your first feed. We recommend starting with the [Creating Custom Feeds]({{ '/web-application/how-to/creating-custom-feeds' | relative_url }}) guide.
 - For a more secure setup, consider putting your instance behind a reverse proxy. You can find more information in the [deployment guide]({{ '/web-application/how-to/deployment' | relative_url }}).
