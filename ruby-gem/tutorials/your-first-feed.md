@@ -1,10 +1,9 @@
 ---
 layout: default
 title: Your First Feed
-nav_order: 3
+nav_order: 2
 parent: Tutorials
 grand_parent: Ruby Gem
-permalink: /ruby-gem/tutorials/your-first-feed
 ---
 
 # Your First Feed: A Step-by-Step Guide

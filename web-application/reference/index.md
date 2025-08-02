@@ -1,8 +1,7 @@
 ---
 layout: default
 title: Reference
-nav_order: 3
-permalink: /web-application/reference
+nav_order: 4
 parent: Web Application
 has_children: true
 ---

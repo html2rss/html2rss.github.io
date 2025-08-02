@@ -4,7 +4,6 @@ title: Channel
 nav_order: 1
 parent: Reference
 grand_parent: Ruby Gem
-permalink: /ruby-gem/reference/channel
 ---
 
 # `channel`

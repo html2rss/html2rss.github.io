@@ -2,22 +2,24 @@
 layout: default
 title: Deploying to Production
 nav_order: 2
-permalink: /web-application/how-to/deployment
 parent: How-To Guides
 grand_parent: Web Application
 ---
 
 # Deploying to Production
 
-This app is published on Docker Hub and therefore easy to use with Docker.
-The `docker-compose.yml` from the [Getting Started guide]({{ '/web-application/tutorials' | relative_url }}) is a good starting point.
+If you're looking to host a personal instance of `html2rss-web`, the [Installation Guide]({{ '/web-application/installation' | relative_url }}) provides a detailed, step-by-step walkthrough.
 
-If you're going to host a public instance, _please, please, please_:
+For those who wish to host a public-facing instance, this page serves as a high-level checklist of best practices to ensure a secure and stable deployment.
 
-- Put the application behind a reverse proxy.
-- Allow outside connections only via HTTPS.
-- Have an auto-update strategy (e.g., watchtower).
-- Monitor your `/health_check.txt` endpoint.
-- [Let the world know and add your instance to the wiki](https://github.com/html2rss/html2rss-web/wiki/Instances) -- thank you!
+## Production Deployment Checklist
+
+- **Reverse Proxy**: Always put the application behind a reverse proxy. This is crucial for security and for managing incoming traffic.
+- **HTTPS**: Enforce HTTPS for all outside connections to encrypt traffic and protect user data.
+- **Auto-Updates**: Implement an auto-update strategy (e.g., using [Watchtower](https://containrrr.dev/watchtower/)) to ensure you're always running the latest, most secure version of the application.
+- **Monitoring**: Regularly monitor the `/health_check.txt` endpoint to ensure your instance is running correctly.
+- **Share Your Instance**: If you've set up a public instance, please consider [adding it to our wiki](https://github.com/html2rss/html2rss-web/wiki/Instances). This helps others discover and use the service. Thank you!
+
+## Versioning and Releases
 
 For information on the web application's versioning and release strategy, please refer to the [main Web Application overview]({{ '/web-application' | relative_url }}).

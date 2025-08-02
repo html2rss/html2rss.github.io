@@ -4,7 +4,6 @@ title: Auto Source
 nav_order: 5
 parent: Reference
 grand_parent: Ruby Gem
-permalink: /ruby-gem/reference/auto_source
 ---
 
 # `auto_source`

@@ -3,7 +3,6 @@ layout: default
 title: Join Community Discussions
 nav_order: 2
 parent: Get Involved
-permalink: /get-involved/discussions
 ---
 
 # Join Community Discussions

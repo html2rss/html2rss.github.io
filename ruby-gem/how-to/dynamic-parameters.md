@@ -4,7 +4,6 @@ title: Dynamic Parameters
 nav_order: 5
 parent: How-To Guides
 grand_parent: Ruby Gem
-permalink: /ruby-gem/how-to/dynamic-parameters
 ---
 
 # Dynamic Parameters in URLs and Headers

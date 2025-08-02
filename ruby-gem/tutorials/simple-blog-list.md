@@ -1,13 +1,12 @@
 ---
 layout: default
-title: Simple Blog List
-nav_order: 2
-parent: How-To Guides
+title: Scraping a Simple Blog List
+nav_order: 3
+parent: Tutorials
 grand_parent: Ruby Gem
-permalink: /ruby-gem/how-to/simple-blog-list
 ---
 
-# Example: Scraping a Simple Blog List
+# Tutorial: Scraping a Simple Blog List
 
 This example demonstrates how to create a feed from a typical blog that has a list of articles on its homepage.
 

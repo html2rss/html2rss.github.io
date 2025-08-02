@@ -4,7 +4,6 @@ title: Styling Your RSS Feed
 nav_order: 7
 parent: How-To Guides
 grand_parent: Ruby Gem
-permalink: /ruby-gem/how-to/styling-rss-feed
 ---
 
 # Styling Your RSS Feed

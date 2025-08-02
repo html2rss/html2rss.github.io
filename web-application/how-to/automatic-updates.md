@@ -2,7 +2,6 @@
 layout: default
 title: Automatic Updates
 nav_order: 3
-permalink: /web-application/how-to/automatic-updates
 parent: How-To Guides
 grand_parent: Web Application
 ---
@@ -11,4 +10,4 @@ grand_parent: Web Application
 
 The [watchtower](https://containrrr.dev/watchtower/) service automatically pulls running Docker images and checks for updates. If an update is available, it will automatically start the updated image with the same configuration as the running one. Please read its manual.
 
-The `docker-compose.yml` in the [Getting Started guide]({{ '/web-application/tutorials' | relative_url }}) contains a service description for watchtower.
+The `docker-compose.yml` in the [Installation Guide]({{ '/web-application/installation' | relative_url }}) contains a service description for watchtower.

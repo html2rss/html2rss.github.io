@@ -4,7 +4,6 @@ title: Handling Dynamic Content
 nav_order: 6
 parent: How-To Guides
 grand_parent: Ruby Gem
-permalink: /ruby-gem/how-to/handling-dynamic-content
 ---
 
 # Handling Dynamic Content and JavaScript

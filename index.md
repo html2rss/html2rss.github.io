@@ -14,7 +14,7 @@ Tired of missing updates from websites that don't offer RSS feeds? `html2rss` is
 
 ## Key Features
 
-- **Automatic Feed Generation:** The `auto_source` scraper intelligently finds and extracts content from websites, so you can create feeds with minimal effort.
+- **Automatic Feed Generation:** The `auto-source` scraper intelligently finds and extracts content from websites, so you can create feeds with minimal effort.
 - **Precise Content Extraction:** Use familiar CSS selectors to target the exact content you want to include in your feed.
 - **JavaScript Rendering:** Use a headless browser to render JavaScript-heavy websites and extract content that isn't available in the initial HTML.
 - **Open Source:** `html2rss` is free to use, modify, and contribute to.

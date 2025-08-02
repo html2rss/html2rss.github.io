@@ -3,7 +3,6 @@ layout: default
 title: Report Bugs & Discuss Features
 nav_order: 1
 parent: Get Involved
-permalink: /get-involved/issues-and-features
 ---
 
 # Report Bugs & Discuss Features

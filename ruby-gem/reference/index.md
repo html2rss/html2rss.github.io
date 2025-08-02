@@ -14,7 +14,7 @@ This section provides a comprehensive guide to all the configuration options ava
 
 ## Configuration Topics
 
-- [**Auto Source**]({{ '/ruby-gem/reference/auto_source' | relative_url }}): The easiest way to create a feed, with minimal configuration.
+- [**Auto Source**]({{ '/ruby-gem/reference/auto-source' | relative_url }}): The easiest way to create a feed, with minimal configuration.
 - [**Channel**]({{ '/ruby-gem/reference/channel' | relative_url }}): Customize the metadata of your RSS feed.
 - [**Selectors**]({{ '/ruby-gem/reference/selectors' | relative_url }}): Use CSS selectors to extract content with precision.
 - [**Extractors**]({{ '/ruby-gem/reference/selectors/extractors' | relative_url }}): Specify how to extract information from HTML elements.

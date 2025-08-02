@@ -4,7 +4,6 @@ title: Advanced Content Extraction
 nav_order: 3
 parent: How-To Guides
 grand_parent: Ruby Gem
-permalink: /ruby-gem/how-to/advanced-content-extraction
 ---
 
 # Advanced Content Extraction with Selectors

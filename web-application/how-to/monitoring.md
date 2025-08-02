@@ -2,7 +2,6 @@
 layout: default
 title: Monitoring
 nav_order: 4
-permalink: /web-application/how-to/monitoring
 parent: How-To Guides
 grand_parent: Web Application
 ---

@@ -4,7 +4,6 @@ title: How-To Guides
 nav_order: 3
 parent: Ruby Gem
 has_children: true
-permalink: /ruby-gem/how-to
 ---
 
 # How-To Guides: Practical `html2rss` Configurations

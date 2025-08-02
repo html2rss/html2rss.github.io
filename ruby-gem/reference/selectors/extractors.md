@@ -3,7 +3,6 @@ layout: default
 title: Extractors
 parent: Selectors
 nav_order: 1
-permalink: /ruby-gem/reference/selectors/extractors
 ---
 
 # Extractors

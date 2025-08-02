@@ -4,7 +4,6 @@ title: Custom HTTP Requests
 nav_order: 4
 parent: How-To Guides
 grand_parent: Ruby Gem
-permalink: /ruby-gem/how-to/custom-http-requests
 ---
 
 # Customizing HTTP Requests

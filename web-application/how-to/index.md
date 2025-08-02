@@ -1,8 +1,7 @@
 ---
 layout: default
 title: How-To Guides
-nav_order: 2
-permalink: /web-application/how-to
+nav_order: 3
 parent: Web Application
 has_children: true
 ---

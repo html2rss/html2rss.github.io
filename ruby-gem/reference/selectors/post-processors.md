@@ -3,7 +3,6 @@ layout: default
 title: Post Processors
 parent: Selectors
 nav_order: 2
-permalink: /ruby-gem/reference/selectors/post-processors
 ---
 
 # Post Processors

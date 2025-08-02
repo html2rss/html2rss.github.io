@@ -4,7 +4,6 @@ title: CLI Reference
 nav_order: 7
 parent: Reference
 grand_parent: Ruby Gem
-permalink: /ruby-gem/reference/cli-reference
 ---
 
 # CLI Reference
