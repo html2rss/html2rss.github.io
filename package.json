@@ -2,13 +2,20 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "lintfix": "stylelint --fix assets/**/*.scss"
+    "lint": "yarn lint:stylelint && yarn lint:prettier",
+    "lint:stylelint": "stylelint assets/**/*.scss",
+    "lint:prettier": "prettier --check .",
+    "lintfix": "yarn lintfix:stylelint && yarn lintfix:prettier",
+    "lintfix:stylelint": "stylelint --fix assets/**/*.scss",
+    "lintfix:prettier": "prettier --write ."
   },
   "devDependencies": {
-    "stylelint": "16.22.0",
+    "prettier": "3.6.2",
+    "stylelint": "16.23.0",
     "stylelint-config-recess-order": "7.1.0",
+    "stylelint-order": "7.0.0",
     "stylelint-config-recommended-scss": "15.0.1",
     "stylelint-scss": "6.12.1"
   },
-  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+  "packageManager": "yarn@1.22.22"
 }
