@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Monitoring
-nav_order: 4
-parent: How-To Guides
+parent: Reference
 grand_parent: Web Application
+nav_order: 3
 ---
 
 # Monitoring
@@ -22,7 +22,9 @@ An authenticated `GET /health_check.txt` request will respond with:
 To get notified when one of your configs breaks, set up monitoring of this endpoint.
 
 [UptimeRobot's free plan](https://uptimerobot.com/) is sufficient for basic monitoring (every 5 minutes).
-Create a monitor of type _Keyword_ with this information and make it aware of your username and password.
+Create a monitor of type _Keyword_ with this information and make it aware of your username and password:
+
+![A screenshot showing the Keyword Monitor: a name, the instance's URL to /health_check.txt, and an interval.](docs/uptimerobot_monitor.jpg)
 
 ## Application Performance Monitoring using Sentry
 

@@ -1,15 +1,15 @@
 ---
 layout: default
-title: Deployment
+title: Use in production
 nav_order: 4
 parent: How-To Guides
 grand_parent: Web Application
 ---
 
-# Deployment
+# Use in production
 
 This app is published on Docker Hub and therefore easy to use with Docker.
-The `docker-compose.yml` in the [Installation Guide]({{ '/web-application/installation' | relative_url }}) is a good starting point.
+The above `docker-compose.yml` is a good starting point.
 
 If you're going to host a public instance, _please, please, please_:
 

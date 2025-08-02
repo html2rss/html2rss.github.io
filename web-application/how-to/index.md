@@ -8,4 +8,4 @@ has_children: true
 
 # How-To Guides
 
-This section contains detailed, task-based guides for users who want to go beyond the basics.
+This section provides guides on how to perform specific tasks with html2rss-web.
