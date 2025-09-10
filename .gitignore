@@ -1,7 +1,8 @@
+_data/configs.yml
 _site
-.sass-cache
 .jekyll-cache
 .jekyll-metadata
-vendor
+.sass-cache
+node_modules
 node_modules/
-_data/configs.yml
+vendor
