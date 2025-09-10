@@ -68,8 +68,36 @@ document.addEventListener("alpine:init", () => {
       });
     },
 
+    initializeDefaultParameters() {
+      Object.entries(this.config.url_parameters).forEach(([key, fallback]) => {
+        const inputId = `${this.config.domain}-${this.config.name}-${key}`;
+        const input = document.getElementById(inputId);
+
+        if (input && this.config.default_parameters[key]) {
+          // Set the actual value in the input field
+          input.value = this.config.default_parameters[key];
+          // Also set placeholder as fallback
+          input.placeholder = this.config.default_parameters[key];
+        }
+      });
+
+      // Now set params with default values (this will trigger the watcher)
+      this.params = { ...this.config.default_parameters };
+    },
+
     init() {
       if (!this.config) return;
+
+      // Initialize params first
+      this.params = {};
+
+      // Set default values in input fields after DOM is ready
+      if (this.config.default_parameters && !this.config.valid_channel_url) {
+        this.$nextTick(() => {
+          this.initializeDefaultParameters();
+        });
+      }
+
       if (!this.config.valid_channel_url) {
         this.$watch("params", (value) => {
           let params = {};

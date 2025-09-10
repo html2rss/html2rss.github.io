@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: 65cf54c8b5c5516cfb78f812a4745771052fcf9a
+  revision: d7c60ffee7747afe425240bae539cdf71ad356f5
   specs:
     html2rss-configs (0.2.0)
       html2rss
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: 8bddc59e845adb45861b89f21d95e7f5595b3813
+  revision: 3071d18755e3f546aa35bccfdaa83694c61a475c
   specs:
     html2rss (0.17.0)
       addressable (~> 2.7)
@@ -160,7 +160,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0902)
+    mime-types-data (3.2025.0909)
     net-http (0.6.0)
       uri
     nokogiri (1.18.9-aarch64-linux-gnu)
@@ -190,7 +190,7 @@ GEM
     regexp_parser (2.11.2)
     reverse_markdown (3.0.0)
       nokogiri
-    rexml (3.4.3)
+    rexml (3.4.4)
     rouge (4.6.0)
     rss (0.3.1)
       rexml

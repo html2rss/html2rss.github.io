@@ -16,14 +16,16 @@
 .feed-directory__item {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: flex-start;
   gap: var(--spacing-sm);
 
   padding: var(--spacing-sm);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
+  margin-bottom: 1px; /* Minimal gap between items */
 
   transition: var(--transition-base);
+  background-color: var(--color-bg);
 }
 
 .feed-directory__item:hover {
@@ -38,12 +40,51 @@
   margin-inline-end: var(--spacing-sm);
 }
 
+.feed-directory__item-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-height: 2rem; /* Compact height for list feel */
+}
+
 h3.feed-directory__item-name {
   font-size: var(--font-size-h4);
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
   margin: 0;
   padding: 0;
+  flex: 1;
+  min-width: 0; /* Allow text to wrap */
+  line-height: 1.4;
+}
+
+.feed-directory__item-param-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-light);
+  background-color: var(--code-block-bg-color);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-color);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: var(--transition-base);
+  flex-shrink: 0;
+}
+
+.feed-directory__item-param-toggle:hover {
+  background-color: var(--border-color);
+  color: var(--color-text);
+}
+
+.feed-directory__param-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
 
 .feed-directory__item-url {
@@ -100,9 +141,23 @@ h3.feed-directory__item-name {
 }
 
 .feed-directory__item-param-form {
-  margin-block-start: var(--spacing-sm);
-  padding-block-start: var(--spacing-sm);
-  border-block-start: 1px solid var(--border-color);
+  margin-top: var(--spacing-xs);
+  padding: var(--spacing-xs);
+  border-top: 1px solid var(--border-color);
+  background-color: var(--code-block-bg-color);
+  border-radius: var(--border-radius-sm);
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .feed-directory__item-param-form__group {

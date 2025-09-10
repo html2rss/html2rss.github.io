@@ -89,24 +89,47 @@ has_children: true
     >
       <div class="feed-directory__item-info">
         {% if config.channel.url %}
-        <h3 class="feed-directory__item-name">
-          {% if config.valid_channel_url %}
-          <a
-            href="{{ config.channel.url | escape }}"
-            target="_blank"
-            rel="noopener noreferrer"
+        <div class="feed-directory__item-main">
+          <h3 class="feed-directory__item-name">
+            {% if config.valid_channel_url %}
+            <a
+              href="{{ config.channel.url | escape }}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ config.channel.url | escape }}
+            </a>
+            {% else %}
+            <span x-show="!pathPreview">{{ config.channel.url | escape }}</span>
+            <a
+              x-bind:href="pathPreview"
+              x-show="pathPreview"
+              x-text="pathPreview"
+            ></a>
+            {% endif %}
+          </h3>
+          {% unless config.valid_channel_url %}
+          <button
+            class="feed-directory__item-param-toggle"
+            x-on:click="toggleParamsForm"
+            :title="showParamsForm ? 'Hide parameters' : 'Configure parameters'"
+            :aria-label="showParamsForm ? 'Hide parameters' : 'Configure parameters'"
           >
-            {{ config.channel.url | escape }}
-          </a>
-          {% else %}
-          <span x-show="!pathPreview">{{ config.channel.url | escape }}</span>
-          <a
-            x-bind:href="pathPreview"
-            x-show="pathPreview"
-            x-text="pathPreview"
-          ></a>
-          {% endif %}
-        </h3>
+            <svg
+              class="feed-directory__param-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1" />
+            </svg>
+            <span x-text="showParamsForm ? 'Hide' : 'Configure'"></span>
+          </button>
+          {% endunless %}
+        </div>
         {% endif %} {% unless config.valid_channel_url %}
         <div class="feed-directory__item-param-form" x-show="showParamsForm">
           <form role="form">
@@ -153,23 +176,12 @@ has_children: true
           </svg>
         </a>
         {% else %}
-        <button
-          x-show="!showParamsForm"
-          x-on:click="toggleParamsForm"
-          title="Start setting parameters and get the RSS URL"
-          aria-label="Start setting parameters and get the RSS URL"
-        >
-          <svg class="feed-directory__item-actions__settings-icon">
-            <use xlink:href="#settings-icon"></use>
-          </svg>
-        </button>
         <a
           :href="getFeedUrl(config, params)"
           rel="noopener noreferrer"
           target="_blank"
           title="Show RSS"
           aria-label="Open RSS feed"
-          x-show="showParamsForm"
         >
           <svg class="feed-directory__item-actions__rss-icon">
             <use xlink:href="#rss-icon"></use>
