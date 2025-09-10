@@ -13,7 +13,7 @@ This guide will walk you through the process of installing html2rss on your syst
 
 ### Prerequisites
 
-- **Ruby:** html2rss is built with Ruby. Ensure you have Ruby installed (version 3.3 or higher recommended). You can check your Ruby version by running `ruby -v` in your terminal. If you don't have Ruby, visit [ruby-lang.org](https://www.ruby-lang.org/en/documentation/installation/) for installation instructions.
+- **Ruby:** html2rss is built with Ruby. Ensure you have Ruby installed (version 3.2 or higher required). You can check your Ruby version by running `ruby -v` in your terminal. If you don't have Ruby, visit [ruby-lang.org](https://www.ruby-lang.org/en/documentation/installation/) for installation instructions.
 - **Bundler (Recommended):** Bundler is a Ruby gem that manages your application's dependencies. It's highly recommended for a smooth installation. Install it with `gem install bundler`.
 
 ---
@@ -43,15 +43,13 @@ Then, run `bundle install` in your project directory.
 
 ---
 
-### Method 3: Docker (For Containerized Environments)
+### Method 3: GitHub Codespaces (For Cloud Development)
 
-For a more isolated and reproducible environment, you can use the official html2rss Docker image.
+For a quick start without local setup, you can develop html2rss directly in your browser using GitHub Codespaces:
 
-```bash
-docker pull html2rss/html2rss
-```
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?repo=html2rss/html2rss)
 
-You can then run html2rss commands within a Docker container. Refer to the [Docker Hub page](https://hub.docker.com/r/html2rss/html2rss) for detailed usage.
+The Codespace comes pre-configured with Ruby 3.4, all dependencies, and VS Code extensions ready to go!
 
 ---
 

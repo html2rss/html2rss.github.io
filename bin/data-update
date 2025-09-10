@@ -16,9 +16,7 @@ def extract_default_parameters(parameters)
   return {} unless parameters.is_a?(Hash)
 
   parameters.each_with_object({}) do |(param_name, param_config), defaults|
-    if param_config.is_a?(Hash) && param_config['default']
-      defaults[param_name] = param_config['default']
-    end
+    defaults[param_name] = param_config['default'] if param_config.is_a?(Hash) && param_config['default']
   end
 end
 
