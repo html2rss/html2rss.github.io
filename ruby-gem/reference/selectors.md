@@ -42,7 +42,7 @@ selectors:
 While you can define any named selector, only the following are used in the final RSS feed:
 
 | RSS 2.0 Tag   | `html2rss` Name |
-| ------------- | --------------- |
+| ------------- | --------------- | ------------------------------ |
 | `title`       | `title`         |
 | `description` | `description`   |
 | `link`        | `url`           |
@@ -51,17 +51,19 @@ While you can define any named selector, only the following are used in the fina
 | `guid`        | `guid`          |
 | `enclosure`   | `enclosure`     |
 | `pubDate`     | `published_at`  |
-| `comments`    | `comments`      |
+| `comments`    | `comments`      | ⚠️ _Not currently implemented_ |
 
 ## Selector Options
 
 Each selector can be configured with the following options:
 
-| Name           | Description                                      |
-| -------------- | ------------------------------------------------ |
-| `selector`     | The CSS selector for the target element.         |
-| `extractor`    | The extractor to use for this selector.          |
-| `post_process` | A list of post-processors to apply to the value. |
+| Name           | Description                                              |
+| -------------- | -------------------------------------------------------- |
+| `selector`     | The CSS selector for the target element.                 |
+| `extractor`    | The extractor to use for this selector.                  |
+| `attribute`    | The attribute name (required for `attribute` extractor). |
+| `static`       | The static value (required for `static` extractor).      |
+| `post_process` | A list of post-processors to apply to the value.         |
 
 ### Extractors
 
@@ -126,6 +128,10 @@ To add an enclosure (e.g., an image, audio, or video file) to an item, use the `
 
 ```yml
 selectors:
+  items:
+    selector: ".post"
+  title:
+    selector: "h2"
   enclosure:
     selector: "audio"
     extractor: "attribute"

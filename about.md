@@ -31,4 +31,4 @@ For insights into our ongoing development, project roadmap, and how you can get 
 
 `html2rss` is maintained by a dedicated group of volunteers and contributors from around the world. We are passionate about open source and committed to continuously improving the project.
 
-Want to join us? Check out our [Contributing Guide]({{ '/contributing' | relative_url }})!
+Want to join us? Check out our [Contributing Guide]({{ '/get-involved/contributing' | relative_url }})!

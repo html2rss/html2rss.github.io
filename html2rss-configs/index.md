@@ -108,19 +108,6 @@ selectors:
 
 ## Advanced Techniques
 
-### Handling Pagination
-
-To aggregate content from multiple pages, use the `pagination` option within the `items` selector.
-
-```yaml
-selectors:
-  items:
-    selector: ".post-listing .post"
-    pagination:
-      selector: ".pagination .next-page"
-      limit: 5 # Optional: sets the maximum number of pages to follow
-```
-
 ### Dynamic Feeds with Parameters
 
 Use the `parameters` block to create flexible configs. This is useful for feeds based on search terms, categories, or regions.
@@ -135,6 +122,15 @@ parameters:
 channel:
   url: "https://news.example.com/search?q={query}"
   title: "News results for '{query}'"
+
+selectors:
+  items:
+    selector: ".article"
+  title:
+    selector: "h2 a"
+  url:
+    selector: "h2 a"
+    extractor: "href"
 ```
 
 ---

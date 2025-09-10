@@ -17,7 +17,7 @@ You can add multiple stylesheets to your configuration:
 
 ```yaml
 stylesheets:
-  - href: "/path/to/style.xls"
+  - href: "/path/to/style.xsl"
     media: "all"
     type: "text/xsl"
   - href: "https://example.com/rss.css"

@@ -89,6 +89,8 @@ headers:
 channel:
   url: "http://domainname.tld/whatever.json"
 selectors:
+  items:
+    selector: "array > object"
   title:
     selector: "foo"
 ```
