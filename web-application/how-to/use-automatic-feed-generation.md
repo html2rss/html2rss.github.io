@@ -6,26 +6,36 @@ parent: How-To Guides
 grand_parent: Web Application
 ---
 
-# How to use automatic feed generation
+# Automatic Feed Generation
 
-> This feature is disabled by default.
+This feature lets you create RSS feeds automatically - just enter a website URL and html2rss-web figures out the rest!
 
-To enable the `auto_source` feature, comment in the env variables in the `docker-compose.yml` file from above and change the values accordingly:
+> **Note:** This feature is disabled by default for security reasons.
+
+## How to Enable It
+
+1. **Edit your `docker-compose.yml` file** and uncomment these lines:
 
 ```yaml
 environment:
-  ## … snip ✁
   AUTO_SOURCE_ENABLED: "true"
-  AUTO_SOURCE_USERNAME: foobar
-  AUTO_SOURCE_PASSWORD: A-Unique-And-Long-Password-For-Your-Own-Instance
-  ## to allow just requests originating from the local host
+  AUTO_SOURCE_USERNAME: your-username
+  AUTO_SOURCE_PASSWORD: your-secure-password
   AUTO_SOURCE_ALLOWED_ORIGINS: 127.0.0.1:3000
-  ## to allow multiple origins, seperate those via comma:
-  # AUTO_SOURCE_ALLOWED_ORIGINS: example.com,h2r.host.tld
-  ## … snap ✃
 ```
 
-Restart the container and open <http://127.0.0.1:3000/auto_source/>.
-When asked, enter your username and password.
+2. **Restart html2rss-web:**
 
-Then enter the URL of a website and click on the _Generate_ button.
+```bash
+docker compose down
+docker compose up -d
+```
+
+## How to Use It
+
+1. **Open the auto-source page:** Go to `http://localhost:3000/auto_source/`
+2. **Enter your credentials** (the username and password you set above)
+3. **Enter a website URL** and click "Generate"
+4. **Get your RSS feed!** html2rss-web will create a feed automatically
+
+**That's it!** No configuration files needed - html2rss-web does all the work for you.

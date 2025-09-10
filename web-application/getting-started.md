@@ -5,24 +5,33 @@ nav_order: 2
 parent: Web Application
 ---
 
-# Getting Started with the html2rss Web Application
+# Getting Started with html2rss-web
 
-Welcome to the `html2rss-web` application! This guide provides a strategic overview to help you understand what the application does and how to get started.
+Welcome! This guide will help you create RSS feeds from any website using the html2rss-web application.
 
 ## What is html2rss-web?
 
-`html2rss-web` is a self-hosted web application that scrapes content from websites and converts it into RSS feeds. It's designed for users who want to create reliable, custom RSS feeds for sites that don't offer them.
+html2rss-web is a user-friendly web application that turns any website into an RSS feed. It's part of the html2rss project, which also includes a Ruby gem for developers. Think of html2rss-web as a translator that converts website content into a format your feed reader can understand.
 
-## Primary Use Cases
+## Why Use RSS Feeds?
 
-- **Create RSS feeds** for your favorite blogs, news sites, or any website with structured content.
-- **Monitor website changes** by subscribing to the generated RSS feeds.
-- **Aggregate content** from multiple sources into your feed reader.
+Instead of visiting 20 different websites every day, you can:
 
-## The Path to Your First Feed
+- **Get all updates in one place** - your feed reader
+- **Never miss new content** - automatic notifications
+- **Save time** - no more manual checking
+- **Stay organized** - categorize and filter content
 
-Here's the recommended path for a new user:
+## Quick Start Options
 
-1.  **[Installation]({{ '/web-application/installation' | relative_url }})**: Follow our step-by-step guide to set up your own instance of the application using Docker. This is the quickest and most reliable way to get started.
+### Option 1: Browse Ready-Made Feeds (Easiest)
 
-If you're interested in more advanced topics, you can explore our **[How-To Guides]({{ '/web-application/how-to/' | relative_url }})** and the **[Reference]({{ '/web-application/reference/' | relative_url }})** section after you have your instance up and running.
+1. **[Feed Directory]({{ '/feed-directory' | relative_url }})** - See what's already available
+2. **Copy the RSS URL** and add it to your feed reader
+
+### Option 2: Install Your Own Instance
+
+1. **[Installation Guide]({{ '/web-application/installation' | relative_url }})** - Set up your own copy
+2. **[Create Custom Feeds]({{ '/web-application/how-to/' | relative_url }})** - Make feeds for any website
+
+**New to RSS?** We recommend starting with the [Feed Directory]({{ '/feed-directory' | relative_url }}) to see examples, then installing html2rss-web to create your own feeds.

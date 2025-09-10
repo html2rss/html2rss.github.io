@@ -4,30 +4,35 @@ title: Home
 nav_order: 1
 ---
 
-# Create RSS Feeds for Any Website
+# Turn Any Website Into an RSS Feed
 
-`html2rss` creates RSS feeds for any website.
-[**🚀 Get Started with the Web App**]({{ '/web-application/getting-started' | relative_url }})
+Ever wished you could follow your favorite websites like a social media feed? The html2rss project makes it possible by creating RSS feeds for any website - even ones that don't offer them.
 
----
-
-## Key Features
-
-- **Automatic Feed Generation:** `auto_source` intelligently extracts content, simplifying feed creation.
-- **Precise Content Extraction:** Use CSS selectors for targeted content inclusion.
-- **JavaScript Rendering:** A headless browser renders JavaScript-heavy sites for comprehensive content extraction.
-- **Open Source:** `html2rss` is free to use, modify, and contribute.
+[**🚀 Get Started with html2rss-web**]({{ '/web-application/getting-started' | relative_url }})
 
 ---
 
-## The html2rss Ecosystem
+## What is RSS?
 
-The `html2rss` project offers a complete RSS solution through a collection of integrated tools:
+RSS (Really Simple Syndication) lets you follow websites in your favorite feed reader. Instead of checking multiple websites daily, you get all updates in one place - like a personalized news feed.
 
-- **[html2rss-web]({{ '/web-application' | relative_url }}):** User-friendly web application to create, manage, and share RSS feeds. Recommended starting point.
-- **[html2rss (Ruby Gem)]({{ '/ruby-gem' | relative_url }}):** Core library and command-line interface for developers.
-- **[Feed Directory]({{ '/feed-directory' | relative_url }}):** Public listing of community-driven RSS feed configurations.
+## The html2rss Project
+
+The html2rss project provides two main ways to create RSS feeds:
+
+- **html2rss-web** - A user-friendly web application (recommended for most users)
+- **html2rss** - A Ruby gem for developers and advanced users
+
+Both use the same powerful engine to extract content from websites and convert it into RSS feeds.
 
 ---
 
-Engage with the `html2rss` community or contribute. Visit our [Get Involved]({{ '/get-involved' | relative_url }}) page.
+## Choose Your Path
+
+- **[html2rss-web]({{ '/web-application' | relative_url }}):** **Start here!** Easy-to-use web application. No technical knowledge required.
+- **[Feed Directory]({{ '/feed-directory' | relative_url }}):** Browse ready-made feeds for popular websites
+- **[html2rss (Ruby Gem)]({{ '/ruby-gem' | relative_url }}):** For developers who want to create custom configurations
+
+---
+
+**Ready to get started?** Check out our [html2rss-web getting started guide]({{ '/web-application/getting-started' | relative_url }}) or [browse existing feeds]({{ '/feed-directory' | relative_url }}) to see what's possible.

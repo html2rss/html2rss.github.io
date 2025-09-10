@@ -7,26 +7,35 @@ parent: Web Application
 
 # Installation
 
-This guide will walk you through setting up a personal instance of `html2rss-web` using Docker and `docker-compose`. This is the recommended way to run the application for personal use.
+This guide will help you set up your own copy of html2rss-web on your computer. Don't worry - we'll walk you through every step!
 
-## Prerequisites
+## What You'll Need
 
-- Docker and `docker-compose` installed on your machine.
+- **Docker** - A tool that makes installation simple (like an app store for server software)
+- **About 10 minutes** - The whole process is quick and automated
 
-See <https://docs.docker.com/get-started/>.
+**Don't have Docker?** [Install it first](https://docs.docker.com/get-started/) - it's free and works on Windows, Mac, and Linux.
 
-## Step 1: Create a Project Directory
+## Step 1: Create a Folder
 
-First, create a directory on your machine where you'll store the configuration files for your `html2rss-web` instance.
+Create a new folder on your computer to store html2rss-web files:
+
+**On Windows:** Right-click → New Folder → Name it "html2rss-web"
+**On Mac/Linux:** Open Terminal and run:
 
 ```bash
-mkdir html2rss-web;
+mkdir html2rss-web
 cd html2rss-web
 ```
 
-## Step 2: Create the `docker-compose.yml` File
+## Step 2: Create the Configuration File
 
-Create a file named `docker-compose.yml` in your `html2rss-web` directory and add the following content. This setup includes the web application, a browser service for rendering JavaScript-heavy pages, and a service to automatically update the application.
+Create a file called `docker-compose.yml` in your new folder. This file tells Docker how to set up html2rss-web with all the features you need.
+
+**How to create the file:**
+
+- **On Windows:** Right-click in the folder → New → Text Document → Rename it to `docker-compose.yml` (make sure to change the extension)
+- **On Mac/Linux:** Use any text editor to create the file
 
 ```yaml
 services:
@@ -66,29 +75,47 @@ services:
       TOKEN: 6R0W53R135510
 ```
 
-## Step 3: Create the `feeds.yml` File
+## Step 3: Download the Feed List
 
-The application needs a file to store your feed configurations.  
-[Download the default `feeds.yml`](https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml)
-to get started quickly:
+html2rss-web needs a list of feeds to work with. Download our pre-made list:
+
+**On Windows:** Right-click [this link](https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml) → Save As → Name it "feeds.yml" → Save in your html2rss-web folder
+
+**On Mac/Linux:** Open Terminal in your html2rss-web folder and run:
 
 ```bash
 curl https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml -o feeds.yml
 ```
 
-## Step 4: Launch the Application
+## Step 4: Start html2rss-web
 
-Now, you can start the application using `docker compose`.
+Now start html2rss-web:
+
+**On Windows:** Open Command Prompt in your html2rss-web folder and run:
+
+```cmd
+docker compose up -d
+```
+
+**On Mac/Linux:** In Terminal, run:
 
 ```bash
 docker compose up -d
 ```
 
-The `-d` flag runs the containers in the background.
+**That's it!** 🎉 html2rss-web is now running.
 
-Congratulations! Your personal `html2rss-web` instance is now running. You can access it at `http://localhost:3000`.
+**To verify it's working:**
+
+1. Open your web browser
+2. Go to `http://localhost:3000`
+3. You should see the html2rss-web interface with a list of available feeds
+
+**If you see the interface, congratulations!** You've successfully set up html2rss-web.
 
 ## Next Steps
 
-- Now that your instance is running, head over to the **[How-To Guides]({{ '/web-application/how-to/' | relative_url }})** to learn how to create your first feed. We recommend starting with the [Creating Custom Feeds]({{ '/web-application/how-to/creating-custom-feeds' | relative_url }}) guide.
-- For a more secure setup, consider putting your instance behind a reverse proxy. You can find more information in the [deployment guide]({{ '/web-application/how-to/deployment' | relative_url }}).
+- **Try it out!** Visit `http://localhost:3000` to see html2rss-web in action
+- **Browse existing feeds** - Check out what's already available
+- **Create your first feed** - Follow our [How-To Guides]({{ '/web-application/how-to/' | relative_url }}) to make custom feeds
+- **Need help?** Check our [troubleshooting guide]({{ '/support/troubleshooting' | relative_url }}) if something doesn't work
