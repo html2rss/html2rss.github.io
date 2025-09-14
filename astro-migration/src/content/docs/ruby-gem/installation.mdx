@@ -1,0 +1,68 @@
+---
+title: 'Installation'
+description: 'This guide will walk you through the process of installing html2rss on your system.'
+---
+
+# Installation
+
+This guide will walk you through the process of installing html2rss on your system. html2rss can be installed in several ways, depending on your preferred method and environment.
+
+---
+
+### Prerequisites
+
+- **Ruby:** html2rss is built with Ruby. Ensure you have Ruby installed (version 3.2 or higher required). You can check your Ruby version by running `ruby -v` in your terminal. If you don't have Ruby, visit [ruby-lang.org](https://www.ruby-lang.org/en/documentation/installation/) for installation instructions.
+- **Bundler (Recommended):** Bundler is a Ruby gem that manages your application's dependencies. It's highly recommended for a smooth installation. Install it with `gem install bundler`.
+
+---
+
+### Method 1: Gem Installation (Recommended for CLI Usage)
+
+The simplest way to get html2rss for command-line usage is to install it as a Ruby gem.
+
+```bash
+gem install html2rss
+```
+
+After installation, you should be able to run `html2rss --version` to confirm it's working.
+
+---
+
+### Method 2: Using a Gemfile (For Ruby Projects)
+
+If you're integrating html2rss into an existing Ruby project, add it to your `Gemfile`:
+
+```ruby
+# Gemfile
+gem 'html2rss'
+```
+
+Then, run `bundle install` in your project directory.
+
+---
+
+### Method 3: GitHub Codespaces (For Cloud Development)
+
+For a quick start without local setup, you can develop html2rss directly in your browser using GitHub Codespaces:
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?repo=html2rss/html2rss)
+
+The Codespace comes pre-configured with Ruby 3.4, all dependencies, and VS Code extensions ready to go!
+
+---
+
+### Verifying Installation
+
+To ensure html2rss is installed correctly, open your terminal and run:
+
+```bash
+html2rss --version
+```
+
+You should see the installed version number. If you encounter any issues, please refer to the [Troubleshooting Guide](/support/troubleshooting).
+
+---
+
+### Next Steps
+
+Now that html2rss is installed, let's create your [first RSS feed](/ruby-gem/tutorials/your-first-feed)!
