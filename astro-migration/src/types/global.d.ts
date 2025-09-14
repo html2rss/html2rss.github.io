@@ -1,8 +1,6 @@
 declare global {
   interface Window {
-    feedDirectoryData: {
-      configsData: any[];
-    };
+    feedDirectoryData: any[];
     Alpine: any;
   }
 }

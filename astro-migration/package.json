@@ -7,11 +7,17 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "update-data": "ruby bin/data-update",
+    "build:full": "npm run update-data && npm run build"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.35.3",
+    "alpinejs": "^3.15.0",
     "astro": "^5.6.1",
     "sharp": "^0.34.2"
+  },
+  "devDependencies": {
+    "@types/alpinejs": "^3.13.11"
   }
 }

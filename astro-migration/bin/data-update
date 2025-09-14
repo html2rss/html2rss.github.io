@@ -1,0 +1,65 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'rubygems'
+require 'bundler/setup'
+
+require 'fileutils'
+require 'html2rss'
+require 'html2rss/configs'
+require 'uri'
+require 'yaml'
+require 'json'
+
+file_names = Html2rss::Configs.file_names.sort
+
+def extract_default_parameters(parameters)
+  return {} unless parameters.is_a?(Hash)
+
+  parameters.each_with_object({}) do |(param_name, param_config), defaults|
+    defaults[param_name] = param_config['default'] if param_config.is_a?(Hash) && param_config['default']
+  end
+end
+
+def valid_url(url)
+  !!URI(url)
+rescue StandardError
+  false
+end
+
+def string_formatting_references(string)
+  string.to_s.scan(/%[{<](\w+)[>}](\w)?/).to_h.transform_values do |value|
+    case value
+    when 'i', 'd', 'u'
+      Numeric
+    else
+      String
+    end
+  end
+end
+
+output = file_names.map do |file_name|
+  config = YAML.safe_load(File.open(file_name), symbolize_names: false)
+
+  file_name_splits = file_name.split('/')
+
+  # Extract default parameter values from the parameters section
+  default_parameters = extract_default_parameters(config['parameters'])
+
+  {
+    'domain' => file_name_splits[-2..-2].join,
+    'name' => File.basename(file_name_splits[-1..].join, '.*'),
+    'valid_channel_url' => valid_url(config['channel']['url']),
+    'url_parameters' => string_formatting_references(config['channel']['url']),
+    'default_parameters' => default_parameters,
+    'channel' => config['channel']
+  }
+end
+
+config_file = File.join(__dir__, '..', 'src/data/configs.json')
+FileUtils.touch config_file
+
+# Convert to JSON (no Ruby-specific tags to clean up)
+json_content = JSON.pretty_generate(output)
+
+File.write(config_file, json_content)
