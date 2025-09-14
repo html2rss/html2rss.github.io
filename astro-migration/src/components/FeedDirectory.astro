@@ -1,0 +1,507 @@
+---
+import { configs } from '../data/configs';
+---
+
+<div class="feed-directory-container">
+  <noscript>
+    <span class="noscript">This site needs JavaScript to link to the feed URL!</span>
+  </noscript>
+
+  <div id="configs" x-data="feedDirectory()">
+    <div class="feed-directory__filters">
+      <fieldset class="feed-directory__fieldset">
+        <legend>Instance URL</legend>
+        <input
+          type="text"
+          name="instance"
+          x-model="instanceUrl"
+          class="feed-directory__input"
+          aria-label="Instance URL"
+        />
+      </fieldset>
+
+      <fieldset class="feed-directory__fieldset">
+        <legend>Search</legend>
+        <input
+          type="search"
+          name="search"
+          autofocus
+          placeholder="fia, apple, news or blog"
+          x-on:input.debounce.500ms="searchQuery = $event.target.value"
+          x-model="searchQuery"
+          class="feed-directory__input"
+          aria-label="Search feeds"
+        />
+      </fieldset>
+    </div>
+
+    <div id="feed-items">
+      {configs.map((config, index) => (
+        <div
+          class="feed-directory__item"
+          x-show="filterConfig('{config.domain}/{config.name}')"
+          x-data="feedItemData({index})"
+          x-init="init()"
+          x-cloak
+        >
+          <div class="feed-directory__item-info">
+            {config.channel?.url && (
+              <div class="feed-directory__item-main">
+                <h3 class="feed-directory__item-name">
+                  {config.valid_channel_url ? (
+                    <a
+                      href={config.channel.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {config.channel.url}
+                    </a>
+                  ) : (
+                    <>
+                      <span x-show="!pathPreview">{config.channel.url}</span>
+                      <a
+                        x-bind:href="pathPreview"
+                        x-show="pathPreview"
+                        x-text="pathPreview"
+                      ></a>
+                    </>
+                  )}
+                </h3>
+                {!config.valid_channel_url && (
+                  <button
+                    class="feed-directory__item-param-toggle"
+                    x-on:click="toggleParamsForm"
+                    :title="showParamsForm ? 'Hide parameters' : 'Configure parameters'"
+                    :aria-label="showParamsForm ? 'Hide parameters' : 'Configure parameters'"
+                  >
+                    <svg
+                      class="feed-directory__param-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      aria-hidden="true"
+                    >
+                      <circle cx="12" cy="12" r="3" />
+                      <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1" />
+                    </svg>
+                    <span x-text="showParamsForm ? 'Hide' : 'Configure'"></span>
+                  </button>
+                )}
+              </div>
+            )}
+
+            {!config.valid_channel_url && (
+              <div class="feed-directory__item-param-form" x-show="showParamsForm">
+                <form role="form">
+                  {Object.entries(config.url_parameters || {}).map(([key, fallback]) => (
+                    <div class="feed-directory__item-param-form__group form-group">
+                      <label
+                        for={`${config.domain}-${config.name}-${key}`}
+                        class="feed-directory__item-param-form__label"
+                      >
+                        {key}
+                      </label>
+                      <input
+                        type="text"
+                        id={`${config.domain}-${config.name}-${key}`}
+                        name={key}
+                        class="feed-directory__item-param-form__input form-control"
+                        placeholder={String(fallback)}
+                        x-model={`params['${key}']`}
+                        aria-label={key}
+                      />
+                    </div>
+                  ))}
+                  <div class="feed-directory__item-param-form__buttons">
+                    <button x-on:click="showParamsForm = false" class="btn btn-sm">
+                      Close
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+          </div>
+
+          <div class="feed-directory__item-actions">
+            <a
+              :href="getFeedUrl(config, params)"
+              rel="noopener noreferrer"
+              target="_blank"
+              title="Show RSS"
+              aria-label="Open RSS feed"
+            >
+              <svg class="feed-directory__item-actions__rss-icon">
+                <use xlink:href="#rss-icon"></use>
+              </svg>
+            </a>
+            <a
+              href={`https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/${encodeURIComponent(config.domain)}/${encodeURIComponent(config.name)}.yml`}
+              class="edit-link"
+              target="_blank"
+              title="Edit on GitHub"
+              aria-label="Edit on GitHub"
+            >
+              <svg class="feed-directory__item-actions__edit-icon">
+                <use xlink:href="#edit-icon"></use>
+              </svg>
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script>
+  // Make configs data available globally
+  window.feedDirectoryData = {configsData: configs};
+</script>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    // @ts-ignore
+    Alpine.data("feedDirectory", () => ({
+      instanceUrl: atob("aHR0cHM6Ly8xLmgyci53b3JrZXJzLmRldi8="),
+      searchQuery: "",
+      configs: window.feedDirectoryData.configsData,
+
+      fuzzyMatch(text: string, query: string) {
+        const lowerText = text.toLowerCase();
+        const lowerQuery = query.toLowerCase();
+        let textIndex = 0;
+        let queryIndex = 0;
+
+        while (queryIndex < lowerQuery.length && textIndex < lowerText.length) {
+          if (lowerQuery[queryIndex] === lowerText[textIndex]) {
+            queryIndex++;
+          }
+          textIndex++;
+        }
+        return queryIndex === lowerQuery.length;
+      },
+
+      filterConfig(configName: string) {
+        if (!this.searchQuery) {
+          return true;
+        }
+        return this.fuzzyMatch(configName, this.searchQuery);
+      },
+
+      getFeedUrl(config: any, params: any = {}) {
+        let url = this.instanceUrl.endsWith("/")
+          ? this.instanceUrl
+          : `${this.instanceUrl}/`;
+        url += `${config.domain}/${config.name}.rss`;
+
+        const queryParams = new URLSearchParams();
+
+        if (config.url_parameters) {
+          for (const key of Object.keys(config.url_parameters)) {
+            if (params[key]) {
+              queryParams.append(key, params[key]);
+            }
+          }
+        }
+
+        const queryString = queryParams.toString();
+        if (queryString) {
+          url += `?${queryString}`;
+        }
+
+        return url;
+      },
+    }));
+
+    // @ts-ignore
+    Alpine.data("feedItemData", (index: number) => ({
+      config: window.feedDirectoryData.configsData[index],
+      params: {},
+      pathPreview: "",
+      showParamsForm: false,
+      toggleParamsForm() {
+        this.showParamsForm = !this.showParamsForm;
+      },
+      dynamicParamsInterpolate(string: string, params: any) {
+        return string.replace(/%<(\w+)>s/g, (_: string, key: string) => {
+          if (!(key in params)) {
+            throw new Error(`Missing value for placeholder: ${key}`);
+          }
+          return params[key];
+        });
+      },
+
+      initializeDefaultParameters() {
+        Object.entries(this.config.url_parameters).forEach(([key, fallback]) => {
+          const inputId = `${this.config.domain}-${this.config.name}-${key}`;
+          const input = document.getElementById(inputId) as HTMLInputElement;
+
+          if (input && this.config.default_parameters[key]) {
+            // Set the actual value in the input field
+            input.value = this.config.default_parameters[key];
+            // Also set placeholder as fallback
+            input.placeholder = this.config.default_parameters[key];
+          }
+        });
+
+        // Now set params with default values (this will trigger the watcher)
+        this.params = { ...this.config.default_parameters };
+      },
+
+      init() {
+        if (!this.config) return;
+
+        // Initialize params first
+        this.params = {};
+
+        // Set default values in input fields after DOM is ready
+        if (this.config.default_parameters && !this.config.valid_channel_url) {
+          // @ts-ignore
+          this.$nextTick(() => {
+            this.initializeDefaultParameters();
+          });
+        }
+
+        if (!this.config.valid_channel_url) {
+          // @ts-ignore
+          this.$watch("params", (value: any) => {
+            let params: any = {};
+
+            Object.entries(this.config.url_parameters).forEach(
+              ([key, fallback]) => {
+                const val = value[key];
+                params[key] = val || `{${fallback}}`;
+              },
+            );
+
+            try {
+              this.pathPreview = this.dynamicParamsInterpolate(
+                this.config.channel.url,
+                params,
+              );
+            } catch (error) {
+              console.error("Error interpolating parameters:", error);
+            }
+          });
+        }
+      },
+    }));
+  });
+</script>
+
+<!-- SVG Icons -->
+<div class="svg-defs-hidden">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="rss-icon">
+    <rect
+      width="512"
+      height="512"
+      x="-512"
+      y="-512"
+      rx="70"
+      ry="70"
+      style="fill: #ea7819; fill-opacity: 1; stroke: none"
+      transform="scale(-1)"
+    />
+    <path
+      d="M81.056 267.05c43.705 0 84.79 17.072 115.665 48.124 30.931 31.051 47.961 72.411 47.961 116.44h67.35c0-127.885-103.62-231.921-230.976-231.921zm.106-119.4c155.76 0 282.488 127.42 282.488 284.049H431C431 237.925 274.054 80.301 81.162 80.301zm93.135 236.998c0 25.757-20.892 46.649-46.649 46.649-25.756 0-46.648-20.885-46.648-46.649C81 358.878 101.885 338 127.641 338c25.757 0 46.656 20.878 46.656 20.878"
+      style="fill: #fff"
+    />
+  </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="edit-icon">
+    <path
+      fill="currentColor"
+      d="M3 17.25V21h3.75L18.75 9.75l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+    />
+  </svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 32 32"
+    id="settings-icon"
+  >
+    <path
+      fill="currentColor"
+      d="M28 13V8a2 2 0 0 0-2-2h-3v2h3v5a3.98 3.98 0 0 0 1.382 3A3.98 3.98 0 0 0 26 19v5h-3v2h3a2 2 0 0 0 2-2v-5a2 2 0 0 1 2-2v-2a2 2 0 0 1-2-2"
+    />
+    <path
+      fill="currentColor"
+      d="m17 9-.857 3h2L19 9h2l-.857 3H22v2h-2.428l-1.143 4H21v2h-3.143L17 23h-2l.857-3h-2L13 23h-2l.857-3H10v-2h2.429l1.143-4H11v-2h3.143L15 9Zm.572 5h-2l-1.143 4h2Z"
+      style="fill-rule: evenodd"
+    />
+    <path
+      fill="currentColor"
+      d="M6 13V8h3V6H6a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2v2a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h3v-2H6v-5a3.98 3.98 0 0 0-1.382-3A3.98 3.98 0 0 0 6 13"
+    />
+    <path d="M0 0h32v32H0z" style="fill: none" />
+  </svg>
+</div>
+
+<!-- Alpine.js -->
+<script
+  src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"
+  integrity="sha256-PtHu0lJIiSHfZeNj1nFd6wTX+Squ255SGZ/fc8seCtM="
+  crossorigin="anonymous"
+  defer
+></script>
+
+<style>
+  .feed-directory-container {
+    margin: 2rem 0;
+  }
+
+  .feed-directory__filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: var(--sl-color-gray-2);
+    border-radius: 0.5rem;
+  }
+
+  .feed-directory__fieldset {
+    flex: 1;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .feed-directory__fieldset legend {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .feed-directory__input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 0.25rem;
+    background: var(--sl-color-white);
+  }
+
+  .feed-directory__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 0.5rem;
+    background: var(--sl-color-white);
+  }
+
+  .feed-directory__item-info {
+    flex: 1;
+  }
+
+  .feed-directory__item-main {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .feed-directory__item-name {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .feed-directory__item-name a {
+    color: var(--sl-color-blue-high);
+    text-decoration: none;
+  }
+
+  .feed-directory__item-name a:hover {
+    text-decoration: underline;
+  }
+
+  .feed-directory__item-param-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--sl-color-gray-2);
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+  }
+
+  .feed-directory__param-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .feed-directory__item-param-form {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--sl-color-gray-1);
+    border-radius: 0.25rem;
+  }
+
+  .feed-directory__item-param-form__group {
+    margin-bottom: 1rem;
+  }
+
+  .feed-directory__item-param-form__label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+  }
+
+  .feed-directory__item-param-form__input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 0.25rem;
+  }
+
+  .feed-directory__item-param-form__buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .feed-directory__item-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .feed-directory__item-actions a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    color: var(--sl-color-gray-6);
+    text-decoration: none;
+    border-radius: 0.25rem;
+  }
+
+  .feed-directory__item-actions a:hover {
+    background: var(--sl-color-gray-2);
+  }
+
+  .feed-directory__item-actions__rss-icon,
+  .feed-directory__item-actions__edit-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .svg-defs-hidden {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+
+  .noscript {
+    display: block;
+    padding: 1rem;
+    background: var(--sl-color-red-low);
+    color: var(--sl-color-red-high);
+    border-radius: 0.25rem;
+    text-align: center;
+  }
+
+  [x-cloak] {
+    display: none !important;
+  }
+</style>
