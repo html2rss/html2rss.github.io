@@ -123,8 +123,16 @@ export default defineConfig({
 					link: '/',
 				},
 				{
+					label: 'About',
+					link: '/about',
+				},
+				{
 					label: 'Feed Directory',
 					link: '/feed-directory/',
+				},
+				{
+					label: 'Creating Custom Feeds',
+					link: '/html2rss-configs',
 				},
 				{
 					label: 'Web Application',
