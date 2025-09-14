@@ -1,21 +1,23 @@
 {
-  "license": "UNLICENSED",
-  "private": true,
+  "name": "html2rss-website",
+  "type": "module",
+  "version": "0.0.1",
   "scripts": {
-    "lint": "yarn lint:stylelint && yarn lint:prettier",
-    "lint:stylelint": "stylelint assets/**/*.scss",
-    "lint:prettier": "prettier --check .",
-    "lintfix": "yarn lintfix:stylelint && yarn lintfix:prettier",
-    "lintfix:stylelint": "stylelint --fix assets/**/*.scss",
-    "lintfix:prettier": "prettier --write ."
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "update-data": "ruby bin/data-update",
+    "build:full": "npm run update-data && npm run build"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.35.3",
+    "alpinejs": "^3.15.0",
+    "astro": "^5.6.1",
+    "sharp": "^0.34.2"
   },
   "devDependencies": {
-    "prettier": "3.6.2",
-    "stylelint": "16.24.0",
-    "stylelint-config-recess-order": "7.3.0",
-    "stylelint-order": "7.0.0",
-    "stylelint-config-recommended-scss": "16.0.1",
-    "stylelint-scss": "6.12.1"
-  },
-  "packageManager": "yarn@1.22.22"
+    "@types/alpinejs": "^3.13.11"
+  }
 }

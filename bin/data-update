@@ -9,6 +9,7 @@ require 'html2rss'
 require 'html2rss/configs'
 require 'uri'
 require 'yaml'
+require 'json'
 
 file_names = Html2rss::Configs.file_names.sort
 
@@ -55,6 +56,10 @@ output = file_names.map do |file_name|
   }
 end
 
-config_file = File.join(__dir__, '..', '_data/configs.yml')
+config_file = File.join(__dir__, '..', 'src/data/configs.json')
 FileUtils.touch config_file
-File.write(config_file, output.to_yaml)
+
+# Convert to JSON (no Ruby-specific tags to clean up)
+json_content = JSON.pretty_generate(output)
+
+File.write(config_file, json_content)
