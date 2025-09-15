@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: d7c60ffee7747afe425240bae539cdf71ad356f5
+  revision: c8799e7f19b12913986b1cf7e534b6d0c145c62a
   specs:
     html2rss-configs (0.2.0)
       html2rss
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: 3071d18755e3f546aa35bccfdaa83694c61a475c
+  revision: 252289759287d5f0d7251a958d12a72ceebc27d6
   specs:
     html2rss (0.17.0)
       addressable (~> 2.7)
@@ -90,13 +90,13 @@ GEM
     ffi (1.17.2-arm64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
     forwardable-extended (2.6.0)
-    google-protobuf (4.32.0-aarch64-linux-gnu)
+    google-protobuf (4.32.1-aarch64-linux-gnu)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.32.0-arm64-darwin)
+    google-protobuf (4.32.1-arm64-darwin)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.32.0-x86_64-linux-gnu)
+    google-protobuf (4.32.1-x86_64-linux-gnu)
       bigdecimal
       rake (>= 13)
     http_parser.rb (0.8.0)
@@ -163,11 +163,11 @@ GEM
     mime-types-data (3.2025.0909)
     net-http (0.6.0)
       uri
-    nokogiri (1.18.9-aarch64-linux-gnu)
+    nokogiri (1.18.10-aarch64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.18.9-arm64-darwin)
+    nokogiri (1.18.10-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.18.9-x86_64-linux-gnu)
+    nokogiri (1.18.10-x86_64-linux-gnu)
       racc (~> 1.4)
     parallel (1.27.0)
     parser (3.3.9.0)
@@ -175,7 +175,7 @@ GEM
       racc
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
-    prism (1.4.0)
+    prism (1.5.1)
     public_suffix (6.0.2)
     puppeteer-ruby (0.45.6)
       concurrent-ruby (>= 1.1, < 1.4)
