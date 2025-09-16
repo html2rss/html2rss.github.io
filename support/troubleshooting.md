@@ -23,6 +23,17 @@ If your feed is empty, check the following:
 - **URL:** Ensure the `url` in your configuration is correct and accessible.
 - **`items.selector`:** Verify that the `items.selector` matches the elements on the page.
 - **Website Changes:** Websites change their HTML structure frequently. Your selectors may be outdated.
+- **JavaScript Content:** If the content is loaded via JavaScript, use the `browserless` strategy instead of `faraday`.
+- **Authentication:** Some sites require authentication - check if you need to add headers or use a different strategy.
+
+### Configuration Errors
+
+Common configuration-related errors:
+
+- **`UnsupportedResponseContentType`:** The website returned content that html2rss can't parse (not HTML or JSON).
+- **`UnsupportedStrategy`:** The specified strategy is not available. Use `faraday` or `browserless`.
+- **`Configuration must include at least 'selectors' or 'auto_source'`:** You need to specify either manual selectors or enable auto-source.
+- **`stylesheet.type invalid`:** Only `text/css` and `text/xsl` are supported for stylesheets.
 
 ### Missing Item Parts
 
@@ -45,6 +56,15 @@ If you are getting a "command not found" error, try the following:
 
 - **Re-install:** Re-install `html2rss` to ensure it is installed correctly: `gem install html2rss`.
 - **Check `PATH`:** Ensure that the directory where Ruby gems are installed is in your system's `PATH`.
+
+### Web Application Errors
+
+For html2rss-web specific issues:
+
+- **`401 Unauthorized`:** Check your `AUTO_SOURCE_USERNAME` and `AUTO_SOURCE_PASSWORD` environment variables.
+- **`403 Forbidden`:** The URL is not in the `AUTO_SOURCE_ALLOWED_URLS` list, or the origin is not in `AUTO_SOURCE_ALLOWED_ORIGINS`.
+- **`500 Internal Server Error`:** Check the application logs for detailed error information.
+- **Health check failures:** Use the `/health_check.txt` endpoint to identify which specific feed configurations are broken.
 
 ## Tips & Tricks
 

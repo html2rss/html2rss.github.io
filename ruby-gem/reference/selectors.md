@@ -37,6 +37,21 @@ selectors:
     enhance: true # default: true
 ```
 
+## Item Ordering
+
+You can control the order of items in your feed:
+
+```yml
+selectors:
+  items:
+    selector: ".article"
+    order: "reverse" # Reverse the order of items (newest first)
+```
+
+Available options:
+- `"reverse"`: Reverses the order of items (useful when the website shows oldest items first)
+- Default: Items appear in the order they are found on the page
+
 ## RSS 2.0 Selectors
 
 While you can define any named selector, only the following are used in the final RSS feed:
