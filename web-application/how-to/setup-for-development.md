@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Setup for development
-nav_order: 5
-parent: How-To Guides
-grand_parent: Web Application
+title: 'Setup for development'
 ---
 
 # Setup for development

@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Backward Compatibility
-nav_order: 11
-parent: How-To Guides
-grand_parent: Ruby Gem
+title: 'Backward Compatibility'
 ---
 
 # Backward Compatibility

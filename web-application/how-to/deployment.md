@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Deployment
-nav_order: 4
-parent: How-To Guides
-grand_parent: Web Application
+title: 'Deployment'
 ---
 
 # Deployment

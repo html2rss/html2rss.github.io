@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Advanced Content Extraction
-nav_order: 3
-parent: How-To Guides
-grand_parent: Ruby Gem
+title: 'Advanced Content Extraction'
 ---
 
 # Advanced Content Extraction with Selectors

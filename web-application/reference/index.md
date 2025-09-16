@@ -1,9 +1,8 @@
 ---
-layout: default
-title: Reference
-nav_order: 4
-parent: Web Application
-has_children: true
+title: 'Reference'
+sidebar:
+  label: 'Overview'
+
 ---
 
 # Reference

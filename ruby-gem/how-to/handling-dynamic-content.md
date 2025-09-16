@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Handling Dynamic Content
-nav_order: 6
-parent: How-To Guides
-grand_parent: Ruby Gem
+title: 'Handling Dynamic Content'
 ---
 
 # Handling Dynamic Content and JavaScript

@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Building your RSS feeds
-nav_order: 1
-parent: Tutorials
-grand_parent: Web Application
+title: 'Building your RSS feeds'
 ---
 
 # How to build your RSS feeds

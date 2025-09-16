@@ -1,9 +1,9 @@
 ---
-layout: default
-title: How-To Guides
-parent: Ruby Gem
-nav_order: 2
-has_children: true
+title: 'How-To Guides'
+description: 'This section provides practical examples and solutions for common tasks when using the html2rss gem.'
+sidebar:
+  label: 'Overview'
+
 ---
 
 # How-To Guides

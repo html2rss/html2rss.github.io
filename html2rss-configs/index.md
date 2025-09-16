@@ -1,8 +1,8 @@
 ---
-layout: default
-title: html2rss-configs
-has_children: false
-nav_order: 5
+title: 'html2rss-configs'
+sidebar:
+  label: 'Overview'
+
 ---
 
 # Creating Custom RSS Feeds

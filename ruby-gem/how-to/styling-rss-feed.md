@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Styling Your RSS Feed
-nav_order: 7
-parent: How-To Guides
-grand_parent: Ruby Gem
+title: 'Styling Your RSS Feed'
 ---
 
 # Styling Your RSS Feed

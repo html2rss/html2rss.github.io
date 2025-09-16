@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Selectors
-parent: Reference
-grand_parent: Ruby Gem
-nav_order: 3
+title: 'Selectors'
 ---
 
 # Selectors

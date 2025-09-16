@@ -1,8 +1,5 @@
 ---
-layout: default
-title: Report Bugs & Discuss Features
-nav_order: 1
-parent: Get Involved
+title: 'Report Bugs & Discuss Features'
 ---
 
 # Report Bugs & Discuss Features

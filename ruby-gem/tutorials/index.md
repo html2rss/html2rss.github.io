@@ -1,9 +1,7 @@
 ---
-layout: default
-title: Tutorials
-nav_order: 2
-parent: Ruby Gem
-has_children: true
+title: 'Tutorials'
+sidebar:
+  label: 'Overview'
 ---
 
 # Tutorials

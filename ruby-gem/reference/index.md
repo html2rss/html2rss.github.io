@@ -1,9 +1,8 @@
 ---
-layout: default
-title: Reference
-parent: Ruby Gem
-nav_order: 3
-has_children: true
+title: 'Reference'
+sidebar:
+  label: 'Overview'
+
 ---
 
 # Reference

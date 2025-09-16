@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Use automatic feed generation
-nav_order: 2
-parent: How-To Guides
-grand_parent: Web Application
+title: 'Use automatic feed generation'
 ---
 
 # Automatic Feed Generation

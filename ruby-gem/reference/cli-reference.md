@@ -1,9 +1,5 @@
 ---
-layout: default
-title: CLI Reference
-nav_order: 7
-parent: Reference
-grand_parent: Ruby Gem
+title: 'CLI Reference'
 ---
 
 # CLI Reference

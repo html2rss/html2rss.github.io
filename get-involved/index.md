@@ -1,17 +1,16 @@
 ---
-layout: default
-title: Get Involved
-nav_order: 5
-has_children: true
+title: 'Get Involved'
+description: 'Engage with the html2rss project. Contribute and connect with the community.'
+sidebar:
+  label: 'Overview'
+
 ---
-
-# Get Involved
-
-- [**Sponsoring**]({{ '/get-involved/sponsoring' | relative_url }})
 
 Engage with the `html2rss` project. Contribute and connect with the community.
 
-- [**Project Roadmap**]({{ 'https://github.com/orgs/html2rss/projects/3/views/1' }}): View current work, plans, and priorities.
-- [**Report Bugs & Discuss Features**]({{ '/get-involved/issues-and-features' | relative_url }}): Report bugs or propose features.
-- [**Join Community Discussions**]({{ '/get-involved/discussions' | relative_url }}): Connect with users and contributors.
-- [**Contribute to html2rss**]({{ '/get-involved/contributing' | relative_url }}): Contribute code, documentation, or feed configurations.
+- [**Project Roadmap**](https://github.com/orgs/html2rss/projects/3/views/1): View current work, plans, and priorities.
+- [**Report Bugs & Discuss Features**](/get-involved/issues-and-features): Report bugs or propose features.
+- [**Join Community Discussions**](/get-involved/discussions): Connect with users and contributors.
+- [**Contribute to html2rss**](/get-involved/contributing): Contribute code, documentation, or feed configurations.
+
+- [**Sponsoring**](/get-involved/sponsoring)

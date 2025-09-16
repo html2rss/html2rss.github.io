@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Headers
-nav_order: 6
-parent: Reference
-grand_parent: Ruby Gem
+title: 'Headers'
 ---
 
 # Headers

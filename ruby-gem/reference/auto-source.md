@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Auto Source
-nav_order: 5
-parent: Reference
-grand_parent: Ruby Gem
+title: 'Auto Source'
 ---
 
 # Auto Source

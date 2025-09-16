@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Managing Feed Configs
-parent: How-To Guides
-grand_parent: Ruby Gem
-nav_order: 7
+title: 'Managing Feed Configs'
 ---
 
 # Managing Feed Configurations with YAML

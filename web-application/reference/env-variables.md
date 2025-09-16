@@ -1,9 +1,5 @@
 ---
-layout: default
-title: ENV variables
-nav_order: 1
-parent: Reference
-grand_parent: Web Application
+title: 'ENV variables'
 ---
 
 # Configuration Reference

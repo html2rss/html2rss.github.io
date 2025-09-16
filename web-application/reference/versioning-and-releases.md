@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Versioning and releases
-parent: Reference
-grand_parent: Web Application
-nav_order: 5
+title: 'Versioning and releases'
 ---
 
 # Versioning and releases

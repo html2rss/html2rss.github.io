@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Your First Feed
-nav_order: 2
-parent: Tutorials
-grand_parent: Ruby Gem
+title: 'Your First Feed'
 ---
 
 # Your First Feed: A Step-by-Step Guide

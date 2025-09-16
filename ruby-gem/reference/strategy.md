@@ -1,10 +1,5 @@
 ---
-layout: default
-title: Strategy
-nav_order: 4
-parent: Reference
-grand_parent: Ruby Gem
-permalink: /ruby-gem/reference/strategy
+title: 'Strategy'
 ---
 
 # Strategy

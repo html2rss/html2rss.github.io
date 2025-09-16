@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Use the included configs
-parent: How-To Guides
-grand_parent: Web Application
-nav_order: 3
+title: 'Use the included configs'
 ---
 
 # Using Pre-Made Feeds

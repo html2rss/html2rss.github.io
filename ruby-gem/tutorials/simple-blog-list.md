@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Scraping a Simple Blog List
-nav_order: 3
-parent: Tutorials
-grand_parent: Ruby Gem
+title: 'Scraping a Simple Blog List'
 ---
 
 # Tutorial: Scraping a Simple Blog List

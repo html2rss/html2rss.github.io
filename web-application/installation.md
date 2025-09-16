@@ -1,8 +1,5 @@
 ---
-layout: default
-title: Installation
-nav_order: 2
-parent: Web Application
+title: 'Installation'
 ---
 
 # Installation

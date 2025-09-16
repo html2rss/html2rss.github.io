@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Automatic Updates
-nav_order: 3
-parent: How-To Guides
-grand_parent: Web Application
+title: 'Automatic Updates'
 ---
 
 # Automatic Updates with Watchtower

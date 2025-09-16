@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Advanced Features
-nav_order: 9
-parent: How-To Guides
-grand_parent: Ruby Gem
+title: 'Advanced Features'
 ---
 
 # Advanced Features

@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Custom HTTP Requests
-nav_order: 4
-parent: How-To Guides
-grand_parent: Ruby Gem
+title: 'Custom HTTP Requests'
 ---
 
 # Customizing HTTP Requests

@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Dynamic Parameters
-nav_order: 5
-parent: How-To Guides
-grand_parent: Ruby Gem
+title: 'Dynamic Parameters'
 ---
 
 # Dynamic Parameters in URLs and Headers

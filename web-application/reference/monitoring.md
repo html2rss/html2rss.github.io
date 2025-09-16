@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Monitoring
-parent: Reference
-grand_parent: Web Application
-nav_order: 3
+title: 'Monitoring'
 ---
 
 # Monitoring

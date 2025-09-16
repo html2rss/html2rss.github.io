@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Scraping JSON Responses
-parent: How-To Guides
-grand_parent: Ruby Gem
-nav_order: 6
+title: 'Scraping JSON Responses'
 ---
 
 # Scraping JSON Responses

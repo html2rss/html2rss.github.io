@@ -1,8 +1,9 @@
 ---
-layout: default
-title: Web Application
-nav_order: 2
-has_children: true
+title: 'Web Application'
+description: 'This web application scrapes websites to build and deliver RSS 2.0 feeds. It is a powerful tool for creating custom RSS feeds.'
+sidebar:
+  label: 'Overview'
+
 ---
 
 # html2rss-web
@@ -11,7 +12,7 @@ This web application scrapes websites to build and deliver RSS 2.0 feeds. It is 
 
 ## Get Started
 
-Our **[Getting Started guide]({{ '/web-application/getting-started' | relative_url }})** covers essential first steps, from understanding the application to installing your own instance.
+Our **[Getting Started guide](/web-application/getting-started)** covers essential first steps, from understanding the application to installing your own instance.
 
 ## Key Features
 

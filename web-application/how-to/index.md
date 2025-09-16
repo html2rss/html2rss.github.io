@@ -1,9 +1,7 @@
 ---
-layout: default
-title: How-To Guides
-nav_order: 3
-parent: Web Application
-has_children: true
+title: 'How-To Guides'
+sidebar:
+  label: 'Overview'
 ---
 
 # How-To Guides

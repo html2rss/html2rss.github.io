@@ -1,8 +1,5 @@
 ---
-layout: default
-title: Contributing
-parent: Get Involved
-nav_order: 10
+title: 'Contributing'
 ---
 
 # Contributing to html2rss

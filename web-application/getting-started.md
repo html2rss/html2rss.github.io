@@ -1,8 +1,5 @@
 ---
-layout: default
-title: Getting Started
-nav_order: 2
-parent: Web Application
+title: 'Getting Started'
 ---
 
 # Getting Started with html2rss-web

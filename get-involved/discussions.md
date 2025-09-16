@@ -1,8 +1,5 @@
 ---
-layout: default
-title: Join Community Discussions
-nav_order: 2
-parent: Get Involved
+title: 'Join Community Discussions'
 ---
 
 # Join Community Discussions

@@ -1,10 +1,5 @@
 ---
-layout: default
-title: Stylesheets
-nav_order: 5
-parent: Reference
-grand_parent: Ruby Gem
-permalink: /ruby-gem/reference/stylesheets
+title: 'Stylesheets'
 ---
 
 # Stylesheets

@@ -1,9 +1,5 @@
 ---
-layout: default
-title: Use in production
-nav_order: 4
-parent: How-To Guides
-grand_parent: Web Application
+title: 'Use in production'
 ---
 
 # Use in production

@@ -1,8 +1,5 @@
 ---
-layout: default
-title: Sponsoring
-parent: Get Involved
-nav_order: 4
+title: 'Sponsoring'
 ---
 
 # Sponsoring html2rss
