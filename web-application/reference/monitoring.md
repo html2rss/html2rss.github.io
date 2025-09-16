@@ -2,7 +2,6 @@
 title: 'Monitoring'
 ---
 
-# Monitoring
 
 ## Runtime monitoring via `GET /health_check.txt`
 

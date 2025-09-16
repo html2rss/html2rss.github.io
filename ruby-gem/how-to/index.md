@@ -6,6 +6,5 @@ sidebar:
 
 ---
 
-# How-To Guides
 
 This section provides practical examples and solutions for common tasks when using the `html2rss` gem.

@@ -1,6 +1,5 @@
 ![html2rss logo](https://github.com/html2rss/html2rss/raw/master/support/logo.png)
 
-# html2rss-web
 
 This web application scrapes websites to build and deliver RSS 2.0 feeds.
 

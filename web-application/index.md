@@ -6,7 +6,6 @@ sidebar:
 
 ---
 
-# html2rss-web
 
 This web application scrapes websites to build and deliver RSS 2.0 feeds. It is a powerful tool for creating custom RSS feeds.
 

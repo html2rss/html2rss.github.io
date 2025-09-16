@@ -2,7 +2,6 @@
 title: 'Setup for development'
 ---
 
-# Setup for development
 
 Check out the git repository and…
 

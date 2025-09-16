@@ -1,4 +1,3 @@
-# html2rss.github.io
 
 This repository hosts the documentation and website for `html2rss`, a tool for creating RSS feeds from any website.
 

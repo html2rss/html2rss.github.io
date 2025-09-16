@@ -2,8 +2,6 @@
 title: 'Advanced Content Extraction'
 ---
 
-# Advanced Content Extraction with Selectors
-
 While basic selectors are straightforward, you can achieve very precise content extraction by combining selectors with different extractors and post-processors.
 
 ## Extractors

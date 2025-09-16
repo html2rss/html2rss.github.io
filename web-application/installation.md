@@ -2,7 +2,6 @@
 title: 'Installation'
 ---
 
-# Installation
 
 This guide will help you set up your own copy of html2rss-web on your computer. Don't worry - we'll walk you through every step!
 

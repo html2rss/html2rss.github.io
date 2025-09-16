@@ -5,6 +5,5 @@ sidebar:
 
 ---
 
-# Reference
 
 This section contains detailed reference material.

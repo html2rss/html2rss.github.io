@@ -2,7 +2,6 @@
 title: 'Advanced Features'
 ---
 
-# Advanced Features
 
 This guide covers advanced features and performance optimizations for html2rss.
 

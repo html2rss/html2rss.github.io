@@ -2,7 +2,6 @@
 title: 'CLI Reference'
 ---
 
-# CLI Reference
 
 This section provides a reference for the `html2rss` command-line interface (CLI).
 

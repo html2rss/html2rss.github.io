@@ -2,7 +2,6 @@
 title: 'Use the included configs'
 ---
 
-# Using Pre-Made Feeds
 
 html2rss-web comes with hundreds of ready-made feeds for popular websites! No configuration needed - just use the URLs.
 

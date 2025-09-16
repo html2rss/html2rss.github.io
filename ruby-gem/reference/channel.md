@@ -2,7 +2,6 @@
 title: 'Channel'
 ---
 
-# Channel
 
 The `channel` configuration block defines the metadata for your RSS feed.
 

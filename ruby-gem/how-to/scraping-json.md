@@ -2,7 +2,6 @@
 title: 'Scraping JSON Responses'
 ---
 
-# Scraping JSON Responses
 
 When a website returns a JSON response (i.e., with a `Content-Type` of `application/json`), `html2rss` converts the JSON to XML, allowing you to use CSS selectors for data extraction.
 

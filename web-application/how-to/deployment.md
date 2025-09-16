@@ -2,7 +2,6 @@
 title: 'Deployment'
 ---
 
-# Deployment
 
 This app is published on Docker Hub and therefore easy to use with Docker.
 The `docker-compose.yml` in the [Installation Guide]({{ '/web-application/installation' | relative_url }}) is a good starting point.

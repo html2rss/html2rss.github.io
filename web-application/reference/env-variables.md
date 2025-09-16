@@ -2,7 +2,6 @@
 title: 'ENV variables'
 ---
 
-# Configuration Reference
 
 ## Supported ENV variables
 

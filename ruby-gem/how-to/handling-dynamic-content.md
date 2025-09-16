@@ -2,7 +2,6 @@
 title: 'Handling Dynamic Content'
 ---
 
-# Handling Dynamic Content and JavaScript
 
 Some websites load their content dynamically using JavaScript. The default `html2rss` strategy might not see this content.
 

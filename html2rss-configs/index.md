@@ -5,7 +5,6 @@ sidebar:
 
 ---
 
-# Creating Custom RSS Feeds
 
 Want to create RSS feeds for websites that don't offer them? This guide shows you how to write simple configuration files that tell the html2rss engine exactly what content to extract.
 

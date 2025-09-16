@@ -2,7 +2,6 @@
 title: 'Dynamic Parameters'
 ---
 
-# Dynamic Parameters in URLs and Headers
 
 For websites with similar structures but varying content based on a parameter in the URL or headers, you can use dynamic parameters.
 

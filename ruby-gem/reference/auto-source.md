@@ -2,7 +2,6 @@
 title: 'Auto Source'
 ---
 
-# Auto Source
 
 The `auto_source` scraper automatically finds items on a page, so you don't have to specify CSS selectors.
 

@@ -2,7 +2,6 @@
 title: 'Your First Feed'
 ---
 
-# Your First Feed: A Step-by-Step Guide
 
 Welcome to `html2rss`! This guide will walk you through creating your first RSS feed. We'll start with the easiest method and gradually introduce more powerful options.
 

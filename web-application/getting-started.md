@@ -2,8 +2,6 @@
 title: 'Getting Started'
 ---
 
-# Getting Started with html2rss-web
-
 Welcome! This guide will help you create RSS feeds from any website using the html2rss-web application.
 
 ## What is html2rss-web?

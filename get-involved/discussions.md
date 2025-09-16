@@ -2,7 +2,6 @@
 title: 'Join Community Discussions'
 ---
 
-# Join Community Discussions
 
 Connect with other users and contributors by joining our community discussions on GitHub. This is a vibrant space for general questions, sharing tips, discussing ideas, and getting feedback from the community.
 

@@ -2,7 +2,6 @@
 title: 'Sponsoring'
 ---
 
-# Sponsoring html2rss
 
 `html2rss` is an open-source project, and its development is made possible by the support of our community. If you find `html2rss` useful, please consider sponsoring the project.
 

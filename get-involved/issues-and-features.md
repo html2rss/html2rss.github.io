@@ -2,7 +2,6 @@
 title: 'Report Bugs & Discuss Features'
 ---
 
-# Report Bugs & Discuss Features
 
 We appreciate your help in improving `html2rss`! Please follow these guidelines when reporting issues or suggesting new features.
 

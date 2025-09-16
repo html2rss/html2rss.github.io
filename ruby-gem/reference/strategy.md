@@ -2,7 +2,6 @@
 title: 'Strategy'
 ---
 
-# Strategy
 
 The `strategy` key defines how `html2rss` fetches a website's content.
 

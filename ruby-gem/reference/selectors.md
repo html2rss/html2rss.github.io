@@ -2,7 +2,6 @@
 title: 'Selectors'
 ---
 
-# Selectors
 
 The `selectors` scraper gives you fine-grained control over content extraction using CSS selectors.
 

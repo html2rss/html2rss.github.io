@@ -2,7 +2,6 @@
 title: 'Use automatic feed generation'
 ---
 
-# Automatic Feed Generation
 
 This feature lets you create RSS feeds automatically - just enter a website URL and html2rss-web figures out the rest!
 

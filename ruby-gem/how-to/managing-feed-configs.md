@@ -2,7 +2,6 @@
 title: 'Managing Feed Configs'
 ---
 
-# Managing Feed Configurations with YAML
 
 For easier management, especially when using the CLI or `html2rss-web`, you can store your feed configurations in a YAML file.
 

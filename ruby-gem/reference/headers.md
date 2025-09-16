@@ -2,7 +2,6 @@
 title: 'Headers'
 ---
 
-# Headers
 
 The `headers` key allows you to set custom HTTP headers for your requests. This is useful for accessing APIs or other protected content.
 

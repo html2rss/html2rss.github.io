@@ -2,7 +2,6 @@
 title: 'Building your RSS feeds'
 ---
 
-# How to build your RSS feeds
 
 To build your own RSS feed, you need to create a _feed config_.
 That _feed config_ goes into the file `feeds.yml`.

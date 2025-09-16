@@ -2,7 +2,6 @@
 title: 'Stylesheets'
 ---
 
-# Stylesheets
 
 The `stylesheets` key allows you to add CSS or XSLT stylesheets to your RSS feed, improving its appearance in web browsers.
 

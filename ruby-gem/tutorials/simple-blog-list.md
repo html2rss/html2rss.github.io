@@ -2,7 +2,6 @@
 title: 'Scraping a Simple Blog List'
 ---
 
-# Tutorial: Scraping a Simple Blog List
 
 This example demonstrates how to create a feed from a typical blog that has a list of articles on its homepage.
 

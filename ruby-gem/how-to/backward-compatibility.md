@@ -2,7 +2,6 @@
 title: 'Backward Compatibility'
 ---
 
-# Backward Compatibility
 
 html2rss maintains backward compatibility with older configuration formats and attribute names.
 

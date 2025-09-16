@@ -2,7 +2,6 @@
 title: 'Versioning and releases'
 ---
 
-# Versioning and releases
 
 This web application is distributed in a [rolling release](https://en.wikipedia.org/wiki/Rolling_release) fashion from the `master` branch.
 

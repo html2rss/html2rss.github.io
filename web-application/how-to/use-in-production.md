@@ -2,7 +2,6 @@
 title: 'Use in production'
 ---
 
-# Use in production
 
 This app is published on Docker Hub and therefore easy to use with Docker.
 The above `docker-compose.yml` is a good starting point.

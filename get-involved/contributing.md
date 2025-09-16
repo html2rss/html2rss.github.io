@@ -2,7 +2,6 @@
 title: 'Contributing'
 ---
 
-# Contributing to html2rss
 
 We're thrilled that you're interested in contributing to `html2rss`! There are many ways to get involved, and we welcome contributions of all kinds.
 

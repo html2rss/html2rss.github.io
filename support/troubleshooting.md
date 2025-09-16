@@ -2,7 +2,6 @@
 title: 'Troubleshooting'
 ---
 
-# Troubleshooting
 
 This guide provides solutions to common issues encountered when using `html2rss`.
 
