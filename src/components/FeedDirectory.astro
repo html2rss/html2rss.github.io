@@ -1,374 +1,326 @@
 ---
 import { configs } from '../data/loadConfigs';
+import { Card, CardGrid, Icon, LinkButton } from '@astrojs/starlight/components';
+
+// Helper functions for URL generation
+function getFeedUrl(config: any, instanceUrl: string, params: Record<string, string> = {}) {
+  let url = instanceUrl.endsWith("/") ? instanceUrl : `${instanceUrl}/`;
+  url += `${config.domain}/${config.name}.rss`;
+
+  const queryParams = new URLSearchParams();
+  if (config.url_parameters) {
+    for (const key of Object.keys(config.url_parameters)) {
+      if (params[key]) {
+        queryParams.append(key, params[key]);
+      }
+    }
+  }
+
+  const queryString = queryParams.toString();
+  if (queryString) {
+    url += `?${queryString}`;
+  }
+
+  return url;
+}
+
+// Generate static feed URLs for each config (progressive enhancement)
+const defaultInstanceUrl = atob("aHR0cHM6Ly8xLmgyci53b3JrZXJzLmRldi8=");
+const staticFeedUrls = configs.map(config => ({
+  ...config,
+  staticFeedUrl: getFeedUrl(config, defaultInstanceUrl)
+}));
 ---
 
 <div class="feed-directory-container">
-  <noscript>
-    <span class="noscript">This site needs JavaScript to link to the feed URL!</span>
-  </noscript>
-
-  <div id="configs" x-data="feedDirectory()">
-    <div class="feed-directory__filters">
-      <fieldset class="feed-directory__fieldset">
-        <legend>Instance URL</legend>
-        <input
-          type="text"
-          name="instance"
-          x-model="instanceUrl"
-          class="feed-directory__input"
-          aria-label="Instance URL"
-        />
-      </fieldset>
-
-      <fieldset class="feed-directory__fieldset">
-        <legend>Search</legend>
-        <input
-          type="search"
-          name="search"
-          autofocus
-          placeholder="fia, apple, news or blog"
-          x-on:input.debounce.500ms="searchQuery = $event.target.value"
-          x-model="searchQuery"
-          class="feed-directory__input"
-          aria-label="Search feeds"
-        />
-      </fieldset>
+  <!-- Progressive Enhancement: Works without JavaScript -->
+  <div class="feed-directory__filters">
+    <div class="feed-directory__filter-group">
+      <label for="instance-url" class="feed-directory__label">
+        Instance URL
+      </label>
+      <input
+        type="text"
+        name="instance"
+        id="instance-url"
+        class="feed-directory__input"
+        value={defaultInstanceUrl}
+        aria-label="Instance URL"
+        placeholder="https://your-instance.com"
+      />
     </div>
 
-    <div id="feed-items">
-      {configs.map((config, index) => (
-        <div
-          class="feed-directory__item"
-          x-show="filterConfig('{config.domain}/{config.name}')"
-          x-data="feedItemData()"
-          x-init="init($el.dataset.index)"
-          data-index={index}
-          x-cloak
-        >
+    <div class="feed-directory__filter-group">
+      <label for="search-input" class="feed-directory__label">
+        Search Feeds
+      </label>
+      <input
+        type="search"
+        name="search"
+        id="search-input"
+        autofocus
+        placeholder="fia, apple, news or blog"
+        class="feed-directory__input"
+        aria-label="Search feeds"
+      />
+    </div>
+  </div>
+
+  <div class="feed-directory__list">
+    {staticFeedUrls.map((config, index) => (
+      <div
+        class="feed-directory__item"
+        data-domain={config.domain}
+        data-name={config.name}
+        data-searchable={`${config.domain}/${config.name}`}
+      >
+        <div class="feed-directory__item-main">
           <div class="feed-directory__item-info">
-            <div class="feed-directory__item-main">
-              <h3 class="feed-directory__item-name">
-                {config.channel?.url ? (
-                  config.valid_channel_url ? (
-                    <a
-                      href={config.channel.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {config.channel.url}
-                    </a>
-                  ) : (
-                    <span>{config.channel.url}</span>
-                  )
-                ) : (
-                  <span>{config.domain}/{config.name}</span>
-                )}
-              </h3>
-              {!config.valid_channel_url && Object.keys(config.url_parameters || {}).length > 0 && (
-                <button
-                  class="feed-directory__item-param-toggle"
-                  x-on:click="toggleParamsForm"
-                  :title="showParamsForm ? 'Hide parameters' : 'Configure parameters'"
-                  :aria-label="showParamsForm ? 'Hide parameters' : 'Configure parameters'"
-                >
-                  <svg
-                    class="feed-directory__param-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    aria-hidden="true"
-                  >
-                    <circle cx="12" cy="12" r="3" />
-                    <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1" />
-                  </svg>
-                  <span x-text="showParamsForm ? 'Hide' : 'Configure'"></span>
-                </button>
-              )}
+            <div class="feed-directory__item-title">
+              <span class="feed-directory__item-domain">{config.domain}</span>
+              <span class="feed-directory__item-separator">/</span>
+              <span class="feed-directory__item-name">{config.name}</span>
             </div>
 
-            {!config.valid_channel_url && (
-              <div class="feed-directory__item-param-form" x-show="showParamsForm">
-                <form role="form">
-                  {Object.entries(config.url_parameters || {}).map(([key, fallback]) => (
-                    <div class="feed-directory__item-param-form__group form-group">
-                      <label
-                        for={`${config.domain}-${config.name}-${key}`}
-                        class="feed-directory__item-param-form__label"
-                      >
-                        {key}
-                      </label>
-                      <input
-                        type="text"
-                        id={`${config.domain}-${config.name}-${key}`}
-                        name={key}
-                        class="feed-directory__item-param-form__input form-control"
-                        placeholder={String(fallback)}
-                        x-model={`params.${key}`}
-                        aria-label={key}
-                      />
-                    </div>
-                  ))}
-                  <div class="feed-directory__item-param-form__buttons">
-                    <button x-on:click="showParamsForm = false" class="btn btn-sm">
-                      Close
-                    </button>
-                  </div>
-                </form>
+            {config.channel?.url && (
+              <div class="feed-directory__item-source">
+                <a href={config.channel.url} target="_blank" rel="noopener noreferrer" class="feed-directory__item-link">
+                  {config.channel.url}
+                </a>
               </div>
             )}
           </div>
 
           <div class="feed-directory__item-actions">
-            <a
-              :href="getFeedUrl()"
-              rel="noopener noreferrer"
+            {!config.valid_channel_url && Object.keys(config.url_parameters || {}).length > 0 ? (
+              <button
+                class="feed-directory__configure-btn"
+                type="button"
+                aria-expanded="false"
+                aria-controls={`params-${index}`}
+                data-target={`params-${index}`}
+                aria-label="Configure feed parameters"
+                title="Configure feed parameters"
+              >
+                <Icon name="setting" />
+                <span>Configure</span>
+              </button>
+            ) : (
+              <div class="feed-directory__action-spacer"></div>
+            )}
+
+            <LinkButton
+              href={config.staticFeedUrl}
               target="_blank"
-              title="Show RSS"
+              data-feed-url
+              size="sm"
+              class="feed-directory__action-btn feed-directory__action-btn--rss"
               aria-label="Open RSS feed"
+              title="Open RSS feed"
             >
-              <svg class="feed-directory__item-actions__rss-icon">
-                <use xlink:href="#rss-icon"></use>
-              </svg>
-            </a>
-            <a
+              <Icon name="rss" />
+              <span>RSS</span>
+            </LinkButton>
+
+            <LinkButton
               href={`https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/${encodeURIComponent(config.domain)}/${encodeURIComponent(config.name)}.yml`}
-              class="edit-link"
               target="_blank"
-              title="Edit on GitHub"
-              aria-label="Edit on GitHub"
+              variant="secondary"
+              size="sm"
+              class="feed-directory__action-btn feed-directory__action-btn--edit"
+              aria-label="Edit configuration on GitHub"
+              title="Edit configuration on GitHub"
             >
-              <svg class="feed-directory__item-actions__edit-icon">
-                <use xlink:href="#edit-icon"></use>
-              </svg>
-            </a>
+              <Icon name="pencil" />
+              <span>Edit</span>
+            </LinkButton>
           </div>
         </div>
-      ))}
-    </div>
+
+        {!config.valid_channel_url && Object.keys(config.url_parameters || {}).length > 0 && (
+          <div class="feed-directory__item-params" id={`params-${index}`} hidden>
+            <form class="feed-directory__params-form">
+              {Object.entries(config.url_parameters || {}).map(([key, fallback]) => (
+                <div class="feed-directory__param-group">
+                  <label
+                    for={`${config.domain}-${config.name}-${key}`}
+                    class="feed-directory__param-label"
+                  >
+                    {key}
+                  </label>
+                  <input
+                    type="text"
+                    id={`${config.domain}-${config.name}-${key}`}
+                    name={key}
+                    class="feed-directory__param-input"
+                    value={config.default_parameters?.[key] || ''}
+                    placeholder={String(fallback)}
+                    data-param-key={key}
+                    aria-label={key}
+                  />
+                </div>
+              ))}
+              <div class="feed-directory__params-actions">
+                <button type="button" class="" data-close-form>
+                  Close
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+      </div>
+    ))}
   </div>
 </div>
 
-<script define:vars={{ configs }}>
-  // Make configs data available globally (matching original Jekyll structure)
-  window.feedDirectoryData = configs;
-</script>
-
+<!-- Enhanced functionality with vanilla JavaScript -->
 <script>
-  import Alpine from 'alpinejs';
+  // Progressive enhancement: Add interactivity without breaking basic functionality
+  class FeedDirectory {
+    instanceUrl: string;
+    searchInput: HTMLInputElement | null;
+    feedItems: NodeListOf<HTMLElement>;
 
-  document.addEventListener("alpine:init", () => {
-    console.log('Alpine.js initializing...');
-    // @ts-ignore
-    Alpine.data("feedDirectory", () => ({
-      instanceUrl: atob("aHR0cHM6Ly8xLmgyci53b3JrZXJzLmRldi8="),
-      searchQuery: "",
-      configs: window.feedDirectoryData,
+    constructor() {
+      this.instanceUrl = (document.getElementById('instance-url') as HTMLInputElement)?.value || atob("aHR0cHM6Ly8xLmgyci53b3JrZXJzLmRldi8=");
+      this.searchInput = document.getElementById('search-input') as HTMLInputElement;
+      this.feedItems = document.querySelectorAll('[data-domain]');
 
-      fuzzyMatch(text: string, query: string) {
-        const lowerText = text.toLowerCase();
-        const lowerQuery = query.toLowerCase();
-        let textIndex = 0;
-        let queryIndex = 0;
+      this.init();
+    }
 
-        while (queryIndex < lowerQuery.length && textIndex < lowerText.length) {
-          if (lowerQuery[queryIndex] === lowerText[textIndex]) {
-            queryIndex++;
+    init() {
+      this.setupSearch();
+      this.setupInstanceUrl();
+      this.setupParameterForms();
+    }
+
+    setupSearch() {
+      if (!this.searchInput) return;
+
+      this.searchInput.addEventListener('input', (e: Event) => {
+        const target = e.target as HTMLInputElement;
+        const query = target.value.toLowerCase();
+        this.filterItems(query);
+      });
+    }
+
+    setupInstanceUrl() {
+      const instanceInput = document.getElementById('instance-url') as HTMLInputElement;
+      if (!instanceInput) return;
+
+      instanceInput.addEventListener('input', (e: Event) => {
+        const target = e.target as HTMLInputElement;
+        this.instanceUrl = target.value;
+        this.updateFeedUrls();
+      });
+    }
+
+    setupParameterForms() {
+      // Toggle parameter forms
+      document.querySelectorAll('.feed-directory__configure-btn').forEach(button => {
+        button.addEventListener('click', (e: Event) => {
+          const target = e.target as HTMLElement;
+          const buttonElement = target.closest('button') as HTMLButtonElement;
+          const targetId = buttonElement.dataset.target;
+          const form = document.getElementById(targetId!) as HTMLElement;
+          const isExpanded = form.hidden === false;
+
+          form.hidden = isExpanded;
+          buttonElement.setAttribute('aria-expanded', String(!isExpanded));
+          const span = buttonElement.querySelector('span') as HTMLElement;
+          if (span) span.textContent = isExpanded ? 'Configure' : 'Hide';
+        });
+      });
+
+      // Close parameter forms
+      document.querySelectorAll('[data-close-form]').forEach(button => {
+        button.addEventListener('click', (e: Event) => {
+          const target = e.target as HTMLElement;
+          const form = target.closest('.feed-directory__item-params') as HTMLElement;
+          const toggle = document.querySelector(`[data-target="${form.id}"]`) as HTMLElement;
+
+          form.hidden = true;
+          toggle.setAttribute('aria-expanded', 'false');
+          const span = toggle.querySelector('span') as HTMLElement;
+          if (span) span.textContent = 'Configure';
+        });
+      });
+
+      // Update feed URLs when parameters change
+      document.querySelectorAll('.feed-directory__param-input').forEach(input => {
+        input.addEventListener('input', () => {
+          this.updateFeedUrls();
+        });
+      });
+    }
+
+    filterItems(query: string) {
+      this.feedItems.forEach((item: HTMLElement) => {
+        const searchableText = item.dataset.searchable?.toLowerCase() || '';
+        const matches = this.fuzzyMatch(searchableText, query);
+        item.style.display = matches ? 'flex' : 'none';
+      });
+    }
+
+    fuzzyMatch(text: string, query: string): boolean {
+      const lowerText = text.toLowerCase();
+      const lowerQuery = query.toLowerCase();
+      let textIndex = 0;
+      let queryIndex = 0;
+
+      while (queryIndex < lowerQuery.length && textIndex < lowerText.length) {
+        if (lowerQuery[queryIndex] === lowerText[textIndex]) {
+          queryIndex++;
+        }
+        textIndex++;
+      }
+      return queryIndex === lowerQuery.length;
+    }
+
+    updateFeedUrls() {
+      document.querySelectorAll('[data-feed-url]').forEach(link => {
+        const linkElement = link as HTMLAnchorElement;
+        const item = linkElement.closest('[data-domain]') as HTMLElement;
+        const domain = item.dataset.domain;
+        const name = item.dataset.name;
+
+        // Get parameters from form inputs (including prefilled defaults)
+        const params: Record<string, string> = {};
+        const paramInputs = item.querySelectorAll('[data-param-key]');
+        paramInputs.forEach(input => {
+          const inputElement = input as HTMLInputElement;
+          if (inputElement.value) {
+            params[inputElement.dataset.paramKey!] = inputElement.value;
           }
-          textIndex++;
-        }
-        return queryIndex === lowerQuery.length;
-      },
+        });
 
-      filterConfig(configName: string) {
-        if (!this.searchQuery) {
-          return true;
-        }
-        return this.fuzzyMatch(configName, this.searchQuery);
-      },
-
-      getFeedUrl(config: any, params: any = {}) {
-        let url = this.instanceUrl.endsWith("/")
-          ? this.instanceUrl
-          : `${this.instanceUrl}/`;
-        url += `${config.domain}/${config.name}.rss`;
+        // Generate new URL
+        let url = this.instanceUrl.endsWith("/") ? this.instanceUrl : `${this.instanceUrl}/`;
+        url += `${domain}/${name}.rss`;
 
         const queryParams = new URLSearchParams();
-
-        if (config.url_parameters) {
-          for (const key of Object.keys(config.url_parameters)) {
-            if (params[key]) {
-              queryParams.append(key, params[key]);
-            }
-          }
-        }
+        Object.entries(params).forEach(([key, value]) => {
+          queryParams.append(key, value);
+        });
 
         const queryString = queryParams.toString();
         if (queryString) {
           url += `?${queryString}`;
         }
 
-        return url;
-      },
-    }));
+        linkElement.href = url;
+      });
+    }
+  }
 
-    // @ts-ignore
-    Alpine.data("feedItemData", () => {
-      return {
-      config: null as any,
-      params: {} as any,
-      pathPreview: "",
-      showParamsForm: false,
-      toggleParamsForm() {
-        console.log('Toggle clicked, current state:', (this as any).showParamsForm);
-        (this as any).showParamsForm = !(this as any).showParamsForm;
-        console.log('New state:', (this as any).showParamsForm);
-      },
-      dynamicParamsInterpolate(string: string, params: any) {
-        return string.replace(/%<(\w+)>s/g, (_: string, key: string) => {
-          if (!(key in params)) {
-            throw new Error(`Missing value for placeholder: ${key}`);
-          }
-          return params[key];
-        });
-      },
-
-      initializeDefaultParameters() {
-        Object.entries((this as any).config.url_parameters || {}).forEach(([key, fallback]) => {
-          const inputId = `${(this as any).config.domain}-${(this as any).config.name}-${key}`;
-          const input = document.getElementById(inputId) as HTMLInputElement;
-
-          if (input && (this as any).config.default_parameters?.[key]) {
-            // Set the actual value in the input field
-            input.value = (this as any).config.default_parameters[key];
-            // Also set placeholder as fallback
-            input.placeholder = (this as any).config.default_parameters[key];
-          }
-        });
-
-        // Now set params with default values (this will trigger the watcher)
-        (this as any).params = { ...((this as any).config.default_parameters || {}) };
-      },
-
-      init(index: number) {
-        (this as any).config = window.feedDirectoryData[index];
-        console.log('Alpine.js init called for config:', (this as any).config?.domain, (this as any).config?.name);
-        if (!(this as any).config) return;
-
-        // Initialize params first
-        (this as any).params = {};
-
-        // Set default values in input fields after DOM is ready
-        if ((this as any).config.default_parameters && !(this as any).config.valid_channel_url) {
-          // @ts-ignore
-          (this as any).$nextTick(() => {
-            (this as any).initializeDefaultParameters();
-          });
-        }
-
-        if (!(this as any).config.valid_channel_url) {
-          // @ts-ignore
-          (this as any).$watch("params", (value: any) => {
-            let params: any = {};
-
-            Object.entries((this as any).config.url_parameters || {}).forEach(
-              ([key, fallback]) => {
-                const val = value[key];
-                params[key] = val || `{${fallback}}`;
-              },
-            );
-
-            try {
-              (this as any).pathPreview = (this as any).dynamicParamsInterpolate(
-                (this as any).config.channel?.url || '',
-                params,
-              );
-            } catch (error) {
-              console.error("Error interpolating parameters:", error);
-            }
-          });
-        }
-      },
-
-      getFeedUrl(): string {
-        // Get instance URL from parent scope (base64 encoded)
-        const instanceUrl: string = (this as any).$parent?.instanceUrl || atob("aHR0cHM6Ly8xLmgyci53b3JrZXJzLmRldi8=");
-
-        let url: string = instanceUrl.endsWith("/")
-          ? instanceUrl
-          : `${instanceUrl}/`;
-        url += `${(this as any).config.domain}/${(this as any).config.name}.rss`;
-
-        const queryParams = new URLSearchParams();
-
-        if ((this as any).config.url_parameters) {
-          for (const key of Object.keys((this as any).config.url_parameters)) {
-            if ((this as any).params[key]) {
-              queryParams.append(key, (this as any).params[key]);
-            }
-          }
-        }
-
-        const queryString = queryParams.toString();
-        if (queryString) {
-          url += `?${queryString}`;
-        }
-
-        return url;
-      },
-    };
-    });
-  });
-
-  // Start Alpine.js
-  Alpine.start();
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => new FeedDirectory());
+  } else {
+    new FeedDirectory();
+  }
 </script>
-
-<!-- SVG Icons -->
-<div class="svg-defs-hidden">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="rss-icon">
-    <rect
-      width="512"
-      height="512"
-      x="-512"
-      y="-512"
-      rx="70"
-      ry="70"
-      style="fill: #ea7819; fill-opacity: 1; stroke: none"
-      transform="scale(-1)"
-    />
-    <path
-      d="M81.056 267.05c43.705 0 84.79 17.072 115.665 48.124 30.931 31.051 47.961 72.411 47.961 116.44h67.35c0-127.885-103.62-231.921-230.976-231.921zm.106-119.4c155.76 0 282.488 127.42 282.488 284.049H431C431 237.925 274.054 80.301 81.162 80.301zm93.135 236.998c0 25.757-20.892 46.649-46.649 46.649-25.756 0-46.648-20.885-46.648-46.649C81 358.878 101.885 338 127.641 338c25.757 0 46.656 20.878 46.656 20.878"
-      style="fill: #fff"
-    />
-  </svg>
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="edit-icon">
-    <path
-      fill="currentColor"
-      d="M3 17.25V21h3.75L18.75 9.75l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-    />
-  </svg>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 32 32"
-    id="settings-icon"
-  >
-    <path
-      fill="currentColor"
-      d="M28 13V8a2 2 0 0 0-2-2h-3v2h3v5a3.98 3.98 0 0 0 1.382 3A3.98 3.98 0 0 0 26 19v5h-3v2h3a2 2 0 0 0 2-2v-5a2 2 0 0 1 2-2v-2a2 2 0 0 1-2-2"
-    />
-    <path
-      fill="currentColor"
-      d="m17 9-.857 3h2L19 9h2l-.857 3H22v2h-2.428l-1.143 4H21v2h-3.143L17 23h-2l.857-3h-2L13 23h-2l.857-3H10v-2h2.429l1.143-4H11v-2h3.143L15 9Zm.572 5h-2l-1.143 4h2Z"
-      style="fill-rule: evenodd"
-    />
-    <path
-      fill="currentColor"
-      d="M6 13V8h3V6H6a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2v2a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h3v-2H6v-5a3.98 3.98 0 0 0-1.382-3A3.98 3.98 0 0 0 6 13"
-    />
-    <path d="M0 0h32v32H0z" style="fill: none" />
-  </svg>
-</div>
 
 
 <style>
@@ -376,160 +328,319 @@ import { configs } from '../data/loadConfigs';
     margin: 2rem 0;
   }
 
+  /* Filters Section */
   .feed-directory__filters {
-    display: flex;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
     margin-bottom: 2rem;
-    padding: 1rem;
+    padding: 1.5rem;
     background: hsl(var(--sl-color-gray-2));
-    border-radius: 0.5rem;
+    border: 1px solid hsl(var(--sl-color-gray-4));
+    border-radius: 0.75rem;
   }
 
-  .feed-directory__fieldset {
-    flex: 1;
-    border: none;
-    margin: 0;
-    padding: 0;
+  .feed-directory__filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
-  .feed-directory__fieldset legend {
+  .feed-directory__label {
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: hsl(var(--sl-color-gray-6));
+    margin: 0;
   }
 
   .feed-directory__input {
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid hsl(var(--sl-color-gray-4));
+    border-radius: 0.5rem;
+    background: hsl(var(--sl-color-bg));
+    color: hsl(var(--sl-color-text));
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease;
+  }
+
+  .feed-directory__input:focus {
+    outline: none;
+    border-color: hsl(var(--sl-color-accent));
+    box-shadow: 0 0 0 3px hsl(var(--sl-color-accent) / 0.1);
+  }
+
+  /* List Layout */
+  .feed-directory__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: hsl(var(--sl-color-gray-4));
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .feed-directory__item:hover {
+    background: hsl(var(--sl-color-gray-1));
+  }
+
+  .feed-directory__item-title {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: hsl(var(--sl-color-text));
+    line-height: 1.3;
+  }
+
+  .feed-directory__item-domain {
+    color: hsl(var(--sl-color-accent-high));
+    font-weight: 600;
+  }
+
+  .feed-directory__item-separator {
+    color: hsl(var(--sl-color-gray-6));
+    font-weight: 400;
+  }
+
+  .feed-directory__item-name {
+    color: hsl(var(--sl-color-text));
+    font-weight: 500;
+  }
+
+  .feed-directory__item-source {
+    margin-top: 0.25rem;
+  }
+
+  .feed-directory__item-link {
+    color: hsl(var(--sl-color-gray-6));
+    text-decoration: none;
+    font-size: 0.8rem;
+    word-break: break-all;
+    line-height: 1.2;
+  }
+
+  .feed-directory__item-link:hover {
+    color: hsl(var(--sl-color-accent-high));
+    text-decoration: underline;
+  }
+
+  /* Configure Button */
+  .feed-directory__configure-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: hsl(var(--sl-color-gray-1));
     border: 1px solid hsl(var(--sl-color-gray-4));
     border-radius: 0.25rem;
-    background: hsl(var(--sl-color-bg));
+    color: hsl(var(--sl-color-text));
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .feed-directory__configure-btn:hover {
+    background: hsl(var(--sl-color-gray-2));
+    border-color: hsl(var(--sl-color-accent));
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .feed-directory__params-form {
+    display: flex ;
+    flex-direction: column ;
+    gap: 1.5rem ;
+    margin-top: 1rem ;
+  }
+
+  .feed-directory__param-group {
+    display: flex ;
+    flex-direction: column ;
+    gap: 0.75rem ;
+  }
+
+  .feed-directory__param-label {
+    font-size: 0.9rem ;
+    font-weight: 700 ;
+    color: hsl(var(--sl-color-text)) ;
+    margin-bottom: 0.5rem ;
+    display: block ;
+    text-transform: uppercase ;
+    letter-spacing: 0.025em ;
+  }
+
+  .feed-directory__params-actions {
+    display: flex ;
+    justify-content: flex-end ;
+    align-items: center ;
+    padding-top: 1rem ;
+    border-top: 2px solid hsl(var(--sl-color-gray-4)) ;
+    margin-top: 1rem ;
+  }
+
+  /* Mobile-First Design */
+  .feed-directory__filters {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: hsl(var(--sl-color-gray-2));
+    border: 1px solid hsl(var(--sl-color-gray-4));
+    border-radius: 0.5rem;
   }
 
   .feed-directory__item {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border: 1px solid hsl(var(--sl-color-gray-4));
-    border-radius: 0.5rem;
+    flex-direction: column;
     background: hsl(var(--sl-color-bg));
+    padding: 1rem;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid hsl(var(--sl-color-gray-4));
   }
 
-  .feed-directory__item-info {
-    flex: 1;
+  .feed-directory__item:last-child {
+    border-bottom: none;
   }
 
   .feed-directory__item-main {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 1rem;
   }
 
-  .feed-directory__item-name {
-    margin: 0;
-    font-size: 1.1rem;
-  }
-
-  .feed-directory__item-name a {
-    color: hsl(var(--sl-color-accent-high));
-    text-decoration: none;
-  }
-
-  .feed-directory__item-name a:hover {
-    text-decoration: underline;
-  }
-
-  .feed-directory__item-param-toggle {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    background: hsl(var(--sl-color-gray-2));
-    border: 1px solid hsl(var(--sl-color-gray-4));
-    border-radius: 0.25rem;
-    cursor: pointer;
-    font-size: 0.875rem;
-  }
-
-  .feed-directory__param-icon {
-    width: 1rem;
-    height: 1rem;
-  }
-
-  .feed-directory__item-param-form {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: hsl(var(--sl-color-gray-1));
-    border-radius: 0.25rem;
-  }
-
-  .feed-directory__item-param-form__group {
-    margin-bottom: 1rem;
-  }
-
-  .feed-directory__item-param-form__label {
-    display: block;
-    margin-bottom: 0.25rem;
-    font-weight: 600;
-  }
-
-  .feed-directory__item-param-form__input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid hsl(var(--sl-color-gray-4));
-    border-radius: 0.25rem;
-  }
-
-  .feed-directory__item-param-form__buttons {
-    display: flex;
-    gap: 0.5rem;
+  .feed-directory__item-info {
+    order: 1;
   }
 
   .feed-directory__item-actions {
+    order: 2;
     display: flex;
+    flex-direction: row;
     gap: 0.5rem;
-    align-items: center;
+    width: 100%;
+    justify-content: flex-start;
   }
 
-  .feed-directory__item-actions a {
-    display: flex;
-    align-items: center;
+  .feed-directory__action-btn {
+    flex: none;
     justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    color: hsl(var(--sl-color-gray-6));
-    text-decoration: none;
-    border-radius: 0.25rem;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    width: 36px;
+    height: 36px;
   }
 
-  .feed-directory__item-actions a:hover {
-    background: hsl(var(--sl-color-gray-2));
+  .feed-directory__action-btn span {
+    display: none;
   }
 
-  .feed-directory__item-actions__rss-icon,
-  .feed-directory__item-actions__edit-icon {
-    width: 1.25rem;
-    height: 1.25rem;
+  .feed-directory__action-btn--rss {
+    background: #ff8c00 !important;
+    border-color: #ff8c00 !important;
+    color: white !important;
   }
 
-  .svg-defs-hidden {
-    position: absolute;
-    width: 0;
-    height: 0;
-    overflow: hidden;
+  .feed-directory__action-btn--rss:hover {
+    background: #ff7700 !important;
+    border-color: #ff7700 !important;
+    color: white !important;
+    transform: translateY(-1px) !important;
   }
 
-  .noscript {
-    display: block;
-    padding: 1rem;
-    background: hsl(var(--sl-color-red-low));
-    color: hsl(var(--sl-color-red-high));
-    border-radius: 0.25rem;
-    text-align: center;
+  .feed-directory__configure-btn {
+    flex: none;
+    justify-content: center;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    width: 36px;
+    height: 36px;
   }
 
-  [x-cloak] {
-    display: none !important;
+  .feed-directory__configure-btn span {
+    display: none;
+  }
+
+  .feed-directory__action-spacer {
+    display: none;
+  }
+
+  /* Desktop Design */
+  @media (min-width: 768px) {
+    .feed-directory__filters {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+    }
+
+    .feed-directory__item {
+      padding: 0.75rem 1rem;
+    }
+
+    .feed-directory__item-main {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .feed-directory__item-info {
+      order: 1;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .feed-directory__item-actions {
+      order: 2;
+      flex-direction: row;
+      gap: 0.5rem;
+      width: auto;
+      flex-shrink: 0;
+      align-items: center;
+    }
+
+    .feed-directory__action-btn {
+      width: 60px;
+      height: 24px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .feed-directory__action-btn span {
+      display: inline;
+    }
+
+    .feed-directory__configure-btn {
+      width: 60px;
+      height: 24px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .feed-directory__configure-btn span {
+      display: inline;
+    }
+
+    .feed-directory__action-spacer {
+      display: block;
+      width: 60px;
+      height: 24px;
+    }
   }
 </style>
