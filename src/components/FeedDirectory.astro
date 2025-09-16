@@ -1,30 +1,23 @@
 ---
 import { configs } from '../data/loadConfigs';
-import { Card, CardGrid, Icon, LinkButton } from '@astrojs/starlight/components';
+import { Icon, LinkButton } from '@astrojs/starlight/components';
 
-// Helper functions for URL generation
+// Simple helper functions
 function getFeedUrl(config: any, instanceUrl: string, params: Record<string, string> = {}) {
-  let url = instanceUrl.endsWith("/") ? instanceUrl : `${instanceUrl}/`;
-  url += `${config.domain}/${config.name}.rss`;
+  const baseUrl = instanceUrl.endsWith("/") ? instanceUrl : `${instanceUrl}/`;
+  let url = `${baseUrl}${config.domain}/${config.name}.rss`;
 
   const queryParams = new URLSearchParams();
-  if (config.url_parameters) {
-    for (const key of Object.keys(config.url_parameters)) {
-      if (params[key]) {
-        queryParams.append(key, params[key]);
-      }
-    }
-  }
+  Object.keys(config.url_parameters || {}).forEach(key => {
+    if (params[key]) queryParams.append(key, params[key]);
+  });
 
   const queryString = queryParams.toString();
-  if (queryString) {
-    url += `?${queryString}`;
-  }
-
+  if (queryString) url += `?${queryString}`;
   return url;
 }
 
-// Generate static feed URLs for each config (progressive enhancement)
+// Generate static feed URLs
 const defaultInstanceUrl = atob("aHR0cHM6Ly8xLmgyci53b3JrZXJzLmRldi8=");
 const staticFeedUrls = configs.map(config => ({
   ...config,
@@ -35,35 +28,31 @@ const staticFeedUrls = configs.map(config => ({
 <div class="feed-directory-container">
   <!-- Progressive Enhancement: Works without JavaScript -->
   <div class="feed-directory__filters">
-    <div class="feed-directory__filter-group">
-      <label for="instance-url" class="feed-directory__label">
-        Instance URL
-      </label>
-      <input
-        type="text"
-        name="instance"
-        id="instance-url"
-        class="feed-directory__input"
-        value={defaultInstanceUrl}
-        aria-label="Instance URL"
-        placeholder="https://your-instance.com"
-      />
-    </div>
+    <label for="instance-url">
+      Instance URL
+    </label>
+    <input
+      type="text"
+      name="instance"
+      id="instance-url"
+      class="feed-directory__input"
+      value={defaultInstanceUrl}
+      aria-label="Instance URL"
+      placeholder="https://your-instance.com"
+    />
 
-    <div class="feed-directory__filter-group">
-      <label for="search-input" class="feed-directory__label">
-        Search Feeds
-      </label>
-      <input
-        type="search"
-        name="search"
-        id="search-input"
-        autofocus
-        placeholder="fia, apple, news or blog"
-        class="feed-directory__input"
-        aria-label="Search feeds"
-      />
-    </div>
+    <label for="search-input">
+      Search Feeds
+    </label>
+    <input
+      type="search"
+      name="search"
+      id="search-input"
+      autofocus
+      placeholder="fia, apple, news or blog"
+      class="feed-directory__input"
+      aria-label="Search feeds"
+    />
   </div>
 
   <div class="feed-directory__list">
@@ -161,7 +150,12 @@ const staticFeedUrls = configs.map(config => ({
                 </div>
               ))}
               <div class="feed-directory__params-actions">
-                <button type="button" class="" data-close-form>
+                <button
+                  type="button"
+                  class="feed-directory__close-btn"
+                  data-close-form
+                  aria-label="Close configuration form"
+                >
                   Close
                 </button>
               </div>
@@ -175,150 +169,119 @@ const staticFeedUrls = configs.map(config => ({
 
 <!-- Enhanced functionality with vanilla JavaScript -->
 <script>
-  // Progressive enhancement: Add interactivity without breaking basic functionality
-  class FeedDirectory {
-    instanceUrl: string;
-    searchInput: HTMLInputElement | null;
-    feedItems: NodeListOf<HTMLElement>;
-
-    constructor() {
-      this.instanceUrl = (document.getElementById('instance-url') as HTMLInputElement)?.value || atob("aHR0cHM6Ly8xLmgyci53b3JrZXJzLmRldi8=");
-      this.searchInput = document.getElementById('search-input') as HTMLInputElement;
-      this.feedItems = document.querySelectorAll('[data-domain]');
-
-      this.init();
-    }
-
-    init() {
-      this.setupSearch();
-      this.setupInstanceUrl();
-      this.setupParameterForms();
-    }
-
-    setupSearch() {
-      if (!this.searchInput) return;
-
-      this.searchInput.addEventListener('input', (e: Event) => {
-        const target = e.target as HTMLInputElement;
-        const query = target.value.toLowerCase();
-        this.filterItems(query);
-      });
-    }
-
-    setupInstanceUrl() {
-      const instanceInput = document.getElementById('instance-url') as HTMLInputElement;
-      if (!instanceInput) return;
-
-      instanceInput.addEventListener('input', (e: Event) => {
-        const target = e.target as HTMLInputElement;
-        this.instanceUrl = target.value;
-        this.updateFeedUrls();
-      });
-    }
-
-    setupParameterForms() {
-      // Toggle parameter forms
-      document.querySelectorAll('.feed-directory__configure-btn').forEach(button => {
-        button.addEventListener('click', (e: Event) => {
-          const target = e.target as HTMLElement;
-          const buttonElement = target.closest('button') as HTMLButtonElement;
-          const targetId = buttonElement.dataset.target;
-          const form = document.getElementById(targetId!) as HTMLElement;
-          const isExpanded = form.hidden === false;
-
-          form.hidden = isExpanded;
-          buttonElement.setAttribute('aria-expanded', String(!isExpanded));
-          const span = buttonElement.querySelector('span') as HTMLElement;
-          if (span) span.textContent = isExpanded ? 'Configure' : 'Hide';
-        });
-      });
-
-      // Close parameter forms
-      document.querySelectorAll('[data-close-form]').forEach(button => {
-        button.addEventListener('click', (e: Event) => {
-          const target = e.target as HTMLElement;
-          const form = target.closest('.feed-directory__item-params') as HTMLElement;
-          const toggle = document.querySelector(`[data-target="${form.id}"]`) as HTMLElement;
-
-          form.hidden = true;
-          toggle.setAttribute('aria-expanded', 'false');
-          const span = toggle.querySelector('span') as HTMLElement;
-          if (span) span.textContent = 'Configure';
-        });
-      });
-
-      // Update feed URLs when parameters change
-      document.querySelectorAll('.feed-directory__param-input').forEach(input => {
-        input.addEventListener('input', () => {
-          this.updateFeedUrls();
-        });
-      });
-    }
-
-    filterItems(query: string) {
-      this.feedItems.forEach((item: HTMLElement) => {
-        const searchableText = item.dataset.searchable?.toLowerCase() || '';
-        const matches = this.fuzzyMatch(searchableText, query);
-        item.style.display = matches ? 'flex' : 'none';
-      });
-    }
-
-    fuzzyMatch(text: string, query: string): boolean {
-      const lowerText = text.toLowerCase();
-      const lowerQuery = query.toLowerCase();
-      let textIndex = 0;
-      let queryIndex = 0;
-
-      while (queryIndex < lowerQuery.length && textIndex < lowerText.length) {
-        if (lowerQuery[queryIndex] === lowerText[textIndex]) {
-          queryIndex++;
-        }
-        textIndex++;
-      }
-      return queryIndex === lowerQuery.length;
-    }
-
-    updateFeedUrls() {
-      document.querySelectorAll('[data-feed-url]').forEach(link => {
-        const linkElement = link as HTMLAnchorElement;
-        const item = linkElement.closest('[data-domain]') as HTMLElement;
-        const domain = item.dataset.domain;
-        const name = item.dataset.name;
-
-        // Get parameters from form inputs (including prefilled defaults)
-        const params: Record<string, string> = {};
-        const paramInputs = item.querySelectorAll('[data-param-key]');
-        paramInputs.forEach(input => {
-          const inputElement = input as HTMLInputElement;
-          if (inputElement.value) {
-            params[inputElement.dataset.paramKey!] = inputElement.value;
-          }
-        });
-
-        // Generate new URL
-        let url = this.instanceUrl.endsWith("/") ? this.instanceUrl : `${this.instanceUrl}/`;
-        url += `${domain}/${name}.rss`;
-
-        const queryParams = new URLSearchParams();
-        Object.entries(params).forEach(([key, value]) => {
-          queryParams.append(key, value);
-        });
-
-        const queryString = queryParams.toString();
-        if (queryString) {
-          url += `?${queryString}`;
-        }
-
-        linkElement.href = url;
-      });
-    }
+  // Simple debounce helper
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
   }
 
-  // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => new FeedDirectory());
-  } else {
-    new FeedDirectory();
+  // Simple fuzzy search
+  function fuzzyMatch(text, query) {
+    if (!query) return true;
+    const lowerText = text.toLowerCase();
+    const lowerQuery = query.toLowerCase();
+    let textIndex = 0;
+    let queryIndex = 0;
+    while (queryIndex < lowerQuery.length && textIndex < lowerText.length) {
+      if (lowerQuery[queryIndex] === lowerText[textIndex]) queryIndex++;
+      textIndex++;
+    }
+    return queryIndex === lowerQuery.length;
+  }
+
+  // Main functionality
+  let instanceUrl = document.getElementById('instance-url')?.value || atob("aHR0cHM6Ly8xLmgyci53b3JrZXJzLmRldi8=");
+  const searchInput = document.getElementById('search-input');
+  const feedItems = document.querySelectorAll('[data-domain]');
+
+  // Search functionality
+  if (searchInput) {
+    searchInput.addEventListener('input', debounce((e) => {
+      const query = e.target.value.toLowerCase();
+      feedItems.forEach(item => {
+        const searchableText = item.dataset.searchable?.toLowerCase() || '';
+        item.style.display = fuzzyMatch(searchableText, query) ? 'flex' : 'none';
+      });
+    }, 150));
+  }
+
+  // Instance URL updates
+  const instanceInput = document.getElementById('instance-url');
+  if (instanceInput) {
+    instanceInput.addEventListener('input', debounce((e) => {
+      instanceUrl = e.target.value || atob("aHR0cHM6Ly8xLmgyci53b3JrZXJzLmRldi8=");
+      updateFeedUrls();
+    }, 300));
+  }
+
+  // Parameter forms
+  document.querySelectorAll('.feed-directory__configure-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const targetId = e.target.closest('button').dataset.target;
+      const form = document.getElementById(targetId);
+      if (!form) return;
+
+      const isExpanded = !form.hidden;
+      form.hidden = isExpanded;
+      e.target.closest('button').setAttribute('aria-expanded', !isExpanded);
+      e.target.closest('button').querySelector('span').textContent = isExpanded ? 'Configure' : 'Hide';
+
+      if (!isExpanded) updateFeedUrls();
+    });
+  });
+
+  // Close forms
+  document.querySelectorAll('[data-close-form]').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const form = e.target.closest('.feed-directory__item-params');
+      const toggle = document.querySelector(`[data-target="${form.id}"]`);
+      if (!form || !toggle) return;
+
+      form.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.querySelector('span').textContent = 'Configure';
+    });
+  });
+
+  // Parameter input updates
+  document.querySelectorAll('.feed-directory__param-input').forEach(input => {
+    input.addEventListener('input', debounce(updateFeedUrls, 200));
+  });
+
+  // Update feed URLs
+  function updateFeedUrls() {
+    document.querySelectorAll('[data-feed-url]').forEach(link => {
+      const item = link.closest('[data-domain]');
+      if (!item) return;
+
+      const domain = item.dataset.domain;
+      const name = item.dataset.name;
+      if (!domain || !name) return;
+
+      // Get parameters
+      const params = {};
+      item.querySelectorAll('[data-param-key]').forEach(input => {
+        if (input.value) params[input.dataset.paramKey] = input.value;
+      });
+
+      // Build URL
+      let url = instanceUrl.endsWith("/") ? instanceUrl : `${instanceUrl}/`;
+      url += `${domain}/${name}.rss`;
+
+      const queryParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => queryParams.append(key, value));
+      const queryString = queryParams.toString();
+      if (queryString) url += `?${queryString}`;
+
+      link.href = url;
+    });
   }
 </script>
 
@@ -340,34 +303,10 @@ const staticFeedUrls = configs.map(config => ({
     border-radius: 0.75rem;
   }
 
-  .feed-directory__filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
 
-  .feed-directory__label {
-    font-weight: 600;
-    font-size: 0.875rem;
-    color: hsl(var(--sl-color-gray-6));
-    margin: 0;
-  }
 
   .feed-directory__input {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid hsl(var(--sl-color-gray-4));
-    border-radius: 0.5rem;
-    background: hsl(var(--sl-color-bg));
-    color: hsl(var(--sl-color-text));
-    font-size: 0.875rem;
-    transition: border-color 0.2s ease;
-  }
-
-  .feed-directory__input:focus {
-    outline: none;
-    border-color: hsl(var(--sl-color-accent));
-    box-shadow: 0 0 0 3px hsl(var(--sl-color-accent) / 0.1);
   }
 
   /* List Layout */
@@ -447,47 +386,57 @@ const staticFeedUrls = configs.map(config => ({
     border-color: hsl(var(--sl-color-accent));
   }
 
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 
   .feed-directory__params-form {
-    display: flex ;
-    flex-direction: column ;
-    gap: 1.5rem ;
-    margin-top: 1rem ;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1rem;
   }
 
   .feed-directory__param-group {
-    display: flex ;
-    flex-direction: column ;
-    gap: 0.75rem ;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
   .feed-directory__param-label {
-    font-size: 0.9rem ;
-    font-weight: 700 ;
-    color: hsl(var(--sl-color-text)) ;
-    margin-bottom: 0.5rem ;
-    display: block ;
-    text-transform: uppercase ;
-    letter-spacing: 0.025em ;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: hsl(var(--sl-color-text));
+    margin-bottom: 0.5rem;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+
+  .feed-directory__param-input {
+    width: 100%;
   }
 
   .feed-directory__params-actions {
-    display: flex ;
-    justify-content: flex-end ;
-    align-items: center ;
-    padding-top: 1rem ;
-    border-top: 2px solid hsl(var(--sl-color-gray-4)) ;
-    margin-top: 1rem ;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 2px solid hsl(var(--sl-color-gray-4));
+    margin-top: 1rem;
+  }
+
+  .feed-directory__close-btn {
+    padding: 0.5rem 1rem;
+    background: hsl(var(--sl-color-gray-1));
+    border: 1px solid hsl(var(--sl-color-gray-4));
+    border-radius: 0.25rem;
+    color: hsl(var(--sl-color-text));
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .feed-directory__close-btn:hover {
+    background: hsl(var(--sl-color-gray-2));
+    border-color: hsl(var(--sl-color-accent));
   }
 
   /* Mobile-First Design */
@@ -532,16 +481,20 @@ const staticFeedUrls = configs.map(config => ({
     gap: 0.5rem;
     width: 100%;
     justify-content: flex-start;
+    align-items: center;
   }
 
   .feed-directory__action-btn {
     flex: none;
     justify-content: center;
+    align-items: center;
     padding: 0.5rem;
     font-size: 0.75rem;
     font-weight: 600;
     width: 36px;
     height: 36px;
+    border-radius: 50%;
+    display: flex;
   }
 
   .feed-directory__action-btn span {
@@ -564,11 +517,14 @@ const staticFeedUrls = configs.map(config => ({
   .feed-directory__configure-btn {
     flex: none;
     justify-content: center;
+    align-items: center;
     padding: 0.5rem;
     font-size: 0.75rem;
     font-weight: 600;
     width: 36px;
     height: 36px;
+    border-radius: 50%;
+    display: flex;
   }
 
   .feed-directory__configure-btn span {
@@ -616,10 +572,11 @@ const staticFeedUrls = configs.map(config => ({
     }
 
     .feed-directory__action-btn {
-      width: 60px;
-      height: 24px;
-      padding: 0.25rem 0.5rem;
+      width: auto;
+      height: 32px;
+      padding: 0.25rem 0.75rem;
       font-size: 0.75rem;
+      border-radius: 0.25rem;
     }
 
     .feed-directory__action-btn span {
@@ -627,10 +584,11 @@ const staticFeedUrls = configs.map(config => ({
     }
 
     .feed-directory__configure-btn {
-      width: 60px;
-      height: 24px;
-      padding: 0.25rem 0.5rem;
+      width: auto;
+      height: 32px;
+      padding: 0.25rem 0.75rem;
       font-size: 0.75rem;
+      border-radius: 0.25rem;
     }
 
     .feed-directory__configure-btn span {
@@ -639,8 +597,8 @@ const staticFeedUrls = configs.map(config => ({
 
     .feed-directory__action-spacer {
       display: block;
-      width: 60px;
-      height: 24px;
+      width: auto;
+      height: 32px;
     }
   }
 </style>
