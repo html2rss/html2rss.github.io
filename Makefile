@@ -1,16 +1,16 @@
 default: setup clean lintfix serve
 
 setup:
-	yarn check || yarn
+	npm ci
 	bundle check || bundle
 	make update
 
 lint:
-	yarn lint
+	npm run lint
 	make lint-ruby
 
 lintfix:
-	yarn lintfix
+	npm run lintfix
 	make lintfix-ruby
 
 lint-ruby:
