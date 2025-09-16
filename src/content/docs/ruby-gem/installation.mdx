@@ -3,8 +3,6 @@ title: 'Installation'
 description: 'This guide will walk you through the process of installing html2rss on your system.'
 ---
 
-# Installation
-
 This guide will walk you through the process of installing html2rss on your system. html2rss can be installed in several ways, depending on your preferred method and environment.
 
 ---

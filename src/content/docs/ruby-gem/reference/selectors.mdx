@@ -3,8 +3,6 @@ title: 'Selectors'
 description: 'The selectors scraper gives you fine-grained control over content extraction using CSS selectors.'
 ---
 
-# Selectors
-
 The `selectors` scraper gives you fine-grained control over content extraction using CSS selectors.
 
 > A valid RSS item requires at least a `title` or a `description`.
@@ -33,6 +31,21 @@ selectors:
     selector: ".article"
     enhance: true # default: true
 ```
+
+## Item Ordering
+
+You can control the order of items in your feed:
+
+```yml
+selectors:
+  items:
+    selector: ".article"
+    order: "reverse" # Reverse the order of items (newest first)
+```
+
+Available options:
+- `"reverse"`: Reverses the order of items (useful when the website shows oldest items first)
+- Default: Items appear in the order they are found on the page
 
 ## RSS 2.0 Selectors
 
