@@ -1,14 +1,22 @@
 ---
-import { configs } from '../data/loadConfigs';
-import { Icon, LinkButton } from '@astrojs/starlight/components';
+import { configs } from "../data/loadConfigs";
+import { Icon, LinkButton } from "@astrojs/starlight/components";
 
 // Simple helper functions
-function getFeedUrl(config: { domain: string; name: string; url_parameters?: Record<string, any> }, instanceUrl: string, params: Record<string, string> = {}) {
+function getFeedUrl(
+  config: {
+    domain: string;
+    name: string;
+    url_parameters?: Record<string, any>;
+  },
+  instanceUrl: string,
+  params: Record<string, string> = {},
+) {
   const baseUrl = instanceUrl.endsWith("/") ? instanceUrl : `${instanceUrl}/`;
   let url = `${baseUrl}${config.domain}/${config.name}.rss`;
 
   const queryParams = new URLSearchParams();
-  Object.keys(config.url_parameters || {}).forEach(key => {
+  Object.keys(config.url_parameters || {}).forEach((key) => {
     if (params[key]) queryParams.append(key, params[key]);
   });
 
@@ -18,18 +26,16 @@ function getFeedUrl(config: { domain: string; name: string; url_parameters?: Rec
 }
 
 // Don't generate static URLs to avoid exposing instance URL in build
-const staticFeedUrls = configs.map(config => ({
+const staticFeedUrls = configs.map((config) => ({
   ...config,
-  staticFeedUrl: "#" // Placeholder that will be updated by JavaScript
+  staticFeedUrl: "#", // Placeholder that will be updated by JavaScript
 }));
 ---
 
 <div class="feed-directory-container">
   <!-- Progressive Enhancement: Works without JavaScript -->
   <div class="feed-directory__filters">
-    <label for="instance-url-input">
-      Instance URL
-    </label>
+    <label for="instance-url-input"> Instance URL </label>
     <input
       type="text"
       name="instance"
@@ -39,9 +45,7 @@ const staticFeedUrls = configs.map(config => ({
       placeholder="https://your-instance.com"
     />
 
-    <label for="search-input">
-      Search Feeds
-    </label>
+    <label for="search-input"> Search Feeds </label>
     <input
       type="search"
       name="search"
@@ -54,120 +58,134 @@ const staticFeedUrls = configs.map(config => ({
   </div>
 
   <div class="feed-directory__list">
-    {staticFeedUrls.map((config, index) => (
-      <div
-        class="feed-directory__item"
-        data-domain={config.domain}
-        data-name={config.name}
-        data-searchable={`${config.domain}/${config.name}`}
-      >
-        <div class="feed-directory__item-main">
-          <div class="feed-directory__item-info">
-            <div class="feed-directory__item-title">
-              <span class="feed-directory__item-domain">{config.domain}</span>
-              <span class="feed-directory__item-separator">/</span>
-              <span class="feed-directory__item-name">{config.name}</span>
+    {
+      staticFeedUrls.map((config, index) => (
+        <div
+          class="feed-directory__item"
+          data-domain={config.domain}
+          data-name={config.name}
+          data-searchable={`${config.domain}/${config.name}`}
+        >
+          <div class="feed-directory__item-main">
+            <div class="feed-directory__item-info">
+              <div class="feed-directory__item-title">
+                <span class="feed-directory__item-domain">{config.domain}</span>
+                <span class="feed-directory__item-separator">/</span>
+                <span class="feed-directory__item-name">{config.name}</span>
+              </div>
+
+              {config.channel?.url && (
+                <div class="feed-directory__item-source">
+                  <a
+                    href={config.channel.url}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    class="feed-directory__item-link"
+                  >
+                    {config.channel.url}
+                  </a>
+                </div>
+              )}
             </div>
 
-            {config.channel?.url && (
-              <div class="feed-directory__item-source">
-                <a href={config.channel.url} target="_blank" rel="noopener noreferrer nofollow" class="feed-directory__item-link">
-                  {config.channel.url}
-                </a>
-              </div>
-            )}
-          </div>
-
-          <div class="feed-directory__item-actions">
-            {!config.valid_channel_url && Object.keys(config.url_parameters || {}).length > 0 ? (
-              <button
-                class="feed-directory__configure-btn"
-                type="button"
-                aria-expanded="false"
-                aria-controls={`params-${index}`}
-                data-target={`params-${index}`}
-                aria-label="Configure feed parameters"
-                title="Configure feed parameters"
-              >
-                <Icon name="setting" />
-                <span>Configure</span>
-              </button>
-            ) : (
-              <div class="feed-directory__action-spacer"></div>
-            )}
-
-            <LinkButton
-              href={config.staticFeedUrl}
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              data-feed-url
-              class="feed-directory__action-btn feed-directory__action-btn--rss"
-              aria-label="Open RSS feed"
-              title="Open RSS feed"
-            >
-              <Icon name="rss" />
-              <span>RSS</span>
-            </LinkButton>
-
-            <LinkButton
-              href={`https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/${encodeURIComponent(config.domain)}/${encodeURIComponent(config.name)}.yml`}
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              variant="secondary"
-              class="feed-directory__action-btn feed-directory__action-btn--edit"
-              aria-label="Edit configuration on GitHub"
-              title="Edit configuration on GitHub"
-            >
-              <Icon name="pencil" />
-              <span>Edit</span>
-            </LinkButton>
-          </div>
-        </div>
-
-        {!config.valid_channel_url && Object.keys(config.url_parameters || {}).length > 0 && (
-          <div class="feed-directory__item-params" id={`params-${index}`} hidden>
-            <form class="feed-directory__params-form">
-              {Object.entries(config.url_parameters || {}).map(([key, fallback]) => (
-                <div class="feed-directory__param-group">
-                  <label
-                    for={`${config.domain}-${config.name}-${key}`}
-                    class="feed-directory__param-label"
-                  >
-                    {key}
-                  </label>
-                  <input
-                    type="text"
-                    id={`${config.domain}-${config.name}-${key}`}
-                    name={key}
-                    class="feed-directory__param-input"
-                    value={config.default_parameters?.[key] || ''}
-                    placeholder={String(fallback)}
-                    data-param-key={key}
-                    aria-label={key}
-                  />
-                </div>
-              ))}
-              <div class="feed-directory__params-actions">
+            <div class="feed-directory__item-actions">
+              {!config.valid_channel_url &&
+              Object.keys(config.url_parameters || {}).length > 0 ? (
                 <button
+                  class="feed-directory__configure-btn"
                   type="button"
-                  class="feed-directory__close-btn"
-                  data-close-form
-                  aria-label="Close configuration form"
+                  aria-expanded="false"
+                  aria-controls={`params-${index}`}
+                  data-target={`params-${index}`}
+                  aria-label="Configure feed parameters"
+                  title="Configure feed parameters"
                 >
-                  Close
+                  <Icon name="setting" />
+                  <span>Configure</span>
                 </button>
-              </div>
-            </form>
+              ) : (
+                <div class="feed-directory__action-spacer" />
+              )}
+
+              <LinkButton
+                href={config.staticFeedUrl}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                data-feed-url
+                class="feed-directory__action-btn feed-directory__action-btn--rss"
+                aria-label="Open RSS feed"
+                title="Open RSS feed"
+              >
+                <Icon name="rss" />
+                <span>RSS</span>
+              </LinkButton>
+
+              <LinkButton
+                href={`https://github.com/html2rss/html2rss-configs/blob/master/lib/html2rss/configs/${encodeURIComponent(config.domain)}/${encodeURIComponent(config.name)}.yml`}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                variant="secondary"
+                class="feed-directory__action-btn feed-directory__action-btn--edit"
+                aria-label="Edit configuration on GitHub"
+                title="Edit configuration on GitHub"
+              >
+                <Icon name="pencil" />
+                <span>Edit</span>
+              </LinkButton>
+            </div>
           </div>
-        )}
-      </div>
-    ))}
+
+          {!config.valid_channel_url &&
+            Object.keys(config.url_parameters || {}).length > 0 && (
+              <div
+                class="feed-directory__item-params"
+                id={`params-${index}`}
+                hidden
+              >
+                <form class="feed-directory__params-form">
+                  {Object.entries(config.url_parameters || {}).map(
+                    ([key, fallback]) => (
+                      <div class="feed-directory__param-group">
+                        <label
+                          for={`${config.domain}-${config.name}-${key}`}
+                          class="feed-directory__param-label"
+                        >
+                          {key}
+                        </label>
+                        <input
+                          type="text"
+                          id={`${config.domain}-${config.name}-${key}`}
+                          name={key}
+                          class="feed-directory__param-input"
+                          value={config.default_parameters?.[key] || ""}
+                          placeholder={String(fallback)}
+                          data-param-key={key}
+                          aria-label={key}
+                        />
+                      </div>
+                    ),
+                  )}
+                  <div class="feed-directory__params-actions">
+                    <button
+                      type="button"
+                      class="feed-directory__close-btn"
+                      data-close-form
+                      aria-label="Close configuration form"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+        </div>
+      ))
+    }
   </div>
 </div>
 
 <!-- Enhanced functionality with vanilla JavaScript -->
 <script src="./feed-directory.js"></script>
-
 
 <style>
   .feed-directory-container {
@@ -267,7 +285,6 @@ const staticFeedUrls = configs.map(config => ({
     border-color: hsl(var(--sl-color-accent));
   }
 
-
   .feed-directory__params-form {
     display: flex;
     flex-direction: column;
@@ -319,7 +336,6 @@ const staticFeedUrls = configs.map(config => ({
     background: hsl(var(--sl-color-gray-2));
     border-color: hsl(var(--sl-color-accent));
   }
-
 
   .feed-directory__item {
     display: flex;

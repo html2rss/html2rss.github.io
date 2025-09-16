@@ -7,17 +7,9 @@ setup:
 
 lint:
 	npm run lint
-	make lint-ruby
 
 lintfix:
 	npm run lintfix
-	make lintfix-ruby
-
-lint-ruby:
-	bundle exec rubocop
-
-lintfix-ruby:
-	bundle exec rubocop -a
 
 clean:
 	find . -type d -empty -delete
