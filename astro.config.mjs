@@ -309,9 +309,9 @@ export default defineConfig({
           autogenerate: { directory: "get-involved" },
         },
         {
-          label: "Support",
+          label: "Troubleshooting",
           collapsed: true,
-          autogenerate: { directory: "support" },
+          autogenerate: { directory: "troubleshooting" },
         },
       ],
       defaultLocale: "root",

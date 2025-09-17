@@ -44,7 +44,7 @@ If parts of your items (e.g., title, link) are missing, check the following:
 
 If you are having issues with date/time parsing, check the following:
 
-- **`time_format`:** Ensure the `time_format` in your configuration matches the date string on the website.
+- **Date Format:** The `parse_time` post-processor automatically detects common date formats using Ruby's `Time.parse`. Ensure your date strings are in a recognizable format.
 - **`time_zone`:** Specify the correct `time_zone` if the website uses a specific time zone.
 
 ### `html2rss` Command Not Found
