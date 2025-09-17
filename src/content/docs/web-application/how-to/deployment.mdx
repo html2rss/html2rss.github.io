@@ -30,10 +30,16 @@ When hosting a **public instance** that others will use, please follow these ess
 
 ### Security
 
-- **Use a reverse proxy** ([nginx](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/), Apache, or Cloudflare) to handle SSL termination and rate limiting
-- **Enable HTTPS only** — redirect all HTTP traffic to HTTPS ([certbot guide](https://certbot.eff.org/))
+- **Use a reverse proxy** to handle SSL termination and rate limiting
+- **Enable HTTPS only** — redirect all HTTP traffic to HTTPS
 - **Set strong passwords** for health check and auto-source authentication
 - **Restrict access** to admin endpoints and sensitive configuration
+
+### Modern Reverse Proxy Options
+
+- **Caddy** — Automatic HTTPS, zero config
+- **Traefik** — Auto-discovery, perfect for Docker
+- **nginx** — Traditional, requires certbot setup
 
 ### HTTPS
 
@@ -45,38 +51,132 @@ Setting up HTTPS is crucial for any public instance. Follow these steps:
 4. **Test your setup** using tools like [SSL Labs](https://www.ssllabs.com/ssltest/)
 
 For detailed implementation guides, see:
+
 - [Nginx SSL configuration](https://docs.nginx.com/nginx/admin-guide/security-controls/terminating-ssl-http/)
 - [Apache SSL setup](https://httpd.apache.org/docs/2.4/ssl/ssl_howto.html)
 - [Cloudflare SSL/TLS settings](https://developers.cloudflare.com/ssl/)
 
-### Reliability & Monitoring
+## Quick Docker Setup
+
+### Caddy (Easiest)
+
+```yaml
+services:
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+  html2rss:
+    image: html2rss/html2rss-web:latest
+    environment:
+      - BASE_URL=https://yourdomain.com
+
+volumes:
+  caddy_data:
+```
+
+`Caddyfile`:
+
+```caddy
+yourdomain.com {
+  reverse_proxy html2rss:3000
+}
+```
+
+### Traefik (Auto-discovery)
+
+```yaml
+services:
+  traefik:
+    image: traefik:v3.0
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+  html2rss:
+    image: html2rss/html2rss-web:latest
+    environment:
+      - BASE_URL=https://yourdomain.com
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.html2rss.rule=Host(`yourdomain.com`)
+      - traefik.http.routers.html2rss.entrypoints=websecure
+      - traefik.http.routers.html2rss.tls.certresolver=letsencrypt
+      - traefik.http.services.html2rss.loadbalancer.server.port=3000
+```
+
+## Reliability & Monitoring
 
 - **Enable auto-updates** using [watchtower](https://containrrr.dev/watchtower/) or similar tools
 - **Monitor the health check endpoint** (`/health_check.txt`) to detect issues early
 - **Set up logging** to track errors and performance
 - **Use environment variables** for configuration instead of hardcoded values
 
-### Performance Optimization
+### Example: Adding Watchtower for Auto-updates
+
+```yaml
+services:
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=300
+```
+
+## Performance Optimization
 
 - **Configure appropriate resource limits** for your Docker containers
 - **Use a CDN** for static assets if serving many users
 - **Monitor memory usage** — html2rss-web can be memory-intensive with large feeds
 - **Set up caching** for frequently accessed feeds
 
+### Example: Resource Limits
+
+```yaml
+services:
+  html2rss:
+    image: html2rss/html2rss-web:latest
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.5"
+        reservations:
+          memory: 256M
+          cpus: "0.25"
+```
+
 ## Environment Configuration
 
 For production, update your environment variables:
 
 ```yaml
-environment:
-  RACK_ENV: production
-  LOG_LEVEL: warn
-  HEALTH_CHECK_USERNAME: your-secure-username
-  HEALTH_CHECK_PASSWORD: your-very-secure-password
-  BASE_URL: https://your-domain.com
+services:
+  html2rss:
+    image: html2rss/html2rss-web:latest
+    environment:
+      RACK_ENV: production
+      LOG_LEVEL: warn
+      HEALTH_CHECK_USERNAME: your-secure-username
+      HEALTH_CHECK_PASSWORD: your-very-secure-password
+      BASE_URL: https://your-domain.com
 ```
 
-Use a [password manager](https://bitwarden.com/password-generator/) to generate strong values.
+> 💡 **Security Tip**: Use a [password manager](https://bitwarden.com/password-generator/) to generate strong, unique passwords for all authentication endpoints.
 
 ## Share Your Instance
 
@@ -85,6 +185,13 @@ Once your instance is running smoothly:
 - **[Add it to our community wiki](https://github.com/html2rss/html2rss-web/wiki/Instances)** so others can discover it
 - **Test thoroughly** with various feed types before sharing
 - **Monitor usage** and be prepared to scale if needed
+
+### Before Going Public
+
+1. **Test your setup** with different feed configurations
+2. **Verify HTTPS** is working correctly
+3. **Check performance** under load
+4. **Review security settings** and access controls
 
 ## Need Help?
 
