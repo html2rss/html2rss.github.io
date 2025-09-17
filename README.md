@@ -17,6 +17,14 @@ website.
 make setup
 ```
 
+### 💻 Try in Browser
+
+You can develop html2rss directly in your browser using GitHub Codespaces:
+
+[Open in GitHub Codespaces](https://github.com/codespaces/new?repo=html2rss/html2rss)
+
+The Codespace provides a cloud development environment with Node.js and Ruby pre-installed. Run `make setup` to install dependencies and get started!
+
 ### Available Commands
 
 - `make setup` - Install dependencies and start dev server
