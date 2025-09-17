@@ -11,7 +11,9 @@ Your browser's developer tools are essential for troubleshooting. Use them to in
 
 - **To open:** Right-click an element on a webpage and select "Inspect" or "Inspect Element."
 
-## Common Issues
+---
+
+## Common Issues (Ruby Gem / CLI)
 
 ### Empty Feeds
 
@@ -21,7 +23,7 @@ If your feed is empty, check the following:
 - **`items.selector`:** Verify that the `items.selector` matches the elements on the page.
 - **Website Changes:** Websites change their HTML structure frequently. Your selectors may be outdated.
 - **JavaScript Content:** If the content is loaded via JavaScript, use the `browserless` strategy instead of `faraday`.
-- **Authentication:** Some sites require authentication - check if you need to add headers or use a different strategy.
+- **Authentication:** Some sites require authentication — check if you need to add headers or use a different strategy.
 
 ### Configuration Errors
 
@@ -54,14 +56,57 @@ If you are getting a "command not found" error, try the following:
 - **Re-install:** Re-install `html2rss` to ensure it is installed correctly: `gem install html2rss`.
 - **Check `PATH`:** Ensure that the directory where Ruby gems are installed is in your system's `PATH`.
 
-### Web Application Errors
+---
 
-For html2rss-web specific issues:
+## Web Application Issues (html2rss-web)
 
-- **`401 Unauthorized`:** Check your `AUTO_SOURCE_USERNAME` and `AUTO_SOURCE_PASSWORD` environment variables.
-- **`403 Forbidden`:** The URL is not in the `AUTO_SOURCE_ALLOWED_URLS` list, or the origin is not in `AUTO_SOURCE_ALLOWED_ORIGINS`.
-- **`500 Internal Server Error`:** Check the application logs for detailed error information.
+### Instance Won’t Start
+
+- Verify Docker is installed and running:
+  ```bash
+  docker --version
+  ```
+- Check logs for errors:
+  ```bash
+  docker compose logs
+  ```
+- Ensure the port (default: 3000) isn’t already in use:
+  ```bash
+  netstat -tulpn | grep :3000
+  ```
+
+### Can’t Access the Web Interface
+
+- Confirm your firewall allows traffic on port 3000 (or the port you configured)
+- Try accessing via the server’s IP instead of a domain name
+- Double-check that containers are running:
+  ```bash
+  docker compose ps
+  ```
+
+### Authentication Errors
+
+- **401 Unauthorized:** Check your `AUTO_SOURCE_USERNAME` and `AUTO_SOURCE_PASSWORD` environment variables.
+- **403 Forbidden:** The URL is not in the `AUTO_SOURCE_ALLOWED_URLS` list, or the origin is not in `AUTO_SOURCE_ALLOWED_ORIGINS`.
+- **500 Internal Server Error:** Check the application logs for detailed error information.
 - **Health check failures:** Use the `/health_check.txt` endpoint to identify which specific feed configurations are broken.
+
+### SSL / HTTPS Issues
+
+- Follow the [nginx reverse proxy guide](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/)
+- Use [Let’s Encrypt with certbot](https://certbot.eff.org/) to obtain valid certificates
+- Verify your reverse proxy forwards requests to the correct internal port
+
+### Feed Problems
+
+- Some sites may require JavaScript rendering; ensure the `browserless` service is running
+- Check the feed configuration in `feeds.yml` for typos or invalid selectors
+- Look for parsing errors in the logs:
+  ```bash
+  docker compose logs html2rss-web
+  ```
+
+---
 
 ## Tips & Tricks
 
@@ -69,6 +114,10 @@ For html2rss-web specific issues:
 - **`curl` and `pup`:** For static sites, use `curl` and `pup` to quickly find selectors: `curl URL | pup`.
 - **CSS Selectors:** For a comprehensive overview of CSS selectors, see the [W3C documentation](https://www.w3.org/TR/selectors-4/#overview).
 
+---
+
 ## Still Stuck?
 
-If you are still having issues, please [open an issue on GitHub](https://github.com/html2rss/html2rss/issues).
+- Join our [community discussions](https://github.com/orgs/html2rss/discussions)
+- [Open an issue on GitHub](https://github.com/html2rss/html2rss/issues)
+- Review the [deployment guide](/web-application/how-to/deployment) for production best practices
