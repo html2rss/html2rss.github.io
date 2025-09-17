@@ -1,9 +1,21 @@
-default: setup clean lintfix serve
+default: setup clean lintfix dev
 
 setup:
 	npm ci
 	bundle check || bundle
 	make update
+
+dev:
+	npm run dev
+
+build:
+	npm run build
+
+preview:
+	npm run preview
+
+build-full:
+	npm run build:full
 
 lint:
 	npm run lint
@@ -18,6 +30,3 @@ clean:
 update:
 	bundle update html2rss-configs
 	bin/data-update
-
-serve: setup
-	bundle exec jekyll s --drafts --trace

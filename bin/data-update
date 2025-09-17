@@ -59,7 +59,6 @@ end
 config_file = File.join(__dir__, '..', 'src/data/configs.json')
 FileUtils.touch config_file
 
-# Convert to JSON (no Ruby-specific tags to clean up)
 json_content = JSON.pretty_generate(output)
 
 File.write(config_file, json_content)

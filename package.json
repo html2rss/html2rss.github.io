@@ -10,8 +10,8 @@
     "astro": "astro",
     "update-data": "ruby bin/data-update",
     "build:full": "npm run update-data && npm run build",
-    "lint": "prettier --check 'src/**/*.{astro,js,ts,jsx,tsx,css,scss,md,mdx}'",
-    "lintfix": "prettier --write 'src/**/*.{astro,js,ts,jsx,tsx,css,scss,md,mdx}'"
+    "lint": "prettier --check .",
+    "lintfix": "prettier --write ."
   },
   "dependencies": {
     "@astrojs/starlight": "^0.35.3",
