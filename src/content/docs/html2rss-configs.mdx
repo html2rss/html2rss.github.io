@@ -3,30 +3,35 @@ title: Creating Custom RSS Feeds
 description: Learn how to create custom RSS feeds using html2rss configuration files
 ---
 
-Want to create RSS feeds for websites that don't offer them? This guide shows you how to write simple configuration files that tell the html2rss engine exactly what content to extract.
+Want to create RSS feeds for websites that don't offer them? This guide shows you how to write simple configuration files.
 
-**Don't worry if you're not technical** - we'll explain everything step by step!
+**New to html2rss?** Start with the [web app](/web-application/getting-started) or [browse existing feeds](/feed-directory/) first.
 
-You can see examples of what others have created in the [Feed Directory](/feed-directory/).
+---
+
+## Quick Start
+
+**Need a feed right now?**
+1. **[Try the web app](/web-application/getting-started)** - No coding required
+2. **[Browse ready-made feeds](/feed-directory/)** - Use what others created
+3. **Create a config** - When you need custom control (see below)
+
+**Ready to create a config?** Jump to [Your First Config](#your-first-config).
 
 ---
 
 ## How It Works
 
-Think of the html2rss engine as a smart assistant that needs instructions. You give it a simple "recipe" (called a config file) that tells it:
-
+A config file is a simple "recipe" that tells html2rss:
 1. **Which website** to look at
-2. **What content** to find (articles, posts, etc.)
-3. **How to organize** that content into an RSS feed
-
-The recipe is written in YAML - a simple format that's easy to read and write. Both html2rss-web and the html2rss Ruby gem use these same configuration files.
+2. **What content** to find
+3. **How to organize** it into an RSS feed
 
 ### The `channel` Block
 
-This tells the html2rss engine basic information about your feed - like giving it a name and telling it which website to look at.
+This tells html2rss basic information about your feed - like giving it a name and telling it which website to look at.
 
 **Example:**
-
 ```yaml
 channel:
   url: https://example.com/blog
@@ -40,7 +45,6 @@ This says: "Look at this website and call the feed 'My Awesome Blog'"
 This is where you tell the html2rss engine exactly what to find on the page. You use CSS selectors (like you might use in web design) to point to specific parts of the webpage.
 
 **Example:**
-
 ```yaml
 selectors:
   items:
@@ -49,57 +53,26 @@ selectors:
     selector: "h2 a"
   link:
     selector: "h2 a"
+    attribute: href
 ```
 
-This says: "Find each article, get the title from the h2 link, and get the link from the same h2 link"
+This says: "Find each article, get the title from the h2 anchor, and get the link from the same h2 anchor's href attribute"
 
 **Need more details?** Check our [complete guide to selectors](/ruby-gem/reference/selectors/) for all the options.
 
 ---
 
-## Tutorial: Your First Feed
+## Your First Config
 
-Let's create a simple RSS feed step by step. We'll use a basic blog as our example.
+**Step 1:** Look at the website you want to create a feed for. Right-click → "View Page Source" to see the HTML structure.
 
-### Step 1: Look at the Website
-
-First, visit the website you want to create a feed for. Right-click and "View Page Source" to see the HTML structure. Look for patterns like this:
-
-```html
-<div class="posts">
-  <article class="post">
-    <h2><a href="/post/1">First Post</a></h2>
-    <p>This is the summary of the first post.</p>
-  </article>
-  <article class="post">
-    <h2><a href="/post/2">Second Post</a></h2>
-    <p>This is the summary of the second post.</p>
-  </article>
-</div>
-```
-
-**What we see:** Each article is wrapped in `<article class="post">`, titles are in `<h2><a>` tags, and descriptions are in `<p>` tags.
-
-### Step 2: Create Your Config File
-
-Create a new text file and save it as `my-blog.yml` (or any name you like). Add this basic information:
+**Step 2:** Create a file called `example.com.yml` with this basic structure:
 
 ```yaml
-# my-blog.yml
 channel:
   url: https://example.com/blog
-  title: My Awesome Blog
-  description: The latest news from my awesome blog.
-```
+  title: My Blog
 
-This tells html2rss: "Look at this website and call the feed 'My Awesome Blog'"
-
-### Step 3: Tell html2rss What to Find
-
-Now add the selectors that tell html2rss exactly what content to extract:
-
-```yaml
-# my-blog.yml
 selectors:
   items:
     selector: "article.post"
@@ -107,77 +80,67 @@ selectors:
     selector: "h2 a"
   link:
     selector: "h2 a"
-  description:
-    selector: "p"
+    attribute: href
 ```
 
-**What this means:**
+**Step 3:** Test it with the [web app](/web-application/) or [Ruby gem](/ruby-gem/installation).
 
-- `items: "article.post"` = "Find each article with class 'post'"
-- `title: "h2 a"` = "Get the title from the h2 link"
-- `link: "h2 a"` = "Get the link from the same h2 link"
-- `description: "p"` = "Get the description from the paragraph"
+**Need help?** See our [detailed tutorial](/ruby-gem/tutorials/your-first-feed/) or [troubleshooting guide](/support/troubleshooting).
 
 ---
 
-## Advanced Techniques
+## Troubleshooting
 
-### Dynamic Feeds with Parameters
+**Common issues:**
+- **No items found?** Check your selectors with browser tools (F12)
+- **Invalid YAML?** Use spaces, not tabs
+- **Website not loading?** Check the URL
 
-Use the `parameters` block to create flexible configs. This is useful for feeds based on search terms, categories, or regions.
-
-```yaml
-# news-search.yml
-parameters:
-  query:
-    type: string
-    default: "technology"
-
-channel:
-  url: "https://news.example.com/search?q={query}"
-  title: "News results for '{query}'"
-
-selectors:
-  items:
-    selector: ".article"
-  title:
-    selector: "h2 a"
-  url:
-    selector: "h2 a"
-    extractor: "href"
-```
+**Need more help?** See our [troubleshooting guide](/support/troubleshooting) or ask in [GitHub Discussions](https://github.com/orgs/html2rss/discussions).
 
 ---
 
-## Contributing Your Config
+## Advanced Features
 
-Have you created a config that others might find useful? We strongly encourage you to contribute it to the project! By sharing your config, you make it available to all users of the public `html2rss-web` service and the Feed Directory.
-
-To contribute, please [create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) to the `html2rss-configs` repository.
+**Dynamic parameters, custom headers, and more:** See our [advanced features guide](/ruby-gem/how-to/advanced-features/).
 
 ---
 
-## Usage and Integration
+## Contributing
 
-### With `html2rss-web`
+**Share your config with the community:**
 
-Once your pull request is reviewed and merged, your config will become available on the public [`html2rss-web`](/web-application/) instance. You can then access it at the path `/<domainname.tld/path>.rss`.
+1. Go to [html2rss-configs on GitHub](https://github.com/html2rss/html2rss-configs)
+2. Click "Fork" → "Add file" → Create `domain.com.yml`
+3. Paste your config → "Commit new file" → "Open pull request"
 
-### Programmatic Usage in Ruby
+**Need help?** See our [contribution guide](https://github.com/html2rss/html2rss-configs/blob/main/CONTRIBUTING.md).
 
-You can also use `html2rss-configs` programmatically in your Ruby applications.
+---
 
-Add this to your Gemfile:
+## Next Steps
 
-```ruby
-gem 'html2rss-configs', git: 'https://github.com/html2rss/html2rss-configs.git'
-```
+**🎉 Congratulations!** You've learned the basics of creating html2rss configuration files.
 
-And use it in your code:
+### What's Next?
 
-```ruby
-require 'html2rss/configs'
+**For Beginners:**
+- **[Browse the Feed Directory](/feed-directory/)** - See real-world examples
+- **[Try html2rss-web](/web-application/getting-started)** - Create feeds without coding
+- **[Learn more about selectors](/ruby-gem/reference/selectors/)** - Master CSS selectors
 
-config = Html2rss::Configs.find_by_name('domainname.tld/whatever')
-rss = Html2rss.feed(config)
-```
+**For Contributors:**
+- **[Submit your config via GitHub Web](https://github.com/html2rss/html2rss-configs)** - No Git knowledge required!
+- **[Browse existing configs](https://github.com/html2rss/html2rss-configs/tree/master/lib/html2rss/configs)** - See real examples
+- **[Join discussions](https://github.com/orgs/html2rss/discussions)** - Connect with other users
+
+**For Developers:**
+- **[Ruby Gem Documentation](/ruby-gem/)** - Full API reference
+- **[Advanced Features](/ruby-gem/how-to/advanced-features/)** - Learn advanced techniques
+- **[Custom HTTP Requests](/ruby-gem/how-to/custom-http-requests/)** - Handle complex scenarios
+
+### Need More Help?
+
+- **[Support Center](/support/)** - Get help with common issues
+- **[Community Forum](https://github.com/html2rss/html2rss-configs/discussions)** - Ask questions and share ideas
+- **[Report Issues](https://github.com/html2rss/html2rss-configs/issues)** - Found a bug? Let us know!

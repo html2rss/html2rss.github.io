@@ -143,7 +143,6 @@ export default defineConfig({
           items: [
             "web-application",
             "web-application/getting-started",
-            "web-application/installation",
             {
               label: "How-to",
               autogenerate: { directory: "web-application/how-to" },

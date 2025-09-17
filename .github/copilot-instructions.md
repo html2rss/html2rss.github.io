@@ -39,13 +39,14 @@ Create comprehensive, user-friendly documentation that showcases html2rss capabi
 
 ## Content Rules
 
-- Write clear, concise documentation
+- Write clear, concise documentation, which a human who is not fully-fluent in "Technology" can understand and work with.
 - Use active voice
 - Include code examples
 - Add interactive demos where helpful
 - Keep navigation logical
 - Use consistent terminology
 - Ensure the Site Navigation is assembled in a logical and user-friendly manner.
+- Prevent adding (and remove existing) "technical clutter" content.
 
 ## Performance & SEO
 

@@ -1,35 +1,148 @@
 ---
 title: "Getting Started"
-description: "Welcome! This guide will help you create RSS feeds from any website using the html2rss-web application."
+description: "Learn how to use html2rss-web to create RSS feeds from any website."
 sidebar:
   order: 2
 ---
 
-Welcome! This guide will help you create RSS feeds from any website using the html2rss-web application.
-
-## What is html2rss-web?
-
-html2rss-web is a user-friendly web application that turns any website into an RSS feed. It's part of the html2rss project, which also includes a Ruby gem for developers. Think of html2rss-web as a translator that converts website content into a format your feed reader can understand.
-
-## Why Use RSS Feeds?
-
-Instead of visiting 20 different websites every day, you can:
-
-- **Get all updates in one place** - your feed reader
-- **Never miss new content** - automatic notifications
-- **Save time** - no more manual checking
-- **Stay organized** - categorize and filter content
+Ready to create RSS feeds? Choose your path below.
 
 ## Quick Start Options
 
-### Option 1: Browse Ready-Made Feeds (Easiest)
+### Option 1: Use a Public Instance (Easiest)
 
-1. **[Feed Directory](/feed-directory/)** - See what's already available
-2. **Copy the RSS URL** and add it to your feed reader
+**Try html2rss-web right now:**
+1. **Go to [html2rss-web](https://html2rss-web.herokuapp.com/)** (or your preferred instance)
+2. **Enter a website URL** you want to create a feed for
+3. **Click "Generate Feed"** and copy the RSS URL
+4. **Add to your feed reader** (Feedly, Inoreader, etc.)
+
+**Perfect for:** Testing, quick feeds, or if you don't want to install anything.
 
 ### Option 2: Install Your Own Instance
 
-1. **[Installation Guide](/web-application/installation)** - Set up your own copy
-2. **[Create Custom Feeds](/web-application/how-to/)** - Make feeds for any website
+**For full control and custom feeds:**
+1. **Follow the installation steps below**
+2. **Create custom feeds** for any website
+3. **Run your own instance** with all features
 
-**New to RSS?** We recommend starting with the [Feed Directory](/feed-directory/) to see examples, then installing html2rss-web to create your own feeds.
+**Perfect for:** Power users, custom configurations, or when you need reliability.
+
+---
+
+## Installation Guide
+
+This guide will help you set up your own copy of html2rss-web on your computer. Don't worry - we'll walk you through every step!
+
+### What You'll Need
+
+- **Docker** - A tool that makes installation simple (like an app store for server software)
+- **About 10 minutes** - The whole process is quick and automated
+
+**Don't have Docker?** [Install it first](https://docs.docker.com/get-started/) - it's free and works on Windows, Mac, and Linux.
+
+### Step 1: Create a Folder
+
+Create a new folder on your computer to store html2rss-web files:
+
+**On Windows:** Right-click → New Folder → Name it "html2rss-web".
+**On Mac/Linux:** Open Terminal and run:
+
+```bash
+mkdir html2rss-web
+cd html2rss-web
+```
+
+### Step 2: Create the Configuration File
+
+Create a file called `docker-compose.yml` in your new folder. This file tells Docker how to set up html2rss-web with all the features you need.
+
+**How to create the file:**
+
+- **On Windows:** Right-click in the folder → New → Text Document → Rename it to `docker-compose.yml` (make sure to change the extension)
+- **On Mac/Linux:** Use any text editor to create the file
+
+```yaml
+services:
+  html2rss-web:
+    image: gilcreator/html2rss-web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - type: bind
+        source: ./feeds.yml
+        target: /app/config/feeds.yml
+        read_only: true
+    environment:
+      RACK_ENV: production
+      HEALTH_CHECK_USERNAME: health
+      HEALTH_CHECK_PASSWORD: please-set-YOUR-OWN-veeeeeery-l0ng-aNd-h4rd-to-gue55-Passw0rd!
+      BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:3001
+      BROWSERLESS_IO_API_TOKEN: 6R0W53R135510
+
+  watchtower:
+    image: containrrr/watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "~/.docker/config.json:/config.json"
+    command: --cleanup --interval 7200
+
+  browserless:
+    image: "ghcr.io/browserless/chromium"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      PORT: 3001
+      CONCURRENT: 10
+      TOKEN: 6R0W53R135510
+```
+
+### Step 3: Download the Feed List
+
+html2rss-web needs a list of feeds to work with. Download our pre-made list:
+
+**On Windows:** Right-click [this link](https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml) → Save As → Name it "feeds.yml" → Save in your html2rss-web folder
+
+**On Mac/Linux:** Open Terminal in your html2rss-web folder and run:
+
+```bash
+curl https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml -o feeds.yml
+```
+
+### Step 4: Start html2rss-web
+
+Now start html2rss-web:
+
+**On Windows:** Open Command Prompt in your html2rss-web folder and run:
+
+```cmd
+docker compose up -d
+```
+
+**On Mac/Linux:** In Terminal, run:
+
+```bash
+docker compose up -d
+```
+
+**That's it!** 🎉 html2rss-web is now running.
+
+**To verify it's working:**
+
+1. Open your web browser
+2. Go to `http://localhost:3000`
+3. You should see the html2rss-web interface with a list of available feeds
+
+**If you see the interface, congratulations!** You've successfully set up html2rss-web.
+
+---
+
+## Next Steps
+
+**Ready to create feeds?**
+- **Browse existing feeds** - Check out what's already available
+- **Create your first feed** - Follow our [How-To Guides](/web-application/how-to/) to make custom feeds
+- **Need help?** Check our [troubleshooting guide](/support/troubleshooting) if something doesn't work

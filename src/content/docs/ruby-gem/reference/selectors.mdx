@@ -52,16 +52,16 @@ Available options:
 
 While you can define any named selector, only the following are used in the final RSS feed:
 
-| RSS 2.0 Tag   | `html2rss` Name |
-| ------------- | --------------- | ------------------------------ |
-| `title`       | `title`         |
-| `description` | `description`   |
-| `link`        | `url`           |
-| `author`      | `author`        |
-| `category`    | `categories`    |
-| `guid`        | `guid`          |
-| `enclosure`   | `enclosure`     |
-| `pubDate`     | `published_at`  |
+| RSS 2.0 Tag   | `html2rss` Name | Notes |
+| ------------- | --------------- | ----- |
+| `title`       | `title`         |       |
+| `description` | `description`   |       |
+| `link`        | `url`           |       |
+| `author`      | `author`        |       |
+| `category`    | `categories`    |       |
+| `guid`        | `guid`          |       |
+| `enclosure`   | `enclosure`     |       |
+| `pubDate`     | `published_at`  |       |
 | `comments`    | `comments`      | ⚠️ _Not currently implemented_ |
 
 ## Selector Options
@@ -149,3 +149,7 @@ selectors:
     attribute: "src"
     content_type: "audio/mp3"
 ```
+
+---
+
+For detailed documentation on the Ruby API, see the [official YARD documentation](https://www.rubydoc.info/gems/html2rss).
