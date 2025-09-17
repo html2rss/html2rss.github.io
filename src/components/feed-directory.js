@@ -59,7 +59,7 @@ function setupInstanceUrlUpdates(instanceInput, defaultInstanceUrl, updateFeedUr
 
 // Parameter forms toggle
 function setupParameterForms(updateFeedUrls) {
-  document.querySelectorAll('.feed-directory__configure-btn').forEach((button) => {
+  document.querySelectorAll('.configure-button').forEach((button) => {
     button.addEventListener('click', (e) => {
       const targetId = e.target.closest('button')?.dataset.target;
       const form = document.getElementById(targetId);
@@ -85,7 +85,7 @@ function setupParameterForms(updateFeedUrls) {
 function setupCloseForms() {
   document.querySelectorAll('[data-close-form]').forEach((button) => {
     button.addEventListener('click', (e) => {
-      const form = e.target.closest('.feed-directory__item-params');
+      const form = e.target.closest('.parameter-form');
       const toggle = document.querySelector(`[data-target="${form?.id}"]`);
       if (!form || !toggle) return;
 
@@ -101,7 +101,7 @@ function setupCloseForms() {
 
 // Parameter input updates
 function setupParameterInputs(updateFeedUrls) {
-  document.querySelectorAll('.feed-directory__param-input').forEach((input) => {
+  document.querySelectorAll('.form-input').forEach((input) => {
     input.addEventListener(
       'input',
       debounce(() => updateFeedUrls(), 200)
