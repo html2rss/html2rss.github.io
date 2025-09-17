@@ -1,6 +1,9 @@
 {
-  "name": "",
-  "short_name": "",
+  "name": "html2rss - Turn Any Website Into RSS",
+  "short_name": "html2rss",
+  "description": "Create RSS feeds from any website - no coding required. Turn blogs, news sites, and forums into RSS feeds you can follow in your favorite reader.",
+  "start_url": "/",
+  "scope": "/",
   "icons": [
     {
       "src": "/assets/images/android-chrome-192x192.png",

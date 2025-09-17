@@ -1,15 +1,62 @@
 ---
-title: "Deployment"
-description: "This app is published on Docker Hub and therefore easy to use with Docker."
+title: "Deployment & Production"
+description: "Deploy html2rss-web to production with Docker. Learn best practices for hosting public instances with security, monitoring, and reliability."
 ---
 
-This app is published on Docker Hub and therefore easy to use with Docker.
-The `docker-compose.yml` in the [Installation Guide](/web-application/installation) is a good starting point.
+html2rss-web is published on Docker Hub, making it easy to deploy with Docker. The `docker-compose.yml` from our [Installation Guide](/web-application/getting-started) provides a solid foundation for both development and production use.
 
-If you're going to host a public instance, _please, please, please_:
+## Quick Start
 
-- Put the application behind a reverse proxy.
-- Allow outside connections only via HTTPS.
-- Have an auto-update strategy (e.g., watchtower).
-- Monitor your `/health_check.txt` endpoint.
-- [Let the world know and add your instance to the wiki](https://github.com/html2rss/html2rss-web/wiki/Instances) -- thank you!
+If you've already set up html2rss-web locally, you're ready to deploy it to production. The same Docker configuration works for both environments.
+
+## Production Best Practices
+
+When hosting a **public instance** that others will use, please follow these essential guidelines:
+
+### Security Essentials
+
+- **Use a reverse proxy** (nginx, Apache, or Cloudflare) to handle SSL termination and rate limiting
+- **Enable HTTPS only** - redirect all HTTP traffic to HTTPS
+- **Set strong passwords** for health check and auto-source authentication
+- **Restrict access** to admin endpoints and sensitive configuration
+
+### Reliability & Monitoring
+
+- **Enable auto-updates** using watchtower or similar tools
+- **Monitor the health check endpoint** (`/health_check.txt`) to detect issues early
+- **Set up logging** to track errors and performance
+- **Use environment variables** for configuration instead of hardcoded values
+
+### Performance Optimization
+
+- **Configure appropriate resource limits** for your Docker containers
+- **Use a CDN** for static assets if serving many users
+- **Monitor memory usage** - html2rss-web can be memory-intensive with large feeds
+- **Set up caching** for frequently accessed feeds
+
+## Environment Configuration
+
+For production, update your environment variables:
+
+```yaml
+environment:
+  RACK_ENV: production
+  LOG_LEVEL: warn
+  HEALTH_CHECK_USERNAME: your-secure-username
+  HEALTH_CHECK_PASSWORD: your-very-secure-password
+  BASE_URL: https://your-domain.com
+```
+
+## Share Your Instance
+
+Once your instance is running smoothly:
+
+- **[Add it to our community wiki](https://github.com/html2rss/html2rss-web/wiki/Instances)** so others can discover it
+- **Test thoroughly** with various feed types before sharing
+- **Monitor usage** and be prepared to scale if needed
+
+## Need Help?
+
+- **Deployment issues?** Check our [troubleshooting guide](/support/troubleshooting)
+- **Security questions?** Join our [community discussions](https://github.com/orgs/html2rss/discussions)
+- **Want to contribute?** See our [contributing guide](/get-involved/contributing)

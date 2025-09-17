@@ -47,6 +47,7 @@ Create comprehensive, user-friendly documentation that showcases html2rss capabi
 - Use consistent terminology
 - Ensure the Site Navigation is assembled in a logical and user-friendly manner.
 - Prevent adding (and remove existing) "technical clutter" content.
+- follow AIDA-model to craft ensure content is engaging and SEO-friendly
 
 ## Performance & SEO
 

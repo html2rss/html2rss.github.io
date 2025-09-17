@@ -1,11 +1,25 @@
 ---
-title: Creating Custom RSS Feeds
-description: Learn how to create custom RSS feeds using html2rss configuration files. Step-by-step guide for turning any website into an RSS feed with simple YAML configs.
+title: "Write Your Own Feed Configs"
+description: "Step-by-step guide to writing YAML configuration files for custom RSS feeds. Take control when ready-made feeds aren't enough."
 ---
 
-Want to create RSS feeds for websites that don't offer them? This guide shows you how to write simple configuration files.
+When ready-made feeds aren't enough, you can write your own configuration files to create custom RSS feeds for any website. This guide shows you how to take full control with YAML configs.
 
-**Getting started?** Start with the [web app](/web-application/getting-started) or [browse existing feeds](/feed-directory/) first.
+**Prerequisites:** You should be familiar with the [Web Application](/web-application/getting-started) or [Ruby Gem](/ruby-gem/installation) before diving into custom configurations.
+
+---
+
+## When to Use Custom Configs
+
+**Use custom configs when:**
+
+- **Ready-made feeds don't exist** for the website you want to follow
+- **Existing feeds are incomplete** or missing important content
+- **You need specific formatting** or data extraction
+- **The website has complex structure** that requires custom selectors
+- **You want to combine data** from multiple sources
+
+**Don't need custom configs?** Check the [Feed Directory](/feed-directory/) first - there might already be a working feed for your website.
 
 ---
 
@@ -18,6 +32,15 @@ Want to create RSS feeds for websites that don't offer them? This guide shows yo
 3. **Create a config** - When you need custom control (see below)
 
 **Ready to create a config?** Jump to [Your First Config](#your-first-config).
+
+### For html2rss-web Users
+
+If you're using html2rss-web, you can add your config to the `feeds.yml` file:
+
+1. **Find the example** - Check out the [`example` feed config](https://github.com/html2rss/html2rss-web/blob/master/config/feeds.yml#L9)
+2. **Add your config** to the `feeds.yml` file
+3. **Test it** by visiting your html2rss-web instance
+4. **Debug** using browser developer tools if needed
 
 ---
 
@@ -64,6 +87,15 @@ This says: "Find each article, get the title from the h2 anchor, and get the lin
 
 **Need more details?** Check our [complete guide to selectors](/ruby-gem/reference/selectors/) for all the options.
 
+## Configuration Options
+
+html2rss-web supports all the same configuration options as the html2rss Ruby gem:
+
+- **Basic selectors** for title, description, and links
+- **Advanced features** like custom headers and dynamic parameters
+- **Multiple strategies** for different types of websites
+- **Post-processing** to clean up extracted content
+
 ---
 
 ## Your First Config
@@ -89,19 +121,21 @@ selectors:
 
 **Step 3:** Test it with the [web app](/web-application/) or [Ruby gem](/ruby-gem/installation).
 
-**Need help?** See our [detailed tutorial](/ruby-gem/tutorials/your-first-feed/) or [troubleshooting guide](/support/troubleshooting).
+**Need help?** See our [detailed tutorial](/ruby-gem/tutorials/your-first-feed/) or [troubleshooting guide](/support/troubleshooting) for common issues.
 
 ---
 
 ## Troubleshooting
 
-**Common issues:**
+**Common issues when writing configs:**
 
-- **No items found?** Check your selectors with browser tools (F12)
-- **Invalid YAML?** Use spaces, not tabs
-- **Website not loading?** Check the URL
+- **No items found?** Check your selectors with browser tools (F12) - the `items.selector` might not match the page structure
+- **Invalid YAML?** Use spaces, not tabs, and ensure proper indentation
+- **Website not loading?** Check the URL and try accessing it in your browser
+- **Missing content?** Some websites load content with JavaScript - you may need to use the `browserless` strategy
+- **Wrong data extracted?** Verify your selectors are pointing to the right elements
 
-**Need more help?** See our [troubleshooting guide](/support/troubleshooting) or ask in [GitHub Discussions](https://github.com/orgs/html2rss/discussions).
+**Need more help?** See our [comprehensive troubleshooting guide](/support/troubleshooting) or ask in [GitHub Discussions](https://github.com/orgs/html2rss/discussions).
 
 ---
 
