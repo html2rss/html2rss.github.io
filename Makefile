@@ -1,23 +1,27 @@
-default: setup clean lintfix serve
+default: setup clean lintfix dev
 
 setup:
-	yarn check || yarn
+	npm ci
 	bundle check || bundle
 	make update
 
+dev:
+	npm run dev
+
+build:
+	npm run build
+
+preview:
+	npm run preview
+
+build-full:
+	npm run build:full
+
 lint:
-	yarn lint
-	make lint-ruby
+	npm run lint
 
 lintfix:
-	yarn lintfix
-	make lintfix-ruby
-
-lint-ruby:
-	bundle exec rubocop
-
-lintfix-ruby:
-	bundle exec rubocop -a
+	npm run lintfix
 
 clean:
 	find . -type d -empty -delete
@@ -26,6 +30,3 @@ clean:
 update:
 	bundle update html2rss-configs
 	bin/data-update
-
-serve: setup
-	bundle exec jekyll s --drafts --trace

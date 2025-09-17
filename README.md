@@ -1,6 +1,39 @@
 # html2rss.github.io
 
-This repository hosts the documentation and website for `html2rss`, a tool for creating RSS feeds from any website.
+This repository hosts the documentation and website for `html2rss`, a tool for creating RSS feeds from any
+website.
+
+## 🚀 Getting Started (Developers)
+
+### Prerequisites
+
+- Node.js (for Astro)
+- Ruby (for data updates)
+
+### Quick Setup
+
+```bash
+# Install dependencies and start development server
+make setup
+```
+
+### 💻 Try in Browser
+
+You can develop html2rss directly in your browser using GitHub Codespaces:
+
+[Open in GitHub Codespaces](https://github.com/codespaces/new?repo=html2rss/html2rss)
+
+The Codespace provides a cloud development environment with Node.js and Ruby pre-installed. Run `make setup` to install dependencies and get started!
+
+### Available Commands
+
+- `make setup` - Install dependencies and start dev server
+- `make dev` - Start Astro development server
+- `make build` - Build for production
+- `make preview` - Preview production build
+- `make build-full` - Update data and build for production
+- `make lintfix` - Fix code formatting
+- `make update` - Update feed data
 
 ## 🌐 Community & Resources
 
@@ -20,4 +53,5 @@ This repository hosts the documentation and website for `html2rss`, a tool for c
 
 ## Contributing
 
-Contributions are welcome! See our [Get Involved page](https://html2rss.github.io/get-involved) for details on discussions, reporting issues, and contributing.
+Contributions are welcome! See our [Get Involved page](https://html2rss.github.io/get-involved) for details on
+discussions, reporting issues, and contributing.

@@ -1,0 +1,157 @@
+---
+title: "Custom HTTP Requests"
+description: "Learn how to customize HTTP requests with custom headers, authentication, and API interactions for html2rss."
+---
+
+Some websites require custom HTTP headers, authentication, or specific request configurations to access their content. html2rss makes it easy to customize your requests to handle these scenarios.
+
+## When You Need Custom Headers
+
+You might need custom HTTP requests when:
+
+- **APIs require authentication** (Bearer tokens, API keys)
+- **Websites block default user agents** (need to appear as a real browser)
+- **Content is behind login** (session cookies, authorization headers)
+- **Rate limiting** (custom headers to identify your requests)
+- **Content negotiation** (specific Accept headers for different formats)
+
+## Basic Configuration
+
+Add a `headers` section to your feed configuration:
+
+```yaml
+headers:
+  User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
+  Authorization: "Bearer YOUR_API_TOKEN"
+  Accept: "application/json"
+channel:
+  url: https://api.example.com/posts
+selectors:
+  items:
+    selector: ".post"
+  title:
+    selector: "h2"
+```
+
+## Common Use Cases
+
+### API Authentication
+
+Many APIs require authentication tokens:
+
+```yaml
+headers:
+  Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  X-API-Key: "your-api-key-here"
+```
+
+### User Agent Spoofing
+
+Some websites block requests that don't look like real browsers:
+
+```yaml
+headers:
+  User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+  Accept-Language: "en-US,en;q=0.5"
+  Accept-Encoding: "gzip, deflate"
+```
+
+### Content Type Negotiation
+
+Request specific content types:
+
+```yaml
+headers:
+  Accept: "application/json"  # For JSON APIs
+  Accept: "text/html"         # For HTML content
+  Accept: "application/rss+xml"  # For RSS feeds
+```
+
+### Custom API Headers
+
+Some APIs require specific headers:
+
+```yaml
+headers:
+  X-Requested-With: "XMLHttpRequest"
+  X-Custom-Header: "your-value"
+  Content-Type: "application/json"
+```
+
+## Dynamic Headers
+
+You can use dynamic parameters in headers for runtime values:
+
+```yaml
+headers:
+  Authorization: "Bearer {{api_token}}"
+  X-User-ID: "{{user_id}}"
+```
+
+See our [Dynamic Parameters guide](/ruby-gem/how-to/dynamic-parameters) for more details.
+
+## Testing Your Headers
+
+Test your configuration to ensure headers work correctly:
+
+```bash
+# Test with curl first
+curl -H "Authorization: Bearer YOUR_TOKEN" https://api.example.com/posts
+
+# Then test with html2rss
+html2rss feed your-config.yml
+```
+
+## Troubleshooting
+
+### Common Issues
+
+- **401 Unauthorized**: Check your authentication headers
+- **403 Forbidden**: Verify API keys and permissions
+- **429 Too Many Requests**: Add rate limiting or different user agents
+- **Empty responses**: Some APIs require specific Accept headers
+
+### Debug Tips
+
+1. **Use browser developer tools** to see what headers successful requests use
+2. **Test with curl** before configuring html2rss
+3. **Check API documentation** for required headers
+4. **Enable debug logging** to see what headers are being sent
+
+## Advanced Examples
+
+### GitHub API
+
+```yaml
+headers:
+  Authorization: "token YOUR_GITHUB_TOKEN"
+  Accept: "application/vnd.github.v3+json"
+  User-Agent: "html2rss/1.0"
+channel:
+  url: https://api.github.com/repos/owner/repo/issues
+```
+
+### Reddit API
+
+```yaml
+headers:
+  User-Agent: "html2rss/1.0 by your-username"
+  Accept: "application/json"
+channel:
+  url: https://www.reddit.com/r/programming.json
+```
+
+## Related Topics
+
+- **[Headers Reference](/ruby-gem/reference/headers)** - Complete headers documentation
+- **[Dynamic Parameters](/ruby-gem/how-to/dynamic-parameters)** - Runtime header values
+- **[Scraping JSON APIs](/ruby-gem/how-to/scraping-json)** - Working with JSON responses
+- **[Strategy Selection](/ruby-gem/reference/strategy)** - Choose the right strategy for your needs
+- **[Troubleshooting](/troubleshooting/troubleshooting)** - Common issues and solutions
+
+## Need More Help?
+
+- **[Community Discussions](https://github.com/orgs/html2rss/discussions)** - Ask for help
+- **[Advanced Features](/ruby-gem/how-to/advanced-features/)** - Performance optimization
+- **[Ruby Gem Documentation](/ruby-gem/)** - Complete API reference

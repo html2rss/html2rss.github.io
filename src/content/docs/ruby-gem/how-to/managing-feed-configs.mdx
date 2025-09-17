@@ -1,0 +1,58 @@
+---
+title: Managing Feed Configs
+description: "Learn how to manage feed configurations with YAML files. Organize, version control, and maintain your html2rss feed configurations effectively."
+---
+
+For easier management, especially when using the CLI or `html2rss-web`, you can store your feed configurations in a YAML file.
+
+## Global and Feed-Specific Configurations
+
+You can define global settings that apply to all feeds, and then define individual feed configurations under the `feeds` key.
+
+```yml
+# Global settings
+headers:
+  "User-Agent": "Mozilla/5.0 (compatible; html2rss/1.0; Mobile)"
+  "Accept": "text/html"
+
+# Feed-specific settings
+feeds:
+  my-first-feed:
+    channel:
+      url: "https://example.com/blog"
+    selectors:
+      # ...
+  my-second-feed:
+    channel:
+      url: "https://example.com/news"
+    selectors:
+      # ...
+```
+
+## Building Feeds from a YAML File
+
+### Ruby
+
+```ruby
+require 'html2rss'
+
+# Build a specific feed from the YAML file
+my_feed_config = Html2rss.config_from_yaml_file('feeds.yml', 'my-first-feed')
+rss = Html2rss.feed(my_feed_config)
+puts rss
+
+# If the YAML file contains only one feed, you can omit the feed name
+single_feed_config = Html2rss.config_from_yaml_file('single.yml')
+rss = Html2rss.feed(single_feed_config)
+puts rss
+```
+
+### Command Line
+
+```sh
+# Build a specific feed
+html2rss feed feeds.yml my-first-feed
+
+# Build a feed from a single-feed YAML file
+html2rss feed single.yml
+```

@@ -1,0 +1,35 @@
+---
+title: Handling Dynamic Content
+description: "Learn how to handle JavaScript-heavy websites and dynamic content with html2rss. Use browserless strategy for sites that load content dynamically."
+---
+
+Some websites load their content dynamically using JavaScript. The default `html2rss` strategy might not see this content.
+
+## Solution
+
+Use the [`browserless` strategy](/ruby-gem/reference/strategy) to render JavaScript-heavy websites with a headless browser.
+
+## When to Use Browserless
+
+The `browserless` strategy is necessary when:
+
+- **Content loads after page load** - JavaScript fetches data from APIs
+- **Single Page Applications (SPAs)** - React, Vue, Angular apps
+- **Infinite scroll** - Content loads as you scroll
+- **Dynamic forms** - Content changes based on user interaction
+
+## Performance Considerations
+
+The `browserless` strategy is slower than the default `faraday` strategy because it:
+
+- Launches a headless Chrome browser
+- Renders the full page with JavaScript
+- Takes more memory and CPU resources
+
+**Use `faraday` for static content** and only switch to `browserless` when necessary.
+
+## Related Topics
+
+- **[Strategy Reference](/ruby-gem/reference/strategy)** - Complete strategy documentation
+- **[Troubleshooting](/troubleshooting/troubleshooting)** - Common issues with dynamic content
+- **[Advanced Features](/ruby-gem/how-to/advanced-features/)** - Performance optimization tips

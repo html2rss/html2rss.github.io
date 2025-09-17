@@ -1,0 +1,25 @@
+---
+title: Headers
+description: "Learn how to set custom HTTP headers for html2rss requests. Add authentication, user agents, and API keys to access protected content."
+---
+
+The `headers` key allows you to set custom HTTP headers for your requests. This is useful for accessing APIs or other protected content.
+
+## Configuration
+
+You can add any number of headers to your configuration:
+
+```yaml
+headers:
+  User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
+  Authorization: "Bearer YOUR_TOKEN"
+  Accept: "application/json"
+```
+
+## Dynamic Parameters
+
+You can also use dynamic parameters in your headers to pass values at runtime. See [Dynamic Parameters](/ruby-gem/how-to/dynamic-parameters) for more information.
+
+---
+
+For detailed documentation on the Ruby API, see the [official YARD documentation](https://www.rubydoc.info/gems/html2rss).

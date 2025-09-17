@@ -1,0 +1,49 @@
+---
+title: "Backward Compatibility"
+description: "html2rss maintains backward compatibility with older configuration formats and attribute names."
+---
+
+html2rss maintains backward compatibility with older configuration formats and attribute names.
+
+## Renamed Attributes
+
+Some attribute names have been renamed for clarity, but the old names still work:
+
+| Current Name   | Legacy Names         | Description                  |
+| -------------- | -------------------- | ---------------------------- |
+| `published_at` | `updated`, `pubDate` | Publication date of the item |
+
+### Example
+
+Both of these configurations work identically:
+
+```yaml
+# Current format (recommended)
+selectors:
+  published_at:
+    selector: ".date"
+
+# Legacy format (still supported)
+selectors:
+  updated:
+    selector: ".date"
+```
+
+## Migration Guide
+
+If you're upgrading from an older version of html2rss:
+
+1. **Update attribute names**: Replace `updated` with `published_at` in your configurations
+2. **Test your feeds**: Verify that all feeds still work correctly after the update
+
+## Deprecated Features
+
+The following features are deprecated but still supported:
+
+- **Legacy attribute names**: While still supported, use the current names for new configurations
+
+## Getting Help
+
+If you encounter issues with backward compatibility:
+
+- **Report issues**: Open an issue if you find compatibility problems

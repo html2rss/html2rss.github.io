@@ -1,0 +1,44 @@
+---
+title: "Setup for development"
+description: "Check out the git repository and set up your development environment."
+---
+
+Check out the git repository and…
+
+### Using Docker
+
+This approach allows you to experiment without installing Ruby on your machine.
+All you need to do is install and run Docker.
+
+```sh
+# Build image from Dockerfile and name/tag it as html2rss-web:
+docker build -t html2rss-web -f Dockerfile .
+
+# Run the image and name it html2rss-web-dev:
+docker run \
+  --detach \
+  --mount type=bind,source=$(pwd)/config,target=/app/config \
+  --name html2rss-web-dev \
+  html2rss-web
+
+# Open an interactive TTY with the shell `sh`:
+docker exec -ti html2rss-web-dev sh
+
+# Stop and clean up the container
+docker stop html2rss-web-dev
+docker rm html2rss-web-dev
+
+# Remove the image
+docker rmi html2rss-web
+```
+
+### Using installed Ruby
+
+If you're comfortable with installing Ruby directly on your machine, follow these instructions:
+
+1. Install Ruby `>= 3.2`
+2. `gem install bundler foreman`
+3. `bundle`
+4. `foreman start`
+
+_html2rss-web_ now listens on port **3000** for requests.
