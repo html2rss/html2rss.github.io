@@ -8,7 +8,11 @@ export default defineConfig({
   site: "https://html2rss.github.io",
   base: "/",
   redirects: {
-    // Only redirect actual old Jekyll URLs that need to be redirected
+    "/configs": "/feed-directory/",
+    "/components/html2rss-web": "/web-application/",
+    "/components/html2rss": "/ruby-gem/",
+    "/components/html2rss-configs": "/html2rss-configs/",
+    "/components": "/",
   },
   build: {
     inlineStylesheets: "auto",
