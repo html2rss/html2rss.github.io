@@ -69,7 +69,11 @@ const staticFeedUrls = configs.map((config) => ({
           <div class="feed-main">
             <div class="feed-info">
               <div class="feed-title">
-                <span class="domain">{config.domain}</span><span class="separator">/</span><span class="name">{config.name}</span>
+                <>
+                  <span class="domain">{config.domain}</span>
+                  <span class="separator">/</span>
+                  <span class="name">{config.name}</span>
+                </>
               </div>
 
               {config.channel?.url && (

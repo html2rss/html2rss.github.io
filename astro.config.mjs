@@ -140,11 +140,42 @@ export default defineConfig({
         },
         {
           label: "Web Application",
-          autogenerate: { directory: "web-application" },
+          items: [
+            "web-application",
+            "web-application/getting-started",
+            "web-application/installation",
+            {
+              label: "How-to",
+              autogenerate: { directory: "web-application/how-to" },
+            },
+            {
+              label: "Reference",
+              autogenerate: { directory: "web-application/reference" },
+            },
+            {
+              label: "Tutorials",
+              autogenerate: { directory: "web-application/tutorials" },
+            },
+          ],
         },
         {
           label: "Ruby Gem",
-          autogenerate: { directory: "ruby-gem" },
+          items: [
+            "ruby-gem",
+            "ruby-gem/installation",
+            {
+              label: "How-to",
+              autogenerate: { directory: "ruby-gem/how-to" },
+            },
+            {
+              label: "Reference",
+              autogenerate: { directory: "ruby-gem/reference" },
+            },
+            {
+              label: "Tutorials",
+              autogenerate: { directory: "ruby-gem/tutorials" },
+            },
+          ],
         },
         {
           label: "Get Involved",
