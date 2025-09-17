@@ -8,11 +8,7 @@
   "postStartCommand": "make serve",
   "customizations": {
     "vscode": {
-      "extensions": [
-        "sissel.shopify-liquid",
-        "esbenp.prettier-vscode",
-        "ms-vscode.makefile-tools"
-      ]
+      "extensions": ["sissel.shopify-liquid", "esbenp.prettier-vscode", "ms-vscode.makefile-tools"]
     }
   }
 }

@@ -8,7 +8,7 @@
 // ></script>
 
 (() => {
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener('DOMContentLoaded', () => {
     // do stuff
   });
 })();

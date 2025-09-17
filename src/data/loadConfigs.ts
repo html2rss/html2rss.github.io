@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from 'fs';
+import path from 'path';
 
 export interface Config {
   domain: string;
@@ -19,12 +19,12 @@ export interface Config {
 
 export function loadConfigs(): Config[] {
   try {
-    const filePath = path.join(process.cwd(), "src/data/configs.json");
-    const fileContents = fs.readFileSync(filePath, "utf8");
+    const filePath = path.join(process.cwd(), 'src/data/configs.json');
+    const fileContents = fs.readFileSync(filePath, 'utf8');
     const data = JSON.parse(fileContents) as Config[];
     return data || [];
   } catch (error) {
-    console.error("Error loading configs:", error);
+    console.error('Error loading configs:', error);
     // Fallback to empty array if file doesn't exist
     return [];
   }

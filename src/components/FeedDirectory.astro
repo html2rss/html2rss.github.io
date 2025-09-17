@@ -89,8 +89,7 @@ const staticFeedUrls = configs.map((config) => ({
             </div>
 
             <div class="feed-directory__item-actions">
-              {!config.valid_channel_url &&
-              Object.keys(config.url_parameters || {}).length > 0 ? (
+              {!config.valid_channel_url && Object.keys(config.url_parameters || {}).length > 0 ? (
                 <button
                   class="feed-directory__configure-btn"
                   type="button"
@@ -135,49 +134,39 @@ const staticFeedUrls = configs.map((config) => ({
             </div>
           </div>
 
-          {!config.valid_channel_url &&
-            Object.keys(config.url_parameters || {}).length > 0 && (
-              <div
-                class="feed-directory__item-params"
-                id={`params-${index}`}
-                hidden
-              >
-                <form class="feed-directory__params-form">
-                  {Object.entries(config.url_parameters || {}).map(
-                    ([key, fallback]) => (
-                      <div class="feed-directory__param-group">
-                        <label
-                          for={`${config.domain}-${config.name}-${key}`}
-                          class="feed-directory__param-label"
-                        >
-                          {key}
-                        </label>
-                        <input
-                          type="text"
-                          id={`${config.domain}-${config.name}-${key}`}
-                          name={key}
-                          class="feed-directory__param-input"
-                          value={config.default_parameters?.[key] || ""}
-                          placeholder={String(fallback)}
-                          data-param-key={key}
-                          aria-label={key}
-                        />
-                      </div>
-                    ),
-                  )}
-                  <div class="feed-directory__params-actions">
-                    <button
-                      type="button"
-                      class="feed-directory__close-btn"
-                      data-close-form
-                      aria-label="Close configuration form"
-                    >
-                      Close
-                    </button>
+          {!config.valid_channel_url && Object.keys(config.url_parameters || {}).length > 0 && (
+            <div class="feed-directory__item-params" id={`params-${index}`} hidden>
+              <form class="feed-directory__params-form">
+                {Object.entries(config.url_parameters || {}).map(([key, fallback]) => (
+                  <div class="feed-directory__param-group">
+                    <label for={`${config.domain}-${config.name}-${key}`} class="feed-directory__param-label">
+                      {key}
+                    </label>
+                    <input
+                      type="text"
+                      id={`${config.domain}-${config.name}-${key}`}
+                      name={key}
+                      class="feed-directory__param-input"
+                      value={config.default_parameters?.[key] || ""}
+                      placeholder={String(fallback)}
+                      data-param-key={key}
+                      aria-label={key}
+                    />
                   </div>
-                </form>
-              </div>
-            )}
+                ))}
+                <div class="feed-directory__params-actions">
+                  <button
+                    type="button"
+                    class="feed-directory__close-btn"
+                    data-close-form
+                    aria-label="Close configuration form"
+                  >
+                    Close
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
         </div>
       ))
     }
