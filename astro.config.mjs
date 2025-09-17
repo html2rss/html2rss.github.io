@@ -127,19 +127,16 @@ export default defineConfig({
           link: "/",
         },
         {
-          label: "About",
-          link: "/about",
+          label: "Common Use Cases",
+          link: "/common-use-cases",
         },
         {
           label: "Feed Directory",
           link: "/feed-directory/",
         },
         {
-          label: "Creating Custom Feeds",
-          link: "/html2rss-configs",
-        },
-        {
           label: "Web Application",
+          collapsed: true,
           items: [
             "web-application",
             "web-application/getting-started",
@@ -159,6 +156,7 @@ export default defineConfig({
         },
         {
           label: "Ruby Gem",
+          collapsed: true,
           items: [
             "ruby-gem",
             "ruby-gem/installation",
@@ -177,11 +175,21 @@ export default defineConfig({
           ],
         },
         {
+          label: "About",
+          link: "/about",
+        },
+        {
+          label: "Creating Custom Feeds",
+          link: "/html2rss-configs",
+        },
+        {
           label: "Get Involved",
+          collapsed: false,
           autogenerate: { directory: "get-involved" },
         },
         {
           label: "Support",
+          collapsed: true,
           autogenerate: { directory: "support" },
         },
       ],

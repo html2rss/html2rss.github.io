@@ -1,27 +1,29 @@
 ---
 title: "Getting Started"
-description: "Learn how to use html2rss-web to create RSS feeds from any website."
+description: "Learn how to use html2rss-web to create RSS feeds from any website. Step-by-step guide for beginners with no technical knowledge required."
 sidebar:
   order: 2
 ---
 
-Ready to create RSS feeds? Choose your path below.
+Ready to create RSS feeds? Choose your path below. No technical knowledge required!
 
 ## Quick Start Options
 
 ### Option 1: Use a Public Instance (Easiest)
 
 **Try html2rss-web right now:**
-1. **Go to [html2rss-web](https://html2rss-web.herokuapp.com/)** (or your preferred instance)
+
+1. **Go to a public html2rss-web instance** (see our [community wiki](https://github.com/html2rss/html2rss-web/wiki/Instances) for available instances)
 2. **Enter a website URL** you want to create a feed for
 3. **Click "Generate Feed"** and copy the RSS URL
-4. **Add to your feed reader** (Feedly, Inoreader, etc.)
+4. **Add to your feed reader** (any RSS reader app)
 
 **Perfect for:** Testing, quick feeds, or if you don't want to install anything.
 
 ### Option 2: Install Your Own Instance
 
 **For full control and custom feeds:**
+
 1. **Follow the installation steps below**
 2. **Create custom feeds** for any website
 3. **Run your own instance** with all features
@@ -39,14 +41,13 @@ This guide will help you set up your own copy of html2rss-web on your computer. 
 - **Docker** - A tool that makes installation simple (like an app store for server software)
 - **About 10 minutes** - The whole process is quick and automated
 
-**Don't have Docker?** [Install it first](https://docs.docker.com/get-started/) - it's free and works on Windows, Mac, and Linux.
+**Don't have Docker?** [Install it first](https://docs.docker.com/get-started/) - it's free and works on all major operating systems.
 
 ### Step 1: Create a Folder
 
 Create a new folder on your computer to store html2rss-web files:
 
-**On Windows:** Right-click → New Folder → Name it "html2rss-web".
-**On Mac/Linux:** Open Terminal and run:
+**Create a new folder** on your computer and name it "html2rss-web". You can do this through your file manager or terminal:
 
 ```bash
 mkdir html2rss-web
@@ -59,8 +60,8 @@ Create a file called `docker-compose.yml` in your new folder. This file tells Do
 
 **How to create the file:**
 
-- **On Windows:** Right-click in the folder → New → Text Document → Rename it to `docker-compose.yml` (make sure to change the extension)
-- **On Mac/Linux:** Use any text editor to create the file
+- **Using a text editor:** Create a new file and save it as `docker-compose.yml`
+- **Using terminal:** Use any text editor to create the file
 
 ```yaml
 services:
@@ -104,9 +105,10 @@ services:
 
 html2rss-web needs a list of feeds to work with. Download our pre-made list:
 
-**On Windows:** Right-click [this link](https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml) → Save As → Name it "feeds.yml" → Save in your html2rss-web folder
+**Download the feeds.yml file:**
 
-**On Mac/Linux:** Open Terminal in your html2rss-web folder and run:
+- **Using your browser:** Right-click [this link](https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml) → Save As → Name it "feeds.yml" → Save in your html2rss-web folder
+- **Using terminal:** Open Terminal in your html2rss-web folder and run:
 
 ```bash
 curl https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml -o feeds.yml
@@ -116,13 +118,9 @@ curl https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds
 
 Now start html2rss-web:
 
-**On Windows:** Open Command Prompt in your html2rss-web folder and run:
+**Start html2rss-web:**
 
-```cmd
-docker compose up -d
-```
-
-**On Mac/Linux:** In Terminal, run:
+Open a terminal in your html2rss-web folder and run:
 
 ```bash
 docker compose up -d
@@ -143,6 +141,7 @@ docker compose up -d
 ## Next Steps
 
 **Ready to create feeds?**
+
 - **Browse existing feeds** - Check out what's already available
 - **Create your first feed** - Follow our [How-To Guides](/web-application/how-to/) to make custom feeds
 - **Need help?** Check our [troubleshooting guide](/support/troubleshooting) if something doesn't work

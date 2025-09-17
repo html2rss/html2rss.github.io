@@ -1,17 +1,18 @@
 ---
 title: Creating Custom RSS Feeds
-description: Learn how to create custom RSS feeds using html2rss configuration files
+description: Learn how to create custom RSS feeds using html2rss configuration files. Step-by-step guide for turning any website into an RSS feed with simple YAML configs.
 ---
 
 Want to create RSS feeds for websites that don't offer them? This guide shows you how to write simple configuration files.
 
-**New to html2rss?** Start with the [web app](/web-application/getting-started) or [browse existing feeds](/feed-directory/) first.
+**Getting started?** Start with the [web app](/web-application/getting-started) or [browse existing feeds](/feed-directory/) first.
 
 ---
 
 ## Quick Start
 
 **Need a feed right now?**
+
 1. **[Try the web app](/web-application/getting-started)** - No coding required
 2. **[Browse ready-made feeds](/feed-directory/)** - Use what others created
 3. **Create a config** - When you need custom control (see below)
@@ -23,6 +24,7 @@ Want to create RSS feeds for websites that don't offer them? This guide shows yo
 ## How It Works
 
 A config file is a simple "recipe" that tells html2rss:
+
 1. **Which website** to look at
 2. **What content** to find
 3. **How to organize** it into an RSS feed
@@ -32,6 +34,7 @@ A config file is a simple "recipe" that tells html2rss:
 This tells html2rss basic information about your feed - like giving it a name and telling it which website to look at.
 
 **Example:**
+
 ```yaml
 channel:
   url: https://example.com/blog
@@ -45,6 +48,7 @@ This says: "Look at this website and call the feed 'My Awesome Blog'"
 This is where you tell the html2rss engine exactly what to find on the page. You use CSS selectors (like you might use in web design) to point to specific parts of the webpage.
 
 **Example:**
+
 ```yaml
 selectors:
   items:
@@ -92,6 +96,7 @@ selectors:
 ## Troubleshooting
 
 **Common issues:**
+
 - **No items found?** Check your selectors with browser tools (F12)
 - **Invalid YAML?** Use spaces, not tabs
 - **Website not loading?** Check the URL
@@ -125,16 +130,19 @@ selectors:
 ### What's Next?
 
 **For Beginners:**
+
 - **[Browse the Feed Directory](/feed-directory/)** - See real-world examples
 - **[Try html2rss-web](/web-application/getting-started)** - Create feeds without coding
 - **[Learn more about selectors](/ruby-gem/reference/selectors/)** - Master CSS selectors
 
 **For Contributors:**
+
 - **[Submit your config via GitHub Web](https://github.com/html2rss/html2rss-configs)** - No Git knowledge required!
 - **[Browse existing configs](https://github.com/html2rss/html2rss-configs/tree/master/lib/html2rss/configs)** - See real examples
 - **[Join discussions](https://github.com/orgs/html2rss/discussions)** - Connect with other users
 
 **For Developers:**
+
 - **[Ruby Gem Documentation](/ruby-gem/)** - Full API reference
 - **[Advanced Features](/ruby-gem/how-to/advanced-features/)** - Learn advanced techniques
 - **[Custom HTTP Requests](/ruby-gem/how-to/custom-http-requests/)** - Handle complex scenarios
