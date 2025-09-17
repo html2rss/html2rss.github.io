@@ -3,26 +3,55 @@ title: "Deployment & Production"
 description: "Deploy html2rss-web to production with Docker. Learn best practices for hosting public instances with security, monitoring, and reliability."
 ---
 
-html2rss-web is published on Docker Hub, making it easy to deploy with Docker. The `docker-compose.yml` from our [Installation Guide](/web-application/getting-started) provides a solid foundation for both development and production use.
+html2rss-web is published on Docker Hub, making it easy to deploy with Docker. The [`docker-compose.yml`](https://github.com/html2rss/html2rss-web/blob/master/docker-compose.yml) from our [Installation Guide](/web-application/getting-started) provides a solid foundation for both development and production use.
 
 ## Quick Start
 
-If you've already set up html2rss-web locally, you're ready to deploy it to production. The same Docker configuration works for both environments.
+1. Create a directory for your instance:
+   ```bash
+   mkdir html2rss-web && cd html2rss-web
+   ```
+2. Download the configuration:
+   ```bash
+   curl -O https://raw.githubusercontent.com/html2rss/html2rss-web/master/docker-compose.yml
+   curl -O https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml
+   ```
+3. Start the instance:
+   ```bash
+   docker compose up -d
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) to verify it’s running.
+
+> 📖 Need Docker? Follow the [Docker installation guide](https://docs.docker.com/get-docker/) and [Docker Compose install](https://docs.docker.com/compose/install/).
 
 ## Production Best Practices
 
 When hosting a **public instance** that others will use, please follow these essential guidelines:
 
-### Security Essentials
+### Security
 
-- **Use a reverse proxy** (nginx, Apache, or Cloudflare) to handle SSL termination and rate limiting
-- **Enable HTTPS only** - redirect all HTTP traffic to HTTPS
+- **Use a reverse proxy** ([nginx](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/), Apache, or Cloudflare) to handle SSL termination and rate limiting
+- **Enable HTTPS only** — redirect all HTTP traffic to HTTPS ([certbot guide](https://certbot.eff.org/))
 - **Set strong passwords** for health check and auto-source authentication
 - **Restrict access** to admin endpoints and sensitive configuration
 
+### HTTPS
+
+Setting up HTTPS is crucial for any public instance. Follow these steps:
+
+1. **Obtain SSL certificates** using [Let's Encrypt](https://letsencrypt.org/) with [Certbot](https://certbot.eff.org/)
+2. **Configure your reverse proxy** to handle SSL termination
+3. **Redirect all HTTP traffic** to HTTPS automatically
+4. **Test your setup** using tools like [SSL Labs](https://www.ssllabs.com/ssltest/)
+
+For detailed implementation guides, see:
+- [Nginx SSL configuration](https://docs.nginx.com/nginx/admin-guide/security-controls/terminating-ssl-http/)
+- [Apache SSL setup](https://httpd.apache.org/docs/2.4/ssl/ssl_howto.html)
+- [Cloudflare SSL/TLS settings](https://developers.cloudflare.com/ssl/)
+
 ### Reliability & Monitoring
 
-- **Enable auto-updates** using watchtower or similar tools
+- **Enable auto-updates** using [watchtower](https://containrrr.dev/watchtower/) or similar tools
 - **Monitor the health check endpoint** (`/health_check.txt`) to detect issues early
 - **Set up logging** to track errors and performance
 - **Use environment variables** for configuration instead of hardcoded values
@@ -31,7 +60,7 @@ When hosting a **public instance** that others will use, please follow these ess
 
 - **Configure appropriate resource limits** for your Docker containers
 - **Use a CDN** for static assets if serving many users
-- **Monitor memory usage** - html2rss-web can be memory-intensive with large feeds
+- **Monitor memory usage** — html2rss-web can be memory-intensive with large feeds
 - **Set up caching** for frequently accessed feeds
 
 ## Environment Configuration
@@ -46,6 +75,8 @@ environment:
   HEALTH_CHECK_PASSWORD: your-very-secure-password
   BASE_URL: https://your-domain.com
 ```
+
+Use a [password manager](https://bitwarden.com/password-generator/) to generate strong values.
 
 ## Share Your Instance
 
