@@ -6,6 +6,9 @@ import starlight from "@astrojs/starlight";
 export default defineConfig({
   site: "https://html2rss.github.io",
   base: "/",
+  redirects: {
+    // Only redirect actual old Jekyll URLs that need to be redirected
+  },
   integrations: [
     starlight({
       title: "html2rss",
