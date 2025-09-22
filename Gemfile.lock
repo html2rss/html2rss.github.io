@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: c8799e7f19b12913986b1cf7e534b6d0c145c62a
+  revision: d6d45eea7005decad6007b56f838d42141b6ec96
   specs:
     html2rss-configs (0.2.0)
       html2rss
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: 252289759287d5f0d7251a958d12a72ceebc27d6
+  revision: 29660a74c2ac9330f60a99a1670241dde32a7222
   specs:
     html2rss (0.17.0)
       addressable (~> 2.7)
@@ -79,7 +79,7 @@ GEM
       faraday (>= 1, < 3)
     faraday-net_http (3.4.1)
       net-http (>= 0.5.0)
-    json (2.13.2)
+    json (2.14.1)
     kramdown (2.5.1)
       rexml (>= 3.3.9)
     logger (1.7.0)
