@@ -1,0 +1,185 @@
+---
+title: "Getting Started"
+description: "Learn how to get RSS feeds from any website. Start with existing feeds or create your own in minutes."
+sidebar:
+  order: 1
+---
+
+Ready to get RSS feeds from any website? Choose your path below. No technical knowledge required!
+
+## Quick Start Options
+
+### Option 1: Use a Public Instance (Easiest)
+
+**Try html2rss right now:**
+
+1. **Go to a public html2rss instance** (see our [community wiki](https://github.com/html2rss/html2rss-web/wiki/Instances) for available instances)
+2. **Browse existing feeds** or create auto-sourced feeds from any URL
+3. **Copy the RSS URL** and add it to your feed reader
+4. **Done!** You're now following the website in your RSS reader
+
+**Perfect for:** Testing, quick feeds, or if you don't want to install anything.
+
+### Option 2: Install Your Own Instance
+
+**For full control and custom feeds:**
+
+1. **Follow the installation steps below**
+2. **Create auto-sourced feeds** from any website
+3. **Add custom configs** when you need more control
+4. **Run your own RSS feed server** with stable HTTPS URLs
+
+**Perfect for:** Power users, custom configurations, or when you need reliability.
+
+---
+
+## Installation Guide
+
+This guide will help you set up your own copy of html2rss-web on your computer. Don't worry - we'll walk you through every step!
+
+### What You'll Need
+
+- **Docker** - A tool that makes installation simple (like an app store for server software)
+- **About 10 minutes** - The whole process is quick and automated
+
+**Don't have Docker?** [Install it first](https://docs.docker.com/get-started/) - it's free and works on all major operating systems.
+
+### Step 1: Create a Folder
+
+Create a new folder on your computer to store html2rss-web files:
+
+**Create a new folder** on your computer and name it "html2rss-web". You can do this through your file manager or terminal:
+
+```bash
+mkdir html2rss-web
+cd html2rss-web
+```
+
+### Step 2: Create the Configuration File
+
+Create a file called `docker-compose.yml` in your new folder. This file tells Docker how to set up html2rss-web with all the features you need.
+
+**How to create the file:**
+
+- **Using a text editor:** Create a new file and save it as `docker-compose.yml`
+- **Using terminal:** Use any text editor to create the file
+
+```yaml
+services:
+  html2rss-web:
+    image: gilcreator/html2rss-web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - type: bind
+        source: ./feeds.yml
+        target: /app/config/feeds.yml
+        read_only: true
+    environment:
+      RACK_ENV: production
+      HEALTH_CHECK_USERNAME: health
+      HEALTH_CHECK_PASSWORD: please-set-YOUR-OWN-veeeeeery-l0ng-aNd-h4rd-to-gue55-Passw0rd!
+      BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:3001
+      BROWSERLESS_IO_API_TOKEN: 6R0W53R135510
+
+  watchtower:
+    image: containrrr/watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "~/.docker/config.json:/config.json"
+    command: --cleanup --interval 7200
+
+  browserless:
+    image: "ghcr.io/browserless/chromium"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      PORT: 3001
+      CONCURRENT: 10
+      TOKEN: 6R0W53R135510
+```
+
+### Step 3: Download the Feed List
+
+html2rss-web needs a list of feeds to work with. Download our pre-made list:
+
+**Download the feeds.yml file:**
+
+- **Using your browser:** Right-click [this link](https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml) → Save As → Name it "feeds.yml" → Save in your html2rss-web folder
+- **Using terminal:** Open Terminal in your html2rss-web folder and run:
+
+```bash
+curl https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml -o feeds.yml
+```
+
+### Step 4: Start html2rss-web
+
+Now start html2rss-web:
+
+**Start html2rss-web:**
+
+Open a terminal in your html2rss-web folder and run:
+
+```bash
+docker compose up -d
+```
+
+**That's it!** 🎉 html2rss-web is now running.
+
+**To verify it's working:**
+
+1. Open your web browser
+2. Go to `http://localhost:3000`
+3. You should see the html2rss-web interface with a list of available feeds
+
+**If you see the interface, congratulations!** You've successfully set up html2rss-web.
+
+---
+
+## Using Your Instance
+
+### Browse Existing Feeds
+
+Your html2rss-web instance comes with pre-configured feeds for popular websites. Browse the list and copy any RSS URL to your feed reader.
+
+### Create Auto-Sourced Feeds
+
+**Want a feed for a website that's not in the list?**
+
+1. **Go to your html2rss-web interface** (http://localhost:3000)
+2. **Enter any website URL** you want to create a feed for
+3. **Click "Generate Feed"** - html2rss will automatically analyze the page
+4. **Copy the RSS URL** and add it to your feed reader
+
+**This works for most websites** without any configuration needed!
+
+### Add Custom Feeds
+
+**Need more control?** You can add custom feed configurations to your `feeds.yml` file. See our [Creating Custom Feeds](/creating-custom-feeds) guide for details.
+
+---
+
+## Troubleshooting
+
+**Common issues when getting started:**
+
+- **Instance won't start?** Check that Docker is running and the port isn't already in use
+- **Can't access the interface?** Make sure you're going to `http://localhost:3000`
+- **Auto-sourced feed not working?** Some websites need custom configuration - see our [troubleshooting guide](/troubleshooting/troubleshooting)
+- **Need help?** Join our [community discussions](https://github.com/orgs/html2rss/discussions)
+
+---
+
+## Next Steps
+
+**Ready for more?**
+
+- **[Browse the Feed Directory](/feed-directory/)** - See real-world examples
+- **[Create Custom Feeds](/creating-custom-feeds)** - Learn to write your own configurations
+- **[Troubleshooting Guide](/troubleshooting/troubleshooting)** - Solve common issues
+- **[Join the Community](https://github.com/orgs/html2rss/discussions)** - Get help and share ideas
+
+**🎉 Congratulations!** You now have your own RSS feed server running.
