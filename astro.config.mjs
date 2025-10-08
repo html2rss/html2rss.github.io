@@ -252,6 +252,10 @@ export default defineConfig({
           link: "/",
         },
         {
+          label: "Getting Started",
+          link: "/getting-started/",
+        },
+        {
           label: "Common Use Cases",
           link: "/common-use-cases",
         },
@@ -263,8 +267,8 @@ export default defineConfig({
           label: "Web Application",
           collapsed: true,
           items: [
-            "web-application",
             "web-application/getting-started",
+            "web-application",
             {
               label: "How-to",
               autogenerate: { directory: "web-application/how-to" },
