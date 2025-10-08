@@ -11,7 +11,9 @@ export default defineConfig({
     "/configs": "/feed-directory/",
     "/components/html2rss-web": "/web-application/",
     "/components/html2rss": "/ruby-gem/",
-    "/components/html2rss-configs": "/html2rss-configs/",
+    "/components/html2rss-configs": "/creating-custom-feeds/",
+    "/html2rss-configs": "/creating-custom-feeds/",
+    "/html2rss-configs/": "/creating-custom-feeds/",
     "/components": "/",
   },
   build: {
@@ -305,7 +307,7 @@ export default defineConfig({
         },
         {
           label: "Write Your Own Feed Configs",
-          link: "/html2rss-configs",
+          link: "/creating-custom-feeds",
         },
         {
           label: "About",
