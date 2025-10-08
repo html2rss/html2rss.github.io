@@ -29,33 +29,19 @@ When hosting a **public instance** that others will use, please follow these ess
 
 ### Modern Reverse Proxy Options
 
-- **Caddy** — Automatic HTTPS, zero config
-- **Traefik** — Auto-discovery, perfect for Docker
-- **nginx** — Traditional, requires certbot setup
+- **Caddy (recommended default)** — Automatic HTTPS with smart defaults for standalone hosts. Read the [official getting started guide](https://caddyserver.com/docs/getting-started) and Docker image notes on the [Caddy Hub page](https://hub.docker.com/_/caddy).
+- **Traefik (container-aware automation)** — Ideal when you need dynamic routing, Let's Encrypt, and tight Docker or orchestrator integration. Start with the [Traefik quick start](https://doc.traefik.io/traefik/getting-started/quick-start/) and [Docker provider docs](https://doc.traefik.io/traefik/providers/docker/).
+- **nginx (advanced alternative)** — Manual control for complex edge setups or legacy migrations. Follow the official [reverse proxy configuration guide](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) or the [nginx Docker image reference](https://hub.docker.com/_/nginx) when building custom stacks.
 
 ### HTTPS
 
-For most deployments we recommend **Caddy** as the default reverse proxy. Its
-[Automatic HTTPS](https://caddyserver.com/docs/automatic-https) feature handles
-certificate issuance, renewal, and HTTP→HTTPS redirects with almost zero
-configuration, making it ideal for quickly hardening html2rss-web instances.
-
-If you need tighter integration with container orchestration, **Traefik** is an
-excellent alternative. Follow the official
-[Traefik ACME guide](https://doc.traefik.io/traefik/https/acme/) to enable
-automatic certificates using Let's Encrypt while keeping dynamic routing and
-Docker auto-discovery.
-
-> **Other options:** Prefer nginx, Cloudflare, or another edge provider? Stick to
-> their upstream tutorials such as the
-> [nginx TLS termination guide](https://docs.nginx.com/nginx/admin-guide/security-controls/terminating-ssl-http/)
-> and [Cloudflare SSL/TLS docs](https://developers.cloudflare.com/ssl/). These
-> tools offer robust HTTPS setups when configured per their official
-> documentation.
+Each of the proxies above can terminate TLS for html2rss-web. Lean on their official guidance for enabling automatic certificates, renewing them, and forcing HTTPS redirects so your instance stays secure without bespoke tweaks.
 
 ## Quick Docker Setup
 
-### Caddy (Easiest)
+### Recommended: Caddy reverse proxy
+
+Pair this Compose stack with the [official Caddy Docker instructions](https://hub.docker.com/_/caddy) when you need an instant HTTPS front end.
 
 ```yaml
 services:
@@ -84,7 +70,9 @@ yourdomain.com {
 }
 ```
 
-### Traefik (Auto-discovery)
+### Advanced automation: Traefik with Docker labels
+
+This variant matches the [Traefik Docker provider examples](https://doc.traefik.io/traefik/providers/docker/#docker-compose).
 
 ```yaml
 services:
