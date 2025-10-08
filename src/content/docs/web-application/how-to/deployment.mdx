@@ -3,7 +3,7 @@ title: "Deployment & Production"
 description: "Deploy html2rss-web to production with Docker. Learn best practices for hosting public instances with security, monitoring, and reliability."
 ---
 
-html2rss-web is published on Docker Hub, making it easy to deploy with Docker. The [`docker-compose.yml`](https://github.com/html2rss/html2rss-web/blob/master/docker-compose.yml) from our [Docker Compose Quick Start](/web-application/getting-started/#docker-compose-quick-start) provides a solid foundation for both development and production use.
+html2rss-web is published on Docker Hub as [`gilcreator/html2rss-web`](https://hub.docker.com/r/gilcreator/html2rss-web), making it easy to deploy with Docker. The [`docker-compose.yml`](https://github.com/html2rss/html2rss-web/blob/master/docker-compose.yml) from our [Docker Compose Quick Start](/web-application/getting-started/#docker-compose-quick-start) provides a solid foundation for both development and production use.
 
 ## Quick Start
 
@@ -54,7 +54,7 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
   html2rss:
-    image: html2rss/html2rss-web:latest
+    image: gilcreator/html2rss-web
     environment:
       - BASE_URL=https://yourdomain.com
 
@@ -91,7 +91,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
   html2rss:
-    image: html2rss/html2rss-web:latest
+    image: gilcreator/html2rss-web
     environment:
       - BASE_URL=https://yourdomain.com
     labels:
@@ -134,7 +134,7 @@ services:
 ```yaml
 services:
   html2rss:
-    image: html2rss/html2rss-web:latest
+    image: gilcreator/html2rss-web
     deploy:
       resources:
         limits:
@@ -152,7 +152,7 @@ For production, update your environment variables:
 ```yaml
 services:
   html2rss:
-    image: html2rss/html2rss-web:latest
+    image: gilcreator/html2rss-web
     environment:
       RACK_ENV: production
       LOG_LEVEL: warn
