@@ -52,18 +52,23 @@ When hosting a **public instance** that others will use, please follow these ess
 
 ### HTTPS
 
-Setting up HTTPS is crucial for any public instance. Follow these steps:
+For most deployments we recommend **Caddy** as the default reverse proxy. Its
+[Automatic HTTPS](https://caddyserver.com/docs/automatic-https) feature handles
+certificate issuance, renewal, and HTTP→HTTPS redirects with almost zero
+configuration, making it ideal for quickly hardening html2rss-web instances.
 
-1. **Obtain SSL certificates** using [Let's Encrypt](https://letsencrypt.org/) with [Certbot](https://certbot.eff.org/)
-2. **Configure your reverse proxy** to handle SSL termination
-3. **Redirect all HTTP traffic** to HTTPS automatically
-4. **Test your setup** using tools like [SSL Labs](https://www.ssllabs.com/ssltest/)
+If you need tighter integration with container orchestration, **Traefik** is an
+excellent alternative. Follow the official
+[Traefik ACME guide](https://doc.traefik.io/traefik/https/acme/) to enable
+automatic certificates using Let's Encrypt while keeping dynamic routing and
+Docker auto-discovery.
 
-For detailed implementation guides, see:
-
-- [Nginx SSL configuration](https://docs.nginx.com/nginx/admin-guide/security-controls/terminating-ssl-http/)
-- [Apache SSL setup](https://httpd.apache.org/docs/2.4/ssl/ssl_howto.html)
-- [Cloudflare SSL/TLS settings](https://developers.cloudflare.com/ssl/)
+> **Other options:** Prefer nginx, Cloudflare, or another edge provider? Stick to
+> their upstream tutorials such as the
+> [nginx TLS termination guide](https://docs.nginx.com/nginx/admin-guide/security-controls/terminating-ssl-http/)
+> and [Cloudflare SSL/TLS docs](https://developers.cloudflare.com/ssl/). These
+> tools offer robust HTTPS setups when configured per their official
+> documentation.
 
 ## Quick Docker Setup
 
