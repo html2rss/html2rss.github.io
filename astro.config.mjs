@@ -11,7 +11,9 @@ export default defineConfig({
     "/configs": "/feed-directory/",
     "/components/html2rss-web": "/web-application/",
     "/components/html2rss": "/ruby-gem/",
-    "/components/html2rss-configs": "/html2rss-configs/",
+    "/components/html2rss-configs": "/creating-custom-feeds/",
+    "/html2rss-configs": "/creating-custom-feeds/",
+    "/html2rss-configs/": "/creating-custom-feeds/",
     "/components": "/",
   },
   build: {
@@ -252,6 +254,10 @@ export default defineConfig({
           link: "/",
         },
         {
+          label: "Getting Started",
+          link: "/getting-started/",
+        },
+        {
           label: "Common Use Cases",
           link: "/common-use-cases",
         },
@@ -263,8 +269,8 @@ export default defineConfig({
           label: "Web Application",
           collapsed: true,
           items: [
-            "web-application",
             "web-application/getting-started",
+            "web-application",
             {
               label: "How-to",
               autogenerate: { directory: "web-application/how-to" },
@@ -301,7 +307,7 @@ export default defineConfig({
         },
         {
           label: "Write Your Own Feed Configs",
-          link: "/html2rss-configs",
+          link: "/creating-custom-feeds",
         },
         {
           label: "About",

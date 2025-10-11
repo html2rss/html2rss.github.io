@@ -3,49 +3,165 @@ title: "Deployment & Production"
 description: "Deploy html2rss-web to production with Docker. Learn best practices for hosting public instances with security, monitoring, and reliability."
 ---
 
-html2rss-web is published on Docker Hub, making it easy to deploy with Docker. The `docker-compose.yml` from our [Installation Guide](/web-application/getting-started) provides a solid foundation for both development and production use.
+html2rss-web is published on Docker Hub as [`gilcreator/html2rss-web`](https://hub.docker.com/r/gilcreator/html2rss-web), making it easy to deploy with Docker. The [`docker-compose.yml`](https://github.com/html2rss/html2rss-web/blob/master/docker-compose.yml) from our [Docker Compose Quick Start](/web-application/getting-started/#docker-compose-quick-start) provides a solid foundation for both development and production use.
 
 ## Quick Start
 
-If you've already set up html2rss-web locally, you're ready to deploy it to production. The same Docker configuration works for both environments.
+For the full, step-by-step walkthrough, follow the [Docker Compose Quick Start](/web-application/getting-started/#docker-compose-quick-start). In brief, you'll:
+
+- Create a project directory for html2rss-web
+- Download or create the provided `docker-compose.yml` and `feeds.yml`
+- Start the stack with `docker compose up -d`
+- Confirm the UI loads at [http://localhost:3000](http://localhost:3000)
+
+> 📖 Need Docker? Follow the [Docker installation guide](https://docs.docker.com/get-docker/) and [Docker Compose install](https://docs.docker.com/compose/install/).
 
 ## Production Best Practices
 
 When hosting a **public instance** that others will use, please follow these essential guidelines:
 
-### Security Essentials
+### Security
 
-- **Use a reverse proxy** (nginx, Apache, or Cloudflare) to handle SSL termination and rate limiting
-- **Enable HTTPS only** - redirect all HTTP traffic to HTTPS
+- **Use a reverse proxy** to handle SSL termination and rate limiting
+- **Enable HTTPS only** — redirect all HTTP traffic to HTTPS
 - **Set strong passwords** for health check and auto-source authentication
 - **Restrict access** to admin endpoints and sensitive configuration
 
-### Reliability & Monitoring
+### Modern Reverse Proxy Options
 
-- **Enable auto-updates** using watchtower or similar tools
+- **Caddy (recommended default)** — Automatic HTTPS with smart defaults for standalone hosts. Read the [official getting started guide](https://caddyserver.com/docs/getting-started) and Docker image notes on the [Caddy Hub page](https://hub.docker.com/_/caddy).
+- **Traefik (container-aware automation)** — Ideal when you need dynamic routing, Let's Encrypt, and tight Docker or orchestrator integration. Start with the [Traefik quick start](https://doc.traefik.io/traefik/getting-started/quick-start/) and [Docker provider docs](https://doc.traefik.io/traefik/providers/docker/).
+- **nginx (advanced alternative)** — Manual control for complex edge setups or legacy migrations. Follow the official [reverse proxy configuration guide](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) or the [nginx Docker image reference](https://hub.docker.com/_/nginx) when building custom stacks.
+
+### HTTPS
+
+Each of the proxies above can terminate TLS for html2rss-web. Lean on their official guidance for enabling automatic certificates, renewing them, and forcing HTTPS redirects so your instance stays secure without bespoke tweaks.
+
+## Quick Docker Setup
+
+### Recommended: Caddy reverse proxy
+
+Pair this Compose stack with the [official Caddy Docker instructions](https://hub.docker.com/_/caddy) when you need an instant HTTPS front end.
+
+```yaml
+services:
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+  html2rss:
+    image: gilcreator/html2rss-web
+    environment:
+      - BASE_URL=https://yourdomain.com
+
+volumes:
+  caddy_data:
+```
+
+`Caddyfile`:
+
+```caddy
+yourdomain.com {
+  reverse_proxy html2rss:3000
+}
+```
+
+### Advanced automation: Traefik with Docker labels
+
+This variant matches the [Traefik Docker provider examples](https://doc.traefik.io/traefik/providers/docker/#docker-compose).
+
+```yaml
+services:
+  traefik:
+    image: traefik:v3.0
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+  html2rss:
+    image: gilcreator/html2rss-web
+    environment:
+      - BASE_URL=https://yourdomain.com
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.html2rss.rule=Host(`yourdomain.com`)
+      - traefik.http.routers.html2rss.entrypoints=websecure
+      - traefik.http.routers.html2rss.tls.certresolver=letsencrypt
+      - traefik.http.services.html2rss.loadbalancer.server.port=3000
+```
+
+## Reliability & Monitoring
+
+- **Enable auto-updates** using [watchtower](https://containrrr.dev/watchtower/) or similar tools
 - **Monitor the health check endpoint** (`/health_check.txt`) to detect issues early
 - **Set up logging** to track errors and performance
 - **Use environment variables** for configuration instead of hardcoded values
 
-### Performance Optimization
+### Example: Adding Watchtower for Auto-updates
+
+```yaml
+services:
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=300
+```
+
+## Performance Optimization
 
 - **Configure appropriate resource limits** for your Docker containers
 - **Use a CDN** for static assets if serving many users
-- **Monitor memory usage** - html2rss-web can be memory-intensive with large feeds
+- **Monitor memory usage** — html2rss-web can be memory-intensive with large feeds
 - **Set up caching** for frequently accessed feeds
+
+### Example: Resource Limits
+
+```yaml
+services:
+  html2rss:
+    image: gilcreator/html2rss-web
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.5"
+        reservations:
+          memory: 256M
+          cpus: "0.25"
+```
 
 ## Environment Configuration
 
 For production, update your environment variables:
 
 ```yaml
-environment:
-  RACK_ENV: production
-  LOG_LEVEL: warn
-  HEALTH_CHECK_USERNAME: your-secure-username
-  HEALTH_CHECK_PASSWORD: your-very-secure-password
-  BASE_URL: https://your-domain.com
+services:
+  html2rss:
+    image: gilcreator/html2rss-web
+    environment:
+      RACK_ENV: production
+      LOG_LEVEL: warn
+      HEALTH_CHECK_USERNAME: your-secure-username
+      HEALTH_CHECK_PASSWORD: your-very-secure-password
+      BASE_URL: https://your-domain.com
 ```
+
+> 💡 **Security Tip**: Use a [password manager](https://bitwarden.com/password-generator/) to generate strong, unique passwords for all authentication endpoints.
 
 ## Share Your Instance
 
@@ -54,6 +170,13 @@ Once your instance is running smoothly:
 - **[Add it to our community wiki](https://github.com/html2rss/html2rss-web/wiki/Instances)** so others can discover it
 - **Test thoroughly** with various feed types before sharing
 - **Monitor usage** and be prepared to scale if needed
+
+### Before Going Public
+
+1. **Test your setup** with different feed configurations
+2. **Verify HTTPS** is working correctly
+3. **Check performance** under load
+4. **Review security settings** and access controls
 
 ## Need Help?
 
