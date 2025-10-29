@@ -91,12 +91,6 @@ If you are getting a "command not found" error, try the following:
 - **500 Internal Server Error:** Check the application logs for detailed error information.
 - **Health check failures:** Use the `/health_check.txt` endpoint to identify which specific feed configurations are broken.
 
-### SSL / HTTPS Issues
-
-- Follow the [nginx reverse proxy guide](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/)
-- Use [Let’s Encrypt with certbot](https://certbot.eff.org/) to obtain valid certificates
-- Verify your reverse proxy forwards requests to the correct internal port
-
 ### Feed Problems
 
 - Some sites may require JavaScript rendering; ensure the `browserless` service is running
