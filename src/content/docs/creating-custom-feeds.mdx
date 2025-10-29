@@ -1,0 +1,171 @@
+---
+title: "Creating Custom Feeds"
+description: "Learn to write custom YAML configurations for RSS feeds when auto-sourcing isn't enough."
+sidebar:
+  order: 2
+---
+
+When auto-sourcing isn't enough, you can write your own configuration files to create custom RSS feeds for any website. This guide shows you how to take full control with YAML configs.
+
+**Prerequisites:** You should be familiar with the [Getting Started](/getting-started) guide before diving into custom configurations.
+
+---
+
+## When to Use Custom Configs
+
+**Use custom configs when:**
+
+- **Auto-sourcing doesn't work** for the website you want to follow
+- **Existing feeds are incomplete** or missing important content
+- **You need specific formatting** or data extraction
+- **The website has complex structure** that requires custom selectors
+- **You want to combine data** from multiple sources
+
+**Don't need custom configs?** Check the [Feed Directory](/feed-directory/) first - there might already be a working feed for your website.
+
+---
+
+## How It Works
+
+A config file is a simple "recipe" that tells html2rss:
+
+1. **Which website** to look at
+2. **What content** to find
+3. **How to organize** it into an RSS feed
+
+### The `channel` Block
+
+This tells html2rss basic information about your feed - like giving it a name and telling it which website to look at.
+
+**Example:**
+
+```yaml
+channel:
+  url: https://example.com/blog
+  title: My Awesome Blog
+```
+
+This says: "Look at this website and call the feed 'My Awesome Blog'"
+
+### The `selectors` Block
+
+This is where you tell the html2rss engine exactly what to find on the page. You use CSS selectors (like you might use in web design) to point to specific parts of the webpage.
+
+**Example:**
+
+```yaml
+selectors:
+  items:
+    selector: "article.post"
+  title:
+    selector: "h2 a"
+  link:
+    selector: "h2 a"
+    attribute: href
+```
+
+This says: "Find each article, get the title from the h2 anchor, and get the link from the same h2 anchor's href attribute"
+
+**Need more details?** Check our [complete guide to selectors](/ruby-gem/reference/selectors/) for all the options.
+
+---
+
+## Your First Config
+
+**Step 1:** Look at the website you want to create a feed for. Right-click → "View Page Source" to see the HTML structure.
+
+**Step 2:** Create a file called `example.com.yml` with this basic structure:
+
+```yaml
+channel:
+  url: https://example.com/blog
+  title: My Blog
+
+selectors:
+  items:
+    selector: "article.post"
+  title:
+    selector: "h2 a"
+  link:
+    selector: "h2 a"
+    attribute: href
+```
+
+**Step 3:** Test it with your html2rss-web instance or the [Ruby gem](/ruby-gem/installation).
+
+**Need help?** See our [troubleshooting guide](/troubleshooting/troubleshooting) for common issues.
+
+---
+
+## Configuration Options
+
+html2rss supports many configuration options:
+
+- **Basic selectors** for title, description, and links
+- **Advanced features** like custom headers and dynamic parameters
+- **Multiple strategies** for different types of websites
+- **Post-processing** to clean up extracted content
+
+**See our [Ruby Gem Reference](/ruby-gem/reference/)** for complete documentation.
+
+---
+
+## Testing Your Config
+
+**Before sharing your config, test it:**
+
+1. **Test with Ruby gem:**
+
+   ```bash
+   html2rss feed your-config.yml
+   ```
+
+2. **Test with web app:** Add your config to the `feeds.yml` file and restart your instance
+
+3. **Check the output:** Make sure all items have titles, links, and descriptions
+
+---
+
+## Sharing Your Config
+
+**Help the community by sharing your config:**
+
+1. Go to [html2rss-configs on GitHub](https://github.com/html2rss/html2rss-configs)
+2. Click "Fork" → "Add file" → Create `domain.com.yml`
+3. Paste your config → "Commit new file" → "Open pull request"
+
+**Need help?** See our [contribution guide](/get-involved/contributing) for detailed instructions.
+
+---
+
+## Troubleshooting
+
+**Common issues when writing configs:**
+
+- **No items found?** Check your selectors with browser tools (F12) - the `items.selector` might not match the page structure
+- **Invalid YAML?** Use spaces, not tabs, and ensure proper indentation
+- **Website not loading?** Check the URL and try accessing it in your browser
+- **Missing content?** Some websites load content with JavaScript - you may need to use the `browserless` strategy
+- **Wrong data extracted?** Verify your selectors are pointing to the right elements
+
+**Need more help?** See our [comprehensive troubleshooting guide](/troubleshooting/troubleshooting) or ask in [GitHub Discussions](https://github.com/orgs/html2rss/discussions).
+
+---
+
+## Next Steps
+
+**🎉 Congratulations!** You've learned the basics of creating html2rss configuration files.
+
+### What's Next?
+
+**For Beginners:**
+
+- **[Browse the Feed Directory](/feed-directory/)** - See real-world examples
+- **[Learn more about selectors](/ruby-gem/reference/selectors/)** - Master CSS selectors
+- **[Submit your config via GitHub Web](https://github.com/html2rss/html2rss-configs)** - No Git knowledge required!
+
+**For Contributors:**
+
+- **[Browse existing configs](https://github.com/html2rss/html2rss-configs/tree/master/lib/html2rss/configs)** - See real examples
+- **[Join discussions](https://github.com/orgs/html2rss/discussions)** - Connect with other users
+- **[Learn advanced features](/ruby-gem/how-to/advanced-features/)** - Take your configs to the next level

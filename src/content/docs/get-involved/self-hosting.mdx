@@ -1,0 +1,40 @@
+---
+title: "Self-Host Your Own Instance"
+description: "Take control of your information diet. Host your own html2rss instance and join the decentralized web movement."
+sidebar:
+  order: 3
+---
+
+Turn any website into an RSS feed. Self-host your own instance and take back control of your information diet.
+
+## Quick Start
+
+1. Install [Docker](https://docs.docker.com/get-docker/).
+2. Create a directory for html2rss:
+   ```bash
+   mkdir html2rss-web && cd html2rss-web
+   ```
+3. Download the configuration:
+   ```bash
+   curl -O https://raw.githubusercontent.com/html2rss/html2rss-web/master/docker-compose.yml
+   curl -O https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml
+   ```
+4. Start the instance:
+   ```bash
+   docker compose up -d
+   ```
+5. Visit [http://localhost:3000](http://localhost:3000)
+   You should see the html2rss-web interface.
+
+## Next Steps
+
+- [Secure your instance](/web-application/how-to/deployment#secure-your-instance)
+- [Enable HTTPS](/web-application/how-to/deployment#option-a-caddy-automatic-https)
+- [Troubleshoot issues](/troubleshooting/troubleshooting)
+- [Join the community](https://github.com/orgs/html2rss/discussions)
+
+---
+
+## License
+
+[MIT](https://github.com/html2rss/html2rss/blob/main/LICENSE)
