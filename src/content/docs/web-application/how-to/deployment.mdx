@@ -82,7 +82,11 @@ volumes:
 ```
 
 - Copy the sample env file (`examples/deployment/.env.example`) to `.env` beside your compose file.
-- Set `CADDY_HOST` and `BASE_URL` in that `.env` (for example `CADDY_HOST=yourdomain.com` and `BASE_URL=https://yourdomain.com`) before starting the stack.
+- Update your `.env` before starting the stack:
+  - Set `CADDY_HOST` and `BASE_URL` for your domain (for example `yourdomain.com` / `https://yourdomain.com`).
+  - Generate a production secret (`openssl rand -hex 32`) and assign it to `HTML2RSS_SECRET_KEY`.
+  - Replace the sample health-check credentials with strong values.
+  - Adjust optional knobs (auto source, Sentry, worker counts) as needed and refer to the [environment reference](/web-application/reference/env-variables) for details.
 - After `docker compose up -d`, run `docker compose logs caddy --tail 20`; look for `certificate obtained`.
 - Re-test after DNS changes with [SSL Labs](https://www.ssllabs.com/ssltest/).
 - Want automatic updates? Add the Watchtower service shown below or reuse the ready-made sample compose file at `examples/deployment/caddy/docker-compose.yml`.
