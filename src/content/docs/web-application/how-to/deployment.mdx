@@ -49,7 +49,16 @@ volumes:
   caddy_data:
 ```
 
-- Copy the sample env file (`examples/deployment/.env.example`) to `.env` beside your compose file.
+- Create a `.env` file beside your compose file with the following variables:
+
+  ```env
+  # Required for reverse proxy and application
+  CADDY_HOST=yourdomain.com
+  BASE_URL=https://yourdomain.com
+  HTML2RSS_SECRET_KEY= # Generate with: openssl rand -hex 32
+  HEALTHCHECK_USER= # Set a strong username
+  HEALTHCHECK_PASS= # Set a strong password
+  # Optional: see [environment reference](/web-application/reference/env-variables)
 - Update your `.env` before starting the stack:
   - Set `CADDY_HOST` and `BASE_URL` for your domain (for example `yourdomain.com` / `https://yourdomain.com`).
   - Generate a production secret (`openssl rand -hex 32`) and assign it to `HTML2RSS_SECRET_KEY`.
