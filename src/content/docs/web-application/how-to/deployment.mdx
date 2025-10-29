@@ -3,71 +3,59 @@ title: "Deployment & Production"
 description: "Deploy html2rss-web to production with Docker. Learn best practices for hosting public instances with security, monitoring, and reliability."
 ---
 
-import { Steps } from '@astrojs/starlight/components';
+import { Steps } from "@astrojs/starlight/components";
 
-html2rss-web is published on Docker Hub, making it easy to deploy with Docker. The [`docker-compose.yml`](https://github.com/html2rss/html2rss-web/blob/master/docker-compose.yml) from our [Installation Guide](/web-application/getting-started) provides a solid foundation for both development and production use.
+html2rss-web ships on Docker Hub, so you can launch it wherever Docker runs. Start with the official [`docker-compose.yml`](https://github.com/html2rss/html2rss-web/blob/master/docker-compose.yml) from the [Installation Guide](/web-application/getting-started) as your baseline.
 
-## Quick Start
+## Launch Locally
 
 <Steps>
 
-1. **Create a directory** for your instance:
+1. **Create a project directory**
+
    ```bash
    mkdir html2rss-web && cd html2rss-web
    ```
 
-2. **Download the configuration** files:
+2. **Fetch the reference compose file**
+
    ```bash
    curl -O https://raw.githubusercontent.com/html2rss/html2rss-web/master/docker-compose.yml
-   curl -O https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml
    ```
 
-3. **Start the instance**:
+3. **Start the stack**
+
    ```bash
    docker compose up -d
    ```
 
-4. **Verify it's running** by opening [http://localhost:3000](http://localhost:3000) in your browser.
+4. **Confirm the service**
+
+   ```bash
+   docker compose ps
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) to verify the UI.
 
 </Steps>
 
-> 📖 Need Docker? Follow the [Docker installation guide](https://docs.docker.com/get-docker/) and [Docker Compose install](https://docs.docker.com/compose/install/).
+> 📖 New to Docker? Follow the [Docker engine](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) installation guides first.
 
-## Production Best Practices
+## Prepare for Production
 
-When hosting a **public instance** that others will use, please follow these essential guidelines:
+Before exposing html2rss-web, ensure:
 
-### Security
+- Your domain (for example `yourdomain.com`) resolves to the host running Docker
+- Inbound TCP ports 80 and 443 reach the host (check firewalls and cloud security groups)
+- You are ready to watch the first deployment logs for certificate issuance
 
-- **Use a reverse proxy** to handle SSL termination and rate limiting
-- **Enable HTTPS only** — redirect all HTTP traffic to HTTPS
-- **Set strong passwords** for health check and auto-source authentication
-- **Restrict access** to admin endpoints and sensitive configuration
+### Why a Reverse Proxy?
 
-### Modern Reverse Proxy Options
+A reverse proxy accepts public HTTPS traffic, terminates TLS, and forwards requests to html2rss-web running on your private network.
 
-- **Caddy** — Automatic HTTPS, zero config
-- **Traefik** — Auto-discovery, perfect for Docker
-- **nginx** — Traditional, requires certbot setup
+### Option A: Caddy (Automatic HTTPS)
 
-### HTTPS
-
-Setting up HTTPS is crucial for any public instance. Follow these steps:
-
-1. **Obtain SSL certificates** using [Let's Encrypt](https://letsencrypt.org/) with [Certbot](https://certbot.eff.org/)
-2. **Configure your reverse proxy** to handle SSL termination
-3. **Redirect all HTTP traffic** to HTTPS automatically
-4. **Test your setup** using tools like [SSL Labs](https://www.ssllabs.com/ssltest/)
-
-For detailed implementation guides, see:
-
-- [Nginx SSL configuration](https://docs.nginx.com/nginx/admin-guide/security-controls/terminating-ssl-http/)
-- [Apache SSL setup](https://httpd.apache.org/docs/2.4/ssl/ssl_howto.html)
-- [Cloudflare SSL/TLS settings](https://developers.cloudflare.com/ssl/)
-
-## Quick Docker Setup
-
-### Caddy (Easiest)
+Caddy handles certificates and redirects with almost no configuration.
 
 ```yaml
 services:
@@ -77,88 +65,88 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
+    command:
+      - caddy
+      - reverse-proxy
+      - --from
+      - ${CADDY_HOST}
+      - --to
+      - html2rss:3000
   html2rss:
-    image: html2rss/html2rss-web:latest
-    environment:
-      - BASE_URL=https://yourdomain.com
+    image: gilcreator/html2rss-web:latest
+    env_file: .env
 
 volumes:
   caddy_data:
 ```
 
-`Caddyfile`:
+- Copy the sample env file (`examples/deployment/.env.example`) to `.env` beside your compose file.
+- Set `CADDY_HOST` and `BASE_URL` in that `.env` (for example `CADDY_HOST=yourdomain.com` and `BASE_URL=https://yourdomain.com`) before starting the stack.
+- After `docker compose up -d`, run `docker compose logs caddy --tail 20`; look for `certificate obtained`.
+- Re-test after DNS changes with [SSL Labs](https://www.ssllabs.com/ssltest/).
+- Want automatic updates? Add the Watchtower service shown below or reuse the ready-made sample compose file at `examples/deployment/caddy/docker-compose.yml`.
 
-```caddy
-yourdomain.com {
-  reverse_proxy html2rss:3000
-}
-```
+## Secure Your Instance
 
-### Traefik (Auto-discovery)
+Harden the application before inviting other users:
+
+- Set strong credentials for health checks and any protected feeds
+- Configure `BASE_URL` with the final HTTPS domain before the first public run
+- Prefer environment files (`.env`) stored outside version control for secrets
+- Keep admin-only routes behind basic auth or IP restrictions in your proxy
 
 ```yaml
 services:
-  traefik:
-    image: traefik:v3.0
-    command:
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      - --entrypoints.web.http.redirections.entrypoint.to=websecure
-      - --entrypoints.web.http.redirections.entrypoint.scheme=https
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
   html2rss:
-    image: html2rss/html2rss-web:latest
+    image: gilcreator/html2rss-web:latest
     environment:
-      - BASE_URL=https://yourdomain.com
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.html2rss.rule=Host(`yourdomain.com`)
-      - traefik.http.routers.html2rss.entrypoints=websecure
-      - traefik.http.routers.html2rss.tls.certresolver=letsencrypt
-      - traefik.http.services.html2rss.loadbalancer.server.port=3000
+      RACK_ENV: production
+      LOG_LEVEL: warn
+      HEALTH_CHECK_USERNAME: your-secure-username
+      HEALTH_CHECK_PASSWORD: your-very-secure-password
+      BASE_URL: https://yourdomain.com
 ```
 
-## Reliability & Monitoring
+Store these variables in a `.env` file and reference it with `env_file:` as demonstrated in the Caddy example.
 
-- **Enable auto-updates** using [watchtower](https://containrrr.dev/watchtower/) or similar tools
-- **Monitor the health check endpoint** (`/health_check.txt`) to detect issues early
-- **Set up logging** to track errors and performance
-- **Use environment variables** for configuration instead of hardcoded values
+## Operate & Monitor
 
-### Example: Adding Watchtower for Auto-updates
+Keep the instance healthy once it is in production:
+
+- Monitor `https://yourdomain.com/health_check.txt` from your uptime tool
+- Review `docker compose logs` regularly for feed errors or certificate renewals
+- Enable automatic image updates so security patches roll out quickly
+- Right-size CPU and memory to avoid starvation when parsing large feeds
+
+### Auto-update with Watchtower
 
 ```yaml
 services:
   watchtower:
     image: containrrr/watchtower
+    depends_on:
+      - html2rss
+      - caddy
+    command:
+      - --cleanup
+      - --interval
+      - "300"
+      - html2rss
+      - caddy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_POLL_INTERVAL=300
+    restart: unless-stopped
 ```
 
-## Performance Optimization
+Check `docker compose logs watchtower` occasionally to confirm updates are applied.
 
-- **Configure appropriate resource limits** for your Docker containers
-- **Use a CDN** for static assets if serving many users
-- **Monitor memory usage** — html2rss-web can be memory-intensive with large feeds
-- **Set up caching** for frequently accessed feeds
-
-### Example: Resource Limits
+### Resource Guardrails
 
 ```yaml
 services:
   html2rss:
-    image: html2rss/html2rss-web:latest
+    image: gilcreator/html2rss-web:latest
     deploy:
       resources:
         limits:
@@ -169,41 +157,11 @@ services:
           cpus: "0.25"
 ```
 
-## Environment Configuration
+Adjust the limits to match your host capacity. Increase memory if you process many large feeds.
 
-For production, update your environment variables:
+## Share & Support
 
-```yaml
-services:
-  html2rss:
-    image: html2rss/html2rss-web:latest
-    environment:
-      RACK_ENV: production
-      LOG_LEVEL: warn
-      HEALTH_CHECK_USERNAME: your-secure-username
-      HEALTH_CHECK_PASSWORD: your-very-secure-password
-      BASE_URL: https://your-domain.com
-```
-
-> 💡 **Security Tip**: Use a [password manager](https://bitwarden.com/password-generator/) to generate strong, unique passwords for all authentication endpoints.
-
-## Share Your Instance
-
-Once your instance is running smoothly:
-
-- **[Add it to our community wiki](https://github.com/html2rss/html2rss-web/wiki/Instances)** so others can discover it
-- **Test thoroughly** with various feed types before sharing
-- **Monitor usage** and be prepared to scale if needed
-
-### Before Going Public
-
-1. **Test your setup** with different feed configurations
-2. **Verify HTTPS** is working correctly
-3. **Check performance** under load
-4. **Review security settings** and access controls
-
-## Need Help?
-
-- **Deployment issues?** Check our [troubleshooting guide](/troubleshooting/troubleshooting)
-- **Security questions?** Join our [community discussions](https://github.com/orgs/html2rss/discussions)
-- **Want to contribute?** See our [contributing guide](/get-involved/contributing)
+- Test different feed sources before inviting external users
+- Add your instance to the [community wiki](https://github.com/html2rss/html2rss-web/wiki/Instances) if you want it listed publicly
+- Visit the [troubleshooting guide](/troubleshooting/troubleshooting) or join the [community discussions](https://github.com/orgs/html2rss/discussions) when you need help
+- Ready to contribute fixes or docs? See the [contributing guide](/get-involved/contributing)
