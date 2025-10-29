@@ -3,43 +3,11 @@ title: "Deployment & Production"
 description: "Deploy html2rss-web to production with Docker. Learn best practices for hosting public instances with security, monitoring, and reliability."
 ---
 
-import { Steps } from "@astrojs/starlight/components";
-
 html2rss-web ships on Docker Hub, so you can launch it wherever Docker runs. Start with the official [`docker-compose.yml`](https://github.com/html2rss/html2rss-web/blob/master/docker-compose.yml) from the [Installation Guide](/web-application/getting-started) as your baseline.
 
-## Launch Locally
+If you have not yet created a local instance, complete the [Getting Started guide](/web-application/getting-started) first. It walks through the one-time project directory setup, downloading the reference compose file, and confirming the application locally—steps we will build upon here.
 
-<Steps>
-
-1. **Create a project directory**
-
-   ```bash
-   mkdir html2rss-web && cd html2rss-web
-   ```
-
-2. **Fetch the reference compose file**
-
-   ```bash
-   curl -O https://raw.githubusercontent.com/html2rss/html2rss-web/master/docker-compose.yml
-   ```
-
-3. **Start the stack**
-
-   ```bash
-   docker compose up -d
-   ```
-
-4. **Confirm the service**
-
-   ```bash
-   docker compose ps
-   ```
-
-   Open [http://localhost:3000](http://localhost:3000) to verify the UI.
-
-</Steps>
-
-> 📖 New to Docker? Follow the [Docker engine](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) installation guides first.
+Already running html2rss-web on your workstation? Great! The sections below focus on what changes when you take that setup to production.
 
 ## Prepare for Production
 
