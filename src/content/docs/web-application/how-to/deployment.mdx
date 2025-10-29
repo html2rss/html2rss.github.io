@@ -59,6 +59,8 @@ volumes:
   HEALTHCHECK_USER= # Set a strong username
   HEALTHCHECK_PASS= # Set a strong password
   # Optional: see [environment reference](/web-application/reference/env-variables)
+  ```
+
 - Update your `.env` before starting the stack:
   - Set `CADDY_HOST` and `BASE_URL` for your domain (for example `yourdomain.com` / `https://yourdomain.com`).
   - Generate a production secret (`openssl rand -hex 32`) and assign it to `HTML2RSS_SECRET_KEY`.
