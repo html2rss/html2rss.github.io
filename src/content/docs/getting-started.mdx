@@ -67,7 +67,7 @@ Create a file called `docker-compose.yml` in your new folder. This file tells Do
 ```yaml
 services:
   html2rss-web:
-    image: gilcreator/html2rss-web
+    image: gilcreator/html2rss-web:latest
     restart: unless-stopped
     ports:
       - "127.0.0.1:3000:3000"
