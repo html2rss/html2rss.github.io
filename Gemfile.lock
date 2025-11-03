@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: a4e40cc888d21e4145efb68c6ac5d0b726fe3ddd
+  revision: 861cc9cae785510cc7120185b458390c18fd615a
   specs:
     html2rss (0.17.0)
       addressable (~> 2.7)
@@ -93,7 +93,7 @@ GEM
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2025.0924)
-    net-http (0.6.0)
+    net-http (0.7.0)
       uri
     nokogiri (1.18.10-arm64-darwin)
       racc (~> 1.4)
@@ -118,13 +118,13 @@ GEM
     thor (1.4.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    uri (1.0.4)
+    uri (1.1.0)
     websocket-driver (0.8.0)
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
     zeitwerk (2.7.3)
-    zlib (3.2.1)
+    zlib (3.2.2)
 
 PLATFORMS
   arm64-darwin-24
