@@ -19,7 +19,7 @@ At a minimum, ensure:
 
 ## Deployment Overview
 
-1. Copy the reference [`docker-compose.yml`](https://github.com/html2rss/html2rss-web/blob/master/docker-compose.yml) and [`config/feeds.yml`](https://github.com/html2rss/html2rss-web/blob/master/config/feeds.yml) from the project repository to your deployment directory.
+1. Generate your `docker-compose.yml` and `config/feeds.yml` by following [Step 2 of the getting started guide](/web-application/getting-started/#step-2-create-the-configuration-file), then copy the resulting files into your deployment directory.
 2. Create an `.env` file with production credentials and the values documented in the [environment reference](/web-application/reference/env-variables). Generate new secrets (`openssl rand -hex 32`) and avoid reusing the samples from local testing.
 3. Adjust the compose file to match your host (volumes, proxy service, watchtower, resource limits). The [deployment guide](/web-application/how-to/deployment) shows complete examples for Caddy, health-check protection, and automatic updates.
 4. Start the stack with `docker compose up -d` and verify the application is reachable at your chosen domain or internal endpoint.
