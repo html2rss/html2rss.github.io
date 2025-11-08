@@ -5,7 +5,7 @@ sidebar:
   order: 3
 ---
 
-Turn any website into an RSS feed. Self-host your own instance and take back control of your information diet while helping the html2rss ecosystem grow.
+Turn any website into an RSS feed. Self-host your own instance to take back control of your information diet and help the html2rss ecosystem grow for everyone.
 
 ## Before You Begin
 
@@ -19,17 +19,17 @@ If that feels new, start with the [Getting Started guide](/web-application/getti
 Before you deploy, double-check this quick checklist:
 
 - Docker Engine and Docker Compose Plugin are installed on the host.
-- Ports 80/443 (or the ports used by your TLS terminator) are open to the Internet if you plan to serve other users.
+- Ports 80/443 (or the ports used by your TLS terminator) are open to the internet if you plan to serve other users.
 - You can publish DNS for your chosen domain.
 
 ## Deployment Overview
 
-1. Generate your `docker-compose.yml` and `config/feeds.yml` by following [Step 2 of the getting started guide](/web-application/getting-started/#step-2-create-the-configuration-file), then copy the resulting files into your deployment directory.
+1. Generate your `docker-compose.yml` and `config/feeds.yml` by following [Step 2 of the Getting Started guide](/web-application/getting-started/#step-2-create-the-configuration-file), then copy the resulting files into your deployment directory.
 2. Create an `.env` file with production credentials and the values documented in the [environment reference](/web-application/reference/env-variables). Generate new secrets (`openssl rand -hex 32`) and avoid reusing the samples from local testing.
 3. Adjust the compose file to match your host (volumes, proxy service, watchtower, resource limits). The [deployment guide](/web-application/how-to/deployment) shows complete examples for Caddy, health-check protection, and automatic updates.
 4. Start the stack with `docker compose up -d` and verify the application is reachable at your chosen domain or internal endpoint.
 
-Need extra reliability? Integrate the instance with your existing reverse proxy, DNS, or platform tooling rather than running it ad hoc on a laptop. Treat it like any other production service so readers can trust it.
+For extra reliability, integrate the instance with your existing reverse proxy, DNS, or platform tooling rather than running it ad hoc on a laptop. Treat it like any other production service so readers can trust it.
 
 ## Harden & Secure
 
