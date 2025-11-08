@@ -5,13 +5,18 @@ sidebar:
   order: 3
 ---
 
-Turn any website into an RSS feed. Self-host your own instance and take back control of your information diet.
+Turn any website into an RSS feed. Self-host your own instance and take back control of your information diet while helping the html2rss ecosystem grow.
 
 ## Before You Begin
 
-This guide is designed for people who want to run their own production instance. You'll need basic familiarity with Docker and access to a server (VPS, home lab, or cloud instance). If you're new to self-hosting, start with the [Getting Started guide](/web-application/getting-started/) for a simpler local setup first. When you're ready to go live, review the full [Deployment & Production guide](/web-application/how-to/deployment) for environment sizing, proxy patterns, and step-by-step production hardening.
+This guide walks you through running a production-ready instance that friends, teams, or communities can rely on. You'll need:
 
-At a minimum, ensure:
+- A server you control (a VPS, home lab, or cloud instance) with Docker support.
+- Comfort running a few terminal commands and editing configuration files.
+
+If that feels new, start with the [Getting Started guide](/web-application/getting-started/) for a friendly local install. It introduces the same concepts at a slower pace. When you're ready to go live, come back here and review the full [Deployment & Production guide](/web-application/how-to/deployment) for sizing tips, proxy examples, and hardening advice.
+
+Before you deploy, double-check this quick checklist:
 
 - Docker Engine and Docker Compose Plugin are installed on the host.
 - Ports 80/443 (or the ports used by your TLS terminator) are open to the Internet if you plan to serve other users.
@@ -24,7 +29,7 @@ At a minimum, ensure:
 3. Adjust the compose file to match your host (volumes, proxy service, watchtower, resource limits). The [deployment guide](/web-application/how-to/deployment) shows complete examples for Caddy, health-check protection, and automatic updates.
 4. Start the stack with `docker compose up -d` and verify the application is reachable at your chosen domain or internal endpoint.
 
-Need extra reliability? Integrate the instance with your existing reverse proxy, DNS, or platform tooling rather than running it ad hoc on a laptop. Treat it like any other production service.
+Need extra reliability? Integrate the instance with your existing reverse proxy, DNS, or platform tooling rather than running it ad hoc on a laptop. Treat it like any other production service so readers can trust it.
 
 ## Harden & Secure
 
@@ -41,6 +46,8 @@ Need extra reliability? Integrate the instance with your existing reverse proxy,
 ## Share Your Instance
 
 Running a reliable deployment benefits the broader community. Add your server to the [community instance list](https://github.com/html2rss/html2rss-web/wiki/Instances) once it is stable and you are ready for other readers. Include details such as uptime expectations, moderation policy, and contact information so people know what to expect.
+
+Thanks for investing the time to share html2rss with others. Each new instance expands the open web and helps readers stay in control of the stories they follow.
 
 ## License
 
