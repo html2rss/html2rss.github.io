@@ -5,35 +5,49 @@ sidebar:
   order: 3
 ---
 
-Turn any website into an RSS feed. Self-host your own instance and take back control of your information diet.
+Turn any website into an RSS feed. Self-host your own instance to take back control of your information diet and help the html2rss ecosystem grow for everyone.
 
-## Quick Start
+## Before You Begin
 
-1. Install [Docker](https://docs.docker.com/get-docker/).
-2. Create a directory for html2rss:
-   ```bash
-   mkdir html2rss-web && cd html2rss-web
-   ```
-3. Download the configuration:
-   ```bash
-   curl -O https://raw.githubusercontent.com/html2rss/html2rss-web/master/docker-compose.yml
-   curl -O https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml
-   ```
-4. Start the instance:
-   ```bash
-   docker compose up -d
-   ```
-5. Visit [http://localhost:3000](http://localhost:3000)
-   You should see the html2rss-web interface.
+This guide walks you through running a production-ready instance that friends, teams, or communities can rely on. You'll need:
 
-## Next Steps
+- A server you control (a VPS, home lab, or cloud instance) with Docker support.
+- Comfort running a few terminal commands and editing configuration files.
 
-- [Secure your instance](/web-application/how-to/deployment#secure-your-instance)
-- [Enable HTTPS](/web-application/how-to/deployment#option-a-caddy-automatic-https)
-- [Troubleshoot issues](/troubleshooting/troubleshooting)
-- [Join the community](https://github.com/orgs/html2rss/discussions)
+If that feels new, start with the [Getting Started guide](/web-application/getting-started/) for a friendly local install. It introduces the same concepts at a slower pace. When you're ready to go live, come back here and review the full [Deployment & Production guide](/web-application/how-to/deployment) for sizing tips, proxy examples, and hardening advice.
 
----
+Before you deploy, double-check this quick checklist:
+
+- Docker Engine and Docker Compose Plugin are installed on the host.
+- Ports 80/443 (or the ports used by your TLS terminator) are open to the internet if you plan to serve other users.
+- You can publish DNS for your chosen domain.
+
+## Deployment Overview
+
+1. Generate your `docker-compose.yml` and `config/feeds.yml` by following [Step 2 of the Getting Started guide](/web-application/getting-started/#step-2-create-the-configuration-file), then copy the resulting files into your deployment directory.
+2. Create an `.env` file with production credentials and the values documented in the [environment reference](/web-application/reference/env-variables). Generate new secrets (`openssl rand -hex 32`) and avoid reusing the samples from local testing.
+3. Adjust the compose file to match your host (volumes, proxy service, watchtower, resource limits). The [deployment guide](/web-application/how-to/deployment) shows complete examples for Caddy, health-check protection, and automatic updates.
+4. Start the stack with `docker compose up -d` and verify the application is reachable at your chosen domain or internal endpoint.
+
+For extra reliability, integrate the instance with your existing reverse proxy, DNS, or platform tooling rather than running it ad hoc on a laptop. Treat it like any other production service so readers can trust it.
+
+## Harden & Secure
+
+- Follow the [Secure Your Instance](/web-application/how-to/deployment#secure-your-instance) checklist to lock down credentials, TLS, and network access.
+- Enforce HTTPS by configuring a reverse proxy (see [Option A: Caddy](/web-application/how-to/deployment#option-a-caddy-automatic-https)) or your preferred terminator. If you manage certificates separately, document the renewal procedure alongside your deployment scripts.
+- Review the [production preparation guidelines](/web-application/how-to/deployment#prepare-for-production) and keep secrets outside of version control.
+
+## Monitor & Maintain
+
+- Point your uptime monitor at `/health_check.txt` and review container logs regularly. The [Operate & Monitor](/web-application/how-to/deployment#operate--monitor) section outlines suggested thresholds.
+- Automate updates with Watchtower (a Docker container that updates running containers) or your container management platform to receive the latest html2rss-web releases quickly.
+- Track storage usage for feed cache volumes and prune unused images. Schedule periodic configuration reviews so feeds and credentials remain accurate.
+
+## Share Your Instance
+
+Running a reliable deployment benefits the broader community. Share your server with the broader community by adding it to the [community instance list](https://github.com/html2rss/html2rss-web/wiki/Instances) once it is stable and you are ready for other readers. Include details such as uptime expectations, moderation policy, and contact information so people know what to expect.
+
+Thanks for investing the time to share html2rss with others. Each new instance expands the open web and helps readers stay in control of the stories they follow.
 
 ## License
 
