@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: f701a4850f92ad4881218e8bda07d6ea331ac551
+  revision: ba875a9f315dabf471045cf8d3a0946818ec148e
   specs:
     html2rss-configs (0.2.0)
       html2rss
@@ -93,8 +93,8 @@ GEM
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2025.0924)
-    net-http (0.7.0)
-      uri
+    net-http (0.8.0)
+      uri (>= 0.11.1)
     nokogiri (1.18.10-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.18.10-x86_64-linux-gnu)
