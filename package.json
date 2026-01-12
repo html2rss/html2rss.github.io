@@ -14,9 +14,9 @@
     "lintfix": "prettier --write ."
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.6.0",
-    "@astrojs/starlight": "^0.37.1",
-    "astro": "^5.16.6",
+    "@astrojs/sitemap": "^3.6.1",
+    "@astrojs/starlight": "^0.37.2",
+    "astro": "^5.16.8",
     "sharp": "^0.34.5"
   },
   "devDependencies": {
