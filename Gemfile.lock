@@ -32,7 +32,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.8)
+    addressable (2.8.9)
       public_suffix (>= 2.0.2, < 8.0)
     async (2.36.0)
       console (~> 1.29)
@@ -128,7 +128,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0203)
+    mime-types-data (3.2026.0224)
     net-http (0.9.1)
       uri (>= 0.11.1)
     nokogiri (1.19.1-arm64-darwin)
