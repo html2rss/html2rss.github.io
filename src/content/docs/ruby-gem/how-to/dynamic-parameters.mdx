@@ -3,7 +3,7 @@ title: Dynamic Parameters
 description: "Learn how to use dynamic parameters in URLs and headers for creating reusable feed configurations. Pass runtime values to customize feeds."
 ---
 
-For websites with similar structures but varying content based on a parameter in the URL or headers, you can use dynamic parameters.
+Use dynamic parameters when websites share the same structure but vary by URL or header values.
 
 ## Solution
 
@@ -11,9 +11,17 @@ You can add dynamic parameters to the `channel` and `headers` values. This is us
 
 ```yaml
 channel:
-  url: "http://domainname.tld/whatever/%<id>s.html"
+  url: "https://domainname.tld/whatever/%<id>s.html"
 headers:
   X-Something: "%<foo>s"
+selectors:
+  items:
+    selector: "article"
+  title:
+    selector: "h2"
+  url:
+    selector: "a"
+    extractor: "href"
 ```
 
 You can then pass the values for these parameters when you run `html2rss`:
@@ -29,6 +37,12 @@ html2rss feed the_feed_config.yml --params id:42 foo:bar
 - The `%<param>s` syntax in the URL and headers is a placeholder for dynamic parameters.
 - You provide the actual values for these parameters at runtime using the `--params` option.
 - This allows you to reuse the same feed configuration for multiple similar pages or APIs.
+
+## Notes
+
+- Dynamic substitution applies to `channel` and `headers`. Selector definitions are not parameterized by this feature.
+- If a config references `%<param>s` and you do not provide a value, feed generation fails unless the caller supplies a fallback.
+- For shared config repositories such as `html2rss-configs`, it is common to store default parameter values alongside the config so examples, validation, and tests have concrete inputs.
 
 ## Related Topics
 

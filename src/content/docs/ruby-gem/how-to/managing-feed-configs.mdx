@@ -21,12 +21,24 @@ feeds:
     channel:
       url: "https://example.com/blog"
     selectors:
-      # ...
+      items:
+        selector: ".post"
+      title:
+        selector: "h2"
+      url:
+        selector: "a"
+        extractor: "href"
   my-second-feed:
     channel:
       url: "https://example.com/news"
     selectors:
-      # ...
+      items:
+        selector: ".news-item"
+      title:
+        selector: "h2"
+      url:
+        selector: "a"
+        extractor: "href"
 ```
 
 ## Building Feeds from a YAML File
