@@ -68,10 +68,12 @@ Html2rss.feed(
     Accept: 'application/json'
   },
   channel: {
-    url: 'http://domainname.tld/whatever.json'
+    url: 'https://domainname.tld/whatever.json'
   },
   selectors: {
-    title: { selector: 'foo' }
+    items: { selector: 'array > object' },
+    title: { selector: 'title' },
+    url: { selector: 'url' }
   }
 )
 ```
@@ -82,10 +84,12 @@ Html2rss.feed(
 headers:
   Accept: application/json
 channel:
-  url: "http://domainname.tld/whatever.json"
+  url: "https://domainname.tld/whatever.json"
 selectors:
   items:
     selector: "array > object"
   title:
-    selector: "foo"
+    selector: ".title"
+  url:
+    selector: "url"
 ```

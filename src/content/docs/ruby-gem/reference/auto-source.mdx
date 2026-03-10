@@ -36,6 +36,8 @@ You can customize `auto_source` to improve its accuracy.
 Enable or disable specific scrapers and adjust their settings:
 
 ```yaml
+channel:
+  url: https://example.com
 auto_source:
   scraper:
     schema:
@@ -55,6 +57,8 @@ auto_source:
 Remove unwanted items from the results:
 
 ```yaml
+channel:
+  url: https://example.com
 auto_source:
   cleanup:
     keep_different_domain: false # default: true

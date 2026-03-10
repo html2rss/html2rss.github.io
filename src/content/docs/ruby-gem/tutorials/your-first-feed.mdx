@@ -27,35 +27,37 @@ html2rss auto https://unmatchedstyle.com/
 
 When you need to extract content with precision, the `selectors` scraper is the tool for the job. This method gives you complete control over what content is included in your feed by using CSS selectors.
 
-Let's create a feed for Stack Overflow's "Hot Network Questions".
+Let's create a feed for a simple article listing page.
 
-1.  **Create a file** named `stackoverflow.yml`.
+1.  **Create a file** named `example.yml`.
 2.  **Add the following content:**
 
     ```yaml
     channel:
-      url: https://stackoverflow.com/questions
+      url: https://example.com/articles
     selectors:
       items:
-        selector: "#hot-network-questions > ul > li"
+        selector: ".article-card"
       title:
-        selector: "a"
+        selector: "h2 a"
       url:
-        selector: "a"
+        selector: "h2 a"
         extractor: "href"
+      description:
+        selector: ".summary"
     ```
 
 3.  **Run the `feed` command:**
 
     ```bash
-    html2rss feed stackoverflow.yml
+    html2rss feed example.yml
     ```
 
 This configuration tells `html2rss`:
 
-- The main container for all items is `<ul id="hot-network-questions">`.
-- Each item is inside a `<li>` tag.
-- The `title` of each item is the text of the `<a>` tag.
-- The `url` of each item is the `href` attribute of the `<a>` tag.
+- Each `.article-card` element is one feed item.
+- The `title` is read from the link text inside `h2`.
+- The `url` is read from that link's `href`.
+- The `description` comes from the `.summary` element inside each card.
 
 This is just the beginning! From here, you can dive deep into the full range of [configuration options](/ruby-gem/reference) to create the perfect feed.

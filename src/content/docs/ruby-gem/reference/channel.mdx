@@ -3,7 +3,9 @@ title: Channel
 description: "Learn about the channel configuration block for RSS feed metadata. Configure feed title, description, author, and other RSS channel properties."
 ---
 
-The `channel` configuration block defines the metadata for your RSS feed.
+The `channel` configuration block defines your feed metadata.
+
+This example is a complete feed config so you can see the `channel` block in context:
 
 ```yaml
 channel:
@@ -12,8 +14,16 @@ channel:
   description: "A feed of the latest news from Example.com"
   author: "jane.doe@example.com (Jane Doe)"
   ttl: 60
-  language: "en-us"
+  language: "en"
   time_zone: "Europe/Berlin"
+selectors:
+  items:
+    selector: "article"
+  title:
+    selector: "h2"
+  url:
+    selector: "a"
+    extractor: "href"
 ```
 
 ## Options
@@ -27,6 +37,12 @@ channel:
 | `ttl`         | Optional     | The "time to live" for the feed in minutes. Defaults to the `max-age` from the response headers, or `360`.                               |
 | `language`    | Optional     | The language of the feed. Defaults to the `lang` attribute of the `<html>` tag.                                                          |
 | `time_zone`   | Optional     | The time zone for parsing dates. See the [list of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). |
+
+## Notes
+
+- `language` is runtime-validated. Use a valid language code such as `en`, not an arbitrary string.
+- `author` should follow the RSS-style `email (Name)` format when you set it explicitly.
+- `time_zone` must be a known TZ database identifier such as `UTC` or `Europe/Berlin`.
 
 ---
 

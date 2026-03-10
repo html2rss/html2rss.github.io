@@ -3,50 +3,92 @@ title: CLI Reference
 description: Complete reference for the html2rss command-line interface
 ---
 
-This section provides a reference for the `html2rss` command-line interface (CLI).
+This page documents the `html2rss` command-line interface (CLI).
 
 For detailed documentation on the Ruby API, please refer to the official YARD documentation.
 
 [**📚 View the Ruby API Docs on rubydoc.info**](https://www.rubydoc.info/gems/html2rss)
 
----
+## Commands
 
-### Command-Line Interface (CLI)
+The `html2rss` executable is the primary way to interact with the gem from your terminal.
 
-The `html2rss` executable provides the primary way to interact with the tool from your terminal.
+### Auto
 
-#### `html2rss auto <URL>`
-
-Automatically generates an RSS feed from the provided URL.
-
-- `<URL>` (Required): The URL of the website to generate a feed from.
-
-**Example:**
+Automatically discovers items from a page and prints the generated RSS feed to stdout.
 
 ```bash
-html2rss auto https://unmatchedstyle.com/
+# Use the default faraday strategy
+html2rss auto https://example.com/articles
+
+# Force browserless for JavaScript-heavy pages
+html2rss auto https://example.com/app --strategy browserless
+
+# Hint the item selector while keeping auto enhancement
+html2rss auto https://example.com/articles --items_selector ".post-card"
 ```
 
-#### `html2rss feed <CONFIG_FILE>`
+Command: `html2rss auto URL`
 
-Generates an RSS feed based on the provided YAML configuration file.
+### Feed
 
-- `<CONFIG_FILE>` (Required): Path to your YAML configuration file.
-
-**Examples:**
+Loads a YAML config, builds the feed, and prints the RSS XML to stdout.
 
 ```bash
-# Generate and print to console
-html2rss feed my_feed.yml
+# Single-feed config
+html2rss feed single.yml
 
-# Generate and save to an XML file
-html2rss feed my_feed.yml > my_feed.xml
+# Multi-feed config under the `feeds:` key
+html2rss feed feeds.yml my-first-feed
+
+# Override the request strategy at runtime
+html2rss feed single.yml --strategy browserless
+
+# Pass dynamic parameters into %<param>s placeholders
+html2rss feed single.yml --params id:42 foo:bar
 ```
 
-#### `html2rss help`
+Command: `html2rss feed YAML_FILE [feed_name]`
+
+### Schema
+
+Prints the exported JSON Schema for the current gem version.
+
+```bash
+# Pretty-printed JSON (default)
+html2rss schema
+
+# Compact JSON
+html2rss schema --no-pretty
+
+# Write the schema to a file
+html2rss schema --write tmp/html2rss-config.schema.json
+```
+
+Command: `html2rss schema`
+
+### Validate
+
+Validates a config with the runtime validator without generating a feed.
+
+```bash
+# Validate a single-feed file
+html2rss validate single.yml
+
+# Validate one feed from a multi-feed file
+html2rss validate feeds.yml my-first-feed
+```
+
+Command: `html2rss validate YAML_FILE [feed_name]`
+
+### Help
 
 Displays the help message with available commands and options.
 
-#### `html2rss --version`
+Command: `html2rss help`
 
-Displays the currently installed version of `html2rss`.
+### Version
+
+Displays the installed version of `html2rss`.
+
+Command: `html2rss --version`

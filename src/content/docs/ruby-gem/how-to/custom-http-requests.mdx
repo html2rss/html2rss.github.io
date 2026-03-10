@@ -3,7 +3,7 @@ title: "Custom HTTP Requests"
 description: "Learn how to customize HTTP requests with custom headers, authentication, and API interactions for html2rss."
 ---
 
-Some websites require custom HTTP headers, authentication, or specific request configurations to access their content. html2rss makes it easy to customize your requests to handle these scenarios.
+Some websites require custom HTTP headers, authentication, or other request settings to access their content. `html2rss` lets you customize requests for those cases.
 
 ## When You Need Custom Headers
 
@@ -17,7 +17,7 @@ You might need custom HTTP requests when:
 
 ## Basic Configuration
 
-Add a `headers` section to your feed configuration:
+Add a `headers` section to your feed configuration. This example is a complete, valid config:
 
 ```yaml
 headers:
@@ -28,9 +28,11 @@ channel:
   url: https://api.example.com/posts
 selectors:
   items:
-    selector: ".post"
+    selector: "array > object"
   title:
-    selector: "h2"
+    selector: "title"
+  url:
+    selector: "url"
 ```
 
 ## Common Use Cases
@@ -43,6 +45,15 @@ Many APIs require authentication tokens:
 headers:
   Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
   X-API-Key: "your-api-key-here"
+channel:
+  url: "https://api.example.com/posts"
+selectors:
+  items:
+    selector: "array > object"
+  title:
+    selector: "title"
+  url:
+    selector: "url"
 ```
 
 ### User Agent Spoofing
@@ -55,6 +66,16 @@ headers:
   Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
   Accept-Language: "en-US,en;q=0.5"
   Accept-Encoding: "gzip, deflate"
+channel:
+  url: "https://example.com/articles"
+selectors:
+  items:
+    selector: "article"
+  title:
+    selector: "h2"
+  url:
+    selector: "a"
+    extractor: "href"
 ```
 
 ### Content Type Negotiation
@@ -63,9 +84,16 @@ Request specific content types:
 
 ```yaml
 headers:
-  Accept: "application/json"  # For JSON APIs
-  Accept: "text/html"         # For HTML content
-  Accept: "application/rss+xml"  # For RSS feeds
+  Accept: "application/json"
+channel:
+  url: "https://api.example.com/posts"
+selectors:
+  items:
+    selector: "array > object"
+  title:
+    selector: "title"
+  url:
+    selector: "url"
 ```
 
 ### Custom API Headers
@@ -77,6 +105,15 @@ headers:
   X-Requested-With: "XMLHttpRequest"
   X-Custom-Header: "your-value"
   Content-Type: "application/json"
+channel:
+  url: "https://api.example.com/posts"
+selectors:
+  items:
+    selector: "array > object"
+  title:
+    selector: "title"
+  url:
+    selector: "url"
 ```
 
 ## Dynamic Headers
@@ -85,11 +122,26 @@ You can use dynamic parameters in headers for runtime values:
 
 ```yaml
 headers:
-  Authorization: "Bearer {{api_token}}"
-  X-User-ID: "{{user_id}}"
+  Authorization: "Bearer %<api_token>s"
+  X-User-ID: "%<user_id>s"
+channel:
+  url: "https://api.example.com/users/%<user_id>s/posts"
+selectors:
+  items:
+    selector: "array > object"
+  title:
+    selector: "title"
+  url:
+    selector: "url"
 ```
 
 See our [Dynamic Parameters guide](/ruby-gem/how-to/dynamic-parameters) for more details.
+
+## Notes
+
+- Header examples that target third-party APIs are illustrative. Authentication requirements, header names, and response shapes can change independently of `html2rss`.
+- For JSON APIs, validate the response structure before assuming selectors like `array > object` or `html_url` will match.
+- If you document or share a config for reuse, prefer placeholder values and parameterized headers over embedding real tokens.
 
 ## Testing Your Headers
 
@@ -130,6 +182,13 @@ headers:
   User-Agent: "html2rss/1.0"
 channel:
   url: https://api.github.com/repos/owner/repo/issues
+selectors:
+  items:
+    selector: "array > object"
+  title:
+    selector: "title"
+  url:
+    selector: "html_url"
 ```
 
 ### Reddit API
@@ -140,6 +199,13 @@ headers:
   Accept: "application/json"
 channel:
   url: https://www.reddit.com/r/programming.json
+selectors:
+  items:
+    selector: "data > children > object > data"
+  title:
+    selector: "title"
+  url:
+    selector: "url"
 ```
 
 ## Related Topics
