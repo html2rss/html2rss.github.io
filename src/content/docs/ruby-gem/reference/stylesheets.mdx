@@ -16,7 +16,7 @@ Styling your RSS feed provides several benefits:
 
 ## Configuration
 
-You can add multiple stylesheets to your configuration:
+You can add multiple stylesheets to a normal feed configuration:
 
 ```yaml
 stylesheets:
@@ -26,6 +26,16 @@ stylesheets:
   - href: "https://example.com/rss.css"
     media: "all"
     type: "text/css"
+channel:
+  url: "https://example.com/articles"
+selectors:
+  items:
+    selector: "article"
+  title:
+    selector: "h2"
+  url:
+    selector: "a"
+    extractor: "href"
 ```
 
 ## Further Reading
