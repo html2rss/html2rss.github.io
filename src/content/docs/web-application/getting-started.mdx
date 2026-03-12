@@ -5,7 +5,8 @@ sidebar:
   order: 2
 ---
 
-import { Aside } from "@astrojs/starlight/components";
+import AutoGenerationOptional from "../../../components/docs/AutoGenerationOptional.astro";
+import MinimalDockerCompose from "../../../components/docs/MinimalDockerCompose.astro";
 
 Ready to create RSS feeds? Run `html2rss-web` locally with Docker, verify the interface, then use included feeds before you move on to auto-generation or custom configs.
 
@@ -43,35 +44,7 @@ cd html2rss-web
 
 Create a file called `docker-compose.yml` in your new folder. Start with the minimal local stack:
 
-```yaml
-services:
-  html2rss-web:
-    image: gilcreator/html2rss-web
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:3000:3000"
-    volumes:
-      - type: bind
-        source: ./feeds.yml
-        target: /app/config/feeds.yml
-        read_only: true
-    environment:
-      RACK_ENV: production
-      HEALTH_CHECK_USERNAME: health
-      HEALTH_CHECK_PASSWORD: please-set-YOUR-OWN-veeeeeery-l0ng-aNd-h4rd-to-gue55-Passw0rd!
-      BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:3001
-      BROWSERLESS_IO_API_TOKEN: 6R0W53R135510
-
-  browserless:
-    image: "ghcr.io/browserless/chromium"
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:3001:3001"
-    environment:
-      PORT: 3001
-      CONCURRENT: 10
-      TOKEN: 6R0W53R135510
-```
+<MinimalDockerCompose />
 
 Add update automation such as Watchtower later, after the first run works.
 
@@ -114,10 +87,7 @@ If you see the interface, the setup worked.
 
 That proves the web app, feed config file, and request pipeline are all working together.
 
-<Aside type="note" title="Automatic generation is optional">
-  The "paste a website URL and generate a feed" workflow is not enabled by default. If you want it, continue
-  with [Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/).
-</Aside>
+<AutoGenerationOptional />
 
 ---
 
