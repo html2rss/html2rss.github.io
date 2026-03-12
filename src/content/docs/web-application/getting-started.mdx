@@ -5,36 +5,21 @@ sidebar:
   order: 2
 ---
 
-Ready to create RSS feeds? Choose your path below. No technical knowledge required!
+import { Aside } from "@astrojs/starlight/components";
 
-## Quick Start Options
+Ready to create RSS feeds? Run `html2rss-web` locally with Docker, verify the interface, then use included feeds before you move on to auto-generation or custom configs.
 
-### Option 1: Use a Public Instance (Easiest)
+## What You Will Have When This Works
 
-**Try html2rss-web right now:**
+After this guide, you should have:
 
-1. **Go to a public html2rss-web instance** (see our [community wiki](https://github.com/html2rss/html2rss-web/wiki/Instances) for available instances)
-2. **Enter a website URL** you want to create a feed for
-3. **Click "Generate Feed"** and copy the RSS URL
-4. **Add to your feed reader** (any RSS reader app)
-
-**Perfect for:** Testing, quick feeds, or if you don't want to install anything.
-
-### Option 2: Install Your Own Instance
-
-**For full control and custom feeds:**
-
-1. **Follow the installation steps below**
-2. **Create custom feeds** for any website
-3. **Run your own instance** with all features
-
-**Perfect for:** Power users, custom configurations, or when you need reliability.
-
----
+- `html2rss-web` running at `http://localhost:3000`
+- a feed list loaded from `feeds.yml`
+- a clear path to either automatic generation or custom YAML configs
 
 ## Installation Guide
 
-This guide will help you set up your own copy of html2rss-web on your computer. Don't worry - we'll walk you through every step!
+This guide walks you through a local Docker setup that gives you the most reliable starting point.
 
 ### What You'll Need
 
@@ -54,14 +39,9 @@ mkdir html2rss-web
 cd html2rss-web
 ```
 
-### Step 2: Create the Configuration File
+### Step 2: Create a Minimal Configuration File
 
-Create a file called `docker-compose.yml` in your new folder. This file tells Docker how to set up html2rss-web with all the features you need.
-
-**How to create the file:**
-
-- **Using a text editor:** Create a new file and save it as `docker-compose.yml`
-- **Using terminal:** Use any text editor to create the file
+Create a file called `docker-compose.yml` in your new folder. Start with the minimal local stack:
 
 ```yaml
 services:
@@ -82,14 +62,6 @@ services:
       BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:3001
       BROWSERLESS_IO_API_TOKEN: 6R0W53R135510
 
-  watchtower:
-    image: containrrr/watchtower
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - "~/.docker/config.json:/config.json"
-    command: --cleanup --interval 7200
-
   browserless:
     image: "ghcr.io/browserless/chromium"
     restart: unless-stopped
@@ -100,6 +72,8 @@ services:
       CONCURRENT: 10
       TOKEN: 6R0W53R135510
 ```
+
+Add update automation such as Watchtower later, after the first run works.
 
 ### Step 3: Download the Feed List
 
@@ -116,32 +90,40 @@ curl https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds
 
 ### Step 4: Start html2rss-web
 
-Now start html2rss-web:
-
-**Start html2rss-web:**
-
 Open a terminal in your html2rss-web folder and run:
 
 ```bash
 docker compose up -d
 ```
 
-**That's it!** 🎉 html2rss-web is now running.
+## First Success Check
 
-**To verify it's working:**
+At this point, `html2rss-web` should be running.
 
 1. Open your web browser
 2. Go to `http://localhost:3000`
 3. You should see the html2rss-web interface with a list of available feeds
 
-**If you see the interface, congratulations!** You've successfully set up html2rss-web.
+If you see the interface, the setup worked.
+
+## What To Do First
+
+1. Open one included feed from the list
+2. Copy the RSS URL into your reader
+3. Confirm you can subscribe successfully
+
+That proves the web app, feed config file, and request pipeline are all working together.
+
+<Aside type="note" title="Automatic generation is optional">
+  The "paste a website URL and generate a feed" workflow is not enabled by default. If you want it, continue
+  with [Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/).
+</Aside>
 
 ---
 
 ## Next Steps
 
-**Ready to create feeds?**
-
-- **Browse existing feeds** - Check out what's already available
-- **Create your first feed** - Follow our [How-To Guides](/web-application/how-to/) to make custom feeds
-- **Need help?** Check our [troubleshooting guide](/troubleshooting/troubleshooting) if something doesn't work
+1. **[Use the included configs](/web-application/how-to/use-included-configs/)** - Start with working feeds
+2. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)** - Enable the quick-generate workflow
+3. **[Create Custom Feeds](/creating-custom-feeds)** - Write and test your own configs
+4. **[Need help?](/troubleshooting/troubleshooting)** - Troubleshoot startup and extraction problems

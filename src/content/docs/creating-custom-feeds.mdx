@@ -19,6 +19,12 @@ When auto-sourcing isn't enough, you can write your own configuration files to c
   releases](/web-application/reference/versioning-and-releases/) for details.
 </Aside>
 
+<Aside type="tip" title="Use this guide when you need more control">
+  Start with included feeds first. If your site is not covered, try [automatic feed
+  generation](/web-application/how-to/use-automatic-feed-generation/) next. Reach for a custom config when you
+  need a stable, reviewable setup or the generated feed misses important content.
+</Aside>
+
 ---
 
 ## When to Use Custom Configs
@@ -32,6 +38,20 @@ When auto-sourcing isn't enough, you can write your own configuration files to c
 - **You want to combine data** from multiple sources
 
 **Don't need custom configs?** Check the [Feed Directory](/feed-directory/) first - there might already be a working feed for your website.
+
+---
+
+## Recommended Workflow
+
+1. **Inspect the live page** in your browser developer tools
+2. **Write the smallest useful config** that extracts items, titles, and links
+3. **Validate the config** with `html2rss validate your-config.yml`
+4. **Render the feed** with `html2rss feed your-config.yml`
+5. **Add it to `html2rss-web`** so you can use it through your normal instance
+6. **Escalate to `browserless`** if the content is rendered by JavaScript
+
+This order keeps iteration fast and makes it easier to see whether the problem is the page structure, your
+selectors, or the fetch strategy.
 
 ---
 
@@ -82,7 +102,7 @@ This says: "Find each article, get the title from the h2 anchor, and get the lin
 
 ## Your First Config
 
-**Step 1:** Look at the website you want to create a feed for. Right-click → "View Page Source" to see the HTML structure.
+**Step 1:** Inspect the website you want to create a feed for. Start with your browser's developer tools to inspect the live DOM. "View Page Source" can still help, but it may miss JavaScript-rendered content.
 
 **Step 2:** Create a file called `example.com.yml` with this basic structure:
 
@@ -140,6 +160,12 @@ html2rss supports many configuration options:
 
 4. **Check the output:** Make sure all items have titles, links, and descriptions
 
+## Add It To html2rss-web
+
+Once the config works locally, add it to your `feeds.yml` or shared config repository and restart your
+instance. Then open the feed through your normal `html2rss-web` URL and confirm it behaves the same way
+there.
+
 ---
 
 ## Sharing Your Config
@@ -177,6 +203,7 @@ html2rss supports many configuration options:
 **For Beginners:**
 
 - **[Browse the Feed Directory](/feed-directory/)** - See real-world examples
+- **[Run html2rss-web with Docker](/web-application/getting-started)** - Use the newest integrated behavior
 - **[Learn more about selectors](/ruby-gem/reference/selectors/)** - Master CSS selectors
 - **[Submit your config via GitHub Web](https://github.com/html2rss/html2rss-configs)** - No Git knowledge required!
 
@@ -184,4 +211,5 @@ html2rss supports many configuration options:
 
 - **[Browse existing configs](https://github.com/html2rss/html2rss-configs/tree/master/lib/html2rss/configs)** - See real examples
 - **[Join discussions](https://github.com/orgs/html2rss/discussions)** - Connect with other users
+- **[Learn about strategies](/ruby-gem/reference/strategy/)** - Decide when to use `browserless`
 - **[Learn advanced features](/ruby-gem/how-to/advanced-features/)** - Take your configs to the next level
