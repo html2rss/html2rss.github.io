@@ -5,9 +5,19 @@ sidebar:
   order: 2
 ---
 
+import { Aside } from "@astrojs/starlight/components";
+
 When auto-sourcing isn't enough, you can write your own configuration files to create custom RSS feeds for any website. This guide shows you how to take full control with YAML configs.
 
 **Prerequisites:** You should be familiar with the [Getting Started](/getting-started) guide before diving into custom configurations.
+
+<Aside type="note" title="Release note">
+  This guide tracks the current documentation tree and may describe features that have not yet shipped in the
+  latest released `html2rss` gem. If you want the newest integrated behavior, prefer running
+  [`html2rss-web`](/web-application/getting-started) via Docker. The web application ships as a rolling
+  release and usually reflects the latest development state of the gem first. See [Versioning and
+  releases](/web-application/reference/versioning-and-releases/) for details.
+</Aside>
 
 ---
 
@@ -114,15 +124,21 @@ html2rss supports many configuration options:
 
 **Before sharing your config, test it:**
 
-1. **Test with Ruby gem:**
+1. **Validate the config first:**
+
+   ```bash
+   html2rss validate your-config.yml
+   ```
+
+2. **Then render the feed with the Ruby gem:**
 
    ```bash
    html2rss feed your-config.yml
    ```
 
-2. **Test with web app:** Add your config to the `feeds.yml` file and restart your instance
+3. **Test with `html2rss-web`:** Add your config to the `feeds.yml` file and restart your instance
 
-3. **Check the output:** Make sure all items have titles, links, and descriptions
+4. **Check the output:** Make sure all items have titles, links, and descriptions
 
 ---
 
