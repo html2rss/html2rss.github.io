@@ -5,120 +5,21 @@ sidebar:
   order: 1
 ---
 
-import AutoGenerationOptional from "../../components/docs/AutoGenerationOptional.astro";
-import MinimalDockerCompose from "../../components/docs/MinimalDockerCompose.astro";
+This page points to the main onboarding flow.
 
-Ready to get RSS feeds from any website? Run `html2rss-web` locally with Docker, verify the interface, then start with included feeds before you move on to custom configs.
+## Start Here
 
-## What Success Looks Like
+If you want the recommended path, go to [Run html2rss-web with Docker](/web-application/getting-started).
 
-After this guide, you should have:
+That guide is the canonical setup flow for:
 
-- `html2rss-web` running at `http://localhost:3000`
-- a list of working included feeds
-- a clear next step for either auto-generation or custom configs
+- running `html2rss-web` locally
+- confirming your first successful feed
+- deciding when to use included feeds, automatic generation, or custom configs
 
-## Recommended Path
+## Quick Shortcuts
 
-This guide will help you set up your own copy of `html2rss-web` on your computer. Start here if you want the most reliable path and the newest integrated behavior.
-
-### What You'll Need
-
-- **Docker** - A tool that makes installation simple (like an app store for server software)
-- **About 10 minutes** - The whole process is quick and automated
-
-**Don't have Docker?** [Install it first](https://docs.docker.com/get-started/) - it's free and works on all major operating systems.
-
-### Step 1: Create a Folder
-
-Create a new folder on your computer to store html2rss-web files:
-
-**Create a new folder** on your computer and name it "html2rss-web". You can do this through your file manager or terminal:
-
-```bash
-mkdir html2rss-web
-cd html2rss-web
-```
-
-### Step 2: Create a Minimal Configuration File
-
-Create a file called `docker-compose.yml` in your new folder. Start with the minimal local stack:
-
-<MinimalDockerCompose />
-
-Add update automation such as Watchtower later, after the first run works.
-
-### Step 3: Download the Feed List
-
-html2rss-web needs a list of feeds to work with. Download our pre-made list:
-
-**Download the feeds.yml file:**
-
-- **Using your browser:** Right-click [this link](https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml) → Save As → Name it "feeds.yml" → Save in your html2rss-web folder
-- **Using terminal:** Open Terminal in your html2rss-web folder and run:
-
-```bash
-curl https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml -o feeds.yml
-```
-
-### Step 4: Start html2rss-web
-
-Open a terminal in your html2rss-web folder and run:
-
-```bash
-docker compose up -d
-```
-
-## First Success Check
-
-At this point, `html2rss-web` should be running.
-
-1. Open your web browser
-2. Go to `http://localhost:3000`
-3. You should see the html2rss-web interface with a list of available feeds
-
-If you see the interface, the install worked.
-
----
-
-## What To Do First
-
-### Browse Existing Feeds
-
-Your instance comes with pre-configured feeds for many websites. Browse the list, open one feed, and copy its RSS URL into your feed reader.
-
-This is the easiest way to confirm the whole stack is healthy.
-
-### Then Choose Your Next Step
-
-- **Included feed works:** keep using the built-in configs and browse the [Feed Directory](/feed-directory/)
-- **Need a feed for a new site:** decide between auto-generation and a custom config
-- **Need stable, repeatable control:** move to [Creating Custom Feeds](/creating-custom-feeds)
-
-<AutoGenerationOptional />
-
-## When To Use Each Option
-
-- **Use included configs** when the site already exists in the directory
-- **Enable automatic feed generation** when you want to try a site quickly without writing YAML
-- **Write a custom config** when auto-generation is incomplete or you need precise control
-
----
-
-## Troubleshooting
-
-**Common issues when getting started:**
-
-- **Instance won't start?** Check that Docker is running and the port isn't already in use
-- **Can't access the interface?** Make sure you're going to `http://localhost:3000`
-- **Auto-sourced feed not working?** Some websites need custom configuration - see our [troubleshooting guide](/troubleshooting/troubleshooting)
-- **Need help?** Join our [community discussions](https://github.com/orgs/html2rss/discussions)
-
----
-
-## Next Steps
-
-1. **[Use the included configs](/web-application/how-to/use-included-configs/)** - Start with working feeds
-2. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)** - Enable the quick-generate flow
-3. **[Create Custom Feeds](/creating-custom-feeds)** - Add and test your own YAML configs
-4. **[Troubleshooting Guide](/troubleshooting/troubleshooting)** - Solve startup and extraction issues
+- **[Run html2rss-web with Docker](/web-application/getting-started)** - Recommended first step
+- **[Browse working feed examples](/feed-directory/)** - See what success looks like
+- **[Create Custom Feeds](/creating-custom-feeds)** - Write configs when you need more control
+- **[Troubleshooting Guide](/troubleshooting/troubleshooting)** - Fix startup or extraction problems
