@@ -5,15 +5,18 @@ sidebar:
   order: 2
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside } from "@astrojs/starlight/components";
 
 When auto-sourcing isn't enough, you can write your own configuration files to create custom RSS feeds for any website. This guide shows you how to take full control with YAML configs.
 
 **Prerequisites:** You should be familiar with the [Getting Started](/getting-started) guide before diving into custom configurations.
 
 <Aside type="note" title="Release note">
-  This guide tracks the current documentation tree and may describe features that have not yet shipped in the latest released `html2rss` gem.
-  If you want the newest integrated behavior, prefer running [`html2rss-web`](/web-application/getting-started) via Docker. The web application ships as a rolling release and usually reflects the latest development state of the gem first. See [Versioning and releases](/web-application/reference/versioning-and-releases/) for details.
+  This guide tracks the current documentation tree and may describe features that have not yet shipped in the
+  latest released `html2rss` gem. If you want the newest integrated behavior, prefer running
+  [`html2rss-web`](/web-application/getting-started) via Docker. The web application ships as a rolling
+  release and usually reflects the latest development state of the gem first. See [Versioning and
+  releases](/web-application/reference/versioning-and-releases/) for details.
 </Aside>
 
 ---
@@ -79,7 +82,7 @@ This says: "Find each article, get the title from the h2 anchor, and get the lin
 
 ## Your First Config
 
-**Step 1:** Inspect the website you want to create a feed for. Start with your browser's developer tools to inspect the live DOM. "View Page Source" can still help, but it may miss JavaScript-rendered content.
+**Step 1:** Look at the website you want to create a feed for. Right-click → "View Page Source" to see the HTML structure.
 
 **Step 2:** Create a file called `example.com.yml` with this basic structure:
 
