@@ -248,16 +248,16 @@ export default defineConfig({
       },
       sidebar: [
         {
-          label: "Home",
-          link: "/",
-        },
-        {
-          label: "Common Use Cases",
-          link: "/common-use-cases",
+          label: "Getting Started",
+          link: "/getting-started",
         },
         {
           label: "Feed Directory",
           link: "/feed-directory/",
+        },
+        {
+          label: "Create Custom Feeds",
+          link: "/creating-custom-feeds",
         },
         {
           label: "Web Application",
@@ -300,10 +300,6 @@ export default defineConfig({
           ],
         },
         {
-          label: "Write Your Own Feed Configs",
-          link: "/creating-custom-feeds",
-        },
-        {
           label: "About",
           link: "/about",
         },
@@ -311,11 +307,6 @@ export default defineConfig({
           label: "Get Involved",
           collapsed: false,
           autogenerate: { directory: "get-involved" },
-        },
-        {
-          label: "Troubleshooting",
-          collapsed: true,
-          autogenerate: { directory: "troubleshooting" },
         },
       ],
       defaultLocale: "root",

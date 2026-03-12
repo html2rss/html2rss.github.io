@@ -6,17 +6,29 @@ sidebar:
   order: 1
 ---
 
-This web application scrapes websites to build and deliver RSS 2.0 feeds. It is a powerful tool for creating custom RSS feeds.
+`html2rss-web` is the recommended way to get started. Run it locally with Docker, use included feeds first, and move to automatic generation or custom configs only when you need more control.
 
 ## Get Started
 
-Our **[Getting Started guide](/web-application/getting-started)** covers essential first steps, from understanding the application to installing your own instance.
+Start with **[Getting Started](/web-application/getting-started)** to:
+
+- run your own local instance
+- confirm a first successful feed
+- choose the right next step for your site
 
 ## Key Features
 
-- **Stable URLs:** Provides stable URLs for automatically sourced feeds.
-- **Custom Feeds:** Create custom feeds.
-- **Feed Directory:** Includes many [feeds](https://github.com/html2rss/html2rss-configs) out of the box.
-- **Caching:** Handles request caching and sets HTTP headers.
+- **Stable URLs:** Provides stable URLs for feeds served from your own instance
+- **Included Feeds:** Start with many working configs out of the box
+- **Automatic Generation:** Try new sites quickly when the feature is enabled
+- **Custom Feeds:** Create and refine your own configs when you need more control
+- **Caching:** Handles request caching and sets HTTP headers
 
 The functionality of scraping websites and building the RSS feeds is provided by the Ruby gem [`html2rss`](https://github.com/html2rss/html2rss).
+
+## Recommended Flow
+
+1. **[Getting Started](/web-application/getting-started)** - Run the app locally
+2. **[Use the included configs](/web-application/how-to/use-included-configs/)** - Confirm a working feed first
+3. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)** - Try unsupported sites quickly
+4. **[Create Custom Feeds](/creating-custom-feeds)** - Build a stable custom setup when needed
