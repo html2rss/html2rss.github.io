@@ -1,101 +1,69 @@
 ---
-title: "Turn Any Website Into an RSS Feed - Never Miss Updates Again"
-description: "Create RSS feeds from any website - no coding required. Turn blogs, news sites, and forums into RSS feeds you can follow in your favorite reader. Free, open source, and easy to use."
+title: "Turn Any Website Into an RSS Feed"
+description: "Run html2rss-web with Docker, open the web interface, generate stable feed URLs, and move to custom configs only when you need more control."
 ---
 
-Run `html2rss-web` with Docker, start with included feeds, and add custom configs only when you need more control.
+Run `html2rss-web` with Docker, open the web interface, and generate stable feed URLs from pages you want to follow.
 
-## 🚀 Get Started in 30 Seconds
+## Start Here
 
-**Start here:** [Run html2rss-web with Docker](/web-application/getting-started) | [Browse working feed examples](/feed-directory/)
+**Recommended path:** [Run html2rss-web with Docker](/web-application/getting-started)
 
-Need more control? [Write a custom feed config](/creating-custom-feeds)
+That guide is the canonical onboarding flow for:
 
----
+- starting a local instance
+- verifying the web interface
+- generating a first feed URL
+- deciding when to use automatic generation or custom configs
 
 ## How It Works
 
 1. **Run your own local instance** with Docker
-2. **Use included feeds or add your own** website targets
-3. **Subscribe from your RSS reader** using stable feed URLs
-
----
-
-## Why RSS Still Matters Today
-
-**Real examples of what you can do:**
-
-- Follow your favorite blogs without social media algorithms
-- Get notified when your local news site posts about your neighborhood
-- Track job postings from multiple company websites
-- Monitor product updates from software vendors
-- Follow academic papers from your field
-
-**RSS vs Social Media:**
-
-- ✅ **No algorithms** deciding what you see
-- ✅ **No ads** or sponsored content
-- ✅ **Works with any feed reader** you choose
-- ✅ **Your data stays private**
-- ✅ **Never miss updates** - automatic notifications
-- ✅ **Save time** - no more manual checking
-
----
+2. **Open the web interface** and paste a page URL
+3. **Copy the feed URL into your reader**
 
 ## What is html2rss?
 
-html2rss is a toolkit for turning websites into RSS feeds. Think of it as a translator that converts website content into a format your feed reader can understand.
+html2rss is a toolkit for turning websites into feeds.
 
-**Most people should start with the web application:**
+Most people should start with the web application:
 
-- **🌐 html2rss-web** - The easiest way to run your own feed server with Docker
-- **⚙️ html2rss gem** - The underlying engine, CLI, and developer interface
+- **`html2rss-web`**: the self-hosted web interface and feed server
+- **`html2rss` gem**: the Ruby engine, CLI, and lower-level config workflow
 
----
-
-## 🎯 Choose Your Path
+## Choose Your Path
 
 ### I want a working instance first
 
-1. **[Run html2rss-web with Docker](/web-application/getting-started)** - Recommended starting path
-2. **[Browse working feed examples](/feed-directory/)** - See what success looks like
-3. **[Use the included configs](/web-application/how-to/use-included-configs/)** - Start with ready-made feeds
+1. **[Run html2rss-web with Docker](/web-application/getting-started)**: recommended starting path
+2. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: create a feed directly from a page URL
+3. **[Browse working feed examples](/feed-directory/)**: see what working outputs look like
 
 ### I need more control
 
-1. **[Creating Custom Feeds](/creating-custom-feeds)** - Write and test your own configs
-2. **[Selectors Reference](/ruby-gem/reference/selectors/)** - Learn the matching rules
-3. **[Strategy Reference](/ruby-gem/reference/strategy/)** - Use `browserless` for JS-heavy sites
+1. **[Creating Custom Feeds](/creating-custom-feeds)**: write and test your own configs
+2. **[Selectors Reference](/ruby-gem/reference/selectors/)**: learn the matching rules
+3. **[Strategy Reference](/ruby-gem/reference/strategy/)**: decide when `browserless` is justified
 
 ### I'm building or integrating
 
-1. **[Ruby Gem Reference](/ruby-gem/)** - Full API documentation
-2. **[Advanced Features](/ruby-gem/how-to/advanced-features/)** - Custom HTTP requests, etc.
-3. **[Contribute to Core](/get-involved/contributing/)** - Help improve the engine
+1. **[Ruby Gem Reference](/ruby-gem/)**: full API documentation
+2. **[Advanced Features](/ruby-gem/how-to/advanced-features/)**: custom HTTP requests and advanced extraction
+3. **[Contribute to Core](/get-involved/contributing/)**: help improve the engine
 
----
+## What People Use It For
 
-## 🌟 What People Are Using html2rss For
+- follow blogs and news sites without social media algorithms
+- track product updates and release notes
+- monitor job postings from company websites
+- subscribe to forums and communities that do not publish feeds
+- follow local news without repeated manual checking
 
-- **News & Blogs:** Follow your favorite writers without social media
-- **Job Hunting:** Track job postings from multiple company sites
-- **Product Updates:** Get notified when software you use gets updated
-- **Academic Research:** Follow new papers in your field
-- **Local News:** Stay updated on your neighborhood and city
-- **Hobby Communities:** Follow forums and communities you care about
+## Practical Notes
 
-[Browse all examples in our Feed Directory →](/feed-directory/)
+- Start with Docker, not a public instance.
+- Use the web interface to verify the deployment first.
+- Use automatic generation for the first pass.
+- Move to custom configs when you need a stable, reviewable setup.
 
----
-
-## 🔧 Common Issues?
-
-**Start with Docker, not a public instance.** That gives you the most reliable path and the newest integrated behavior.
-
-**Feed not working?** Check our [troubleshooting guide](/troubleshooting/troubleshooting)
-
-**Need custom control?** Continue to [Creating Custom Feeds](/creating-custom-feeds)
-
-**Need help?** Join our [community discussions](https://github.com/orgs/html2rss/discussions)
-
-**Found a bug?** [Report it on GitHub](https://github.com/html2rss/html2rss/issues)
+**Need help?** Continue to the [troubleshooting guide](/troubleshooting/troubleshooting) or join [GitHub Discussions](https://github.com/orgs/html2rss/discussions).
