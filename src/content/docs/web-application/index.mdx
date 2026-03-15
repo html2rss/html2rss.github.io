@@ -1,34 +1,35 @@
 ---
 title: "Web Application"
-description: "html2rss-web is an easy-to-use web application that creates RSS feeds from any website. No coding required - just point, click, and get your RSS feed."
+description: "html2rss-web is the self-hosted web interface for generating stable feed URLs from web pages."
 sidebar:
   label: "Overview"
   order: 1
 ---
 
-`html2rss-web` is the recommended way to get started. Run it locally with Docker, use included feeds first, and move to automatic generation or custom configs only when you need more control.
+`html2rss-web` is the recommended way to get started. Run it locally with Docker, open the interface, generate a feed URL, and move to custom configs only when you need more control.
 
 ## Get Started
 
 Start with **[Getting Started](/web-application/getting-started)** to:
 
 - run your own local instance
-- confirm a first successful feed
+- verify the web interface
+- generate a first feed URL
 - choose the right next step for your site
 
-## Key Features
+## What The Web App Gives You
 
-- **Stable URLs:** Provides stable URLs for feeds served from your own instance
-- **Included Feeds:** Start with many working configs out of the box
-- **Automatic Generation:** Try new sites quickly when the feature is enabled
-- **Custom Feeds:** Create and refine your own configs when you need more control
-- **Caching:** Handles request caching and sets HTTP headers
+- **Stable feed URLs:** generated from your own deployment
+- **Web interface:** paste a page URL and create a feed
+- **Optional access control:** unlock custom generation with an access token when configured
+- **Config-based extension path:** move to custom feeds when you need reviewable rules
+- **Caching and HTTP handling:** shipped as part of the deployment
 
-The functionality of scraping websites and building the RSS feeds is provided by the Ruby gem [`html2rss`](https://github.com/html2rss/html2rss).
+The scraping and feed-building engine is provided by the Ruby gem [`html2rss`](https://github.com/html2rss/html2rss).
 
 ## Recommended Flow
 
-1. **[Getting Started](/web-application/getting-started)** - Run the app locally
-2. **[Use the included configs](/web-application/how-to/use-included-configs/)** - Confirm a working feed first
-3. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)** - Try unsupported sites quickly
-4. **[Create Custom Feeds](/creating-custom-feeds)** - Build a stable custom setup when needed
+1. **[Getting Started](/web-application/getting-started)**: run the app locally
+2. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: create a feed from a page URL
+3. **[Browse working feed examples](/feed-directory/)**: compare against existing outputs
+4. **[Create Custom Feeds](/creating-custom-feeds)**: build a stable custom setup when needed

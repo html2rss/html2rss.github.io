@@ -3,6 +3,8 @@ title: "Deployment & Production"
 description: "Deploy html2rss-web to production with Docker. Learn best practices for hosting public instances with security, monitoring, and reliability."
 ---
 
+import DockerComposeSnippet from "../../../../components/docs/DockerComposeSnippet.astro";
+
 html2rss-web ships on Docker Hub, so you can launch it wherever Docker runs. Start with the official [`docker-compose.yml`](https://github.com/html2rss/html2rss-web/blob/master/docker-compose.yml) from the [Installation Guide](/web-application/getting-started) as your baseline.
 
 If you have not yet created a local instance, complete the [Getting Started guide](/web-application/getting-started) first. It walks through the one-time project directory setup, downloading the reference compose file, and confirming the application locally—steps we will build upon here.
@@ -25,29 +27,7 @@ A reverse proxy accepts public HTTPS traffic, terminates TLS, and forwards reque
 
 Caddy handles certificates and redirects with almost no configuration.
 
-```yaml
-services:
-  caddy:
-    image: caddy:2-alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - caddy_data:/data
-    command:
-      - caddy
-      - reverse-proxy
-      - --from
-      - ${CADDY_HOST}
-      - --to
-      - html2rss:3000
-  html2rss:
-    image: gilcreator/html2rss-web:latest
-    env_file: .env
-
-volumes:
-  caddy_data:
-```
+<DockerComposeSnippet variant="productionCaddy" />
 
 - Create a `.env` file beside your compose file with the following variables:
 
@@ -79,17 +59,7 @@ Harden the application before inviting other users:
 - Prefer environment files (`.env`) stored outside version control for secrets
 - Keep admin-only routes behind basic auth or IP restrictions in your proxy
 
-```yaml
-services:
-  html2rss:
-    image: gilcreator/html2rss-web:latest
-    environment:
-      RACK_ENV: production
-      LOG_LEVEL: warn
-      HEALTH_CHECK_USERNAME: your-secure-username
-      HEALTH_CHECK_PASSWORD: your-very-secure-password
-      BASE_URL: https://yourdomain.com
-```
+<DockerComposeSnippet variant="secure" />
 
 Store these variables in a `.env` file and reference it with `env_file:` as demonstrated in the Caddy example.
 
@@ -104,41 +74,13 @@ Keep the instance healthy once it is in production:
 
 ### Auto-update with Watchtower
 
-```yaml
-services:
-  watchtower:
-    image: containrrr/watchtower
-    depends_on:
-      - html2rss
-      - caddy
-    command:
-      - --cleanup
-      - --interval
-      - "300"
-      - html2rss
-      - caddy
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
-```
+<DockerComposeSnippet variant="watchtower" />
 
 Check `docker compose logs watchtower` occasionally to confirm updates are applied.
 
 ### Resource Guardrails
 
-```yaml
-services:
-  html2rss:
-    image: gilcreator/html2rss-web:latest
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: "0.5"
-        reservations:
-          memory: 256M
-          cpus: "0.25"
-```
+<DockerComposeSnippet variant="resourceGuardrails" />
 
 Adjust the limits to match your host capacity. Increase memory if you process many large feeds.
 
