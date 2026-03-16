@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: 2075ecb538e5f86a94975a1ed8208e66edf86fae
+  revision: 4e401e6ed97f5e28da07978431500d7c39de8a41
   specs:
     html2rss-configs (0.2.0)
       html2rss
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: 20731ec7324e9ece01e9ad02dd19778137848a71
+  revision: e0dca5bf74b17c1e2a0618fc0a4af27c16da1883
   specs:
     html2rss (0.17.0)
       addressable (~> 2.7)
@@ -118,7 +118,7 @@ GEM
       fiber-storage
     fiber-storage (1.0.1)
     io-endpoint (0.17.2)
-    io-event (1.14.3)
+    io-event (1.14.4)
     io-stream (0.11.1)
     json (2.19.1)
     kramdown (2.5.2)
@@ -137,7 +137,7 @@ GEM
       racc (~> 1.4)
     parallel (1.27.0)
     protocol-hpack (1.5.1)
-    protocol-http (0.59.0)
+    protocol-http (0.60.0)
     protocol-http1 (0.37.0)
       protocol-http (~> 0.58)
     protocol-http2 (0.24.0)
