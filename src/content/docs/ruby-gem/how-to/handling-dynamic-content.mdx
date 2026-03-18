@@ -9,6 +9,29 @@ Some websites load their content dynamically using JavaScript. The default `html
 
 Use the [`browserless` strategy](/ruby-gem/reference/strategy) to render JavaScript-heavy websites with a headless browser.
 
+Keep the strategy at the top level and put request-specific options under `request`:
+
+```yaml
+strategy: browserless
+request:
+  max_redirects: 5
+  max_requests: 6
+  browserless:
+    preload:
+      wait_for_network_idle:
+        timeout_ms: 5000
+channel:
+  url: https://example.com/app
+selectors:
+  items:
+    selector: .article
+  title:
+    selector: h2
+  url:
+    selector: a
+    extractor: href
+```
+
 ## When to Use Browserless
 
 The `browserless` strategy is necessary when:
@@ -17,6 +40,56 @@ The `browserless` strategy is necessary when:
 - **Single Page Applications (SPAs)** - React, Vue, Angular apps
 - **Infinite scroll** - Content loads as you scroll
 - **Dynamic forms** - Content changes based on user interaction
+
+## Preload Actions
+
+For dynamic sites, rendering once is often not enough. Use `request.browserless.preload` to wait, click, or scroll before the
+HTML snapshot is taken.
+
+### Wait for JavaScript Requests
+
+```yaml
+strategy: browserless
+request:
+  browserless:
+    preload:
+      wait_for_network_idle:
+        timeout_ms: 4000
+```
+
+### Click "Load More" Buttons
+
+```yaml
+strategy: browserless
+request:
+  browserless:
+    preload:
+      click_selectors:
+        - selector: ".load-more"
+          max_clicks: 3
+          delay_ms: 250
+          wait_for_network_idle:
+            timeout_ms: 3000
+```
+
+### Scroll Infinite Lists
+
+```yaml
+strategy: browserless
+request:
+  browserless:
+    preload:
+      scroll_down:
+        iterations: 5
+        delay_ms: 200
+        wait_for_network_idle:
+          timeout_ms: 2500
+```
+
+These preload steps can be combined in a single config when a site needs several interactions before all items appear.
+
+If a click or scroll step causes a real navigation, html2rss returns the final document metadata, not the original page-load
+metadata. That keeps extracted relative links anchored to the rendered page.
 
 ## Performance Considerations
 
