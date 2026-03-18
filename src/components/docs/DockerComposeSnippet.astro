@@ -1,19 +1,9 @@
 ---
 import Code from "astro/components/Code.astro";
-import {
-  browserlessImage,
-  caddyImage,
-  watchtowerImage,
-  webImage,
-} from "../../data/docker";
+import { browserlessImage, caddyImage, watchtowerImage, webImage } from "../../data/docker";
 
 interface Props {
-  variant:
-    | "minimal"
-    | "productionCaddy"
-    | "secure"
-    | "watchtower"
-    | "resourceGuardrails";
+  variant: "minimal" | "productionCaddy" | "secure" | "watchtower" | "resourceGuardrails";
 }
 
 const { variant } = Astro.props;
