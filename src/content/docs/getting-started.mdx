@@ -25,3 +25,19 @@ That guide is the canonical setup flow for:
 - **[Browse working feed examples](/feed-directory/)**: see what successful outputs look like
 - **[Create Custom Feeds](/creating-custom-feeds)**: write configs when you need more control
 - **[Troubleshooting Guide](/troubleshooting/troubleshooting)**: fix startup or extraction problems
+
+## Using the Ruby CLI
+
+If you are working directly with the gem instead of `html2rss-web`, start with:
+
+```bash
+html2rss auto https://example.com/blog
+```
+
+If the target site is unusually redirect-heavy or needs extra follow-up requests, the CLI also supports:
+
+```bash
+html2rss auto https://example.com/blog --max-redirects 10 --max-requests 5
+```
+
+For config-driven runs, the same flags are available on `html2rss feed`.

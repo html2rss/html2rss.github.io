@@ -160,6 +160,21 @@ html2rss supports many configuration options:
 
 4. **Check the output:** Make sure all items have titles, links, and descriptions
 
+### Useful CLI flags when a site is difficult
+
+Some sites need a little more request budget than the defaults.
+
+- Use `--max-redirects` when the site bounces through several canonicalization or tracking redirects before the real page loads.
+- Use `--max-requests` when your config needs more than one request, for example pagination or other follow-up fetches.
+
+```bash
+html2rss feed your-config.yml --max-redirects 10
+html2rss feed your-config.yml --max-requests 5
+html2rss auto https://example.com/blog --max-redirects 10 --max-requests 5
+```
+
+Keep these values as low as possible. If a site only needs one extra redirect, prefer `--max-redirects 4` over a much larger number.
+
 ## Add It To html2rss-web
 
 Once the config works locally, add it to your `feeds.yml` or shared config repository and restart your

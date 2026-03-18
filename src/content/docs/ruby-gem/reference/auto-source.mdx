@@ -17,15 +17,18 @@ auto_source: {}
 
 `auto_source` uses the following strategies to find content:
 
-1.  **`schema`:** Parses `<script type="json/ld">` tags containing structured data (e.g., [Schema.org](https://schema.org/)).
-2.  **`semantic_html`:** Searches for semantic HTML5 tags like `<article>`, `<main>`, and `<section>`.
-3.  **`html`:** Analyzes the HTML structure to find frequently occurring selectors that are likely to contain the main content.
-4.  **json_state:** Single-page applications often stash pre-rendered article data in `<script type="application/json">` tags or global variables
+1.  **`wordpress_api`:** Detects the `<link rel="https://api.w.org/">` tag used by WordPress and pulls posts from the REST API without parsing article HTML. See [WordPress API](/ruby-gem/reference/wordpress-api/).
+2.  **`schema`:** Parses `<script type="json/ld">` tags containing structured data (e.g., [Schema.org](https://schema.org/)).
+3.  **`semantic_html`:** Searches for semantic HTML5 tags like `<article>`, `<main>`, and `<section>`.
+4.  **`html`:** Analyzes the HTML structure to find frequently occurring selectors that are likely to contain the main content.
+5.  **json_state:** Single-page applications often stash pre-rendered article data in `<script type="application/json">` tags or global variables
     such as `window.__NEXT_DATA__`, `window.__NUXT__`, or `window.STATE`. The JSON-state scraper walks those blobs, finds arrays with
     `title`/`url` pairs, and converts them into the same hashes produced by `HtmlExtractor`.
 
 **`json_state` Limitations:** the scraper requires discoverable arrays of hashes containing clear `title` and `url` fields. Minified or
 obfuscated state objects, heavily encoded values, or blobs that require executing embedded functions are ignored.
+
+**`wordpress_api` Limitations:** this scraper depends on the page exposing a public WordPress REST API root. The current implementation fetches post records directly, but it does not yet resolve category names or featured media metadata.
 
 ## Fine-Tuning
 
@@ -40,6 +43,8 @@ channel:
   url: https://example.com
 auto_source:
   scraper:
+    wordpress_api:
+      enabled: false # default: true
     schema:
       enabled: false # default: true
     semantic_html:

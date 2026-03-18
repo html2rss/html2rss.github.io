@@ -70,7 +70,9 @@ selectors:
 Behavior:
 
 - `max_pages` is the total page budget for the item selector chain, including the initial page.
+- `max_pages` is capped by the system request ceiling of 10 pages per feed build.
 - Pagination follows strict `link[rel~="next"]` or `a[rel~="next"]` targets only.
+- Follow-up pages use the current page's effective origin after redirects.
 - Pagination stops when there is no next link, a page repeats, or the shared request budget is exhausted.
 - The same request safeguards apply to pagination and Browserless navigation, including timeout limits, redirect limits, response-size guards, and private-network denial.
 
@@ -120,10 +122,10 @@ Post-processors manipulate the extracted value.
 - `html_to_markdown`: Converts HTML to Markdown.
 - `markdown_to_html`: Converts Markdown to HTML.
 - `parse_time`: Parses a string into a `Time` object.
-- `parse_uri`: Parses a string into a `URI` object.
+- `parse_uri`: Resolves a relative URL against `channel.url` and returns the normalized URL string.
 - `sanitize_html`: Sanitizes HTML to prevent security vulnerabilities.
 - `substring`: Extracts a substring from a string.
-- `template`: Creates a new string from a template and other selector values.
+- `template`: Creates a new string from a template and other selector values. Use `%{self}` for the current selector value.
 
 > Always use the `sanitize_html` post-processor for any HTML content to prevent security risks.
 
