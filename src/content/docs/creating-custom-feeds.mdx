@@ -6,6 +6,7 @@ sidebar:
 ---
 
 import { Aside } from "@astrojs/starlight/components";
+import Code from "astro/components/Code.astro";
 
 When auto-sourcing isn't enough, you can write your own configuration files to create custom RSS feeds for any website. This guide shows you how to take full control with YAML configs.
 
@@ -167,13 +168,14 @@ Some sites need a little more request budget than the defaults.
 - Use `--max-redirects` when the site bounces through several canonicalization or tracking redirects before the real page loads.
 - Use `--max-requests` when your config needs more than one request, for example pagination or other follow-up fetches.
 
-```bash
-html2rss feed your-config.yml --max-redirects 10
+<Code
+  code={`html2rss feed your-config.yml --max-redirects 10
 html2rss feed your-config.yml --max-requests 5
-html2rss auto https://example.com/blog --max-redirects 10 --max-requests 5
-```
+html2rss auto https://example.com/blog --max-redirects 10 --max-requests 5`}
+  lang="bash"
+/>
 
-Keep these values as low as possible. If a site only needs one extra redirect, prefer `--max-redirects 4` over a much larger number.
+Keep these values tight. Raise them only when the site proves it needs more.
 
 ## Add It To html2rss-web
 

@@ -3,6 +3,8 @@ title: Handling Dynamic Content
 description: "Learn how to handle JavaScript-heavy websites and dynamic content with html2rss. Use browserless strategy for sites that load content dynamically."
 ---
 
+import Code from "astro/components/Code.astro";
+
 Some websites load their content dynamically using JavaScript. The default `html2rss` strategy might not see this content.
 
 ## Solution
@@ -11,8 +13,8 @@ Use the [`browserless` strategy](/ruby-gem/reference/strategy) to render JavaScr
 
 Keep the strategy at the top level and put request-specific options under `request`:
 
-```yaml
-strategy: browserless
+<Code
+  code={`strategy: browserless
 request:
   max_redirects: 5
   max_requests: 6
@@ -29,8 +31,9 @@ selectors:
     selector: h2
   url:
     selector: a
-    extractor: href
-```
+    extractor: href`}
+  lang="yaml"
+/>
 
 ## When to Use Browserless
 

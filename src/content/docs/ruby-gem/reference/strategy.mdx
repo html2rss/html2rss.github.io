@@ -8,7 +8,7 @@ The `strategy` key defines how `html2rss` fetches a website's content.
 - **`faraday`** (default): Makes a direct HTTP request. It is fast but does not execute JavaScript.
 - **`browserless`**: Renders the website in a headless Chrome browser, which is necessary for JavaScript-heavy sites.
 
-`strategy` stays a top-level config key. Request-specific controls now live under `request`.
+`strategy` is a top-level config key. Request-specific controls live under `request`.
 
 ## `browserless`
 

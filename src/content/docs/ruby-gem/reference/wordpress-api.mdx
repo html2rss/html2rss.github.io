@@ -67,8 +67,8 @@ If `content.rendered` is blank, the scraper falls back to `excerpt.rendered`.
 
 - The scraper uses the shared request session, so it participates in the same request safety model as the rest of the feed build.
 - It resolves relative API links against `channel.url`.
-- It currently stores WordPress category IDs as strings because category-name resolution is not implemented yet.
-- It currently does not resolve `featured_media` into an image URL.
+- It keeps WordPress category IDs as strings; category-name resolution is not implemented yet.
+- It does not resolve `featured_media` into an image URL.
 
 ## When To Use It
 
@@ -76,13 +76,13 @@ Prefer `wordpress_api` when:
 
 - The page is clearly powered by WordPress
 - The REST API is public
-- You want more stable extraction than CSS selectors or heuristic HTML scraping
+- You want a more stable source than CSS selectors or heuristic HTML scraping
 
 Prefer manual selectors when:
 
 - The site blocks or customizes the API heavily
 - You need fields that are not exposed by the post endpoint
-- You want complete control over item filtering or presentation
+- You need full control over filtering or presentation
 
 ## Related Docs
 
