@@ -91,9 +91,6 @@ request:
 
 These preload steps can be combined in a single config when a site needs several interactions before all items appear.
 
-If a click or scroll step causes a real navigation, html2rss returns the final document metadata, not the original page-load
-metadata. That keeps extracted relative links anchored to the rendered page.
-
 ## Performance Considerations
 
 The `browserless` strategy is slower than the default `faraday` strategy because it:

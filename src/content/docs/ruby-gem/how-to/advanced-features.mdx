@@ -7,13 +7,7 @@ This guide covers advanced features and performance optimizations for html2rss.
 
 ## Parallel Processing
 
-html2rss uses parallel processing in auto-source discovery to improve performance when multiple scrapers inspect the same page. This happens automatically and doesn't require any configuration.
-
-### How It Works
-
-- **Auto-source scraping:** Multiple scrapers run in parallel to analyze the same response body
-- **Selectors and pagination:** Selector extraction and `rel="next"` pagination stay sequential and share the same request budget
-- **Performance benefit:** Faster auto-discovery without changing selector semantics
+html2rss uses parallel processing in auto-source discovery. This happens automatically and doesn't require any configuration.
 
 ### Performance Tips
 
@@ -75,8 +69,6 @@ selectors:
     extractor: "href"
 ```
 
-When you use the Browserless strategy, Chromium rejects transport-level headers such as `Host`, `Connection`, `Content-Length`, and `Transfer-Encoding`. html2rss filters those headers before navigation and logs the filtered header names at `info` level.
-
 ## Monitoring and Debugging
 
 ### Enable Debug Logging
@@ -90,7 +82,7 @@ LOG_LEVEL=debug html2rss feed config.yml
 Use the health check endpoint to monitor feed generation:
 
 ```bash
-curl -u username:password http://localhost:3000/health_check.txt
+curl -u username:password http://localhost:4000/health_check.txt
 ```
 
 ## Article Validation

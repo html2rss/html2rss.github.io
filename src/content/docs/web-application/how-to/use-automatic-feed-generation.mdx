@@ -3,20 +3,18 @@ title: "Use automatic feed generation"
 description: "Enable the web UI flow that generates a feed directly from a page URL."
 ---
 
-Automatic feed generation is the direct web-interface workflow: paste a page URL, create a feed, then copy the generated feed URL.
+Automatic feed generation is a standout `html2rss-web` feature: paste a page URL, create a feed, then copy the generated feed URL.
 
-> **Note:** This feature is disabled by default for security reasons.
+> **Note:** This feature is disabled by default. Enabling it should be a conscious decision on your self-hosted instance.
 
 ## How to Enable It
 
-Edit your `docker-compose.yml` and enable the automatic generation environment variables:
+Edit your `docker-compose.yml` and enable automatic feed generation:
 
 ```yaml
 environment:
   AUTO_SOURCE_ENABLED: "true"
-  AUTO_SOURCE_USERNAME: your-username
-  AUTO_SOURCE_PASSWORD: your-secure-password
-  AUTO_SOURCE_ALLOWED_ORIGINS: 127.0.0.1:3000
+  AUTO_SOURCE_ALLOWED_ORIGINS: 127.0.0.1:4000
 ```
 
 Then restart:
@@ -28,10 +26,10 @@ docker compose up -d
 
 ## How to Use It
 
-1. Open your instance at `http://localhost:3000`
+1. Open your instance at `http://localhost:4000`
 2. Paste a page URL into `Create a feed`
 3. Submit the form
-4. If access is required, provide the configured access token
+4. If the instance requires access, provide a configured access token
 5. Copy the generated feed URL or open it directly
 
 ## What Success Looks Like
@@ -43,7 +41,7 @@ When the flow works, you should see:
 - an open-feed action
 - a preview of recent entries when available
 
-That is enough to confirm the endpoint is live.
+That is enough to confirm the self-hosted flow is working.
 
 ## When to Stop and Switch
 
