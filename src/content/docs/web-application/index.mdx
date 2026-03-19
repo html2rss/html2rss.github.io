@@ -1,12 +1,12 @@
 ---
 title: "Web Application"
-description: "html2rss-web is the self-hosted web interface for generating stable feed URLs from web pages."
+description: "html2rss-web is the self-hosted web interface and feed server for running included feeds first, then enabling direct generation only when needed."
 sidebar:
   label: "Overview"
   order: 1
 ---
 
-`html2rss-web` is the recommended way to get started. Run it locally with Docker, open the interface, generate a feed URL, and move to custom configs only when you need more control.
+`html2rss-web` is the recommended way to get started. Run it locally with Docker, verify a working included feed from your own instance, and only then decide whether you need direct generation or custom configs.
 
 ## Get Started
 
@@ -14,13 +14,13 @@ Start with **[Getting Started](/web-application/getting-started)** to:
 
 - run your own local instance
 - verify the web interface
-- generate a first feed URL
+- open a first included feed URL
 - choose the right next step for your site
 
 ## What The Web App Gives You
 
-- **Stable feed URLs:** generated from your own deployment
-- **Web interface:** paste a page URL and create a feed
+- **Included feed catalog:** real embedded configs you can use immediately from your own deployment
+- **Web interface:** direct feed creation when you explicitly enable it
 - **Optional access control:** unlock custom generation with an access token when configured
 - **Config-based extension path:** move to custom feeds when you need reviewable rules
 - **Caching and HTTP handling:** shipped as part of the deployment
@@ -30,6 +30,7 @@ The scraping and feed-building engine is provided by the Ruby gem [`html2rss`](h
 ## Recommended Flow
 
 1. **[Getting Started](/web-application/getting-started)**: run the app locally
-2. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: create a feed from a page URL
+2. **[Use the included configs](/web-application/how-to/use-included-configs/)**: start with embedded feed paths from your own instance
 3. **[Browse working feed examples](/feed-directory/)**: compare against existing outputs
-4. **[Create Custom Feeds](/creating-custom-feeds)**: build a stable custom setup when needed
+4. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: enable direct page-URL conversion when you want that workflow
+5. **[Create Custom Feeds](/creating-custom-feeds)**: build a stable custom setup when needed

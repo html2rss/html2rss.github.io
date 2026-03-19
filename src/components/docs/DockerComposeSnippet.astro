@@ -14,28 +14,24 @@ const snippets: Record<Props["variant"], string> = {
     image: ${webImage}
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3000:3000"
-    volumes:
-      - type: bind
-        source: ./feeds.yml
-        target: /app/config/feeds.yml
-        read_only: true
+      - "127.0.0.1:4000:4000"
     environment:
       RACK_ENV: production
-      HEALTH_CHECK_USERNAME: health
-      HEALTH_CHECK_PASSWORD: CHANGE_THIS_PASSWORD_BEFORE_USE
-      BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:3001
-      BROWSERLESS_IO_API_TOKEN: 6R0W53R135510
+      PORT: 4000
+      HTML2RSS_SECRET_KEY: your-generated-secret-key
+      HEALTH_CHECK_TOKEN: your-health-check-token
+      BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:4002
+      BROWSERLESS_IO_API_TOKEN: your-browserless-token
 
   browserless:
     image: "${browserlessImage}"
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3001:3001"
+      - "127.0.0.1:4002:4002"
     environment:
-      PORT: 3001
+      PORT: 4002
       CONCURRENT: 10
-      TOKEN: 6R0W53R135510`,
+      TOKEN: your-browserless-token`,
   productionCaddy: `services:
   caddy:
     image: ${caddyImage}

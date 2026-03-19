@@ -1,6 +1,6 @@
 ---
 title: "Getting Started"
-description: "Run html2rss-web locally with Docker, verify the interface, and generate your first feed URL."
+description: "Run html2rss-web locally with Docker, verify the interface, and open your first included feed."
 sidebar:
   order: 2
 ---
@@ -8,15 +8,15 @@ sidebar:
 import AutoGenerationOptional from "../../../components/docs/AutoGenerationOptional.astro";
 import MinimalDockerCompose from "../../../components/docs/MinimalDockerCompose.astro";
 
-Run `html2rss-web` locally with Docker, open the web interface, and verify that you can generate a working feed URL.
+Run `html2rss-web` locally with Docker, open the web interface, and verify that your instance can serve a working included feed.
 
 ## What You Will Have When This Works
 
 After this guide, you should have:
 
-- `html2rss-web` running at `http://localhost:3000`
+- `html2rss-web` running at `http://localhost:4000`
 - the web interface loading correctly
-- a first feed URL you can copy into your reader
+- a first included feed URL you can copy into your reader
 - a clear path to either custom configs or more advanced setup
 
 ## Installation Guide
@@ -47,18 +47,7 @@ Create a file called `docker-compose.yml` in that folder and start with the mini
 
 Add update automation later, after the first run works.
 
-### Step 3: Download `feeds.yml`
-
-Download the default `feeds.yml` file:
-
-- **Browser:** Right-click [this link](https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml) and save it as `feeds.yml`
-- **Terminal:**
-
-```bash
-curl https://raw.githubusercontent.com/html2rss/html2rss-web/master/config/feeds.yml -o feeds.yml
-```
-
-### Step 4: Start html2rss-web
+### Step 3: Start html2rss-web
 
 Run:
 
@@ -70,29 +59,32 @@ docker compose up -d
 
 At this point, `html2rss-web` should be running.
 
-1. Open `http://localhost:3000`
+1. Open `http://localhost:4000`
 2. Confirm the web interface loads
-3. Paste a page URL into `Create a feed`
-4. Generate a feed URL
-5. Copy that feed URL into your reader or open it directly
+3. Open one of the included feed URLs from your own instance:
+   - `http://localhost:4000/microsoft.com/azure-products.rss`
+   - `http://localhost:4000/phys.org/weekly.rss`
+   - `http://localhost:4000/softwareleadweekly.com/issues.rss`
+4. Confirm the feed opens
+5. Copy that feed URL into your reader
 
-If that works, the deployment, interface, and feed-generation path are working together.
+If that works, the deployment, static feed path, and reader subscription path are working together.
 
 ## What To Do First
 
-Start with the web interface itself:
+Start with an included config from your own instance:
 
-1. create one feed from a known page URL
-2. open or copy the generated feed URL
+1. open a known included feed URL
+2. copy that feed URL into your reader
 3. confirm your reader can subscribe successfully
 
-That proves the core path before you invest in deeper customization.
+That proves the core path before you invest in custom configs or feature enablement.
 
 <AutoGenerationOptional />
 
 ## Next Steps
 
-1. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: understand the web UI creation path in more detail
-2. **[Create Custom Feeds](/creating-custom-feeds)**: write your own configs when you need reviewable extraction rules
-3. **[Browse working feed examples](/feed-directory/)**: compare outputs and existing configs
+1. **[Use the included configs](/web-application/how-to/use-included-configs/)**: understand how built-in feed paths work
+2. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: enable direct feed creation from page URLs when you want that workflow
+3. **[Create Custom Feeds](/creating-custom-feeds)**: write your own configs when you need reviewable extraction rules
 4. **[Need help?](/troubleshooting/troubleshooting)**: troubleshoot startup and extraction problems

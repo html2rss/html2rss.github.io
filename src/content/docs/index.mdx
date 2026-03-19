@@ -1,9 +1,9 @@
 ---
 title: "Turn Any Website Into an RSS Feed"
-description: "Run html2rss-web with Docker, open the web interface, generate stable feed URLs, and move to custom configs only when you need more control."
+description: "Run html2rss-web with Docker, open a working included feed from your own instance, and move to feature enablement or custom configs only when you need more control."
 ---
 
-Run `html2rss-web` with Docker, open the web interface, and generate stable feed URLs from pages you want to follow.
+Run `html2rss-web` with Docker, open a working included feed from your own instance, and move to direct generation or custom configs only when you need more control.
 
 ## Start Here
 
@@ -13,13 +13,13 @@ That guide is the canonical onboarding flow for:
 
 - starting a local instance
 - verifying the web interface
-- generating a first feed URL
+- opening a first included feed URL
 - deciding when to use automatic generation or custom configs
 
 ## How It Works
 
 1. **Run your own local instance** with Docker
-2. **Open the web interface** and paste a page URL
+2. **Open a built-in feed URL** from your own instance
 3. **Copy the feed URL into your reader**
 
 ## What is html2rss?
@@ -36,7 +36,7 @@ Most people should start with the web application:
 ### I want a working instance first
 
 1. **[Run html2rss-web with Docker](/web-application/getting-started)**: recommended starting path
-2. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: create a feed directly from a page URL
+2. **[Use the included configs](/web-application/how-to/use-included-configs/)**: use real embedded feeds from your own instance
 3. **[Browse working feed examples](/feed-directory/)**: see what working outputs look like
 
 ### I need more control
@@ -62,8 +62,8 @@ Most people should start with the web application:
 ## Practical Notes
 
 - Start with Docker, not a public instance.
-- Use the web interface to verify the deployment first.
-- Use automatic generation for the first pass.
+- Use an included feed to verify the deployment first.
+- Enable automatic generation only when you want the direct page-URL workflow.
 - Move to custom configs when you need a stable, reviewable setup.
 
 **Need help?** Continue to the [troubleshooting guide](/troubleshooting/troubleshooting) or join [GitHub Discussions](https://github.com/orgs/html2rss/discussions).
