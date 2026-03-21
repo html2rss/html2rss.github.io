@@ -1,0 +1,96 @@
+---
+import Code from "astro/components/Code.astro";
+import { browserlessImage, caddyImage, watchtowerImage, webImage } from "../../data/docker";
+
+interface Props {
+  variant: "minimal" | "productionCaddy" | "secure" | "watchtower" | "resourceGuardrails";
+}
+
+const { variant } = Astro.props;
+
+const snippets: Record<Props["variant"], string> = {
+  minimal: `services:
+  html2rss-web:
+    image: ${webImage}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4000:4000"
+    environment:
+      RACK_ENV: production
+      PORT: 4000
+      HTML2RSS_SECRET_KEY: your-generated-secret-key
+      HEALTH_CHECK_TOKEN: your-health-check-token
+      BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:4002
+      BROWSERLESS_IO_API_TOKEN: your-browserless-token
+
+  browserless:
+    image: "${browserlessImage}"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4002:4002"
+    environment:
+      PORT: 4002
+      CONCURRENT: 10
+      TOKEN: your-browserless-token`,
+  productionCaddy: `services:
+  caddy:
+    image: ${caddyImage}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+    command:
+      - caddy
+      - reverse-proxy
+      - --from
+      - \${CADDY_HOST}
+      - --to
+      - html2rss:3000
+  html2rss:
+    image: ${webImage}
+    env_file: .env
+
+volumes:
+  caddy_data:`,
+  secure: `services:
+  html2rss:
+    image: ${webImage}
+    environment:
+      RACK_ENV: production
+      LOG_LEVEL: warn
+      HEALTH_CHECK_USERNAME: your-secure-username
+      HEALTH_CHECK_PASSWORD: your-very-secure-password
+      BASE_URL: https://yourdomain.com`,
+  watchtower: `services:
+  watchtower:
+    image: ${watchtowerImage}
+    depends_on:
+      - html2rss
+      - caddy
+    command:
+      - --cleanup
+      - --interval
+      - "300"
+      - html2rss
+      - caddy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped`,
+  resourceGuardrails: `services:
+  html2rss:
+    image: ${webImage}
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.5"
+        reservations:
+          memory: 256M
+          cpus: "0.25"`,
+};
+
+const code = snippets[variant];
+---
+
+<Code code={code} lang="yaml" />
