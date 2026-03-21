@@ -16,10 +16,24 @@ function getDefaultInstanceUrl() {
   return atob('aHR0cHM6Ly8xLmgyci53b3JrZXJzLmRldi8=');
 }
 
+function getStorageKey() {
+  return 'html2rss.feedDirectory.instanceUrl';
+}
+
 function getHashParams() {
   const hash = window.location.hash || '';
-  const normalizedHash = hash.startsWith('#!') ? hash.slice(2) : hash.startsWith('#') ? hash.slice(1) : hash;
-  return new URLSearchParams(normalizedHash);
+  if (!hash.startsWith('#!')) return new URLSearchParams();
+  return new URLSearchParams(hash.slice(2));
+}
+
+function normalizeParsedInstanceUrl(parsedUrl) {
+  if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+    return null;
+  }
+
+  parsedUrl.search = '';
+  parsedUrl.hash = '';
+  return parsedUrl.toString();
 }
 
 function readInstanceUrlFromHash(defaultInstanceUrl) {
@@ -27,28 +41,47 @@ function readInstanceUrlFromHash(defaultInstanceUrl) {
   if (!candidate) return defaultInstanceUrl;
 
   try {
-    const parsedUrl = new URL(candidate);
-    parsedUrl.search = '';
-    parsedUrl.hash = '';
-    return parsedUrl.toString();
+    return normalizeParsedInstanceUrl(new URL(candidate)) || defaultInstanceUrl;
   } catch {
     return defaultInstanceUrl;
   }
 }
 
-function writeInstanceUrlToHash(instanceUrl, defaultInstanceUrl) {
-  const params = getHashParams();
-  if (instanceUrl && instanceUrl !== defaultInstanceUrl) {
-    params.set('url', instanceUrl);
-  } else {
-    params.delete('url');
+function readInstanceUrlFromStorage(defaultInstanceUrl) {
+  try {
+    const candidate = window.localStorage.getItem(getStorageKey());
+    if (!candidate) return defaultInstanceUrl;
+    return normalizeInstanceUrl(candidate) || defaultInstanceUrl;
+  } catch {
+    return defaultInstanceUrl;
+  }
+}
+
+function writeInstanceUrl(instanceUrl, defaultInstanceUrl) {
+  try {
+    if (instanceUrl && instanceUrl !== defaultInstanceUrl) {
+      window.localStorage.setItem(getStorageKey(), instanceUrl);
+    } else {
+      window.localStorage.removeItem(getStorageKey());
+    }
+  } catch {
+    // Ignore storage failures and keep the current page usable.
   }
 
-  const nextHash = params.toString();
-  const nextUrl = nextHash
-    ? `${window.location.pathname}${window.location.search}#!${nextHash}`
-    : `${window.location.pathname}${window.location.search}`;
-  window.history.replaceState({}, '', nextUrl);
+  if (window.location.hash.startsWith('#!')) {
+    const nextUrl = `${window.location.pathname}${window.location.search}`;
+    window.history.replaceState({}, '', nextUrl);
+  }
+}
+
+function readInitialInstanceUrl(defaultInstanceUrl) {
+  const hashInstanceUrl = readInstanceUrlFromHash(defaultInstanceUrl);
+  if (hashInstanceUrl !== defaultInstanceUrl) {
+    writeInstanceUrl(hashInstanceUrl, defaultInstanceUrl);
+    return hashInstanceUrl;
+  }
+
+  return readInstanceUrlFromStorage(defaultInstanceUrl);
 }
 
 function fuzzyMatch(text, query) {
@@ -78,10 +111,7 @@ function normalizeInstanceUrl(value) {
   if (!trimmed) return null;
 
   try {
-    const parsedUrl = new URL(trimmed);
-    parsedUrl.search = '';
-    parsedUrl.hash = '';
-    return parsedUrl.toString();
+    return normalizeParsedInstanceUrl(new URL(trimmed));
   } catch {
     return null;
   }
@@ -195,6 +225,11 @@ function setupInstanceEditor(
   const apply = document.querySelector('[data-apply-instance]');
   if (!toggle || !editor || !input || !apply) return;
 
+  const directory = document.querySelector('[data-feed-directory]');
+  if (directory) {
+    directory.dataset.enhanced = 'true';
+  }
+
   const setExpanded = (expanded) => {
     editor.hidden = !expanded;
     toggle.setAttribute('aria-expanded', String(expanded));
@@ -222,11 +257,13 @@ function setupInstanceEditor(
     setCurrentInstanceUrl(normalized);
     input.value = normalized;
     updateInstanceSummary(normalized);
-    writeInstanceUrlToHash(normalized, defaultInstanceUrl);
+    writeInstanceUrl(normalized, defaultInstanceUrl);
     updateFeedUrls(normalized);
     setExpanded(false);
     setInstanceFeedback('Using your custom instance.', 'success');
   };
+
+  setExpanded(false);
 
   apply.addEventListener('click', applyInstance);
   input.addEventListener('keydown', (event) => {
@@ -313,7 +350,7 @@ function setupCopyButtons() {
 
 function initializeFeedDirectory() {
   const defaultInstanceUrl = getDefaultInstanceUrl();
-  let currentInstanceUrl = readInstanceUrlFromHash(defaultInstanceUrl);
+  let currentInstanceUrl = readInitialInstanceUrl(defaultInstanceUrl);
   const searchInput = document.getElementById('search-input');
   const feedItems = Array.from(document.querySelectorAll('[data-domain]'));
   const instanceInput = document.getElementById('instance-url-input');

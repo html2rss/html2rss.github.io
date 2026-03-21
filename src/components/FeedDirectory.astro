@@ -22,7 +22,7 @@ const staticFeedUrls = configs.map((config) => ({
 }));
 ---
 
-<section class="feed-directory not-content" aria-label="Feed directory">
+<section class="feed-directory not-content" data-feed-directory aria-label="Feed directory">
   <div class="directory-controls">
     <div class="search-block">
       <label class="sr-only" for="search-input">Search feeds</label>
@@ -62,7 +62,7 @@ const staticFeedUrls = configs.map((config) => ({
         </button>
       </div>
 
-      <div class="instance-editor" id="instance-editor" hidden>
+      <div class="instance-editor" id="instance-editor">
         <div class="instance-editor-row">
           <label class="sr-only" for="instance-url-input">Instance URL</label>
           <input
@@ -525,6 +525,10 @@ const staticFeedUrls = configs.map((config) => ({
 
   .instance-toggle {
     color: var(--sl-color-gray-3);
+  }
+
+  .feed-directory:not([data-enhanced="true"]) .instance-toggle {
+    display: none;
   }
 
   .instance-toggle {
