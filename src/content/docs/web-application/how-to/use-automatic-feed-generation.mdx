@@ -1,25 +1,23 @@
 ---
 title: "Use automatic feed generation"
-description: "This feature lets you create RSS feeds automatically - just enter a website URL and html2rss-web figures out the rest!"
+description: "Enable the web UI flow that generates a feed directly from a page URL."
 ---
 
-This feature lets you create RSS feeds automatically - just enter a website URL and html2rss-web figures out the rest!
+Automatic feed generation is a standout `html2rss-web` feature: paste a page URL, create a feed, then copy the generated feed URL.
 
-> **Note:** This feature is disabled by default for security reasons.
+> **Note:** This feature is disabled by default. Enabling it should be a conscious decision on your self-hosted instance.
 
 ## How to Enable It
 
-1. **Edit your `docker-compose.yml` file** and uncomment these lines:
+Edit your `docker-compose.yml` and enable automatic feed generation:
 
 ```yaml
 environment:
   AUTO_SOURCE_ENABLED: "true"
-  AUTO_SOURCE_USERNAME: your-username
-  AUTO_SOURCE_PASSWORD: your-secure-password
-  AUTO_SOURCE_ALLOWED_ORIGINS: 127.0.0.1:3000
+  AUTO_SOURCE_ALLOWED_ORIGINS: 127.0.0.1:4000
 ```
 
-2. **Restart html2rss-web:**
+Then restart:
 
 ```bash
 docker compose down
@@ -28,16 +26,26 @@ docker compose up -d
 
 ## How to Use It
 
-1. **Open the auto-source page:** Go to `http://localhost:3000/auto_source/`
-2. **Enter your credentials** (the username and password you set above)
-3. **Enter a website URL** and click "Generate"
-4. **Get your RSS feed!** html2rss-web will create a feed automatically
+1. Open your instance at `http://localhost:4000`
+2. Paste a page URL into `Create a feed`
+3. Submit the form
+4. If the instance requires access, provide a configured access token
+5. Copy the generated feed URL or open it directly
 
-**That's it!** No configuration files needed - html2rss-web does all the work for you.
+## What Success Looks Like
+
+When the flow works, you should see:
+
+- a generated feed URL
+- a copy action
+- an open-feed action
+- a preview of recent entries when available
+
+That is enough to confirm the self-hosted flow is working.
 
 ## When to Stop and Switch
 
-Automatic feed generation is a fast first try, not the final answer for every site.
+Automatic feed generation is the fast first pass, not the final answer for every site.
 
 Move on to [Creating Custom Feeds](/creating-custom-feeds) when:
 

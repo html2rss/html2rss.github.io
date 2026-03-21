@@ -1,0 +1,39 @@
+services:
+  html2rss:
+    image: html2rss/web:latest
+    env_file: .env
+
+  caddy:
+    image: caddy:2-alpine
+    depends_on:
+      - html2rss
+    command:
+      - caddy
+      - reverse-proxy
+      - --from
+      - ${CADDY_HOST}
+      - --to
+      - html2rss:3000
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+
+  watchtower:
+    image: containrrr/watchtower
+    depends_on:
+      - html2rss
+      - caddy
+    command:
+      - --cleanup
+      - --interval
+      - "300"
+      - html2rss
+      - caddy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
