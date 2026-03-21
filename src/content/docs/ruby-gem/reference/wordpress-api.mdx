@@ -1,0 +1,69 @@
+---
+title: "WordPress API"
+description: "Use the WordPress API scraper inside auto_source to read WordPress posts through the site's REST API."
+---
+
+The `wordpress_api` scraper is part of `auto_source`. When a WordPress site exposes its public REST API, `html2rss` can read posts from that API instead of scraping article HTML.
+
+This usually gives cleaner results because WordPress already exposes fields such as the title, content, excerpt, permalink, publish date, and category IDs.
+
+## Basic Usage
+
+Enable `auto_source` as usual:
+
+```yml
+channel:
+  url: "https://example.com/blog"
+auto_source: {}
+```
+
+If the target is a standard WordPress site with a public API, no selectors are required.
+
+## Requirements
+
+The scraper works when the page exposes the standard WordPress API link in its `<head>`:
+
+```html
+<link rel="https://api.w.org/" href="https://example.com/wp-json/" />
+```
+
+If that link is missing or the API is blocked, `auto_source` falls back to its other discovery strategies.
+
+## Disable It
+
+You can disable `wordpress_api` while keeping the rest of `auto_source` enabled:
+
+```yml
+channel:
+  url: "https://example.com/blog"
+auto_source:
+  scraper:
+    wordpress_api:
+      enabled: false
+```
+
+## What Gets Extracted
+
+The scraper maps the WordPress response into `html2rss` article fields like this:
+
+| WordPress field    | html2rss article field |
+| ------------------ | ---------------------- |
+| `id`               | `id`                   |
+| `title.rendered`   | `title`                |
+| `content.rendered` | `description`          |
+| `link`             | `url`                  |
+| `date`             | `published_at`         |
+| `categories`       | `categories`           |
+
+If `content.rendered` is blank, the scraper falls back to `excerpt.rendered`.
+
+## Notes
+
+- Categories stay as WordPress category IDs. Category names are not resolved yet.
+- Featured images are not pulled from `featured_media` yet.
+
+## Related Docs
+
+- [Auto Source](/ruby-gem/reference/auto-source/)
+- [Selectors](/ruby-gem/reference/selectors/)
+- [Scraping JSON Responses](/ruby-gem/how-to/scraping-json/)

@@ -5,6 +5,8 @@ sidebar:
   order: 1
 ---
 
+import Code from "astro/components/Code.astro";
+
 This page points to the main onboarding flow.
 
 ## Start Here
@@ -23,3 +25,15 @@ That guide is the canonical setup flow for:
 - **[Browse working feed examples](/feed-directory/)** - See what success looks like
 - **[Create Custom Feeds](/creating-custom-feeds)** - Write configs when you need more control
 - **[Troubleshooting Guide](/troubleshooting/troubleshooting)** - Fix startup or extraction problems
+
+## Using the Ruby CLI
+
+If you are working directly with the gem instead of `html2rss-web`, start with:
+
+<Code code={`html2rss auto https://example.com/blog`} lang="bash" />
+
+If the target site is unusually redirect-heavy or needs extra follow-up requests, the CLI also supports:
+
+<Code code={`html2rss auto https://example.com/blog --max-redirects 10 --max-requests 5`} lang="bash" />
+
+For config-driven runs, the same flags are available on `html2rss feed`.

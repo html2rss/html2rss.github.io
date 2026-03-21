@@ -8,6 +8,8 @@ The `strategy` key defines how `html2rss` fetches a website's content.
 - **`faraday`** (default): Makes a direct HTTP request. It is fast but does not execute JavaScript.
 - **`browserless`**: Renders the website in a headless Chrome browser, which is necessary for JavaScript-heavy sites.
 
+`strategy` is a top-level config key. Request-specific controls live under `request`.
+
 ## `browserless`
 
 To use the `browserless` strategy, you need a running instance of [Browserless.io](https://www.browserless.io/).
@@ -27,10 +29,13 @@ docker run \
 
 ### Configuration
 
-Set the `strategy` at the top level of your feed configuration:
+Set the `strategy` at the top level of your feed configuration and put request controls under `request`:
 
 ```yml
 strategy: browserless
+request:
+  max_redirects: 5
+  max_requests: 6
 channel:
   url: "https://example.com/app"
 selectors:
@@ -43,6 +48,73 @@ selectors:
     extractor: "href"
 ```
 
+### Request Structure
+
+Use this split consistently:
+
+- `strategy`: selects `faraday` or `browserless`
+- `headers`: top-level headers shared by all strategies
+- `request.max_redirects`: redirect limit for the request session
+- `request.max_requests`: total request budget for the whole feed build
+- `request.browserless.*`: Browserless-only options
+
+Example:
+
+```yml
+strategy: browserless
+headers:
+  User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
+request:
+  max_redirects: 5
+  max_requests: 6
+  browserless:
+    preload:
+      wait_for_network_idle:
+        timeout_ms: 5000
+channel:
+  url: "https://example.com/app"
+selectors:
+  items:
+    selector: ".article"
+  title:
+    selector: "h2"
+  url:
+    selector: "a"
+    extractor: "href"
+```
+
+### Browserless Preload
+
+Browserless can interact with the page before html2rss captures the final HTML. Configure preload steps under
+`request.browserless.preload`.
+
+```yml
+strategy: browserless
+request:
+  browserless:
+    preload:
+      wait_for_network_idle:
+        timeout_ms: 5000
+      click_selectors:
+        - selector: ".load-more"
+          max_clicks: 3
+          delay_ms: 250
+          wait_for_network_idle:
+            timeout_ms: 4000
+      scroll_down:
+        iterations: 5
+        delay_ms: 200
+        wait_for_network_idle:
+          timeout_ms: 3000
+```
+
+- `wait_for_network_idle`: pauses before and after preload steps
+- `click_selectors`: clicks matching elements until they disappear or `max_clicks` is reached
+- `scroll_down`: scrolls until the page height stops growing or `iterations` is reached
+
+If preload triggers a real navigation or redirect, html2rss keeps the final document metadata. Relative links and follow-up
+pagination therefore resolve against the page that was actually rendered after preload completed.
+
 ### Command-Line Usage
 
 You can also specify the strategy on the command line:
@@ -52,6 +124,9 @@ You can also specify the strategy on the command line:
 BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
 BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
   html2rss feed my_config.yml --strategy browserless
+
+# Override request budgets at runtime
+html2rss feed my_config.yml --max-redirects 5 --max-requests 6
 
 # Or rely on the strategy stored in the YAML config
 html2rss feed my_config.yml
