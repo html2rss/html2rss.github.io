@@ -3,7 +3,15 @@ title: "Custom HTTP Requests"
 description: "Learn how to customize HTTP requests with custom headers, authentication, and API interactions for html2rss."
 ---
 
-Some websites require custom HTTP headers, authentication, or other request settings to access their content. `html2rss` lets you customize requests for those cases.
+import Code from "astro/components/Code.astro";
+
+Some sites only work when requests carry the headers, tokens, or cookies your browser uses. `html2rss` supports those cases without changing the rest of your feed workflow.
+
+Keep this structure in mind:
+
+- `headers` stays top-level
+- `strategy` stays top-level
+- request-specific controls such as budgets and Browserless options live under `request`
 
 ## When You Need Custom Headers
 
@@ -19,8 +27,8 @@ You might need custom HTTP requests when:
 
 Add a `headers` section to your feed configuration. This example is a complete, valid config:
 
-```yaml
-headers:
+<Code
+  code={`headers:
   User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
   Authorization: "Bearer YOUR_API_TOKEN"
   Accept: "application/json"
@@ -32,8 +40,36 @@ selectors:
   title:
     selector: "title"
   url:
-    selector: "url"
-```
+    selector: "url"`}
+  lang="yaml"
+/>
+
+## Request Controls
+
+Request budgets are configured under `request`, not as top-level keys:
+
+<Code
+  code={`headers:
+  User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
+request:
+  max_redirects: 5
+  max_requests: 6
+channel:
+  url: https://example.com/articles
+selectors:
+  items:
+    selector: article
+  title:
+    selector: h2
+  url:
+    selector: a
+    extractor: href`}
+  lang="yaml"
+/>
+
+- `request.max_redirects` limits redirect hops
+- `request.max_requests` limits the total request budget for the feed build
+- `request.browserless.*` is reserved for Browserless-only behavior such as preload actions
 
 ## Common Use Cases
 

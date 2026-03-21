@@ -24,6 +24,9 @@ html2rss auto https://example.com/articles
 # Force browserless for JavaScript-heavy pages
 html2rss auto https://example.com/app --strategy browserless
 
+# Set custom request budgets
+html2rss auto https://example.com/app --strategy browserless --max-redirects 5 --max-requests 6
+
 # Hint the item selector while keeping auto enhancement
 html2rss auto https://example.com/articles --items_selector ".post-card"
 ```
@@ -44,11 +47,16 @@ html2rss feed feeds.yml my-first-feed
 # Override the request strategy at runtime
 html2rss feed single.yml --strategy browserless
 
+# Override request budgets at runtime
+html2rss feed single.yml --max-redirects 5 --max-requests 6
+
 # Pass dynamic parameters into %<param>s placeholders
 html2rss feed single.yml --params id:42 foo:bar
 ```
 
 Command: `html2rss feed YAML_FILE [feed_name]`
+
+The CLI keeps `strategy` as a top-level override and writes runtime request limits into the generated config under `request`.
 
 ### Schema
 

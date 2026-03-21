@@ -7,13 +7,7 @@ This guide covers advanced features and performance optimizations for html2rss.
 
 ## Parallel Processing
 
-html2rss uses parallel processing to improve performance when scraping multiple items. This happens automatically and doesn't require any configuration.
-
-### How It Works
-
-- **Auto-source scraping:** Multiple scrapers run in parallel to analyze the page
-- **Item processing:** Each scraped item is processed in parallel
-- **Performance benefit:** Significantly faster when dealing with many items
+html2rss uses parallel processing in auto-source discovery. This happens automatically and doesn't require any configuration.
 
 ### Performance Tips
 
@@ -88,7 +82,7 @@ LOG_LEVEL=debug html2rss feed config.yml
 Use the health check endpoint to monitor feed generation:
 
 ```bash
-curl -u username:password http://localhost:3000/health_check.txt
+curl -u username:password http://localhost:4000/health_check.txt
 ```
 
 ## Article Validation
