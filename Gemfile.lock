@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: 4e401e6ed97f5e28da07978431500d7c39de8a41
+  revision: 2d64c4766e12835d64b6ecaa46ee23491a2be4a2
   specs:
     html2rss-configs (0.2.0)
       html2rss
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: e0dca5bf74b17c1e2a0618fc0a4af27c16da1883
+  revision: 2e0fa0ca5835cc49268a85f7ad79e2a5b33b4b79
   specs:
     html2rss (0.17.0)
       addressable (~> 2.7)
@@ -34,7 +34,7 @@ GEM
   specs:
     addressable (2.8.9)
       public_suffix (>= 2.0.2, < 8.0)
-    async (2.38.0)
+    async (2.38.1)
       console (~> 1.29)
       fiber-annotation
       io-event (~> 1.11)
@@ -128,12 +128,12 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0303)
+    mime-types-data (3.2026.0317)
     net-http (0.9.1)
       uri (>= 0.11.1)
-    nokogiri (1.19.1-arm64-darwin)
+    nokogiri (1.19.2-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.19.1-x86_64-linux-gnu)
+    nokogiri (1.19.2-x86_64-linux-gnu)
       racc (~> 1.4)
     parallel (1.27.0)
     protocol-hpack (1.5.1)
@@ -143,7 +143,7 @@ GEM
     protocol-http2 (0.24.0)
       protocol-hpack (~> 1.4)
       protocol-http (~> 0.47)
-    protocol-rack (0.21.1)
+    protocol-rack (0.22.0)
       io-stream (>= 0.10)
       protocol-http (~> 0.58)
       rack (>= 1.0)
