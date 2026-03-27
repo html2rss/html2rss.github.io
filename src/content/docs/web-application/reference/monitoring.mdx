@@ -1,25 +1,34 @@
 ---
 title: "Monitoring"
-description: "Runtime monitoring and application performance monitoring for html2rss-web."
+description: "Health endpoints and Sentry-based monitoring for html2rss-web."
 ---
 
-## Runtime monitoring via `GET /health_check.txt`
+## Health Endpoints
 
-It is recommended to set up monitoring of the `/health_check.txt` endpoint. With that, you can find out when one of _your own_ configs breaks. The endpoint uses HTTP Basic authentication.
+`html2rss-web` exposes these health endpoints:
 
-First, set the username and password via these environment variables: `HEALTH_CHECK_USERNAME` and `HEALTH_CHECK_PASSWORD`. If these are not set, html2rss-web will generate a new random username and password on _each_ start.
+- `GET /api/v1/health/live`: liveness probe, no auth
+- `GET /api/v1/health/ready`: readiness probe, no auth
+- `GET /api/v1/health`: authenticated health probe, bearer token required
 
-An authenticated `GET /health_check.txt` request will respond with:
+## Authenticated Health Checks
 
-- If the feeds are generatable: `success`.
-- Otherwise: the names of the broken configs.
+Use `GET /api/v1/health` when you want an authenticated operator-facing probe.
 
-To get notified when one of your configs breaks, set up monitoring of this endpoint.
+Set the environment variable `HEALTH_CHECK_TOKEN`, then send it as a bearer token:
 
-[UptimeRobot's free plan](https://uptimerobot.com/) is sufficient for basic monitoring (every 5 minutes).
-Create a monitor of type _Keyword_ with this information and make it aware of your username and password:
+```bash
+curl -H "Authorization: Bearer $HEALTH_CHECK_TOKEN" \
+  http://localhost:4000/api/v1/health
+```
 
-![A screenshot showing the Keyword Monitor: a name, the instance's URL to /health_check.txt, and an interval.](/assets/images/uptimerobot_monitor.jpg)
+The response is JSON and reports the current status, timestamp, environment, uptime, and reserved checks payload.
+
+## Probe Selection
+
+- Use `/api/v1/health/live` for a simple process-alive signal.
+- Use `/api/v1/health/ready` for config-readiness checks without auth.
+- Use `/api/v1/health` for authenticated monitoring from your uptime system or operator tooling.
 
 ## Application Performance Monitoring using Sentry
 

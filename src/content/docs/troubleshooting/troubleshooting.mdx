@@ -70,14 +70,15 @@ If you are getting a "command not found" error, try the following:
   ```bash
   docker compose logs
   ```
-- Ensure the port (default: 3000) isn’t already in use:
+- Ensure the app port (default compose binding: 4000) isn’t already in use:
   ```bash
-  netstat -tulpn | grep :3000
+  lsof -i :4000
   ```
+- If the app exits immediately in production, check that `HTML2RSS_SECRET_KEY`, `BUILD_TAG`, and `GIT_SHA` are set.
 
 ### Can’t Access the Web Interface
 
-- Confirm your firewall allows traffic on port 3000 (or the port you configured)
+- Confirm your firewall allows traffic on port 4000 or your reverse-proxy ports
 - Try accessing via the server’s IP instead of a domain name
 - Double-check that containers are running:
   ```bash
@@ -86,10 +87,10 @@ If you are getting a "command not found" error, try the following:
 
 ### Authentication Errors
 
-- **401 Unauthorized:** Check your `AUTO_SOURCE_USERNAME` and `AUTO_SOURCE_PASSWORD` environment variables.
-- **403 Forbidden:** The URL is not in the `AUTO_SOURCE_ALLOWED_URLS` list, or the origin is not in `AUTO_SOURCE_ALLOWED_ORIGINS`.
+- **401 Unauthorized when creating feeds:** The create-feed API expects a bearer token. Re-enter a valid access token in the UI or send `Authorization: Bearer ...` to `POST /api/v1/feeds`.
+- **403 Forbidden when creating feeds:** Automatic feed generation may be disabled (`AUTO_SOURCE_ENABLED=false`) or the requested URL may not be allowed for the authenticated account.
 - **500 Internal Server Error:** Check the application logs for detailed error information.
-- **Health check failures:** Use the `/health_check.txt` endpoint to identify which specific feed configurations are broken.
+- **Health endpoint failures:** Use `GET /api/v1/health/live`, `GET /api/v1/health/ready`, or authenticated `GET /api/v1/health` depending on which probe you are testing.
 
 ### Feed Problems
 

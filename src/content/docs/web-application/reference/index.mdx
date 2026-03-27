@@ -1,9 +1,17 @@
 ---
 title: "Reference"
-description: "This section contains detailed reference material."
+description: "Detailed reference material for operating and integrating html2rss-web."
 sidebar:
   label: "Reference"
   order: 20
 ---
 
-This section contains detailed reference material.
+This section contains the stable reference material for `html2rss-web`.
+
+## Integration Entry Points
+
+- **OpenAPI:** `/openapi.yaml` on a running instance, or [`public/openapi.yaml`](https://github.com/html2rss/html2rss-web/blob/master/public/openapi.yaml) in the repository
+- **API root metadata:** `/api/v1`
+- **Environment reference:** [env variables](/web-application/reference/env-variables/)
+
+If you need the config contract for the core `html2rss` gem rather than the web API, use the JSON Schema at [`schema/html2rss-config.schema.json`](https://github.com/html2rss/html2rss/blob/master/schema/html2rss-config.schema.json).
