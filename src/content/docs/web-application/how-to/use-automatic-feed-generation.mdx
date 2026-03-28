@@ -1,35 +1,48 @@
 ---
 title: "Use automatic feed generation"
-description: "Enable the web UI flow that generates a feed directly from a page URL."
+description: "Enable the token-gated web UI flow that creates a stable feed from a page URL."
 ---
 
-Automatic feed generation is a standout `html2rss-web` feature: paste a page URL, create a feed, then copy the generated feed URL.
+import { Code } from "@astrojs/starlight/components";
 
-> **Note:** This feature is disabled by default. Enabling it should be a conscious decision on your self-hosted instance.
+Automatic feed generation lets `html2rss-web` create a stable feed from a page URL. It is useful when the included config set does not already cover the site you want.
+
+Use this only after you have already verified your instance with an included feed. In production, this feature is disabled by default and should be enabled consciously on your own instance.
+
+## What This Flow Actually Requires
+
+This flow depends on three separate things:
+
+- `AUTO_SOURCE_ENABLED=true` on the server
+- a bearer token that the instance accepts for feed creation
+- Browserless configured if the target page needs JavaScript rendering
+
+The generated API contract for this flow is published at `/openapi.yaml`.
 
 ## How to Enable It
 
 Edit your `docker-compose.yml` and enable automatic feed generation:
 
-```yaml
-environment:
-  AUTO_SOURCE_ENABLED: "true"
-  AUTO_SOURCE_ALLOWED_ORIGINS: 127.0.0.1:4000
-```
+<Code
+  code={`
+  environment:
+    AUTO_SOURCE_ENABLED: "true"
+  `}
+  lang="yaml"
+/>
 
-Then restart:
+Keep the existing `BROWSERLESS_IO_WEBSOCKET_URL` and `BROWSERLESS_IO_API_TOKEN` settings if you want JavaScript-heavy pages to work reliably.
 
-```bash
-docker compose down
-docker compose up -d
-```
+Then restart the stack:
+
+<Code code={`docker compose up -d`} lang="bash" />
 
 ## How to Use It
 
 1. Open your instance at `http://localhost:4000`
 2. Paste a page URL into `Create a feed`
-3. Submit the form
-4. If the instance requires access, provide a configured access token
+3. Add a valid access token when prompted
+4. Choose a strategy if needed, then submit
 5. Copy the generated feed URL or open it directly
 
 ## What Success Looks Like
@@ -40,8 +53,65 @@ When the flow works, you should see:
 - a copy action
 - an open-feed action
 - a preview of recent entries when available
+- the same feed staying available at its tokenized URL
 
 That is enough to confirm the self-hosted flow is working.
+
+## Strategy Behavior
+
+- `faraday` is the default strategy and should be your first try for most pages.
+- During the feed-creation API request (`POST /api/v1/feeds`) from the web UI, a `faraday` submission may be retried once with `browserless` when the first failure looks retryable.
+- If that fallback attempt fails, or if the first failure is clearly auth/URL/unsupported-strategy related, the UI stops and shows an error.
+- This retry behavior is scoped to feed creation. It is not a general retry layer for later feed rendering (`GET /api/v1/feeds/:token`) or preview loading.
+
+## Input URL Guidance (Quality First)
+
+Automatic generation is most successful when the input URL is already a listing/update surface.
+
+- Higher-success inputs:
+- newsroom/press listing pages
+- category/tag/archive/listing pages
+- changelog/release/update pages
+- Lower-success inputs:
+- generic homepages
+- search pages
+- app-shell entrypoints (client-rendered shells)
+
+If output quality is poor, switch the input to a direct listing/update URL before assuming the feature is broken.
+
+## Failure Meanings You May See
+
+The backend runtime classifies common extraction failures with clearer intent:
+
+- blocked/interstitial surface likely
+- app-shell surface likely
+- unsupported extraction surface for auto mode
+
+In the current web product flow, these categories are mostly internal/operator-level signals (runtime/logging). They are not guaranteed to appear as labeled categories in the UI.
+
+What users typically see today:
+
+- feed-creation API errors (for example auth/URL/unsupported strategy)
+- preview-level fallback text such as `Preview unavailable right now.`
+- feed render error payloads when opening feed URLs directly
+
+## Browserless Troubleshooting In `html2rss-web`
+
+If Browserless-backed attempts fail:
+
+- verify the Browserless container/service is running
+- verify `BROWSERLESS_IO_WEBSOCKET_URL` is reachable from the web container
+- verify `BROWSERLESS_IO_API_TOKEN` matches the Browserless `TOKEN`
+
+For local Compose-based setups, check container health/logs with:
+
+<Code
+  code={`
+  docker compose ps browserless && \
+  docker compose logs browserless
+`}
+  lang="bash"
+/>
 
 ## When to Stop and Switch
 
@@ -52,4 +122,4 @@ Move on to [Creating Custom Feeds](/creating-custom-feeds) when:
 - the generated feed misses important fields
 - the wrong items are extracted
 - the site needs a stable, reviewable setup
-- you need `browserless` or more precise selectors to make the feed reliable
+- you need repeatable selector-level control to make the feed reliable

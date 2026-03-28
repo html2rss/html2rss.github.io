@@ -5,10 +5,12 @@ sidebar:
   order: 2
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 import AutoGenerationOptional from "../../../components/docs/AutoGenerationOptional.astro";
 import MinimalDockerCompose from "../../../components/docs/MinimalDockerCompose.astro";
 
-Run `html2rss-web` locally with Docker, open the web interface, and verify that your instance can serve a working included feed.
+Run `html2rss-web` locally with Docker, open the web interface, and verify that your instance can serve a working included feed before you enable direct feed generation.
 
 ## What You Will Have When This Works
 
@@ -17,7 +19,7 @@ After this guide, you should have:
 - `html2rss-web` running at `http://localhost:4000`
 - the web interface loading correctly
 - a first included feed URL you can copy into your reader
-- a clear path to either custom configs or more advanced setup
+- a clear path to either token-gated feed generation or custom configs
 
 ## Installation Guide
 
@@ -34,10 +36,13 @@ If you do not already have Docker, [install it first](https://docs.docker.com/ge
 
 Create a new folder for `html2rss-web`:
 
-```bash
-mkdir html2rss-web
-cd html2rss-web
-```
+<Code
+  code={`
+  mkdir html2rss-web && \
+  cd html2rss-web
+`}
+  lang="bash"
+/>
 
 ### Step 2: Create a Minimal Configuration File
 
@@ -45,15 +50,26 @@ Create a file called `docker-compose.yml` in that folder and start with the mini
 
 <MinimalDockerCompose />
 
-Add update automation later, after the first run works.
+This minimal stack intentionally proves the included-feed path first. Add automatic updates, reverse proxying, or your own config file only after this first run works.
 
 ### Step 3: Start html2rss-web
 
-Run:
+Create a `.env` file in the same folder (minimum required values for this stack):
 
-```bash
-docker compose up -d
-```
+<Code
+  code={`
+  cat > .env <<EOF
+  HTML2RSS_SECRET_KEY=$(openssl rand -hex 32)
+  HEALTH_CHECK_TOKEN=$(openssl rand -hex 24)
+  BROWSERLESS_IO_API_TOKEN=trial-browserless-token
+  EOF
+`}
+  lang="bash"
+/>
+
+Then run:
+
+<Code code={`docker compose up -d`} lang="bash" />
 
 ## First Success Check
 
@@ -68,7 +84,7 @@ At this point, `html2rss-web` should be running.
 4. Confirm the feed opens
 5. Copy that feed URL into your reader
 
-If that works, the deployment, static feed path, and reader subscription path are working together.
+If that works, the deployment, included-config path, and reader subscription path are working together.
 
 ## What To Do First
 
@@ -78,7 +94,18 @@ Start with an included config from your own instance:
 2. copy that feed URL into your reader
 3. confirm your reader can subscribe successfully
 
-That proves the core path before you invest in automatic generation or custom configs.
+That proves the lowest-friction path before you invest in automatic generation or custom configs.
+
+## What Changes If You Enable Feed Generation
+
+Automatic feed generation is off by default in production. When you enable it later:
+
+- the web app creates feeds through `POST /api/v1/feeds`
+- that API requires a bearer token
+- the UI starts with `faraday` and automatically retries once with `browserless` when appropriate
+- Browserless still needs to be configured for JavaScript-heavy pages
+
+If you are integrating this flow programmatically, the generated OpenAPI is available at `/openapi.yaml`.
 
 <AutoGenerationOptional />
 

@@ -178,6 +178,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-24
+  arm64-darwin-25
   x86_64-linux
 
 DEPENDENCIES
@@ -185,4 +186,4 @@ DEPENDENCIES
   html2rss-configs!
 
 BUNDLED WITH
-   2.7.1
+  4.0.9

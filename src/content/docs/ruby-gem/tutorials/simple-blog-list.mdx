@@ -3,6 +3,8 @@ title: "Scraping a Simple Blog List"
 description: "This example demonstrates how to create a feed from a typical blog that has a list of articles on its homepage."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 This example demonstrates how to create a feed from a typical blog that has a list of articles on its homepage.
 
 ---
@@ -17,18 +19,21 @@ We want to create an RSS feed that contains the title, link, and summary of each
 
 Here's a simplified view of the HTML structure we're targeting. The key is to find a container element that wraps each blog post (in this case, `.post-item`) and then find the selectors for the title, link, and summary within that container.
 
-```html
-<div class="posts">
-  <div class="post-item">
-    <h2 class="post-title"><a href="/blog/post-1">First Post Title</a></h2>
-    <p class="post-summary">Summary of the first post...</p>
+<Code
+  code={`
+  <div class="posts">
+    <div class="post-item">
+      <h2 class="post-title"><a href="/blog/post-1">First Post Title</a></h2>
+      <p class="post-summary">Summary of the first post...</p>
+    </div>
+    <div class="post-item">
+      <h2 class="post-title"><a href="/blog/post-2">Second Post Title</a></h2>
+      <p class="post-summary">Summary of the second post...</p>
+    </div>
   </div>
-  <div class="post-item">
-    <h2 class="post-title"><a href="/blog/post-2">Second Post Title</a></h2>
-    <p class="post-summary">Summary of the second post...</p>
-  </div>
-</div>
-```
+`}
+  lang="html"
+/>
 
 ---
 
@@ -36,20 +41,23 @@ Here's a simplified view of the HTML structure we're targeting. The key is to fi
 
 This configuration uses the `selectors` scraper to precisely extract the content we want.
 
-```yaml
-channel:
-  url: https://example.com/blog
-selectors:
-  items:
-    selector: ".post-item"
-  title:
-    selector: ".post-title a"
-  url:
-    selector: ".post-title a"
-    extractor: "href"
-  description:
-    selector: ".post-summary"
-```
+<Code
+  code={`
+  channel:
+    url: https://example.com/blog
+  selectors:
+    items:
+      selector: ".post-item"
+    title:
+      selector: ".post-title a"
+    url:
+      selector: ".post-title a"
+      extractor: "href"
+    description:
+      selector: ".post-summary"
+  `}
+  lang="yaml"
+/>
 
 ### Configuration Breakdown
 

@@ -13,21 +13,24 @@ website.
 ### Quick Setup
 
 ```bash
-# Install dependencies and start development server
+# Install dependencies and refresh generated feed data
 make setup
+
+# Start the local Astro development server
+make dev
 ```
 
 ### 💻 Try in Browser
 
 You can develop html2rss directly in your browser using GitHub Codespaces:
 
-[Open in GitHub Codespaces](https://github.com/codespaces/new?repo=html2rss/html2rss)
+[Open in GitHub Codespaces](https://github.com/codespaces/new?repo=html2rss/html2rss.github.io)
 
 The Codespace provides a cloud development environment with Node.js and Ruby pre-installed. Run `make setup` to install dependencies and get started!
 
 ### Available Commands
 
-- `make setup` - Install dependencies and start dev server
+- `make setup` - Install dependencies and refresh generated feed data
 - `make dev` - Start Astro development server
 - `make build` - Build for production
 - `make preview` - Preview production build

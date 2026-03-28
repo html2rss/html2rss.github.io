@@ -3,6 +3,8 @@ title: "WordPress API"
 description: "Use the WordPress API scraper inside auto_source to read WordPress posts through the site's REST API."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 The `wordpress_api` scraper is part of `auto_source`. When a WordPress site exposes its public REST API, `html2rss` can read posts from that API instead of scraping article HTML.
 
 This usually gives cleaner results because WordPress already exposes fields such as the title, content, excerpt, permalink, publish date, and category IDs.
@@ -11,11 +13,14 @@ This usually gives cleaner results because WordPress already exposes fields such
 
 Enable `auto_source` as usual:
 
-```yml
-channel:
-  url: "https://example.com/blog"
-auto_source: {}
-```
+<Code
+  code={`
+  channel:
+    url: "https://example.com/blog"
+  auto_source: {}
+  `}
+  lang="yml"
+/>
 
 If the target is a standard WordPress site with a public API, no selectors are required.
 
@@ -23,9 +28,7 @@ If the target is a standard WordPress site with a public API, no selectors are r
 
 The scraper works when the page exposes the standard WordPress API link in its `<head>`:
 
-```html
-<link rel="https://api.w.org/" href="https://example.com/wp-json/" />
-```
+<Code code={`<link rel="https://api.w.org/" href="https://example.com/wp-json/" />`} lang="html" />
 
 If that link is missing or the API is blocked, `auto_source` falls back to its other discovery strategies.
 
@@ -33,14 +36,17 @@ If that link is missing or the API is blocked, `auto_source` falls back to its o
 
 You can disable `wordpress_api` while keeping the rest of `auto_source` enabled:
 
-```yml
-channel:
-  url: "https://example.com/blog"
-auto_source:
-  scraper:
-    wordpress_api:
-      enabled: false
-```
+<Code
+  code={`
+  channel:
+    url: "https://example.com/blog"
+  auto_source:
+    scraper:
+      wordpress_api:
+        enabled: false
+  `}
+  lang="yml"
+/>
 
 ## What Gets Extracted
 

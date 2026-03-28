@@ -3,27 +3,32 @@ title: Headers
 description: "Learn how to set custom HTTP headers for html2rss requests. Add authentication, user agents, and API keys to access protected content."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 The `headers` key allows you to set custom HTTP headers for your requests. This is useful for accessing APIs or other protected content.
 
 ## Configuration
 
 You can add any number of headers to your configuration. This example is a complete, valid feed config:
 
-```yaml
-headers:
-  User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
-  Authorization: "Bearer YOUR_TOKEN"
-  Accept: "application/json"
-channel:
-  url: "https://api.example.com/posts"
-selectors:
-  items:
-    selector: "array > object"
-  title:
-    selector: "title"
-  url:
-    selector: "url"
-```
+<Code
+  code={`
+  headers:
+    User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
+    Authorization: "Bearer YOUR_TOKEN"
+    Accept: "application/json"
+  channel:
+    url: "https://api.example.com/posts"
+  selectors:
+    items:
+      selector: "array > object"
+    title:
+      selector: "title"
+    url:
+      selector: "url"
+  `}
+  lang="yaml"
+/>
 
 ## Dynamic Parameters
 

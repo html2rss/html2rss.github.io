@@ -6,7 +6,7 @@ sidebar:
   order: 1
 ---
 
-`html2rss-web` is the recommended way to get started. Run it locally with Docker, verify a working included feed from your own instance, and only then decide whether you need direct generation or custom configs.
+`html2rss-web` is the recommended way to get started. Run it locally with Docker, verify a working included feed from your own instance, and only then decide whether you need token-gated direct generation or custom configs.
 
 ## Get Started
 
@@ -21,9 +21,10 @@ Start with **[Getting Started](/web-application/getting-started)** to:
 
 - **Included feed catalog:** real embedded configs you can use immediately from your own deployment
 - **Web interface:** direct feed creation when you explicitly enable it
-- **Optional access control:** unlock custom generation with an access token when configured
+- **Access-controlled generation:** `POST /api/v1/feeds` requires a bearer token
 - **Config-based extension path:** move to custom feeds when you need reviewable rules
 - **Caching and HTTP handling:** shipped as part of the deployment
+- **Generated API contract:** OpenAPI is published at `/openapi.yaml`
 
 The scraping and feed-building engine is provided by the Ruby gem [`html2rss`](https://github.com/html2rss/html2rss).
 
@@ -34,3 +35,9 @@ The scraping and feed-building engine is provided by the Ruby gem [`html2rss`](h
 3. **[Browse working feed examples](/feed-directory/)**: compare against existing outputs
 4. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: enable direct page-URL conversion when you want that workflow
 5. **[Create Custom Feeds](/creating-custom-feeds)**: build a stable custom setup when needed
+
+## For Integrations
+
+- **OpenAPI:** `/openapi.yaml` on your instance, or [`public/openapi.yaml`](https://github.com/html2rss/html2rss-web/blob/main/public/openapi.yaml) in the repo
+- **API metadata:** `/api/v1`
+- **Config schema for the core gem:** [`schema/html2rss-config.schema.json`](https://github.com/html2rss/html2rss/blob/master/schema/html2rss-config.schema.json)

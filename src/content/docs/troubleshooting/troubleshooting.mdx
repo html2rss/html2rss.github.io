@@ -3,6 +3,8 @@ title: "Troubleshooting"
 description: "This guide provides solutions to common issues encountered when using html2rss."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 This guide provides solutions to common issues encountered when using `html2rss`.
 
 ## Essential Tools
@@ -15,6 +17,21 @@ Your browser's developer tools are essential for troubleshooting. Use them to in
 
 ## Common Issues (Ruby Gem / CLI)
 
+### `auto` Picks The Wrong Surface Or Finds No Items
+
+The `auto` flow is URL-surface sensitive.
+
+- Higher success inputs:
+  - newsroom/press listing URLs
+  - category/tag/listing/archive URLs
+  - changelog/release/update listing URLs
+- Lower success inputs:
+  - generic homepages
+  - search result pages
+  - client-rendered app-shell entrypoints
+
+If extraction quality is poor, switch to a more specific listing/update URL before tuning selectors.
+
 ### Empty Feeds
 
 If your feed is empty, check the following:
@@ -24,6 +41,50 @@ If your feed is empty, check the following:
 - **Website Changes:** Websites change their HTML structure frequently. Your selectors may be outdated.
 - **JavaScript Content:** If the content is loaded via JavaScript, use the `browserless` strategy instead of `faraday`.
 - **Authentication:** Some sites require authentication — check if you need to add headers or use a different strategy.
+
+### `No scrapers found` Failure Taxonomy (`auto`)
+
+`auto` classifies no-scraper failures with actionable hints:
+
+- **Blocked surface likely (anti-bot or interstitial):**
+  - retry with `--strategy browserless`
+  - try a more specific public listing URL
+- **App-shell surface detected:**
+  - retry with `--strategy browserless`
+  - target a direct listing/update page instead of homepage/shell entrypoint
+- **Unsupported extraction surface for auto mode:**
+  - switch to listing/changelog/category URLs
+  - or use explicit selectors in YAML config
+
+Known anti-bot interstitial patterns (for example Cloudflare challenge pages) are surfaced as blocked-surface errors instead of silent empty extraction results.
+
+### Browserless Connection / Setup Failures
+
+If you receive `Browserless connection failed (...)`:
+
+1. Confirm Browserless is running and reachable from the machine running `html2rss`.
+2. Confirm `BROWSERLESS_IO_WEBSOCKET_URL` points at that running service.
+3. Confirm `BROWSERLESS_IO_API_TOKEN` matches the Browserless `TOKEN`.
+
+Example local startup:
+
+<Code
+  code={`docker run --rm -p 3000:3000 -e "CONCURRENT=10" -e "TOKEN=6R0W53R135510" ghcr.io/browserless/chromium`}
+  lang="bash"
+/>
+
+Then run with:
+
+<Code
+  code={`
+  BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
+  BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
+  html2rss auto https://example.com/updates --strategy browserless
+`}
+  lang="bash"
+/>
+
+For custom websocket endpoints, `BROWSERLESS_IO_API_TOKEN` is required.
 
 ### Configuration Errors
 
@@ -40,7 +101,7 @@ If parts of your items (e.g., title, link) are missing, check the following:
 
 - **Selector:** Ensure the selector for the missing part is correct and relative to the `items.selector`.
 - **Extractor:** Verify that you are using the correct `extractor` (e.g., `text`, `href`, `attribute`).
-- **Dynamic Content:** `html2rss` does not execute JavaScript. If the content is loaded dynamically, `html2rss` may not be able to see it.
+- **Dynamic Content:** `faraday` does not render JavaScript. If content loads dynamically, run with `--strategy browserless` (with the Browserless service available) so the page can be rendered before extraction.
 
 ### Date/Time Parsing Errors
 
@@ -63,42 +124,33 @@ If you are getting a "command not found" error, try the following:
 ### Instance Won’t Start
 
 - Verify Docker is installed and running:
-  ```bash
-  docker --version
-  ```
+  <Code code={`docker --version`} lang="bash" />
 - Check logs for errors:
-  ```bash
-  docker compose logs
-  ```
-- Ensure the port (default: 3000) isn’t already in use:
-  ```bash
-  netstat -tulpn | grep :3000
-  ```
+  <Code code={`docker compose logs`} lang="bash" />
+- Ensure the app port (default compose binding: 4000) isn’t already in use:
+  <Code code={`lsof -i :4000`} lang="bash" />
+- If the app exits immediately in production, check that `HTML2RSS_SECRET_KEY` is set.
 
 ### Can’t Access the Web Interface
 
-- Confirm your firewall allows traffic on port 3000 (or the port you configured)
+- Confirm your firewall allows traffic on port 4000 or your reverse-proxy ports
 - Try accessing via the server’s IP instead of a domain name
 - Double-check that containers are running:
-  ```bash
-  docker compose ps
-  ```
+  <Code code={`docker compose ps`} lang="bash" />
 
 ### Authentication Errors
 
-- **401 Unauthorized:** Check your `AUTO_SOURCE_USERNAME` and `AUTO_SOURCE_PASSWORD` environment variables.
-- **403 Forbidden:** The URL is not in the `AUTO_SOURCE_ALLOWED_URLS` list, or the origin is not in `AUTO_SOURCE_ALLOWED_ORIGINS`.
+- **401 Unauthorized when creating feeds:** The create-feed API expects a bearer token. Re-enter a valid access token in the UI or send `Authorization: Bearer ...` to `POST /api/v1/feeds`.
+- **403 Forbidden when creating feeds:** Automatic feed generation may be disabled (`AUTO_SOURCE_ENABLED=false`) or the requested URL may not be allowed for the authenticated account.
 - **500 Internal Server Error:** Check the application logs for detailed error information.
-- **Health check failures:** Use the `/health_check.txt` endpoint to identify which specific feed configurations are broken.
+- **Health endpoint failures:** Use `GET /api/v1/health/live`, `GET /api/v1/health/ready`, or authenticated `GET /api/v1/health` depending on which probe you are testing.
 
 ### Feed Problems
 
 - Some sites may require JavaScript rendering; ensure the `browserless` service is running
 - Check the feed configuration in `feeds.yml` for typos or invalid selectors
 - Look for parsing errors in the logs:
-  ```bash
-  docker compose logs html2rss-web
-  ```
+  <Code code={`docker compose logs html2rss-web`} lang="bash" />
 
 ---
 

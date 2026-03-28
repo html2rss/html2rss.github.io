@@ -3,6 +3,8 @@ title: "Backward Compatibility"
 description: "html2rss maintains backward compatibility with older configuration formats and attribute names."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 html2rss maintains backward compatibility with older configuration formats and attribute names.
 
 ## Renamed Attributes
@@ -17,17 +19,20 @@ Some attribute names have been renamed for clarity, but the old names still work
 
 Both of these configurations work identically:
 
-```yaml
-# Current format (recommended)
-selectors:
-  published_at:
-    selector: ".date"
+<Code
+  code={`
+  # Current format (recommended)
+  selectors:
+    published_at:
+      selector: ".date"
 
 # Legacy format (still supported)
+
 selectors:
-  updated:
-    selector: ".date"
-```
+updated:
+selector: ".date"
+`} lang="yaml"
+/>
 
 ## Migration Guide
 

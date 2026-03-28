@@ -1,5 +1,5 @@
 ---
-import Code from "astro/components/Code.astro";
+import { Code } from "@astrojs/starlight/components";
 import { browserlessImage, caddyImage, watchtowerImage, webImage } from "../../data/docker";
 
 interface Props {
@@ -15,13 +15,19 @@ const snippets: Record<Props["variant"], string> = {
     restart: unless-stopped
     ports:
       - "127.0.0.1:4000:4000"
+    env_file:
+      - path: .env
+        required: false
     environment:
       RACK_ENV: production
       PORT: 4000
-      HTML2RSS_SECRET_KEY: your-generated-secret-key
-      HEALTH_CHECK_TOKEN: your-health-check-token
+      BUILD_TAG: \${BUILD_TAG:-local}
+      GIT_SHA: \${GIT_SHA:-local}
+      HTML2RSS_SECRET_KEY: \${HTML2RSS_SECRET_KEY:?set HTML2RSS_SECRET_KEY}
+      HEALTH_CHECK_TOKEN: \${HEALTH_CHECK_TOKEN:?set HEALTH_CHECK_TOKEN}
+      SENTRY_DSN: \${SENTRY_DSN:-}
       BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:4002
-      BROWSERLESS_IO_API_TOKEN: your-browserless-token
+      BROWSERLESS_IO_API_TOKEN: \${BROWSERLESS_IO_API_TOKEN:?set BROWSERLESS_IO_API_TOKEN}
 
   browserless:
     image: "${browserlessImage}"
@@ -31,10 +37,11 @@ const snippets: Record<Props["variant"], string> = {
     environment:
       PORT: 4002
       CONCURRENT: 10
-      TOKEN: your-browserless-token`,
+      TOKEN: \${BROWSERLESS_IO_API_TOKEN:?set BROWSERLESS_IO_API_TOKEN}`,
   productionCaddy: `services:
   caddy:
     image: ${caddyImage}
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -46,39 +53,71 @@ const snippets: Record<Props["variant"], string> = {
       - --from
       - \${CADDY_HOST}
       - --to
-      - html2rss:3000
-  html2rss:
+      - html2rss-web:4000
+
+  html2rss-web:
     image: ${webImage}
-    env_file: .env
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      RACK_ENV: production
+      PORT: 4000
+      BUILD_TAG: \${BUILD_TAG:-local}
+      GIT_SHA: \${GIT_SHA:-local}
+      HTML2RSS_SECRET_KEY: \${HTML2RSS_SECRET_KEY:?set HTML2RSS_SECRET_KEY}
+      HEALTH_CHECK_TOKEN: \${HEALTH_CHECK_TOKEN:?set HEALTH_CHECK_TOKEN}
+      SENTRY_DSN: \${SENTRY_DSN:-}
+      BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:4002
+      BROWSERLESS_IO_API_TOKEN: \${BROWSERLESS_IO_API_TOKEN:?set BROWSERLESS_IO_API_TOKEN}
+
+  browserless:
+    image: "${browserlessImage}"
+    restart: unless-stopped
+    environment:
+      PORT: 4002
+      CONCURRENT: 10
+      TOKEN: \${BROWSERLESS_IO_API_TOKEN:?set BROWSERLESS_IO_API_TOKEN}
 
 volumes:
   caddy_data:`,
   secure: `services:
-  html2rss:
+  html2rss-web:
     image: ${webImage}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
     environment:
       RACK_ENV: production
-      LOG_LEVEL: warn
-      HEALTH_CHECK_USERNAME: your-secure-username
-      HEALTH_CHECK_PASSWORD: your-very-secure-password
-      BASE_URL: https://yourdomain.com`,
+      PORT: 4000
+      BUILD_TAG: \${BUILD_TAG:-local}
+      GIT_SHA: \${GIT_SHA:-local}
+      HTML2RSS_SECRET_KEY: \${HTML2RSS_SECRET_KEY:?set HTML2RSS_SECRET_KEY}
+      HEALTH_CHECK_TOKEN: \${HEALTH_CHECK_TOKEN:?set HEALTH_CHECK_TOKEN}
+      SENTRY_DSN: \${SENTRY_DSN:-}
+      BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:4002
+      BROWSERLESS_IO_API_TOKEN: \${BROWSERLESS_IO_API_TOKEN:?set BROWSERLESS_IO_API_TOKEN}
+
+  browserless:
+    image: "${browserlessImage}"
+    restart: unless-stopped
+    environment:
+      PORT: 4002
+      CONCURRENT: 10
+      TOKEN: \${BROWSERLESS_IO_API_TOKEN:?set BROWSERLESS_IO_API_TOKEN}`,
   watchtower: `services:
   watchtower:
     image: ${watchtowerImage}
-    depends_on:
-      - html2rss
-      - caddy
-    command:
-      - --cleanup
-      - --interval
-      - "300"
-      - html2rss
-      - caddy
+    restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    restart: unless-stopped`,
+      # Optional for private registries only:
+      # - "\${HOME}/.docker/config.json:/config.json:ro"
+    command: --cleanup --interval 7200 html2rss-web browserless caddy`,
   resourceGuardrails: `services:
-  html2rss:
+  html2rss-web:
     image: ${webImage}
     deploy:
       resources:
