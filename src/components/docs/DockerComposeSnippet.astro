@@ -15,9 +15,7 @@ const snippets: Record<Props["variant"], string> = {
     restart: unless-stopped
     ports:
       - "127.0.0.1:4000:4000"
-    env_file:
-      - path: .env
-        required: false
+    env_file: .env
     environment:
       RACK_ENV: production
       PORT: 4000
@@ -58,9 +56,7 @@ const snippets: Record<Props["variant"], string> = {
   html2rss-web:
     image: ${webImage}
     restart: unless-stopped
-    env_file:
-      - path: .env
-        required: false
+    env_file: .env
     environment:
       RACK_ENV: production
       PORT: 4000
@@ -86,9 +82,7 @@ volumes:
   html2rss-web:
     image: ${webImage}
     restart: unless-stopped
-    env_file:
-      - path: .env
-        required: false
+    env_file: .env
     environment:
       RACK_ENV: production
       PORT: 4000
@@ -115,7 +109,7 @@ volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # Optional for private registries only:
       # - "\${HOME}/.docker/config.json:/config.json:ro"
-    command: --cleanup --interval 7200`,
+    command: --cleanup --interval 7200 html2rss-web browserless caddy`,
   resourceGuardrails: `services:
   html2rss-web:
     image: ${webImage}

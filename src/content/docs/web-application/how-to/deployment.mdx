@@ -30,7 +30,7 @@ Before exposing html2rss-web, ensure:
 - Inbound TCP ports 80 and 443 reach the host (check firewalls and cloud security groups)
 - You are ready to watch the first deployment logs for certificate issuance
 - You have a value ready for `HTML2RSS_SECRET_KEY`
-- You have a value ready for `HEALTH_CHECK_TOKEN` (required by the documented Compose stack)
+- You have a value ready for `HEALTH_CHECK_TOKEN` if you plan to monitor authenticated `GET /api/v1/health` (the documented Compose stack uses it; `/api/v1/health/live` and `/api/v1/health/ready` do not require it)
 
 If you plan to enable automatic feed generation, also prepare:
 
@@ -82,7 +82,7 @@ Caddy handles certificates and redirects with almost no configuration.
 - Update your `.env` before starting the stack:
   - Set `CADDY_HOST` for your domain.
   - Generate a production secret (`openssl rand -hex 32`) and assign it to `HTML2RSS_SECRET_KEY`.
-  - Set a strong `HEALTH_CHECK_TOKEN` (required by the documented Compose stack).
+  - Set a strong `HEALTH_CHECK_TOKEN` when you use authenticated `GET /api/v1/health`; liveness/readiness probes can use `/api/v1/health/live` and `/api/v1/health/ready` without it.
   - Set `BUILD_TAG` and `GIT_SHA` to real release metadata for production.
   - Adjust optional knobs such as `AUTO_SOURCE_ENABLED` and `SENTRY_DSN` as needed; refer to the [environment reference](/web-application/reference/env-variables) for details.
 - After `docker compose up -d`, run `docker compose logs caddy --tail 20`; look for `certificate obtained`.
@@ -94,6 +94,7 @@ Caddy handles certificates and redirects with almost no configuration.
 Harden the application before inviting other users:
 
 - Set a strong `HEALTH_CHECK_TOKEN` for authenticated `GET /api/v1/health`, and strong credentials for any protected feeds
+- Set a strong `HEALTH_CHECK_TOKEN` for authenticated `GET /api/v1/health`, and separate strong bearer tokens for any protected feeds
 - Prefer environment files (`.env`) stored outside version control for secrets
 - Keep any operator-only token distribution flow outside public docs and outside version control
 
@@ -114,7 +115,7 @@ Keep the instance healthy once it is in production:
 
 <DockerComposeSnippet variant="watchtower" />
 
-This Watchtower shape updates all containers in the Docker host by default (not only `html2rss-web`).
+This Watchtower shape scopes updates to `html2rss-web`, `browserless`, and `caddy`; replace service names if your stack differs.
 
 Check `docker compose logs watchtower` occasionally to confirm updates are applied.
 

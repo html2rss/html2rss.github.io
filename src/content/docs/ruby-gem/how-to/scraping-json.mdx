@@ -29,7 +29,7 @@ is converted to this XML structure:
 
 <Code
   code={`
-    <object>
+  <object>
     <data>
       <array>
         <object>
@@ -38,7 +38,7 @@ is converted to this XML structure:
         </object>
       </array>
     </data>
-      </object>
+  </object>
 `}
   lang="xml"
 />
@@ -55,12 +55,12 @@ is converted to this XML structure:
 
 <Code
   code={`
-    <array>
+  <array>
     <object>
       <title>Headline</title>
       <url>https://example.com</url>
     </object>
-      </array>
+  </array>
 `}
   lang="xml"
 />
@@ -73,7 +73,7 @@ You would use `array > object` as your `items` selector.
 
 <Code
   code={`
-    Html2rss.feed(
+  Html2rss.feed(
     headers: {
       Accept: 'application/json'
     },
@@ -85,7 +85,7 @@ You would use `array > object` as your `items` selector.
       title: { selector: 'title' },
       url: { selector: 'url' }
     }
-      )
+  )
 `}
   lang="ruby"
 />
@@ -94,17 +94,17 @@ You would use `array > object` as your `items` selector.
 
 <Code
   code={`
-    headers:
+  headers:
     Accept: application/json
-      channel:
+  channel:
     url: "https://domainname.tld/whatever.json"
-      selectors:
+  selectors:
     items:
       selector: "array > object"
     title:
-      selector: ".title"
+      selector: "title"
     url:
       selector: "url"
-    `}
+  `}
   lang="yml"
 />

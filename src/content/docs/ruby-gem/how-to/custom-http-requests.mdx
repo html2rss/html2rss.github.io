@@ -204,7 +204,8 @@ Test your configuration to ensure headers work correctly:
 
 <Code
   code={`
-  curl -H "Authorization: Bearer YOUR_TOKEN" https://api.example.com/posts && \
+  curl -H "Authorization: Bearer YOUR_TOKEN" \
+    https://api.example.com/posts && \
   html2rss feed your-config.yml
 `}
   lang="bash"

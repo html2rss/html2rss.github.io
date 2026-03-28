@@ -69,12 +69,24 @@ Known anti-bot interstitial responses (for example Cloudflare challenge pages) a
 
 <Code
   code={`
-  docker run --rm -p 3000:3000 -e "CONCURRENT=10" -e "TOKEN=6R0W53R135510" ghcr.io/browserless/chromium && \
-  BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
-  BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
-  html2rss auto https://example.com/updates --strategy browserless
+  # 1) Start Browserless in the background
+  docker run -d --rm --name html2rss-browserless \
+    -p 3000:3000 \
+    -e "CONCURRENT=10" \
+    -e "TOKEN=6R0W53R135510" \
+    ghcr.io/browserless/chromium
+
+# 2) Run html2rss against Browserless
+
+BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
+ BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
+ html2rss auto https://example.com/updates --strategy browserless
+
+# 3) Stop Browserless when done
+
+docker stop html2rss-browserless
 `}
-  lang="bash"
+lang="bash"
 />
 
 If you see `Browserless connection failed`, check:

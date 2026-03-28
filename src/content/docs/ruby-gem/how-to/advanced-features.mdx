@@ -85,9 +85,15 @@ Optimize requests with appropriate headers:
 
 ### Web Application Health Checks
 
-Use the health check endpoint to monitor feed generation:
+Use the authenticated health endpoint to monitor the web application, or use liveness/readiness endpoints when you do not use an auth token:
 
-<Code code={`curl -u username:password http://localhost:4000/health_check.txt`} lang="bash" />
+<Code
+  code={`
+  curl -H "Authorization: Bearer YOUR_HEALTH_CHECK_TOKEN" \
+    http://localhost:4000/api/v1/health
+  `}
+  lang="bash"
+/>
 
 ## Article Validation
 

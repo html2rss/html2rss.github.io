@@ -2,9 +2,7 @@ services:
   html2rss-web:
     image: html2rss/web:latest
     restart: unless-stopped
-    env_file:
-      - path: .env
-        required: false
+    env_file: .env
     environment:
       PORT: 4000
 
