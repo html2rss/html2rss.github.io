@@ -76,7 +76,7 @@ Caddy handles certificates and redirects with almost no configuration.
       GIT_SHA=
 
   `}
-  lang="env"
+  lang="dotenv"
   />
 
 - Update your `.env` before starting the stack:
@@ -93,7 +93,6 @@ Caddy handles certificates and redirects with almost no configuration.
 
 Harden the application before inviting other users:
 
-- Set a strong `HEALTH_CHECK_TOKEN` for authenticated `GET /api/v1/health`, and strong credentials for any protected feeds
 - Set a strong `HEALTH_CHECK_TOKEN` for authenticated `GET /api/v1/health`, and separate strong bearer tokens for any protected feeds
 - Prefer environment files (`.env`) stored outside version control for secrets
 - Keep any operator-only token distribution flow outside public docs and outside version control
