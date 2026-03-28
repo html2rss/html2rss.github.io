@@ -49,7 +49,17 @@ This minimal stack intentionally proves the included-feed path first. Add automa
 
 ### Step 3: Start html2rss-web
 
-Run:
+Create a `.env` file in the same folder (minimum required values for this stack):
+
+```bash
+cat > .env <<EOF
+HTML2RSS_SECRET_KEY=$(openssl rand -hex 32)
+HEALTH_CHECK_TOKEN=$(openssl rand -hex 24)
+BROWSERLESS_IO_API_TOKEN=trial-browserless-token
+EOF
+```
+
+Then run:
 
 ```bash
 docker compose up -d

@@ -95,7 +95,7 @@ If parts of your items (e.g., title, link) are missing, check the following:
 
 - **Selector:** Ensure the selector for the missing part is correct and relative to the `items.selector`.
 - **Extractor:** Verify that you are using the correct `extractor` (e.g., `text`, `href`, `attribute`).
-- **Dynamic Content:** `html2rss` does not execute JavaScript. If the content is loaded dynamically, `html2rss` may not be able to see it.
+- **Dynamic Content:** `faraday` does not render JavaScript. If content loads dynamically, run with `--strategy browserless` (with the Browserless service available) so the page can be rendered before extraction.
 
 ### Date/Time Parsing Errors
 
