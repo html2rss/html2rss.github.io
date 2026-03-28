@@ -3,6 +3,8 @@ title: Scraping JSON Responses
 description: "Learn how to scrape JSON APIs and responses with html2rss. Convert JSON to XML and use CSS selectors for data extraction."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 When a website returns a JSON response (i.e., with a `Content-Type` of `application/json`), `html2rss` converts the JSON to XML, allowing you to use CSS selectors for data extraction.
 
 > [!NOTE]
@@ -14,26 +16,32 @@ When a website returns a JSON response (i.e., with a `Content-Type` of `applicat
 
 A JSON object like this:
 
-```json
-{
-  "data": [{ "title": "Headline", "url": "https://example.com" }]
-}
-```
+<Code
+  code={`
+  {
+    "data": [{ "title": "Headline", "url": "https://example.com" }]
+  }
+`}
+  lang="json"
+/>
 
 is converted to this XML structure:
 
-```xml
-<object>
-  <data>
-    <array>
-      <object>
-        <title>Headline</title>
-        <url>https://example.com</url>
+<Code
+  code={`
+    <object>
+    <data>
+      <array>
+        <object>
+          <title>Headline</title>
+          <url>https://example.com</url>
+        </object>
+      </array>
+    </data>
       </object>
-    </array>
-  </data>
-</object>
-```
+`}
+  lang="xml"
+/>
 
 You would use `array > object` as your `items` selector.
 
@@ -41,20 +49,21 @@ You would use `array > object` as your `items` selector.
 
 A JSON array like this:
 
-```json
-[{ "title": "Headline", "url": "https://example.com" }]
-```
+<Code code={`[{ "title": "Headline", "url": "https://example.com" }]`} lang="json" />
 
 is converted to this XML structure:
 
-```xml
-<array>
-  <object>
-    <title>Headline</title>
-    <url>https://example.com</url>
-  </object>
-</array>
-```
+<Code
+  code={`
+    <array>
+    <object>
+      <title>Headline</title>
+      <url>https://example.com</url>
+    </object>
+      </array>
+`}
+  lang="xml"
+/>
 
 You would use `array > object` as your `items` selector.
 
@@ -62,34 +71,40 @@ You would use `array > object` as your `items` selector.
 
 ### Ruby
 
-```ruby
-Html2rss.feed(
-  headers: {
-    Accept: 'application/json'
-  },
-  channel: {
-    url: 'https://domainname.tld/whatever.json'
-  },
-  selectors: {
-    items: { selector: 'array > object' },
-    title: { selector: 'title' },
-    url: { selector: 'url' }
-  }
-)
-```
+<Code
+  code={`
+    Html2rss.feed(
+    headers: {
+      Accept: 'application/json'
+    },
+    channel: {
+      url: 'https://domainname.tld/whatever.json'
+    },
+    selectors: {
+      items: { selector: 'array > object' },
+      title: { selector: 'title' },
+      url: { selector: 'url' }
+    }
+      )
+`}
+  lang="ruby"
+/>
 
 ### YAML
 
-```yml
-headers:
-  Accept: application/json
-channel:
-  url: "https://domainname.tld/whatever.json"
-selectors:
-  items:
-    selector: "array > object"
-  title:
-    selector: ".title"
-  url:
-    selector: "url"
-```
+<Code
+  code={`
+    headers:
+    Accept: application/json
+      channel:
+    url: "https://domainname.tld/whatever.json"
+      selectors:
+    items:
+      selector: "array > object"
+    title:
+      selector: ".title"
+    url:
+      selector: "url"
+    `}
+  lang="yml"
+/>

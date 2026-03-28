@@ -3,15 +3,20 @@ title: Auto Source
 description: "Learn about the auto_source scraper that automatically finds items on a page. No CSS selectors needed - html2rss intelligently detects content."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 The `auto_source` scraper automatically finds items on a page, so you don't have to specify CSS selectors.
 
 To enable it, add `auto_source: {}` to your configuration:
 
-```yaml
-channel:
-  url: https://example.com
-auto_source: {}
-```
+<Code
+  code={`
+  channel:
+    url: https://example.com
+  auto_source: {}
+  `}
+  lang="yaml"
+/>
 
 ## How It Works
 
@@ -38,37 +43,43 @@ You can customize `auto_source` to improve its accuracy.
 
 Enable or disable specific scrapers and adjust their settings:
 
-```yaml
-channel:
-  url: https://example.com
-auto_source:
-  scraper:
-    wordpress_api:
-      enabled: false # default: true
-    schema:
-      enabled: false # default: true
-    semantic_html:
-      enabled: false # default: true
-    json_state:
-      enabled: false # default: true
-    html:
-      enabled: true
-      minimum_selector_frequency: 3 # default: 2
-      use_top_selectors: 3 # default: 5
-```
+<Code
+  code={`
+  channel:
+    url: https://example.com
+  auto_source:
+    scraper:
+      wordpress_api:
+        enabled: false # default: true
+      schema:
+        enabled: false # default: true
+      semantic_html:
+        enabled: false # default: true
+      json_state:
+        enabled: false # default: true
+      html:
+        enabled: true
+        minimum_selector_frequency: 3 # default: 2
+        use_top_selectors: 3 # default: 5
+  `}
+  lang="yaml"
+/>
 
 ### Cleanup Options
 
 Remove unwanted items from the results:
 
-```yaml
-channel:
-  url: https://example.com
-auto_source:
-  cleanup:
-    keep_different_domain: false # default: true
-    min_words_title: 4 # default: 3
-```
+<Code
+  code={`
+  channel:
+    url: https://example.com
+  auto_source:
+    cleanup:
+      keep_different_domain: false # default: true
+      min_words_title: 4 # default: 3
+  `}
+  lang="yaml"
+/>
 
 ---
 

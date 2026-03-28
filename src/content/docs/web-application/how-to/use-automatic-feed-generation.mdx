@@ -3,6 +3,8 @@ title: "Use automatic feed generation"
 description: "Enable the token-gated web UI flow that creates a stable feed from a page URL."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 Automatic feed generation lets `html2rss-web` create a stable feed from a page URL. It is useful when the included config set does not already cover the site you want.
 
 Use this only after you have already verified your instance with an included feed. In production, this feature is disabled by default and should be enabled consciously on your own instance.
@@ -21,18 +23,19 @@ The generated API contract for this flow is published at `/openapi.yaml`.
 
 Edit your `docker-compose.yml` and enable automatic feed generation:
 
-```yaml
-environment:
-  AUTO_SOURCE_ENABLED: "true"
-```
+<Code
+  code={`
+  environment:
+    AUTO_SOURCE_ENABLED: "true"
+  `}
+  lang="yaml"
+/>
 
 Keep the existing `BROWSERLESS_IO_WEBSOCKET_URL` and `BROWSERLESS_IO_API_TOKEN` settings if you want JavaScript-heavy pages to work reliably.
 
 Then restart the stack:
 
-```bash
-docker compose up -d
-```
+<Code code={`docker compose up -d`} lang="bash" />
 
 ## How to Use It
 
@@ -66,13 +69,13 @@ That is enough to confirm the self-hosted flow is working.
 Automatic generation is most successful when the input URL is already a listing/update surface.
 
 - Higher-success inputs:
-  - newsroom/press listing pages
-  - category/tag/archive/listing pages
-  - changelog/release/update pages
+- newsroom/press listing pages
+- category/tag/archive/listing pages
+- changelog/release/update pages
 - Lower-success inputs:
-  - generic homepages
-  - search pages
-  - app-shell entrypoints (client-rendered shells)
+- generic homepages
+- search pages
+- app-shell entrypoints (client-rendered shells)
 
 If output quality is poor, switch the input to a direct listing/update URL before assuming the feature is broken.
 
@@ -102,10 +105,13 @@ If Browserless-backed attempts fail:
 
 For local Compose-based setups, check container health/logs with:
 
-```bash
-docker compose ps browserless
-docker compose logs browserless
-```
+<Code
+  code={`
+  docker compose ps browserless && \
+  docker compose logs browserless
+`}
+  lang="bash"
+/>
 
 ## When to Stop and Switch
 

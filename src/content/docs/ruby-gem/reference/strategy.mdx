@@ -3,6 +3,8 @@ title: Strategy
 description: "Learn about different strategies for fetching website content with html2rss. Choose between faraday and browserless strategies for optimal performance."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 The `strategy` key defines how `html2rss` fetches a website's content.
 
 - **`faraday`** (default): Makes a direct HTTP request. It is fast but does not execute JavaScript.
@@ -20,35 +22,41 @@ To use the `browserless` strategy, you need a running instance of [Browserless.i
 
 You can run a local Browserless.io instance using Docker:
 
-```sh
-docker run \
-  --rm \
-  -p 3000:3000 \
-  -e "CONCURRENT=10" \
-  -e "TOKEN=6R0W53R135510" \
-  ghcr.io/browserless/chromium
-```
+<Code
+  code={`
+  docker run \
+    --rm \
+    -p 3000:3000 \
+    -e "CONCURRENT=10" \
+    -e "TOKEN=6R0W53R135510" \
+    ghcr.io/browserless/chromium
+`}
+  lang="sh"
+/>
 
 ### Configuration
 
 Set the `strategy` at the top level of your feed configuration and put request controls under `request`:
 
-```yml
-strategy: browserless
-request:
-  max_redirects: 5
-  max_requests: 6
-channel:
-  url: "https://example.com/app"
-selectors:
-  items:
-    selector: ".article"
-  title:
-    selector: "h2"
-  url:
-    selector: "a"
-    extractor: "href"
-```
+<Code
+  code={`
+  strategy: browserless
+  request:
+    max_redirects: 5
+    max_requests: 6
+  channel:
+    url: "https://example.com/app"
+  selectors:
+    items:
+      selector: ".article"
+    title:
+      selector: "h2"
+    url:
+      selector: "a"
+      extractor: "href"
+  `}
+  lang="yml"
+/>
 
 ### Request Structure
 
@@ -62,47 +70,53 @@ Use this split consistently:
 
 Example:
 
-```yml
-strategy: browserless
-headers:
-  User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
-request:
-  max_redirects: 5
-  max_requests: 6
-  browserless:
-    preload:
-      wait_after_ms: 5000
-channel:
-  url: "https://example.com/app"
-selectors:
-  items:
-    selector: ".article"
-  title:
-    selector: "h2"
-  url:
-    selector: "a"
-    extractor: "href"
-```
+<Code
+  code={`
+  strategy: browserless
+  headers:
+    User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
+  request:
+    max_redirects: 5
+    max_requests: 6
+    browserless:
+      preload:
+        wait_after_ms: 5000
+  channel:
+    url: "https://example.com/app"
+  selectors:
+    items:
+      selector: ".article"
+    title:
+      selector: "h2"
+    url:
+      selector: "a"
+      extractor: "href"
+  `}
+  lang="yml"
+/>
 
 ### Browserless Preload
 
 Browserless can interact with the page before html2rss captures the final HTML. Configure preload steps under
 `request.browserless.preload`.
 
-```yml
-strategy: browserless
-request:
-  browserless:
-    preload:
-      wait_after_ms: 5000
-      click_selectors:
-        - selector: ".load-more"
-          max_clicks: 3
-          wait_after_ms: 250
-      scroll_down:
-        iterations: 5
-        wait_after_ms: 200
-```
+<Code
+  code={`
+  strategy: browserless
+  request:
+    browserless:
+      preload:
+        wait_after_ms: 5000
+        click_selectors:
+          - selector: ".load-more"
+            max_clicks: 3
+            wait_after_ms: 250
+        scroll_down:
+          iterations: 5
+          wait_after_ms: 200
+  `}
+  lang="yml"
+/>
 
 - `wait_after_ms`: inserts a fixed wait before or after preload steps
 - `click_selectors`: clicks matching elements until they disappear or `max_clicks` is reached
@@ -115,18 +129,17 @@ pagination therefore resolve against the page that was actually rendered after p
 
 You can also specify the strategy on the command line:
 
-```sh
-# Set environment variables for your Browserless.io instance
-BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
-BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
-  html2rss feed my_config.yml --strategy browserless
-
-# Override request budgets at runtime
-html2rss feed my_config.yml --max-redirects 5 --max-requests 6
-
-# Or rely on the strategy stored in the YAML config
-html2rss feed my_config.yml
-```
+<Code
+  code={`
+  # Set environment variables for your Browserless.io instance
+  BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
+  BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
+  html2rss feed my_config.yml --strategy browserless ; \
+  html2rss feed my_config.yml --max-redirects 5 --max-requests 6 ; \
+  html2rss feed my_config.yml
+`}
+  lang="sh"
+/>
 
 ### Browserless Troubleshooting
 

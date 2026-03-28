@@ -3,6 +3,8 @@ title: "Installation"
 description: "Install the html2rss Ruby gem on your system. Choose from multiple installation methods including gem install, Bundler, or GitHub Codespaces."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 This guide will walk you through installing the html2rss Ruby gem on your system. Choose the method that works best for your setup - we'll walk you through each option step by step.
 
 ---
@@ -18,9 +20,7 @@ This guide will walk you through installing the html2rss Ruby gem on your system
 
 The simplest way to get html2rss for command-line usage is to install it as a Ruby gem.
 
-```bash
-gem install html2rss
-```
+<Code code={`gem install html2rss`} lang="bash" />
 
 After installation, you should be able to run `html2rss --version` to confirm it's working.
 
@@ -30,10 +30,13 @@ After installation, you should be able to run `html2rss --version` to confirm it
 
 If you're integrating html2rss into an existing Ruby project, add it to your `Gemfile`:
 
-```ruby
-# Gemfile
-gem 'html2rss'
-```
+<Code
+  code={`
+  # Gemfile
+  gem 'html2rss'
+`}
+  lang="ruby"
+/>
 
 Then, run `bundle install` in your project directory.
 
@@ -53,9 +56,7 @@ The Codespace comes pre-configured with Ruby, all dependencies, and VS Code exte
 
 To ensure html2rss is installed correctly, open your terminal and run:
 
-```bash
-html2rss --version
-```
+<Code code={`html2rss --version`} lang="bash" />
 
 You should see the installed version number. If you encounter any issues, please refer to the [Troubleshooting Guide](/troubleshooting/troubleshooting).
 

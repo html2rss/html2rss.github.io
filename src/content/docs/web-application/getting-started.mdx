@@ -5,6 +5,8 @@ sidebar:
   order: 2
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 import AutoGenerationOptional from "../../../components/docs/AutoGenerationOptional.astro";
 import MinimalDockerCompose from "../../../components/docs/MinimalDockerCompose.astro";
 
@@ -34,10 +36,13 @@ If you do not already have Docker, [install it first](https://docs.docker.com/ge
 
 Create a new folder for `html2rss-web`:
 
-```bash
-mkdir html2rss-web
-cd html2rss-web
-```
+<Code
+  code={`
+  mkdir html2rss-web && \
+  cd html2rss-web
+`}
+  lang="bash"
+/>
 
 ### Step 2: Create a Minimal Configuration File
 
@@ -51,19 +56,20 @@ This minimal stack intentionally proves the included-feed path first. Add automa
 
 Create a `.env` file in the same folder (minimum required values for this stack):
 
-```bash
-cat > .env <<EOF
-HTML2RSS_SECRET_KEY=$(openssl rand -hex 32)
-HEALTH_CHECK_TOKEN=$(openssl rand -hex 24)
-BROWSERLESS_IO_API_TOKEN=trial-browserless-token
-EOF
-```
+<Code
+  code={`
+  cat > .env <<EOF
+  HTML2RSS_SECRET_KEY=$(openssl rand -hex 32)
+  HEALTH_CHECK_TOKEN=$(openssl rand -hex 24)
+  BROWSERLESS_IO_API_TOKEN=trial-browserless-token
+  EOF
+`}
+  lang="bash"
+/>
 
 Then run:
 
-```bash
-docker compose up -d
-```
+<Code code={`docker compose up -d`} lang="bash" />
 
 ## First Success Check
 

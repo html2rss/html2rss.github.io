@@ -5,6 +5,8 @@ sidebar:
   order: 10
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 import DockerComposeSnippet from "../../../../components/docs/DockerComposeSnippet.astro";
 
 Use [watchtower](https://containrrr.dev/watchtower/) to periodically pull and restart containers when newer images are available.
@@ -15,9 +17,7 @@ Add this service to your existing `docker-compose.yml`:
 
 Then restart the stack:
 
-```bash
-docker compose up -d
-```
+<Code code={`docker compose up -d`} lang="bash" />
 
 Operational note:
 

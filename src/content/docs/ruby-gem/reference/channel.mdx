@@ -3,28 +3,33 @@ title: Channel
 description: "Learn about the channel configuration block for RSS feed metadata. Configure feed title, description, author, and other RSS channel properties."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 The `channel` configuration block defines your feed metadata.
 
 This example is a complete feed config so you can see the `channel` block in context:
 
-```yaml
-channel:
-  url: https://example.com
-  title: "My Custom Feed"
-  description: "A feed of the latest news from Example.com"
-  author: "jane.doe@example.com (Jane Doe)"
-  ttl: 60
-  language: "en"
-  time_zone: "Europe/Berlin"
-selectors:
-  items:
-    selector: "article"
-  title:
-    selector: "h2"
-  url:
-    selector: "a"
-    extractor: "href"
-```
+<Code
+  code={`
+  channel:
+    url: https://example.com
+    title: "My Custom Feed"
+    description: "A feed of the latest news from Example.com"
+    author: "jane.doe@example.com (Jane Doe)"
+    ttl: 60
+    language: "en"
+    time_zone: "Europe/Berlin"
+  selectors:
+    items:
+      selector: "article"
+    title:
+      selector: "h2"
+    url:
+      selector: "a"
+      extractor: "href"
+  `}
+  lang="yaml"
+/>
 
 ## Options
 

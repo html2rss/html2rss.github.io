@@ -3,32 +3,35 @@ title: Dynamic Parameters
 description: "Learn how to use dynamic parameters in URLs and headers for creating reusable feed configurations. Pass runtime values to customize feeds."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 Use dynamic parameters when websites share the same structure but vary by URL or header values.
 
 ## Solution
 
 You can add dynamic parameters to the `channel` and `headers` values. This is useful for creating feeds from structurally similar pages with different URLs.
 
-```yaml
-channel:
-  url: "https://domainname.tld/whatever/%<id>s.html"
-headers:
-  X-Something: "%<foo>s"
-selectors:
-  items:
-    selector: "article"
-  title:
-    selector: "h2"
-  url:
-    selector: "a"
-    extractor: "href"
-```
+<Code
+  code={`
+  channel:
+    url: "https://domainname.tld/whatever/%<id>s.html"
+  headers:
+    X-Something: "%<foo>s"
+  selectors:
+    items:
+      selector: "article"
+    title:
+      selector: "h2"
+    url:
+      selector: "a"
+      extractor: "href"
+  `}
+  lang="yaml"
+/>
 
 You can then pass the values for these parameters when you run `html2rss`:
 
-```bash
-html2rss feed the_feed_config.yml --params id:42 foo:bar
-```
+<Code code={`html2rss feed the_feed_config.yml --params id:42 foo:bar`} lang="bash" />
 
 ---
 

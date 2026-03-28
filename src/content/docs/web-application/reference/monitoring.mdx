@@ -3,6 +3,8 @@ title: "Monitoring"
 description: "Health endpoints and Sentry-based monitoring for html2rss-web."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 ## Health Endpoints
 
 `html2rss-web` exposes these health endpoints:
@@ -17,10 +19,13 @@ Use `GET /api/v1/health` when you want an authenticated operator-facing probe.
 
 Set the environment variable `HEALTH_CHECK_TOKEN`, then send it as a bearer token:
 
-```bash
-curl -H "Authorization: Bearer $HEALTH_CHECK_TOKEN" \
+<Code
+  code={`
+  curl -H "Authorization: Bearer $HEALTH_CHECK_TOKEN" \
   http://localhost:4000/api/v1/health
-```
+`}
+  lang="bash"
+/>
 
 The response is JSON and reports the current status, timestamp, environment, uptime, and reserved checks payload.
 

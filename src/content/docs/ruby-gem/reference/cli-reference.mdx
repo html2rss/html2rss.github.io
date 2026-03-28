@@ -3,6 +3,8 @@ title: CLI Reference
 description: Complete reference for the html2rss command-line interface
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 This page documents the `html2rss` command-line interface (CLI).
 
 For detailed documentation on the Ruby API, please refer to the official YARD documentation.
@@ -17,19 +19,15 @@ The `html2rss` executable is the primary way to interact with the gem from your 
 
 Automatically discovers items from a page and prints the generated RSS feed to stdout.
 
-```bash
-# Use the default faraday strategy
-html2rss auto https://example.com/articles
-
-# Force browserless for JavaScript-heavy pages
-html2rss auto https://example.com/app --strategy browserless
-
-# Set custom request budgets
-html2rss auto https://example.com/app --strategy browserless --max-redirects 5 --max-requests 6
-
-# Hint the item selector while keeping auto enhancement
-html2rss auto https://example.com/articles --items_selector ".post-card"
-```
+<Code
+  code={`
+  html2rss auto https://example.com/articles ; \
+  html2rss auto https://example.com/app --strategy browserless ; \
+  html2rss auto https://example.com/app --strategy browserless --max-redirects 5 --max-requests 6 ; \
+  html2rss auto https://example.com/articles --items_selector ".post-card"
+`}
+  lang="bash"
+/>
 
 Command: `html2rss auto URL`
 
@@ -69,15 +67,15 @@ Known anti-bot interstitial responses (for example Cloudflare challenge pages) a
 
 `browserless` is opt-in for CLI usage.
 
-```bash
-# Start a local Browserless container (default local token)
-docker run --rm -p 3000:3000 -e "CONCURRENT=10" -e "TOKEN=6R0W53R135510" ghcr.io/browserless/chromium
-
-# Run auto with Browserless
-BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
-BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
+<Code
+  code={`
+  docker run --rm -p 3000:3000 -e "CONCURRENT=10" -e "TOKEN=6R0W53R135510" ghcr.io/browserless/chromium && \
+  BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
+  BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
   html2rss auto https://example.com/updates --strategy browserless
-```
+`}
+  lang="bash"
+/>
 
 If you see `Browserless connection failed`, check:
 
@@ -91,22 +89,16 @@ For custom Browserless endpoints, `BROWSERLESS_IO_API_TOKEN` is required.
 
 Loads a YAML config, builds the feed, and prints the RSS XML to stdout.
 
-```bash
-# Single-feed config
-html2rss feed single.yml
-
-# Multi-feed config under the `feeds:` key
-html2rss feed feeds.yml my-first-feed
-
-# Override the request strategy at runtime
-html2rss feed single.yml --strategy browserless
-
-# Override request budgets at runtime
-html2rss feed single.yml --max-redirects 5 --max-requests 6
-
-# Pass dynamic parameters into %<param>s placeholders
-html2rss feed single.yml --params id:42 foo:bar
-```
+<Code
+  code={`
+  html2rss feed single.yml ; \
+  html2rss feed feeds.yml my-first-feed ; \
+  html2rss feed single.yml --strategy browserless ; \
+  html2rss feed single.yml --max-redirects 5 --max-requests 6 ; \
+  html2rss feed single.yml --params id:42 foo:bar
+`}
+  lang="bash"
+/>
 
 Command: `html2rss feed YAML_FILE [feed_name]`
 
@@ -116,16 +108,14 @@ The CLI keeps `strategy` as a top-level override and writes runtime request limi
 
 Prints the exported JSON Schema for the current gem version.
 
-```bash
-# Pretty-printed JSON (default)
-html2rss schema
-
-# Compact JSON
-html2rss schema --no-pretty
-
-# Write the schema to a file
-html2rss schema --write tmp/html2rss-config.schema.json
-```
+<Code
+  code={`
+  html2rss schema ; \
+  html2rss schema --no-pretty ; \
+  html2rss schema --write tmp/html2rss-config.schema.json
+`}
+  lang="bash"
+/>
 
 Command: `html2rss schema`
 
@@ -133,13 +123,13 @@ Command: `html2rss schema`
 
 Validates a config with the runtime validator without generating a feed.
 
-```bash
-# Validate a single-feed file
-html2rss validate single.yml
-
-# Validate one feed from a multi-feed file
-html2rss validate feeds.yml my-first-feed
-```
+<Code
+  code={`
+  html2rss validate single.yml ; \
+  html2rss validate feeds.yml my-first-feed
+`}
+  lang="bash"
+/>
 
 Command: `html2rss validate YAML_FILE [feed_name]`
 

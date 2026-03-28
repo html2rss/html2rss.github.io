@@ -3,6 +3,8 @@ title: "Troubleshooting"
 description: "This guide provides solutions to common issues encountered when using html2rss."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 This guide provides solutions to common issues encountered when using `html2rss`.
 
 ## Essential Tools
@@ -66,17 +68,21 @@ If you receive `Browserless connection failed (...)`:
 
 Example local startup:
 
-```bash
-docker run --rm -p 3000:3000 -e "CONCURRENT=10" -e "TOKEN=6R0W53R135510" ghcr.io/browserless/chromium
-```
+<Code
+  code={`docker run --rm -p 3000:3000 -e "CONCURRENT=10" -e "TOKEN=6R0W53R135510" ghcr.io/browserless/chromium`}
+  lang="bash"
+/>
 
 Then run with:
 
-```bash
-BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
-BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
+<Code
+  code={`
+  BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
+  BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
   html2rss auto https://example.com/updates --strategy browserless
-```
+`}
+  lang="bash"
+/>
 
 For custom websocket endpoints, `BROWSERLESS_IO_API_TOKEN` is required.
 
@@ -118,17 +124,11 @@ If you are getting a "command not found" error, try the following:
 ### Instance Won’t Start
 
 - Verify Docker is installed and running:
-  ```bash
-  docker --version
-  ```
+  <Code code={`docker --version`} lang="bash" />
 - Check logs for errors:
-  ```bash
-  docker compose logs
-  ```
+  <Code code={`docker compose logs`} lang="bash" />
 - Ensure the app port (default compose binding: 4000) isn’t already in use:
-  ```bash
-  lsof -i :4000
-  ```
+  <Code code={`lsof -i :4000`} lang="bash" />
 - If the app exits immediately in production, check that `HTML2RSS_SECRET_KEY` is set.
 
 ### Can’t Access the Web Interface
@@ -136,9 +136,7 @@ If you are getting a "command not found" error, try the following:
 - Confirm your firewall allows traffic on port 4000 or your reverse-proxy ports
 - Try accessing via the server’s IP instead of a domain name
 - Double-check that containers are running:
-  ```bash
-  docker compose ps
-  ```
+  <Code code={`docker compose ps`} lang="bash" />
 
 ### Authentication Errors
 
@@ -152,9 +150,7 @@ If you are getting a "command not found" error, try the following:
 - Some sites may require JavaScript rendering; ensure the `browserless` service is running
 - Check the feed configuration in `feeds.yml` for typos or invalid selectors
 - Look for parsing errors in the logs:
-  ```bash
-  docker compose logs html2rss-web
-  ```
+  <Code code={`docker compose logs html2rss-web`} lang="bash" />
 
 ---
 

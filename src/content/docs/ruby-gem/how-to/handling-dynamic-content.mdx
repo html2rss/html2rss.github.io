@@ -3,7 +3,7 @@ title: Handling Dynamic Content
 description: "Learn how to handle JavaScript-heavy websites and dynamic content with html2rss. Use browserless strategy for sites that load content dynamically."
 ---
 
-import Code from "astro/components/Code.astro";
+import { Code } from "@astrojs/starlight/components";
 
 Some websites load their content dynamically using JavaScript. The default `html2rss` strategy might not see this content.
 
@@ -14,23 +14,25 @@ Use the [`browserless` strategy](/ruby-gem/reference/strategy) to render JavaScr
 Keep the strategy at the top level and put request-specific options under `request`:
 
 <Code
-  code={`strategy: browserless
-request:
-  max_redirects: 5
-  max_requests: 6
-  browserless:
-    preload:
-      wait_after_ms: 5000
-channel:
-  url: https://example.com/app
-selectors:
-  items:
-    selector: .article
-  title:
-    selector: h2
-  url:
-    selector: a
-    extractor: href`}
+  code={`
+  strategy: browserless
+  request:
+    max_redirects: 5
+    max_requests: 6
+    browserless:
+      preload:
+        wait_after_ms: 5000
+  channel:
+    url: https://example.com/app
+  selectors:
+    items:
+      selector: .article
+    title:
+      selector: h2
+    url:
+      selector: a
+      extractor: href
+  `}
   lang="yaml"
 />
 
@@ -50,40 +52,49 @@ HTML snapshot is taken.
 
 ### Wait Before Capturing Dynamic Content
 
-```yaml
-strategy: browserless
-request:
-  browserless:
-    preload:
-      wait_after_ms: 4000
-```
+<Code
+  code={`
+  strategy: browserless
+  request:
+    browserless:
+      preload:
+        wait_after_ms: 4000
+  `}
+  lang="yaml"
+/>
 
 ### Click "Load More" Buttons
 
-```yaml
-strategy: browserless
-request:
-  browserless:
-    preload:
-      wait_after_ms: 3000
-      click_selectors:
-        - selector: ".load-more"
-          max_clicks: 3
-          wait_after_ms: 250
-```
+<Code
+  code={`
+  strategy: browserless
+  request:
+    browserless:
+      preload:
+        wait_after_ms: 3000
+        click_selectors:
+          - selector: ".load-more"
+            max_clicks: 3
+            wait_after_ms: 250
+  `}
+  lang="yaml"
+/>
 
 ### Scroll Infinite Lists
 
-```yaml
-strategy: browserless
-request:
-  browserless:
-    preload:
-      scroll_down:
-        iterations: 5
-        wait_after_ms: 200
-      wait_after_ms: 2500
-```
+<Code
+  code={`
+  strategy: browserless
+  request:
+    browserless:
+      preload:
+        scroll_down:
+          iterations: 5
+          wait_after_ms: 200
+        wait_after_ms: 2500
+  `}
+  lang="yaml"
+/>
 
 These preload steps can be combined in a single config when a site needs several interactions before all items appear.
 

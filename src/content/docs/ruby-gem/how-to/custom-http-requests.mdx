@@ -3,7 +3,7 @@ title: "Custom HTTP Requests"
 description: "Learn how to customize HTTP requests with custom headers, authentication, and API interactions for html2rss."
 ---
 
-import Code from "astro/components/Code.astro";
+import { Code } from "@astrojs/starlight/components";
 
 Some sites only work when requests carry the headers, tokens, or cookies your browser uses. `html2rss` supports those cases without changing the rest of your feed workflow.
 
@@ -28,19 +28,21 @@ You might need custom HTTP requests when:
 Add a `headers` section to your feed configuration. This example is a complete, valid config:
 
 <Code
-  code={`headers:
-  User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
-  Authorization: "Bearer YOUR_API_TOKEN"
-  Accept: "application/json"
-channel:
-  url: https://api.example.com/posts
-selectors:
-  items:
-    selector: "array > object"
-  title:
-    selector: "title"
-  url:
-    selector: "url"`}
+  code={`
+  headers:
+    User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
+    Authorization: "Bearer YOUR_API_TOKEN"
+    Accept: "application/json"
+  channel:
+    url: https://api.example.com/posts
+  selectors:
+    items:
+      selector: "array > object"
+    title:
+      selector: "title"
+    url:
+      selector: "url"
+  `}
   lang="yaml"
 />
 
@@ -49,21 +51,23 @@ selectors:
 Request budgets are configured under `request`, not as top-level keys:
 
 <Code
-  code={`headers:
-  User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
-request:
-  max_redirects: 5
-  max_requests: 6
-channel:
-  url: https://example.com/articles
-selectors:
-  items:
-    selector: article
-  title:
-    selector: h2
-  url:
-    selector: a
-    extractor: href`}
+  code={`
+  headers:
+    User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
+  request:
+    max_redirects: 5
+    max_requests: 6
+  channel:
+    url: https://example.com/articles
+  selectors:
+    items:
+      selector: article
+    title:
+      selector: h2
+    url:
+      selector: a
+      extractor: href
+  `}
   lang="yaml"
 />
 
@@ -77,99 +81,114 @@ selectors:
 
 Many APIs require authentication tokens:
 
-```yaml
-headers:
-  Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-  X-API-Key: "your-api-key-here"
-channel:
-  url: "https://api.example.com/posts"
-selectors:
-  items:
-    selector: "array > object"
-  title:
-    selector: "title"
-  url:
-    selector: "url"
-```
+<Code
+  code={`
+  headers:
+    Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    X-API-Key: "your-api-key-here"
+  channel:
+    url: "https://api.example.com/posts"
+  selectors:
+    items:
+      selector: "array > object"
+    title:
+      selector: "title"
+    url:
+      selector: "url"
+  `}
+  lang="yaml"
+/>
 
 ### User Agent Spoofing
 
 Some websites block requests that don't look like real browsers:
 
-```yaml
-headers:
-  User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-  Accept-Language: "en-US,en;q=0.5"
-  Accept-Encoding: "gzip, deflate"
-channel:
-  url: "https://example.com/articles"
-selectors:
-  items:
-    selector: "article"
-  title:
-    selector: "h2"
-  url:
-    selector: "a"
-    extractor: "href"
-```
+<Code
+  code={`
+  headers:
+    User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+    Accept-Language: "en-US,en;q=0.5"
+    Accept-Encoding: "gzip, deflate"
+  channel:
+    url: "https://example.com/articles"
+  selectors:
+    items:
+      selector: "article"
+    title:
+      selector: "h2"
+    url:
+      selector: "a"
+      extractor: "href"
+  `}
+  lang="yaml"
+/>
 
 ### Content Type Negotiation
 
 Request specific content types:
 
-```yaml
-headers:
-  Accept: "application/json"
-channel:
-  url: "https://api.example.com/posts"
-selectors:
-  items:
-    selector: "array > object"
-  title:
-    selector: "title"
-  url:
-    selector: "url"
-```
+<Code
+  code={`
+  headers:
+    Accept: "application/json"
+  channel:
+    url: "https://api.example.com/posts"
+  selectors:
+    items:
+      selector: "array > object"
+    title:
+      selector: "title"
+    url:
+      selector: "url"
+  `}
+  lang="yaml"
+/>
 
 ### Custom API Headers
 
 Some APIs require specific headers:
 
-```yaml
-headers:
-  X-Requested-With: "XMLHttpRequest"
-  X-Custom-Header: "your-value"
-  Content-Type: "application/json"
-channel:
-  url: "https://api.example.com/posts"
-selectors:
-  items:
-    selector: "array > object"
-  title:
-    selector: "title"
-  url:
-    selector: "url"
-```
+<Code
+  code={`
+  headers:
+    X-Requested-With: "XMLHttpRequest"
+    X-Custom-Header: "your-value"
+    Content-Type: "application/json"
+  channel:
+    url: "https://api.example.com/posts"
+  selectors:
+    items:
+      selector: "array > object"
+    title:
+      selector: "title"
+    url:
+      selector: "url"
+  `}
+  lang="yaml"
+/>
 
 ## Dynamic Headers
 
 You can use dynamic parameters in headers for runtime values:
 
-```yaml
-headers:
-  Authorization: "Bearer %<api_token>s"
-  X-User-ID: "%<user_id>s"
-channel:
-  url: "https://api.example.com/users/%<user_id>s/posts"
-selectors:
-  items:
-    selector: "array > object"
-  title:
-    selector: "title"
-  url:
-    selector: "url"
-```
+<Code
+  code={`
+  headers:
+    Authorization: "Bearer %<api_token>s"
+    X-User-ID: "%<user_id>s"
+  channel:
+    url: "https://api.example.com/users/%<user_id>s/posts"
+  selectors:
+    items:
+      selector: "array > object"
+    title:
+      selector: "title"
+    url:
+      selector: "url"
+  `}
+  lang="yaml"
+/>
 
 See our [Dynamic Parameters guide](/ruby-gem/how-to/dynamic-parameters) for more details.
 
@@ -183,13 +202,13 @@ See our [Dynamic Parameters guide](/ruby-gem/how-to/dynamic-parameters) for more
 
 Test your configuration to ensure headers work correctly:
 
-```bash
-# Test with curl first
-curl -H "Authorization: Bearer YOUR_TOKEN" https://api.example.com/posts
-
-# Then test with html2rss
-html2rss feed your-config.yml
-```
+<Code
+  code={`
+  curl -H "Authorization: Bearer YOUR_TOKEN" https://api.example.com/posts && \
+  html2rss feed your-config.yml
+`}
+  lang="bash"
+/>
 
 ## Troubleshooting
 
@@ -211,38 +230,44 @@ html2rss feed your-config.yml
 
 ### GitHub API
 
-```yaml
-headers:
-  Authorization: "token YOUR_GITHUB_TOKEN"
-  Accept: "application/vnd.github.v3+json"
-  User-Agent: "html2rss/1.0"
-channel:
-  url: https://api.github.com/repos/owner/repo/issues
-selectors:
-  items:
-    selector: "array > object"
-  title:
-    selector: "title"
-  url:
-    selector: "html_url"
-```
+<Code
+  code={`
+  headers:
+    Authorization: "token YOUR_GITHUB_TOKEN"
+    Accept: "application/vnd.github.v3+json"
+    User-Agent: "html2rss/1.0"
+  channel:
+    url: https://api.github.com/repos/owner/repo/issues
+  selectors:
+    items:
+      selector: "array > object"
+    title:
+      selector: "title"
+    url:
+      selector: "html_url"
+  `}
+  lang="yaml"
+/>
 
 ### Reddit API
 
-```yaml
-headers:
-  User-Agent: "html2rss/1.0 by your-username"
-  Accept: "application/json"
-channel:
-  url: https://www.reddit.com/r/programming.json
-selectors:
-  items:
-    selector: "data > children > object > data"
-  title:
-    selector: "title"
-  url:
-    selector: "url"
-```
+<Code
+  code={`
+  headers:
+    User-Agent: "html2rss/1.0 by your-username"
+    Accept: "application/json"
+  channel:
+    url: https://www.reddit.com/r/programming.json
+  selectors:
+    items:
+      selector: "data > children > object > data"
+    title:
+      selector: "title"
+    url:
+      selector: "url"
+  `}
+  lang="yaml"
+/>
 
 ## Related Topics
 

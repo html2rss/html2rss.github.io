@@ -3,6 +3,8 @@ title: "Selectors"
 description: "The selectors scraper gives you fine-grained control over content extraction using CSS selectors."
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 The `selectors` scraper gives you fine-grained control over content extraction using CSS selectors.
 
 > A valid RSS item requires at least a `title` or a `description`.
@@ -11,37 +13,46 @@ The `selectors` scraper gives you fine-grained control over content extraction u
 
 At a minimum, you need an `items` selector to define the list of articles and a `title` selector for the article titles.
 
-```yml
-channel:
-  url: "https://example.com"
-selectors:
-  items:
-    selector: ".article"
-  title:
-    selector: "h1"
-```
+<Code
+  code={`
+  channel:
+    url: "https://example.com"
+  selectors:
+    items:
+      selector: ".article"
+    title:
+      selector: "h1"
+  `}
+  lang="yml"
+/>
 
 ## Automatic Item Enhancement
 
 To simplify configuration, `html2rss` can automatically extract the `title`, `url`, and `image` from each item. This feature is enabled by default.
 
-```yml
-selectors:
-  items:
-    selector: ".article"
-    enhance: true # default: true
-```
+<Code
+  code={`
+  selectors:
+    items:
+      selector: ".article"
+      enhance: true # default: true
+  `}
+  lang="yml"
+/>
 
 ## Item Ordering
 
 You can control the order of items in your feed:
 
-```yml
-selectors:
-  items:
-    selector: ".article"
-    order: "reverse" # Reverse the order of items (newest first)
-```
+<Code
+  code={`
+  selectors:
+    items:
+      selector: ".article"
+      order: "reverse" # Reverse the order of items (newest first)
+  `}
+  lang="yml"
+/>
 
 Available options:
 
@@ -52,20 +63,23 @@ Available options:
 
 `html2rss` can follow a single `rel="next"` pagination chain when you configure `selectors.items.pagination.max_pages`.
 
-```yml
-channel:
-  url: "https://example.com/news"
-selectors:
-  items:
-    selector: "article"
-    pagination:
-      max_pages: 3
-  title:
-    selector: "h1"
-  url:
-    selector: "a"
-    extractor: "href"
-```
+<Code
+  code={`
+  channel:
+    url: "https://example.com/news"
+  selectors:
+    items:
+      selector: "article"
+      pagination:
+        max_pages: 3
+    title:
+      selector: "h1"
+    url:
+      selector: "a"
+      extractor: "href"
+  `}
+  lang="yml"
+/>
 
 Behavior:
 
@@ -135,48 +149,57 @@ Post-processors manipulate the extracted value.
 
 To add categories to an item, provide a list of selector names to the `categories` selector.
 
-```yml
-selectors:
-  genre:
-    selector: ".genre"
-  branch:
-    selector: ".branch"
-  categories:
-    - genre
-    - branch
-```
+<Code
+  code={`
+  selectors:
+    genre:
+      selector: ".genre"
+    branch:
+      selector: ".branch"
+    categories:
+      - genre
+      - branch
+  `}
+  lang="yml"
+/>
 
 ### Custom GUID
 
 To create a custom GUID for an item, provide a list of selector names to the `guid` selector.
 
-```yml
-selectors:
-  title:
-    selector: "h1"
-  url:
-    selector: "a"
-    extractor: "href"
-  guid:
-    - url
-```
+<Code
+  code={`
+  selectors:
+    title:
+      selector: "h1"
+    url:
+      selector: "a"
+      extractor: "href"
+    guid:
+      - url
+  `}
+  lang="yml"
+/>
 
 ### Enclosures
 
 To add an enclosure (e.g., an image, audio, or video file) to an item, use the `enclosure` selector to specify the URL of the file.
 
-```yml
-selectors:
-  items:
-    selector: ".post"
-  title:
-    selector: "h2"
-  enclosure:
-    selector: "audio"
-    extractor: "attribute"
-    attribute: "src"
-    content_type: "audio/mp3"
-```
+<Code
+  code={`
+  selectors:
+    items:
+      selector: ".post"
+    title:
+      selector: "h2"
+    enclosure:
+      selector: "audio"
+      extractor: "attribute"
+      attribute: "src"
+      content_type: "audio/mp3"
+  `}
+  lang="yml"
+/>
 
 ---
 
