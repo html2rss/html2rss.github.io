@@ -27,7 +27,8 @@ Before exposing html2rss-web, ensure:
 - Your domain (for example `yourdomain.com`) resolves to the host running Docker
 - Inbound TCP ports 80 and 443 reach the host (check firewalls and cloud security groups)
 - You are ready to watch the first deployment logs for certificate issuance
-- You have values ready for `HTML2RSS_SECRET_KEY` and `HEALTH_CHECK_TOKEN`
+- You have a value ready for `HTML2RSS_SECRET_KEY`
+- You have a value ready for `HEALTH_CHECK_TOKEN` (required by the documented Compose stack)
 
 If you plan to enable automatic feed generation, also prepare:
 
@@ -47,20 +48,27 @@ Caddy handles certificates and redirects with almost no configuration.
 
 - Create a `.env` file beside your compose file with the following variables:
 
-  ```bash
+  ```env
   # Required for reverse proxy and application
   CADDY_HOST=yourdomain.com
-  HTML2RSS_SECRET_KEY= # Generate with: openssl rand -hex 32
-  HEALTH_CHECK_TOKEN= # Generate a strong token for /api/v1/health
-  BROWSERLESS_IO_API_TOKEN= # Required by the default compose stack
-  # Optional: see [environment reference](/web-application/reference/env-variables)
+  # Generate with: openssl rand -hex 32
+  HTML2RSS_SECRET_KEY=
+  # Required by the documented Compose stack
+  HEALTH_CHECK_TOKEN=
+  # Required by the default compose stack
+  BROWSERLESS_IO_API_TOKEN=
+  # Recommended for production traceability (compose defaults to local)
+  BUILD_TAG=
+  # Recommended for production traceability (compose defaults to local)
+  GIT_SHA=
   ```
 
 - Update your `.env` before starting the stack:
   - Set `CADDY_HOST` for your domain.
   - Generate a production secret (`openssl rand -hex 32`) and assign it to `HTML2RSS_SECRET_KEY`.
-  - Generate a strong `HEALTH_CHECK_TOKEN` for `/api/v1/health`.
-  - Adjust optional knobs such as `AUTO_SOURCE_ENABLED`, `SENTRY_DSN`, `BUILD_TAG`, and `GIT_SHA` as needed; refer to the [environment reference](/web-application/reference/env-variables) for details.
+  - Set a strong `HEALTH_CHECK_TOKEN` (required by the documented Compose stack).
+  - Set `BUILD_TAG` and `GIT_SHA` to real release metadata for production.
+  - Adjust optional knobs such as `AUTO_SOURCE_ENABLED` and `SENTRY_DSN` as needed; refer to the [environment reference](/web-application/reference/env-variables) for details.
 - After `docker compose up -d`, run `docker compose logs caddy --tail 20`; look for `certificate obtained`.
 - Re-test after DNS changes with [SSL Labs](https://www.ssllabs.com/ssltest/).
 - Want automatic updates? Add the Watchtower service shown below.
@@ -69,7 +77,7 @@ Caddy handles certificates and redirects with almost no configuration.
 
 Harden the application before inviting other users:
 
-- Set strong credentials for health checks and any protected feeds
+- Set a strong `HEALTH_CHECK_TOKEN` for authenticated `GET /api/v1/health`, and strong credentials for any protected feeds
 - Prefer environment files (`.env`) stored outside version control for secrets
 - Keep any operator-only token distribution flow outside public docs and outside version control
 
@@ -89,6 +97,8 @@ Keep the instance healthy once it is in production:
 ### Auto-update with Watchtower
 
 <DockerComposeSnippet variant="watchtower" />
+
+This Watchtower shape updates all containers in the Docker host by default (not only `html2rss-web`).
 
 Check `docker compose logs watchtower` occasionally to confirm updates are applied.
 

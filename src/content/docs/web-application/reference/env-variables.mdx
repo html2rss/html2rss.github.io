@@ -5,19 +5,19 @@ description: "Configuration reference for html2rss-web environment variables."
 
 ## Supported ENV variables
 
-| Name                              | Description                                                                                                   |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `HTML2RSS_SECRET_KEY`             | required in production; development/test gets a temporary default                                             |
-| `HEALTH_CHECK_TOKEN`              | bearer token for `GET /api/v1/health`; optional but recommended                                               |
-| `BUILD_TAG`                       | optional build metadata (typically set by CI image builds)                                                    |
-| `GIT_SHA`                         | optional commit metadata (typically set by CI image builds)                                                   |
-| `SENTRY_DSN`                      | optional; enables Sentry errors/logs when set                                                                 |
-| `BROWSERLESS_IO_WEBSOCKET_URL`    | optional; Browserless websocket endpoint for `browserless` strategy                                           |
-| `BROWSERLESS_IO_API_TOKEN`        | optional for local default endpoint; required when `BROWSERLESS_IO_WEBSOCKET_URL` points to a custom endpoint |
-| `AUTO_SOURCE_ENABLED`             | `true` by default in development/test, `false` otherwise                                                      |
-| `ASYNC_FEED_REFRESH_ENABLED`      | optional boolean; default `false`                                                                             |
-| `ASYNC_FEED_REFRESH_STALE_FACTOR` | optional integer `>= 1`; default `3`                                                                          |
-| `PORT`                            | app listen port; compose uses `4000`                                                                          |
-| `RACK_ENV`                        | Rack environment; compose uses `production`                                                                   |
+| Name                              | Description                                                                                                                                                                                   |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `HTML2RSS_SECRET_KEY`             | required in production; development/test gets a temporary default                                                                                                                             |
+| `HEALTH_CHECK_TOKEN`              | bearer token for authenticated `GET /api/v1/health`; required by the documented Compose stack, but custom stacks that probe only `/api/v1/health/live` and `/api/v1/health/ready` can omit it |
+| `BUILD_TAG`                       | defaults to `local` in the Compose stack; set release metadata explicitly in production                                                                                                       |
+| `GIT_SHA`                         | defaults to `local` in the Compose stack; set deployed commit SHA explicitly in production                                                                                                    |
+| `SENTRY_DSN`                      | optional; enables Sentry errors/logs when set                                                                                                                                                 |
+| `BROWSERLESS_IO_WEBSOCKET_URL`    | optional; Browserless websocket endpoint for `browserless` strategy                                                                                                                           |
+| `BROWSERLESS_IO_API_TOKEN`        | required by this site's Compose stack and by custom websocket endpoints; standalone `html2rss` local defaults can omit it                                                                     |
+| `AUTO_SOURCE_ENABLED`             | `true` by default in development/test, `false` otherwise                                                                                                                                      |
+| `ASYNC_FEED_REFRESH_ENABLED`      | optional boolean; default `false`                                                                                                                                                             |
+| `ASYNC_FEED_REFRESH_STALE_FACTOR` | optional integer `>= 1`; default `3`                                                                                                                                                          |
+| `PORT`                            | app listen port; compose uses `4000`                                                                                                                                                          |
+| `RACK_ENV`                        | Rack environment; compose uses `production`                                                                                                                                                   |
 
 Older environment-variable examples from previous docs revisions are obsolete. Use only the supported table above and the `Environment & Runtime Flags` table in [`html2rss-web/docs/README.md`](https://github.com/html2rss/html2rss-web/blob/master/docs/README.md).

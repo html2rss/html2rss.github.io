@@ -5,6 +5,23 @@ sidebar:
   order: 10
 ---
 
-The [watchtower](https://containrrr.dev/watchtower/) service automatically pulls running Docker images and checks for updates. If an update is available, it will automatically start the updated image with the same configuration as the running one. Please read its manual.
+import DockerComposeSnippet from "../../../../components/docs/DockerComposeSnippet.astro";
 
-The `docker-compose.yml` in the [Installation Guide](/web-application/getting-started#installation-guide) contains a service description for watchtower.
+Use [watchtower](https://containrrr.dev/watchtower/) to periodically pull and restart containers when newer images are available.
+
+Add this service to your existing `docker-compose.yml`:
+
+<DockerComposeSnippet variant="watchtower" />
+
+Then restart the stack:
+
+```bash
+docker compose up -d
+```
+
+Operational note:
+
+- Keep the Docker socket mount (read-only in this example).
+- Add the optional Docker config mount only if you pull private images that require registry auth.
+- The shown Watchtower command updates all running containers by default.
+- Check `docker compose logs watchtower` to confirm scans and update runs.
