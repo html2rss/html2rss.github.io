@@ -10,6 +10,8 @@ The `strategy` key defines how `html2rss` fetches a website's content.
 
 `strategy` is a top-level config key. Request-specific controls live under `request`.
 
+Use `faraday` first for direct newsroom/listing/changelog pages. Prefer `browserless` when the target is client-rendered, protected by anti-bot checks, or otherwise requires JavaScript to expose article links.
+
 ## `browserless`
 
 To use the `browserless` strategy, you need a running instance of [Browserless.io](https://www.browserless.io/).
@@ -125,6 +127,18 @@ html2rss feed my_config.yml --max-redirects 5 --max-requests 6
 # Or rely on the strategy stored in the YAML config
 html2rss feed my_config.yml
 ```
+
+### Browserless Troubleshooting
+
+If Browserless cannot connect, html2rss surfaces a `Browserless connection failed (...)` error with endpoint/token hints.
+
+Check these first:
+
+- `BROWSERLESS_IO_WEBSOCKET_URL` is reachable from where html2rss runs
+- `BROWSERLESS_IO_API_TOKEN` matches your Browserless `TOKEN`
+- your Browserless service is running and accepting connections
+
+For custom Browserless websocket endpoints, `BROWSERLESS_IO_API_TOKEN` is mandatory. The local default endpoint (`ws://127.0.0.1:3000`) can use the default local token `6R0W53R135510`.
 
 ---
 

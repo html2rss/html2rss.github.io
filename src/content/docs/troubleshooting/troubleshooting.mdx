@@ -15,6 +15,21 @@ Your browser's developer tools are essential for troubleshooting. Use them to in
 
 ## Common Issues (Ruby Gem / CLI)
 
+### `auto` Picks The Wrong Surface Or Finds No Items
+
+The `auto` flow is URL-surface sensitive.
+
+- Higher success inputs:
+  - newsroom/press listing URLs
+  - category/tag/listing/archive URLs
+  - changelog/release/update listing URLs
+- Lower success inputs:
+  - generic homepages
+  - search result pages
+  - client-rendered app-shell entrypoints
+
+If extraction quality is poor, switch to a more specific listing/update URL before tuning selectors.
+
 ### Empty Feeds
 
 If your feed is empty, check the following:
@@ -24,6 +39,46 @@ If your feed is empty, check the following:
 - **Website Changes:** Websites change their HTML structure frequently. Your selectors may be outdated.
 - **JavaScript Content:** If the content is loaded via JavaScript, use the `browserless` strategy instead of `faraday`.
 - **Authentication:** Some sites require authentication — check if you need to add headers or use a different strategy.
+
+### `No scrapers found` Failure Taxonomy (`auto`)
+
+`auto` classifies no-scraper failures with actionable hints:
+
+- **Blocked surface likely (anti-bot or interstitial):**
+  - retry with `--strategy browserless`
+  - try a more specific public listing URL
+- **App-shell surface detected:**
+  - retry with `--strategy browserless`
+  - target a direct listing/update page instead of homepage/shell entrypoint
+- **Unsupported extraction surface for auto mode:**
+  - switch to listing/changelog/category URLs
+  - or use explicit selectors in YAML config
+
+Known anti-bot interstitial patterns (for example Cloudflare challenge pages) are surfaced as blocked-surface errors instead of silent empty extraction results.
+
+### Browserless Connection / Setup Failures
+
+If you receive `Browserless connection failed (...)`:
+
+1. Confirm Browserless is running and reachable from the machine running `html2rss`.
+2. Confirm `BROWSERLESS_IO_WEBSOCKET_URL` points at that running service.
+3. Confirm `BROWSERLESS_IO_API_TOKEN` matches the Browserless `TOKEN`.
+
+Example local startup:
+
+```bash
+docker run --rm -p 3000:3000 -e "CONCURRENT=10" -e "TOKEN=6R0W53R135510" ghcr.io/browserless/chromium
+```
+
+Then run with:
+
+```bash
+BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
+BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
+  html2rss auto https://example.com/updates --strategy browserless
+```
+
+For custom websocket endpoints, `BROWSERLESS_IO_API_TOKEN` is required.
 
 ### Configuration Errors
 

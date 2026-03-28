@@ -33,6 +33,60 @@ html2rss auto https://example.com/articles --items_selector ".post-card"
 
 Command: `html2rss auto URL`
 
+#### URL Surface Guidance For `auto`
+
+`auto` works best when the input URL already exposes a server-rendered list of entries.
+
+- High-success surfaces:
+  - newsroom or press listing pages
+  - blog/category/tag listing pages
+  - changelog/release notes/update listing pages
+  - paginated archive/list views
+- Low-success surfaces:
+  - generic homepages with heavy promo/navigation chrome
+  - search results pages
+  - client-rendered app shells (`#app`, `#root`, `#__next`, etc.)
+
+When possible, pass a direct listing/update URL instead of a top-level homepage or app entrypoint.
+
+#### Failure Outcomes You Should Expect
+
+When no extractable items are found, `auto` now classifies likely causes instead of only returning a generic message:
+
+- `blocked surface likely (anti-bot or interstitial)`:
+  - retry with `--strategy browserless`
+  - try a more specific public listing URL
+- `app-shell surface detected`:
+  - retry with `--strategy browserless`
+  - switch to a direct listing/update URL
+- `unsupported extraction surface for auto mode`:
+  - switch to listing/changelog/category URLs
+  - use explicit selectors in a feed config
+
+Known anti-bot interstitial responses (for example Cloudflare challenge pages) are surfaced explicitly as blocked-surface errors.
+
+#### Browserless Setup And Diagnostics (CLI)
+
+`browserless` is opt-in for CLI usage.
+
+```bash
+# Start a local Browserless container (default local token)
+docker run --rm -p 3000:3000 -e "CONCURRENT=10" -e "TOKEN=6R0W53R135510" ghcr.io/browserless/chromium
+
+# Run auto with Browserless
+BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
+BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
+  html2rss auto https://example.com/updates --strategy browserless
+```
+
+If you see `Browserless connection failed`, check:
+
+- `BROWSERLESS_IO_WEBSOCKET_URL` points to a reachable Browserless endpoint
+- `BROWSERLESS_IO_API_TOKEN` matches the Browserless `TOKEN`
+- the Browserless service is running and reachable from your shell environment
+
+For custom Browserless endpoints, `BROWSERLESS_IO_API_TOKEN` is required.
+
 ### Feed
 
 Loads a YAML config, builds the feed, and prints the RSS XML to stdout.

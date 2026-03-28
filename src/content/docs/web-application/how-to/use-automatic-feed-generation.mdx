@@ -57,8 +57,55 @@ That is enough to confirm the self-hosted flow is working.
 ## Strategy Behavior
 
 - `faraday` is the default strategy and should be your first try for most pages.
-- The web UI automatically retries once with `browserless` after a `faraday` failure when the error looks retryable.
-- If `browserless` also fails, or if the first error is clearly about auth, URL validation, or unsupported strategy, the UI stops and shows the failure instead of looping.
+- During the feed-creation API request (`POST /api/v1/feeds`) from the web UI, a `faraday` submission may be retried once with `browserless` when the first failure looks retryable.
+- If that fallback attempt fails, or if the first failure is clearly auth/URL/unsupported-strategy related, the UI stops and shows an error.
+- This retry behavior is scoped to feed creation. It is not a general retry layer for later feed rendering (`GET /api/v1/feeds/:token`) or preview loading.
+
+## Input URL Guidance (Quality First)
+
+Automatic generation is most successful when the input URL is already a listing/update surface.
+
+- Higher-success inputs:
+  - newsroom/press listing pages
+  - category/tag/archive/listing pages
+  - changelog/release/update pages
+- Lower-success inputs:
+  - generic homepages
+  - search pages
+  - app-shell entrypoints (client-rendered shells)
+
+If output quality is poor, switch the input to a direct listing/update URL before assuming the feature is broken.
+
+## Failure Meanings You May See
+
+The backend runtime classifies common extraction failures with clearer intent:
+
+- blocked/interstitial surface likely
+- app-shell surface likely
+- unsupported extraction surface for auto mode
+
+In the current web product flow, these categories are mostly internal/operator-level signals (runtime/logging). They are not guaranteed to appear as labeled categories in the UI.
+
+What users typically see today:
+
+- feed-creation API errors (for example auth/URL/unsupported strategy)
+- preview-level fallback text such as `Preview unavailable right now.`
+- feed render error payloads when opening feed URLs directly
+
+## Browserless Troubleshooting In `html2rss-web`
+
+If Browserless-backed attempts fail:
+
+- verify the Browserless container/service is running
+- verify `BROWSERLESS_IO_WEBSOCKET_URL` is reachable from the web container
+- verify `BROWSERLESS_IO_API_TOKEN` matches the Browserless `TOKEN`
+
+For local Compose-based setups, check container health/logs with:
+
+```bash
+docker compose ps browserless
+docker compose logs browserless
+```
 
 ## When to Stop and Switch
 
