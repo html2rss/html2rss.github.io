@@ -12,6 +12,8 @@ description: "Configuration reference for html2rss-web environment variables."
 | `BUILD_TAG`                    | required in production |
 | `GIT_SHA`                      | required in production |
 | `SENTRY_DSN`                   | optional; enables Sentry errors/logs when set |
+| `BROWSERLESS_IO_WEBSOCKET_URL` | optional; Browserless websocket endpoint for `browserless` strategy |
+| `BROWSERLESS_IO_API_TOKEN`     | optional for local default endpoint; required when `BROWSERLESS_IO_WEBSOCKET_URL` points to a custom endpoint |
 | `AUTO_SOURCE_ENABLED`          | `true` by default in development/test, `false` otherwise |
 | `ASYNC_FEED_REFRESH_ENABLED`   | optional boolean; default `false` |
 | `ASYNC_FEED_REFRESH_STALE_FACTOR` | optional integer `>= 1`; default `3` |
