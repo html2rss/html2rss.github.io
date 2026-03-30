@@ -1,15 +1,15 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: 24d38d64e578e93340e228c7bbfd2b187a2b94b6
+  revision: 71981aff28d88e4553c206d78bf54d5633bcdd19
   specs:
     html2rss-configs (0.2.0)
       html2rss
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: 04720b83c69f8b2fcf6d9ba7f360b84f6bcb5fe6
+  revision: e11e2513046ca688cba6178f20ca23adef3d92b7
   specs:
-    html2rss (0.17.0)
+    html2rss (0.18.0)
       addressable (~> 2.7)
       brotli
       dry-validation
