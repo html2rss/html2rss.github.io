@@ -32,6 +32,8 @@ The `auto` flow is URL-surface sensitive.
 
 If extraction quality is poor, switch to a more specific listing/update URL before tuning selectors.
 
+If you use CLI defaults, `--strategy auto` is already active and attempts `faraday` then `botasaurus` then `browserless`.
+
 ### Empty Feeds
 
 If your feed is empty, check the following:
@@ -39,7 +41,7 @@ If your feed is empty, check the following:
 - **URL:** Ensure the `url` in your configuration is correct and accessible.
 - **`items.selector`:** Verify that the `items.selector` matches the elements on the page.
 - **Website Changes:** Websites change their HTML structure frequently. Your selectors may be outdated.
-- **JavaScript Content:** If the content is loaded via JavaScript, use the `browserless` strategy instead of `faraday`.
+- **JavaScript Content:** If the content is loaded via JavaScript, move from `faraday` to a rendering strategy such as `browserless` (or `botasaurus` when you use a Botasaurus scrape API).
 - **Authentication:** Some sites require authentication — check if you need to add headers or use a different strategy.
 
 ### `No scrapers found` Failure Taxonomy (`auto`)
@@ -91,7 +93,9 @@ For custom websocket endpoints, `BROWSERLESS_IO_API_TOKEN` is required.
 Common configuration-related errors:
 
 - **`UnsupportedResponseContentType`:** The website returned content that html2rss can't parse (not HTML or JSON).
-- **`UnsupportedStrategy`:** The specified strategy is not available. Use `faraday` or `browserless`.
+- **`UnsupportedStrategy`:** The specified strategy is not available. Use `faraday`, `browserless`, or `botasaurus`.
+- **`BOTASAURUS_SCRAPER_URL is required for strategy=botasaurus.`:** Set `BOTASAURUS_SCRAPER_URL` to your Botasaurus scrape API base URL when using `--strategy botasaurus`.
+- **`BOTASAURUS_SCRAPER_URL is invalid`:** Fix the URL format and retry.
 - **`Configuration must include at least 'selectors' or 'auto_source'`:** You need to specify either manual selectors or enable auto-source.
 - **`stylesheet.type invalid`:** Only `text/css` and `text/xsl` are supported for stylesheets.
 
@@ -101,7 +105,7 @@ If parts of your items (e.g., title, link) are missing, check the following:
 
 - **Selector:** Ensure the selector for the missing part is correct and relative to the `items.selector`.
 - **Extractor:** Verify that you are using the correct `extractor` (e.g., `text`, `href`, `attribute`).
-- **Dynamic Content:** `faraday` does not render JavaScript. If content loads dynamically, run with `--strategy browserless` (with the Browserless service available) so the page can be rendered before extraction.
+- **Dynamic Content:** `faraday` does not render JavaScript. If content loads dynamically, run with `--strategy browserless` (with Browserless available) or `--strategy botasaurus` (with `BOTASAURUS_SCRAPER_URL` configured) so the page can be rendered before extraction.
 
 ### Date/Time Parsing Errors
 

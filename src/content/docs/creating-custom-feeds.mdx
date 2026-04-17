@@ -48,7 +48,7 @@ When auto-sourcing isn't enough, you can write your own configuration files to c
 3. **Validate the config** with `html2rss validate your-config.yml`
 4. **Render the feed** with `html2rss feed your-config.yml`
 5. **Add it to `html2rss-web`** so you can use it through your normal instance
-6. **Escalate to `browserless`** if the content is rendered by JavaScript
+6. **Escalate strategy when needed**: if static fetching is insufficient, switch to a JavaScript/browser-based extraction strategy
 
 This order keeps iteration fast and makes it easier to see whether the problem is the page structure, your
 selectors, or the fetch strategy.
@@ -210,7 +210,7 @@ there.
 - **No items found?** Check your selectors with browser tools (F12) - the `items.selector` might not match the page structure
 - **Invalid YAML?** Use spaces, not tabs, and ensure proper indentation
 - **Website not loading?** Check the URL and try accessing it in your browser
-- **Missing content?** Some websites load content with JavaScript - you may need to use the `browserless` strategy
+- **Missing content?** Some websites load content with JavaScript - you may need a JavaScript/browser-based extraction strategy instead of plain HTTP fetching
 - **Wrong data extracted?** Verify your selectors are pointing to the right elements
 
 **Need more help?** See our [comprehensive troubleshooting guide](/troubleshooting/troubleshooting) or ask in [GitHub Discussions](https://github.com/orgs/html2rss/discussions).
@@ -234,5 +234,5 @@ there.
 
 - **[Browse existing configs](https://github.com/html2rss/html2rss-configs/tree/master/lib/html2rss/configs)** - See real examples
 - **[Join discussions](https://github.com/orgs/html2rss/discussions)** - Connect with other users
-- **[Learn about strategies](/ruby-gem/reference/strategy/)** - Decide when to use `browserless`
+- **[Learn about strategies](/ruby-gem/reference/strategy/)** - Decide when to use static vs JavaScript/browser-based extraction
 - **[Learn advanced features](/ruby-gem/how-to/advanced-features/)** - Take your configs to the next level

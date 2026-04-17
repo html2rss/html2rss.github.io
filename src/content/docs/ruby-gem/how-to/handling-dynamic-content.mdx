@@ -1,6 +1,6 @@
 ---
 title: Handling Dynamic Content
-description: "Learn how to handle JavaScript-heavy websites and dynamic content with html2rss. Use browserless strategy for sites that load content dynamically."
+description: "Learn how to handle JavaScript-heavy websites and dynamic content with html2rss using browser-based extraction strategies."
 ---
 
 import { Code } from "@astrojs/starlight/components";
@@ -9,7 +9,7 @@ Some websites load their content dynamically using JavaScript. The default `html
 
 ## Solution
 
-Use the [`browserless` strategy](/ruby-gem/reference/strategy) to render JavaScript-heavy websites with a headless browser.
+Use a [browser-based extraction strategy](/ruby-gem/reference/strategy) when JavaScript-heavy pages do not work with default static fetching.
 
 Keep the strategy at the top level and put request-specific options under `request`:
 
@@ -36,9 +36,9 @@ Keep the strategy at the top level and put request-specific options under `reque
   lang="yaml"
 />
 
-## When to Use Browserless
+## When to Use Browser-Based Extraction
 
-The `browserless` strategy is necessary when:
+A browser-based extraction strategy is necessary when:
 
 - **Content loads after page load** - JavaScript fetches data from APIs
 - **Single Page Applications (SPAs)** - React, Vue, Angular apps
@@ -100,13 +100,13 @@ These preload steps can be combined in a single config when a site needs several
 
 ## Performance Considerations
 
-The `browserless` strategy is slower than the default `faraday` strategy because it:
+Browser-based extraction is slower than default static HTTP fetching because it:
 
 - Launches a headless Chrome browser
 - Renders the full page with JavaScript
 - Takes more memory and CPU resources
 
-**Use `faraday` for static content** and only switch to `browserless` when necessary.
+**Use static HTTP fetching for static content** and switch to browser-based extraction when needed. See the [Strategy Reference](/ruby-gem/reference/strategy) for concrete transports, defaults, and environment requirements.
 
 ## Related Topics
 

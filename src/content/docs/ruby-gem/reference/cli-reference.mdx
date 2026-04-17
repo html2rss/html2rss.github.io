@@ -23,6 +23,7 @@ Automatically discovers items from a page and prints the generated RSS feed to s
   code={`
   html2rss auto https://example.com/articles ; \
   html2rss auto https://example.com/app --strategy browserless ; \
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss auto https://example.com/protected --strategy botasaurus ; \
   html2rss auto https://example.com/app --strategy browserless --max-redirects 5 --max-requests 6 ; \
   html2rss auto https://example.com/articles --items_selector ".post-card"
 `}
@@ -30,6 +31,8 @@ Automatically discovers items from a page and prints the generated RSS feed to s
 />
 
 Command: `html2rss auto URL`
+
+Default behavior uses `--strategy auto`, which tries `faraday` then `botasaurus` then `browserless`.
 
 #### URL Surface Guidance For `auto`
 
@@ -62,6 +65,8 @@ When no extractable items are found, `auto` now classifies likely causes instead
   - use explicit selectors in a feed config
 
 Known anti-bot interstitial responses (for example Cloudflare challenge pages) are surfaced explicitly as blocked-surface errors.
+
+If you run with the default `--strategy auto`, no manual strategy override is required for fallback ordering.
 
 #### Browserless Setup And Diagnostics (CLI)
 
@@ -97,6 +102,24 @@ If you see `Browserless connection failed`, check:
 
 For custom Browserless endpoints, `BROWSERLESS_IO_API_TOKEN` is required.
 
+#### Botasaurus Environment Requirement (CLI)
+
+`botasaurus` is opt-in for CLI usage and requires `BOTASAURUS_SCRAPER_URL`:
+
+<Code
+  code={`
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" \
+  html2rss auto https://example.com/updates --strategy botasaurus
+`}
+  lang="bash"
+/>
+
+If you see a Botasaurus configuration error, check:
+
+- `BOTASAURUS_SCRAPER_URL` is set
+- `BOTASAURUS_SCRAPER_URL` is a valid URL
+- the Botasaurus scrape API is reachable from the shell environment running `html2rss`
+
 ### Feed
 
 Loads a YAML config, builds the feed, and prints the RSS XML to stdout.
@@ -106,6 +129,7 @@ Loads a YAML config, builds the feed, and prints the RSS XML to stdout.
   html2rss feed single.yml ; \
   html2rss feed feeds.yml my-first-feed ; \
   html2rss feed single.yml --strategy browserless ; \
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss feed single.yml --strategy botasaurus ; \
   html2rss feed single.yml --max-redirects 5 --max-requests 6 ; \
   html2rss feed single.yml --params id:42 foo:bar
 `}
