@@ -32,8 +32,6 @@ The `auto` flow is URL-surface sensitive.
 
 If extraction quality is poor, switch to a more specific listing/update URL before tuning selectors.
 
-If you use CLI defaults, `--strategy auto` is already active and attempts `faraday` then `botasaurus` then `browserless`.
-
 ### Empty Feeds
 
 If your feed is empty, check the following:
@@ -41,7 +39,7 @@ If your feed is empty, check the following:
 - **URL:** Ensure the `url` in your configuration is correct and accessible.
 - **`items.selector`:** Verify that the `items.selector` matches the elements on the page.
 - **Website Changes:** Websites change their HTML structure frequently. Your selectors may be outdated.
-- **JavaScript Content:** If the content is loaded via JavaScript, move from `faraday` to a rendering strategy such as `browserless` (or `botasaurus` when you use a Botasaurus scrape API).
+- **JavaScript Content:** If the content is loaded via JavaScript, use a browser-based rendering strategy.
 - **Authentication:** Some sites require authentication — check if you need to add headers or use a different strategy.
 
 ### `No scrapers found` Failure Taxonomy (`auto`)
@@ -49,16 +47,18 @@ If your feed is empty, check the following:
 `auto` classifies no-scraper failures with actionable hints:
 
 - **Blocked surface likely (anti-bot or interstitial):**
-  - retry with `--strategy browserless`
   - try a more specific public listing URL
 - **App-shell surface detected:**
-  - retry with `--strategy browserless`
   - target a direct listing/update page instead of homepage/shell entrypoint
 - **Unsupported extraction surface for auto mode:**
   - switch to listing/changelog/category URLs
   - or use explicit selectors in YAML config
 
 Known anti-bot interstitial patterns (for example Cloudflare challenge pages) are surfaced as blocked-surface errors instead of silent empty extraction results.
+
+When all auto fallback tiers complete but still extract zero items, html2rss raises `No RSS feed items extracted after auto fallback ...`.
+
+If failures continue after URL/surface fixes, retry with an explicit browser-based override (`--strategy browserless`), or `--strategy botasaurus` when `BOTASAURUS_SCRAPER_URL` is configured.
 
 ### Browserless Connection / Setup Failures
 
@@ -93,7 +93,7 @@ For custom websocket endpoints, `BROWSERLESS_IO_API_TOKEN` is required.
 Common configuration-related errors:
 
 - **`UnsupportedResponseContentType`:** The website returned content that html2rss can't parse (not HTML or JSON).
-- **`UnsupportedStrategy`:** The specified strategy is not available. Use `faraday`, `browserless`, or `botasaurus`.
+- **`UnsupportedStrategy`:** The specified strategy is not available. Use `auto`, `faraday`, `browserless`, or `botasaurus`.
 - **`BOTASAURUS_SCRAPER_URL is required for strategy=botasaurus.`:** Set `BOTASAURUS_SCRAPER_URL` to your Botasaurus scrape API base URL when using `--strategy botasaurus`.
 - **`BOTASAURUS_SCRAPER_URL is invalid`:** Fix the URL format and retry.
 - **`Configuration must include at least 'selectors' or 'auto_source'`:** You need to specify either manual selectors or enable auto-source.

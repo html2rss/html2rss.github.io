@@ -11,14 +11,6 @@ When auto-sourcing isn't enough, you can write your own configuration files to c
 
 **Prerequisites:** You should be familiar with the [Getting Started](/getting-started) guide before diving into custom configurations.
 
-<Aside type="note" title="Release note">
-  This guide tracks the current documentation tree and may describe features that have not yet shipped in the
-  latest released `html2rss` gem. If you want the newest integrated behavior, prefer running
-  [`html2rss-web`](/web-application/getting-started) via Docker. The web application ships as a rolling
-  release and usually reflects the latest development state of the gem first. See [Versioning and
-  releases](/web-application/reference/versioning-and-releases/) for details.
-</Aside>
-
 <Aside type="tip" title="Use this guide when you need more control">
   Start with included feeds first. If your site is not covered, try [automatic feed
   generation](/web-application/how-to/use-automatic-feed-generation/) next. Reach for a custom config when you
@@ -48,7 +40,7 @@ When auto-sourcing isn't enough, you can write your own configuration files to c
 3. **Validate the config** with `html2rss validate your-config.yml`
 4. **Render the feed** with `html2rss feed your-config.yml`
 5. **Add it to `html2rss-web`** so you can use it through your normal instance
-6. **Escalate strategy when needed**: if static fetching is insufficient, switch to a JavaScript/browser-based extraction strategy
+6. **Escalate request strategy when needed**: use a browser-based rendering strategy only when troubleshooting requires it
 
 This order keeps iteration fast and makes it easier to see whether the problem is the page structure, your
 selectors, or the fetch strategy.
@@ -210,7 +202,7 @@ there.
 - **No items found?** Check your selectors with browser tools (F12) - the `items.selector` might not match the page structure
 - **Invalid YAML?** Use spaces, not tabs, and ensure proper indentation
 - **Website not loading?** Check the URL and try accessing it in your browser
-- **Missing content?** Some websites load content with JavaScript - you may need a JavaScript/browser-based extraction strategy instead of plain HTTP fetching
+- **Missing content?** Try a browser-based rendering strategy during troubleshooting
 - **Wrong data extracted?** Verify your selectors are pointing to the right elements
 
 **Need more help?** See our [comprehensive troubleshooting guide](/troubleshooting/troubleshooting) or ask in [GitHub Discussions](https://github.com/orgs/html2rss/discussions).

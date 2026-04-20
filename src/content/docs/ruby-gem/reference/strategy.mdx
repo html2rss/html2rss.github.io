@@ -1,21 +1,26 @@
 ---
 title: Strategy
-description: "Learn about different strategies for fetching website content with html2rss. Choose between faraday, browserless, and botasaurus strategies for optimal performance."
+description: "Learn how html2rss chooses request strategies by default with auto fallback, and when to override with faraday, botasaurus, or browserless."
 ---
 
 import { Code } from "@astrojs/starlight/components";
 
 The `strategy` key defines how `html2rss` fetches a website's content.
 
-- **`faraday`** (default): Makes a direct HTTP request. It is fast but does not execute JavaScript.
+- **`auto`** (default): Tries concrete strategies in order: `faraday` -> `botasaurus` -> `browserless`.
+- **`faraday`**: Makes a direct HTTP request. It is fast but does not execute JavaScript.
 - **`browserless`**: Renders the website in a headless Chrome browser, which is necessary for JavaScript-heavy sites.
 - **`botasaurus`**: Delegates fetching to a Botasaurus scrape API. This is opt-in and requires `BOTASAURUS_SCRAPER_URL`.
 
 `strategy` is a top-level config key. Request-specific controls live under `request`.
 
-If you use CLI `--strategy auto` (default), html2rss tries `faraday` then `botasaurus` then `browserless`.
+`auto` falls back to the next strategy when the current attempt errors or extracts zero items. Use explicit `--strategy ...` only when you need to force a specific transport for troubleshooting or reproducibility.
 
-Use `faraday` first for direct newsroom/listing/changelog pages. Prefer `botasaurus` as the first explicit browser-based strategy when you have a Botasaurus scrape API. Use `browserless` when you specifically need Browserless preload actions.
+## `auto` (default)
+
+The default strategy chain is:
+
+`faraday` -> `botasaurus` -> `browserless`
 
 ## `browserless`
 
@@ -65,7 +70,7 @@ Set the `strategy` at the top level of your feed configuration and put request c
 
 Use this split consistently:
 
-- `strategy`: selects `faraday`, `browserless`, or `botasaurus`
+- `strategy`: selects `auto`, `faraday`, `browserless`, or `botasaurus`
 - `headers`: top-level headers shared by all strategies
 - `request.max_redirects`: redirect limit for the request session
 - `request.max_requests`: total request budget for the whole feed build

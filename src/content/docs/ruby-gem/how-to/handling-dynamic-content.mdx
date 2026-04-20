@@ -5,11 +5,13 @@ description: "Learn how to handle JavaScript-heavy websites and dynamic content 
 
 import { Code } from "@astrojs/starlight/components";
 
-Some websites load their content dynamically using JavaScript. The default `html2rss` strategy might not see this content.
+Some websites load their content dynamically using JavaScript. Static fetch paths may not see this content reliably.
 
 ## Solution
 
 Use a [browser-based extraction strategy](/ruby-gem/reference/strategy) when JavaScript-heavy pages do not work with default static fetching.
+
+`browserless` is common for this workflow, and `botasaurus` is an alternate browser-based strategy when you run a Botasaurus scrape API.
 
 Keep the strategy at the top level and put request-specific options under `request`:
 
