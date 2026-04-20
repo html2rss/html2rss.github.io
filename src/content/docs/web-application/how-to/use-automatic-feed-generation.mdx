@@ -42,7 +42,7 @@ Then restart the stack:
 1. Open your instance at `http://localhost:4000`
 2. Paste a page URL into `Create a feed`
 3. Add a valid access token when prompted
-4. Choose a strategy if needed, then submit
+4. Submit the request
 5. Copy the generated feed URL or open it directly
 
 ## What Success Looks Like
@@ -59,23 +59,21 @@ That is enough to confirm the self-hosted flow is working.
 
 ## Strategy Behavior
 
-- `faraday` is the default strategy and should be your first try for most pages.
-- During the feed-creation API request (`POST /api/v1/feeds`) from the web UI, a `faraday` submission may be retried once with `browserless` when the first failure looks retryable.
-- If that fallback attempt fails, or if the first failure is clearly auth/URL/unsupported-strategy related, the UI stops and shows an error.
-- This retry behavior is scoped to feed creation. It is not a general retry layer for later feed rendering (`GET /api/v1/feeds/:token`) or preview loading.
+- Feed creation uses the backend default strategy behavior.
+- If feed creation fails, the UI surfaces structured retry/error guidance rather than exposing low-level strategy controls.
 
 ## Input URL Guidance (Quality First)
 
 Automatic generation is most successful when the input URL is already a listing/update surface.
 
 - Higher-success inputs:
-- newsroom/press listing pages
-- category/tag/archive/listing pages
-- changelog/release/update pages
+  - newsroom/press listing pages
+  - category/tag/archive/listing pages
+  - changelog/release/update pages
 - Lower-success inputs:
-- generic homepages
-- search pages
-- app-shell entrypoints (client-rendered shells)
+  - generic homepages
+  - search pages
+  - app-shell entrypoints (client-rendered shells)
 
 If output quality is poor, switch the input to a direct listing/update URL before assuming the feature is broken.
 

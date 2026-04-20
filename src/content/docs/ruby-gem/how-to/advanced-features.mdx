@@ -16,7 +16,7 @@ html2rss uses parallel processing in auto-source discovery. This happens automat
 1. **Use appropriate selectors:** More specific selectors reduce processing time
 2. **Limit items when possible:** Use CSS selectors that target only the content you need
 3. **Cache responses:** The web application caches responses automatically
-4. **Choose the right strategy:** Use `faraday` for static content, `browserless` only when JavaScript is required
+4. **Choose the right strategy:** Use static HTTP fetching for simple pages, and move to a JavaScript/browser-based extraction strategy when rendering or anti-bot handling is required
 
 ## Memory Optimization
 

@@ -1,18 +1,26 @@
 ---
 title: Strategy
-description: "Learn about different strategies for fetching website content with html2rss. Choose between faraday and browserless strategies for optimal performance."
+description: "Learn how html2rss chooses request strategies by default with auto fallback, and when to override with faraday, botasaurus, or browserless."
 ---
 
 import { Code } from "@astrojs/starlight/components";
 
 The `strategy` key defines how `html2rss` fetches a website's content.
 
-- **`faraday`** (default): Makes a direct HTTP request. It is fast but does not execute JavaScript.
+- **`auto`** (default): Tries concrete strategies in order: `faraday` -> `botasaurus` -> `browserless`.
+- **`faraday`**: Makes a direct HTTP request. It is fast but does not execute JavaScript.
 - **`browserless`**: Renders the website in a headless Chrome browser, which is necessary for JavaScript-heavy sites.
+- **`botasaurus`**: Delegates fetching to a Botasaurus scrape API. This is opt-in and requires `BOTASAURUS_SCRAPER_URL`.
 
 `strategy` is a top-level config key. Request-specific controls live under `request`.
 
-Use `faraday` first for direct newsroom/listing/changelog pages. Prefer `browserless` when the target is client-rendered, protected by anti-bot checks, or otherwise requires JavaScript to expose article links.
+`auto` falls back to the next strategy when the current attempt errors or extracts zero items. Use explicit `--strategy ...` only when you need to force a specific transport for troubleshooting or reproducibility.
+
+## `auto` (default)
+
+The default strategy chain is:
+
+`faraday` -> `botasaurus` -> `browserless`
 
 ## `browserless`
 
@@ -62,11 +70,12 @@ Set the `strategy` at the top level of your feed configuration and put request c
 
 Use this split consistently:
 
-- `strategy`: selects `faraday` or `browserless`
+- `strategy`: selects `auto`, `faraday`, `browserless`, or `botasaurus`
 - `headers`: top-level headers shared by all strategies
 - `request.max_redirects`: redirect limit for the request session
 - `request.max_requests`: total request budget for the whole feed build
 - `request.browserless.*`: Browserless-only options
+- `request.botasaurus.*`: Botasaurus-only options
 
 Example:
 
@@ -152,6 +161,58 @@ Check these first:
 - your Browserless service is running and accepting connections
 
 For custom Browserless websocket endpoints, `BROWSERLESS_IO_API_TOKEN` is mandatory. The local default endpoint (`ws://127.0.0.1:3000`) can use the default local token `6R0W53R135510`.
+
+## `botasaurus`
+
+`botasaurus` delegates page fetching to a Botasaurus scrape API endpoint. This strategy is explicit opt-in and requires:
+
+- `strategy: botasaurus`
+- `BOTASAURUS_SCRAPER_URL` set to your Botasaurus scrape API base URL (for example `http://localhost:4010`)
+
+### Configuration
+
+<Code
+  code={`
+  strategy: botasaurus
+  request:
+    max_redirects: 5
+    max_requests: 6
+    botasaurus:
+      navigation_mode: auto
+      max_retries: 2
+      headless: false
+  channel:
+    url: "https://example.com/protected-listing"
+  auto_source: {}
+  `}
+  lang="yml"
+/>
+
+Supported `request.botasaurus` options:
+
+- `navigation_mode` (`auto`, `get`, `google_get`, `google_get_bypass`)
+- `max_retries` (`0..3`)
+- `wait_for_selector`
+- `wait_timeout_seconds`
+- `block_images`
+- `block_images_and_css`
+- `wait_for_complete_page_load`
+- `headless`
+- `proxy`
+- `user_agent`
+- `window_size` (two integers, for example `[1920, 1080]`)
+- `lang`
+
+### Command-Line Usage
+
+<Code
+  code={`
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" \
+  html2rss auto https://example.com/updates --strategy botasaurus ; \
+  html2rss feed my_config.yml --strategy botasaurus
+`}
+  lang="sh"
+/>
 
 ---
 
