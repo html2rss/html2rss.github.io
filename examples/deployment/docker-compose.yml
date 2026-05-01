@@ -7,6 +7,11 @@ services:
         required: false
     environment:
       PORT: 4000
+      BOTASAURUS_SCRAPER_URL: http://botasaurus:4010
+
+  botasaurus:
+    image: html2rss/botasaurus-scrape-api:latest
+    restart: unless-stopped
 
   caddy:
     image: caddy:2-alpine
@@ -30,6 +35,7 @@ services:
     depends_on:
       - html2rss-web
       - caddy
+      - botasaurus
     command:
       - --cleanup
       - --interval

@@ -1,6 +1,6 @@
 ---
 import { Code } from "@astrojs/starlight/components";
-import { browserlessImage, caddyImage, watchtowerImage, webImage } from "../../data/docker";
+import { botasaurusImage, browserlessImage, caddyImage, watchtowerImage, webImage } from "../../data/docker";
 
 interface Props {
   variant: "minimal" | "productionCaddy" | "secure" | "watchtower" | "resourceGuardrails";
@@ -26,6 +26,11 @@ const snippets: Record<Props["variant"], string> = {
       SENTRY_DSN: \${SENTRY_DSN:-}
       BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:4002
       BROWSERLESS_IO_API_TOKEN: \${BROWSERLESS_IO_API_TOKEN:?set BROWSERLESS_IO_API_TOKEN}
+      BOTASAURUS_SCRAPER_URL: http://botasaurus:4010
+
+  botasaurus:
+    image: ${botasaurusImage}
+    restart: unless-stopped
 
   browserless:
     image: "${browserlessImage}"
@@ -67,6 +72,11 @@ const snippets: Record<Props["variant"], string> = {
       SENTRY_DSN: \${SENTRY_DSN:-}
       BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:4002
       BROWSERLESS_IO_API_TOKEN: \${BROWSERLESS_IO_API_TOKEN:?set BROWSERLESS_IO_API_TOKEN}
+      BOTASAURUS_SCRAPER_URL: http://botasaurus:4010
+
+  botasaurus:
+    image: ${botasaurusImage}
+    restart: unless-stopped
 
   browserless:
     image: "${browserlessImage}"
@@ -93,6 +103,11 @@ volumes:
       SENTRY_DSN: \${SENTRY_DSN:-}
       BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:4002
       BROWSERLESS_IO_API_TOKEN: \${BROWSERLESS_IO_API_TOKEN:?set BROWSERLESS_IO_API_TOKEN}
+      BOTASAURUS_SCRAPER_URL: http://botasaurus:4010
+
+  botasaurus:
+    image: ${botasaurusImage}
+    restart: unless-stopped
 
   browserless:
     image: "${browserlessImage}"
@@ -109,7 +124,7 @@ volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # Optional for private registries only:
       # - "\${HOME}/.docker/config.json:/config.json:ro"
-    command: --cleanup --interval 7200 html2rss-web browserless caddy`,
+    command: --cleanup --interval 7200 html2rss-web botasaurus browserless caddy`,
   resourceGuardrails: `services:
   html2rss-web:
     image: ${webImage}
