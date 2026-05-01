@@ -7,14 +7,13 @@ sidebar:
 
 import { Aside, Code } from "@astrojs/starlight/components";
 
-When auto-sourcing isn't enough, you can write your own configuration files to create custom RSS feeds for any website. This guide shows you how to take full control with YAML configs.
+When existing feeds or auto-sourcing are not enough, write a YAML config for the site you want to follow.
 
 **Prerequisites:** You should be familiar with the [Getting Started](/getting-started) guide before diving into custom configurations.
 
 <Aside type="tip" title="Use this guide when you need more control">
-  Start with included feeds first. If your site is not covered, try [automatic feed
-  generation](/web-application/how-to/use-automatic-feed-generation/) next. Reach for a custom config when you
-  need a stable, reviewable setup or the generated feed misses important content.
+  Reach for a custom config when you need stable, reviewable extraction rules or generated output misses
+  important content.
 </Aside>
 
 ---
@@ -28,10 +27,6 @@ When auto-sourcing isn't enough, you can write your own configuration files to c
 - **You need specific formatting** or data extraction
 - **The website has complex structure** that requires custom selectors
 - **You want to combine data** from multiple sources
-
-**Don't need custom configs?** Check the [Feed Directory](/feed-directory/) first - there might already be a working feed for your website.
-
----
 
 ## Recommended Workflow
 
@@ -217,7 +212,6 @@ there.
 
 **For Beginners:**
 
-- **[Browse the Feed Directory](/feed-directory/)** - See real-world examples
 - **[Run html2rss-web with Docker](/web-application/getting-started)** - Use the newest integrated behavior
 - **[Learn more about selectors](/ruby-gem/reference/selectors/)** - Master CSS selectors
 - **[Submit your config via GitHub Web](https://github.com/html2rss/html2rss-configs)** - No Git knowledge required!
