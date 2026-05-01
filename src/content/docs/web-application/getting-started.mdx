@@ -10,7 +10,7 @@ import { Code } from "@astrojs/starlight/components";
 import AutoGenerationOptional from "../../../components/docs/AutoGenerationOptional.astro";
 import MinimalDockerCompose from "../../../components/docs/MinimalDockerCompose.astro";
 
-Run `html2rss-web` locally with Docker, open the web interface, and verify that your instance can serve a working included feed before you enable direct feed generation.
+Run `html2rss-web` locally with Docker and verify one included feed before enabling direct feed generation.
 
 ## What You Will Have When This Works
 
@@ -23,7 +23,7 @@ After this guide, you should have:
 
 ## Installation Guide
 
-This guide walks you through a local Docker setup that gives you the most reliable starting point.
+This guide uses a local Docker Compose stack.
 
 ### What You'll Need
 
@@ -50,7 +50,7 @@ Create a file called `docker-compose.yml` in that folder and start with the mini
 
 <MinimalDockerCompose />
 
-This minimal stack intentionally proves the included-feed path first. Add automatic updates, reverse proxying, or your own config file only after this first run works.
+Add automatic updates, reverse proxying, or your own config file after this first run works.
 
 ### Step 3: Start html2rss-web
 
@@ -73,8 +73,6 @@ Then run:
 
 ## First Success Check
 
-At this point, `html2rss-web` should be running.
-
 1. Open `http://localhost:4000`
 2. Confirm the web interface loads
 3. Open one of the included feed URLs from your own instance:
@@ -82,19 +80,9 @@ At this point, `html2rss-web` should be running.
    - `http://localhost:4000/phys.org/weekly.rss`
    - `http://localhost:4000/softwareleadweekly.com/issues.rss`
 4. Confirm the feed opens
-5. Copy that feed URL into your reader
+5. Copy that feed URL into your reader if you want to keep it
 
-If that works, the deployment, included-config path, and reader subscription path are working together.
-
-## What To Do First
-
-Start with an included config from your own instance:
-
-1. open a known included feed URL
-2. copy that feed URL into your reader
-3. confirm your reader can subscribe successfully
-
-That proves the lowest-friction path before you invest in automatic generation or custom configs.
+If that works, the local app and included-feed path are ready.
 
 ## What Changes If You Enable Feed Generation
 

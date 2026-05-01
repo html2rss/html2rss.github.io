@@ -1,6 +1,6 @@
 ---
 title: "Getting Started"
-description: "Start html2rss-web locally, verify a working included feed from your self-hosted instance, and decide when to enable automatic generation or move to custom configs."
+description: "Start html2rss-web locally, verify one feed, and decide when to enable automatic generation or move to custom configs."
 sidebar:
   order: 1
 ---
@@ -17,13 +17,12 @@ That guide is the canonical setup flow for:
 
 - running `html2rss-web` locally
 - confirming the interface is working
-- opening a first included feed URL
+- opening a known feed URL
 - deciding when to use automatic generation or custom configs
 
 ## Quick Shortcuts
 
 - **[Run html2rss-web with Docker](/web-application/getting-started)**: recommended first step
-- **[Browse working feed examples](/feed-directory/)**: see what successful outputs look like
 - **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: enable direct feed creation from a page URL when you want that workflow
 - **[Create Custom Feeds](/creating-custom-feeds)**: write configs when you need more control
 - **[Troubleshooting Guide](/troubleshooting/troubleshooting)**: fix startup or extraction problems
@@ -33,6 +32,8 @@ That guide is the canonical setup flow for:
 If you are working directly with the gem instead of `html2rss-web`, start with:
 
 <Code code={`html2rss auto https://example.com/blog`} lang="bash" />
+
+For strategy behavior and manual overrides, see the [Strategy reference](/ruby-gem/reference/strategy).
 
 If the target site is unusually redirect-heavy or needs extra follow-up requests, the CLI also supports:
 

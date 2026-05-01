@@ -11,7 +11,7 @@ Keep this structure in mind:
 
 - `headers` stays top-level
 - `strategy` stays top-level
-- request-specific controls such as budgets and Browserless options live under `request`
+- request-specific controls such as budgets and strategy-specific options live under `request`
 
 ## When You Need Custom Headers
 
@@ -74,6 +74,7 @@ Request budgets are configured under `request`, not as top-level keys:
 - `request.max_redirects` limits redirect hops
 - `request.max_requests` limits the total request budget for the feed build
 - `request.browserless.*` is reserved for Browserless-only behavior such as preload actions
+- `request.botasaurus.*` is reserved for Botasaurus-only behavior such as navigation mode and retries
 
 ## Common Use Cases
 

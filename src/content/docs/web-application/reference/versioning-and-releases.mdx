@@ -5,11 +5,19 @@ description: Learn about versioning and release strategy for html2rss-web
 
 import { dockerHubRepository, dockerHubUrl } from "../../../../data/docker";
 
-This web application is distributed in a [rolling release](https://en.wikipedia.org/wiki/Rolling_release) fashion from the `main` branch.
+html2rss-web publishes versioned Docker images to <a href={dockerHubUrl}>Docker Hub: <code>{dockerHubRepository}</code></a>.
 
-For the latest commit passing GitHub CI/CD on the main branch, an updated Docker image will be pushed to <a href={dockerHubUrl}>Docker Hub: <code>{dockerHubRepository}</code></a>.
-The [SBOM](https://en.wikipedia.org/wiki/Software_supply_chain) is embedded in the Docker image.
+For release `1.2.3`, we publish these tags:
 
-GitHub's @dependabot is enabled for dependency updates and they are automatically merged to the `main` branch when the CI gives the green light.
+- `html2rss/web:1.2.3`: exact release
+- `html2rss/web:1`: latest release in major version `1`
+- `html2rss/web:latest`: newest published release
+- `html2rss/web:<git-sha>`: release image pinned by source commit
 
-If you use Docker, you should update to the latest image automatically by [setting up _watchtower_ as described](/web-application/how-to/automatic-updates).
+Use `html2rss/web:1` for normal deployments. It receives newer releases for major version `1` without moving across a future major release.
+
+Use an exact version tag when you need fully pinned deploys. Use `latest` only when you intentionally want the newest published release. Use the commit SHA tag when you need to trace or reproduce one released build.
+
+Release images include SBOM and provenance metadata. The image build also sets `BUILD_TAG` to the release version and `GIT_SHA` to the released commit.
+
+If you use Docker Compose, [set up Watchtower](/web-application/how-to/automatic-updates) to pull updates for the tag you selected.

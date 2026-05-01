@@ -22,14 +22,16 @@ Automatically discovers items from a page and prints the generated RSS feed to s
 <Code
   code={`
   html2rss auto https://example.com/articles ; \
-  html2rss auto https://example.com/app --strategy browserless ; \
   html2rss auto https://example.com/app --strategy browserless --max-redirects 5 --max-requests 6 ; \
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss auto https://example.com/protected --strategy botasaurus ; \
   html2rss auto https://example.com/articles --items_selector ".post-card"
 `}
   lang="bash"
 />
 
 Command: `html2rss auto URL`
+
+Default behavior is `--strategy auto`, which tries `faraday` then `botasaurus` then `browserless`.
 
 #### URL Surface Guidance For `auto`
 
@@ -49,13 +51,11 @@ When possible, pass a direct listing/update URL instead of a top-level homepage 
 
 #### Failure Outcomes You Should Expect
 
-When no extractable items are found, `auto` now classifies likely causes instead of only returning a generic message:
+When no extractable items are found, `auto` classifies likely causes instead of only returning a generic message:
 
 - `blocked surface likely (anti-bot or interstitial)`:
-  - retry with `--strategy browserless`
   - try a more specific public listing URL
 - `app-shell surface detected`:
-  - retry with `--strategy browserless`
   - switch to a direct listing/update URL
 - `unsupported extraction surface for auto mode`:
   - switch to listing/changelog/category URLs
@@ -63,9 +63,17 @@ When no extractable items are found, `auto` now classifies likely causes instead
 
 Known anti-bot interstitial responses (for example Cloudflare challenge pages) are surfaced explicitly as blocked-surface errors.
 
+If all fallback tiers run but still extract zero items, html2rss raises:
+
+- `No RSS feed items extracted after auto fallback ...`
+
+If failures continue after URL/surface fixes, retry with an explicit browser-based override (`--strategy browserless`), or `--strategy botasaurus` when `BOTASAURUS_SCRAPER_URL` is configured.
+
+Start by changing the input URL to a direct listing/update page, then move to explicit selectors if needed.
+
 #### Browserless Setup And Diagnostics (CLI)
 
-`browserless` is opt-in for CLI usage.
+`browserless` is an explicit override for CLI usage.
 
 <Code
   code={`
@@ -97,6 +105,24 @@ If you see `Browserless connection failed`, check:
 
 For custom Browserless endpoints, `BROWSERLESS_IO_API_TOKEN` is required.
 
+#### Botasaurus Environment Requirement (CLI)
+
+`botasaurus` is an explicit override for CLI usage and requires `BOTASAURUS_SCRAPER_URL`:
+
+<Code
+  code={`
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" \
+  html2rss auto https://example.com/updates --strategy botasaurus
+`}
+  lang="bash"
+/>
+
+If you see a Botasaurus configuration error, check:
+
+- `BOTASAURUS_SCRAPER_URL` is set
+- `BOTASAURUS_SCRAPER_URL` is a valid URL
+- the Botasaurus scrape API is reachable from the shell environment running `html2rss`
+
 ### Feed
 
 Loads a YAML config, builds the feed, and prints the RSS XML to stdout.
@@ -105,7 +131,9 @@ Loads a YAML config, builds the feed, and prints the RSS XML to stdout.
   code={`
   html2rss feed single.yml ; \
   html2rss feed feeds.yml my-first-feed ; \
+  html2rss feed single.yml --strategy auto ; \
   html2rss feed single.yml --strategy browserless ; \
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss feed single.yml --strategy botasaurus ; \
   html2rss feed single.yml --max-redirects 5 --max-requests 6 ; \
   html2rss feed single.yml --params id:42 foo:bar
 `}

@@ -1,12 +1,17 @@
 services:
   html2rss-web:
-    image: html2rss/web:latest
+    image: html2rss/web:1
     restart: unless-stopped
     env_file:
       - path: .env
         required: false
     environment:
       PORT: 4000
+      BOTASAURUS_SCRAPER_URL: http://botasaurus:4010
+
+  botasaurus:
+    image: html2rss/botasaurus-scrape-api:latest
+    restart: unless-stopped
 
   caddy:
     image: caddy:2-alpine
@@ -30,6 +35,7 @@ services:
     depends_on:
       - html2rss-web
       - caddy
+      - botasaurus
     command:
       - --cleanup
       - --interval
