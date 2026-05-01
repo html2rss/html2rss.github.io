@@ -7,11 +7,9 @@ import { Code } from "@astrojs/starlight/components";
 
 import DockerComposeSnippet from "../../../../components/docs/DockerComposeSnippet.astro";
 
-html2rss-web ships on Docker Hub, so you can launch this self-hosted service wherever Docker runs. Start with the official [`docker-compose.yml`](https://github.com/html2rss/html2rss-web/blob/main/docker-compose.yml) as your baseline, and treat the [Getting Started guide](/web-application/getting-started) as the required first proof that your instance can already serve included feeds locally.
+html2rss-web ships on Docker Hub. Start with the [Getting Started guide](/web-application/getting-started), then add the production pieces below.
 
-If you have not yet created a local instance, complete the [Getting Started guide](/web-application/getting-started) first. It walks through the one-time project directory setup, creating a minimal compose file, and confirming the application locally, which gives you the right baseline before exposing a self-hosted instance publicly.
-
-Already running html2rss-web on your workstation? The sections below focus on what changes when you take that setup to production.
+The examples use `html2rss/web:1`, the recommended major-version tag. Pin an exact release if your deployment process requires it.
 
 ## Choose Your Production Scope First
 
@@ -40,54 +38,37 @@ If you plan to enable automatic feed generation, also prepare:
 
 ### Why a Reverse Proxy?
 
-A reverse proxy accepts public HTTPS traffic, terminates TLS, and forwards requests to html2rss-web running on your private network.
+A reverse proxy terminates public HTTPS traffic and forwards requests to html2rss-web on your private Docker network.
 
 ### Option A: Caddy (Automatic HTTPS)
 
-Caddy handles certificates and redirects with almost no configuration.
+Caddy handles certificates and redirects.
 
 <DockerComposeSnippet variant="productionCaddy" />
 
-- Create a `.env` file beside your compose file with the following variables:
+Create a `.env` file beside your compose file:
 
-      <Code
-      code={`
-      # Required for reverse proxy and application
-      CADDY_HOST=yourdomain.com
-
-      # Generate with: openssl rand -hex 32
-
-      HTML2RSS_SECRET_KEY=
-
-      # Required by the documented Compose stack
-
-      HEALTH_CHECK_TOKEN=
-
-      # Required by the default compose stack
-
-      BROWSERLESS_IO_API_TOKEN=
-
-      # Recommended for production traceability (compose defaults to local)
-
-      BUILD_TAG=
-
-      # Recommended for production traceability (compose defaults to local)
-
-      GIT_SHA=
-
-  `}
+<Code
+  code={`
+  CADDY_HOST=yourdomain.com
+  HTML2RSS_SECRET_KEY=<openssl rand -hex 32>
+  HEALTH_CHECK_TOKEN=<strong bearer token>
+  BROWSERLESS_IO_API_TOKEN=<browserless token>
+`}
   lang="dotenv"
-  />
+/>
 
-- Update your `.env` before starting the stack:
-  - Set `CADDY_HOST` for your domain.
-  - Generate a production secret (`openssl rand -hex 32`) and assign it to `HTML2RSS_SECRET_KEY`.
-  - Set a strong `HEALTH_CHECK_TOKEN` when you use authenticated `GET /api/v1/health`; liveness/readiness probes can use `/api/v1/health/live` and `/api/v1/health/ready` without it.
-  - Set `BUILD_TAG` and `GIT_SHA` to real release metadata for production.
-  - Adjust optional knobs such as `AUTO_SOURCE_ENABLED` and `SENTRY_DSN` as needed; refer to the [environment reference](/web-application/reference/env-variables) for details.
-- After `docker compose up -d`, run `docker compose logs caddy --tail 20`; look for `certificate obtained`.
-- Re-test after DNS changes with [SSL Labs](https://www.ssllabs.com/ssltest/).
-- Want automatic updates? Add the Watchtower service shown below.
+Before starting the stack:
+
+- Set `CADDY_HOST` for your domain.
+- Generate `HTML2RSS_SECRET_KEY` with `openssl rand -hex 32`.
+- Set a strong `HEALTH_CHECK_TOKEN` when you use authenticated `GET /api/v1/health`; liveness/readiness probes can use `/api/v1/health/live` and `/api/v1/health/ready` without it.
+- Leave `BUILD_TAG` and `GIT_SHA` unset unless you intentionally override image metadata in logs.
+- Adjust optional knobs such as `AUTO_SOURCE_ENABLED` and `SENTRY_DSN` as needed; refer to the [environment reference](/web-application/reference/env-variables) for details.
+
+After `docker compose up -d`, run `docker compose logs caddy --tail 20`; look for `certificate obtained`.
+
+Re-test after DNS changes with [SSL Labs](https://www.ssllabs.com/ssltest/).
 
 ## Secure Your Instance
 
@@ -107,14 +88,14 @@ Keep the instance healthy once it is in production:
 
 - Monitor `https://yourdomain.com/api/v1/health` with the configured bearer token for authenticated health checks
 - Review `docker compose logs` regularly for feed errors or certificate renewals
-- Enable automatic image updates so security patches roll out quickly
+- Enable automatic image updates for the Docker tag you selected
 - Right-size CPU and memory to avoid starvation when parsing large feeds
 
 ### Auto-update with Watchtower
 
 <DockerComposeSnippet variant="watchtower" />
 
-This Watchtower shape scopes updates to `html2rss-web`, `browserless`, and `caddy`; replace service names if your stack differs.
+This Watchtower shape scopes updates to `html2rss-web`, `browserless`, and `caddy`; change the service names if your stack differs.
 
 Check `docker compose logs watchtower` occasionally to confirm updates are applied.
 
@@ -122,7 +103,7 @@ Check `docker compose logs watchtower` occasionally to confirm updates are appli
 
 <DockerComposeSnippet variant="resourceGuardrails" />
 
-Adjust the limits to match your host capacity. Increase memory if you process many large feeds.
+Adjust limits to match host capacity. Increase memory for large feeds.
 
 ## Share & Support
 

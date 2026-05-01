@@ -1,6 +1,6 @@
 services:
   html2rss-web:
-    image: html2rss/web:latest
+    image: html2rss/web:1
     restart: unless-stopped
     env_file:
       - path: .env
