@@ -1,26 +1,27 @@
 ---
 title: "Web Application"
-description: "html2rss-web is the self-hosted web interface and feed server for included feeds, direct generation, and custom configs."
+description: "html2rss-web is the self-hosted web interface and feed server for page-URL generation, included-feed fallback, and custom configs."
 sidebar:
   label: "Overview"
   order: 1
 ---
 
-`html2rss-web` is the recommended way to get started. Run it locally with Docker, verify one feed from your own instance, then decide whether you need token-gated direct generation or custom configs.
+`html2rss-web` is the recommended way to get started. Run it locally with Docker, set your token in `.env`, create a first generated feed, then decide whether you also want included-feed fallback or custom configs.
 
 ## Get Started
 
 Start with **[Getting Started](/web-application/getting-started)** to:
 
 - run your own local instance
-- verify the web interface
+- paste your own token
+- open a generated feed from your own instance
 - choose the right next step for your site
 
 ## What The Web App Gives You
 
-- **Included feed catalog:** real embedded configs you can use immediately from your own deployment
-- **Web interface:** direct feed creation when you explicitly enable it
-- **Access-controlled generation:** `POST /api/v1/feeds` requires a bearer token
+- **Web interface:** direct feed creation from page URLs
+- **Access-controlled generation:** `POST /api/v1/feeds` expects the token configured on your instance
+- **Included feed catalog:** packaged fallback feeds you can use immediately from your own deployment
 - **Config-based extension path:** move to custom feeds when you need reviewable rules
 - **Caching and HTTP handling:** shipped as part of the deployment
 - **Generated API contract:** OpenAPI is published at `/openapi.yaml`
@@ -30,8 +31,8 @@ The scraping and feed-building engine is provided by the Ruby gem [`html2rss`](h
 ## Recommended Flow
 
 1. **[Getting Started](/web-application/getting-started)**: run the app locally
-2. **[Use the included configs](/web-application/how-to/use-included-configs/)**: use the embedded feed set when it covers your site
-3. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: enable direct page-URL conversion when you want that workflow
+2. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: keep the page-URL flow working on your own instance
+3. **[Use the included configs](/web-application/how-to/use-included-configs/)**: use the embedded feed set as fallback when it covers your site
 4. **[Create Custom Feeds](/creating-custom-feeds)**: build a stable custom setup when needed
 
 ## For Integrations

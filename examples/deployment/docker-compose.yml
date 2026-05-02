@@ -2,47 +2,14 @@ services:
   html2rss-web:
     image: html2rss/web:1
     restart: unless-stopped
+    ports:
+      - "127.0.0.1:4000:4000"
     env_file:
       - path: .env
         required: false
     environment:
       PORT: 4000
-      BOTASAURUS_SCRAPER_URL: http://botasaurus:4010
-
-  botasaurus:
-    image: html2rss/botasaurus-scrape-api:latest
-    restart: unless-stopped
-
-  caddy:
-    image: caddy:2-alpine
-    depends_on:
-      - html2rss-web
-    command:
-      - caddy
-      - reverse-proxy
-      - --from
-      - ${CADDY_HOST}
-      - --to
-      - html2rss-web:4000
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - caddy_data:/data
-
-  watchtower:
-    image: containrrr/watchtower
-    depends_on:
-      - html2rss-web
-      - caddy
-      - botasaurus
-    command:
-      - --cleanup
-      - --interval
-      - "7200"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    restart: unless-stopped
-
-volumes:
-  caddy_data:
+      RACK_ENV: production
+      HTML2RSS_SECRET_KEY: ${HTML2RSS_SECRET_KEY}
+      HTML2RSS_ACCESS_TOKEN: ${HTML2RSS_ACCESS_TOKEN}
+      AUTO_SOURCE_ENABLED: ${AUTO_SOURCE_ENABLED}

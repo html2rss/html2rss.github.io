@@ -1,9 +1,9 @@
 ---
 title: "Turn Any Website Into an RSS Feed"
-description: "Run html2rss-web with Docker, verify one feed, then enable automatic generation or move to custom configs when you need more control."
+description: "Run html2rss-web with Docker, paste your own page URL, enter one token, and open the generated feed."
 ---
 
-Run `html2rss-web` with Docker, verify one feed from your own instance, then decide whether you need automatic generation or custom configs.
+Run `html2rss-web` with Docker, paste your own page URL, enter one access token, and open the generated feed from your own instance.
 
 ## Start Here
 
@@ -12,9 +12,9 @@ Run `html2rss-web` with Docker, verify one feed from your own instance, then dec
 That guide is the canonical onboarding flow for:
 
 - starting a local instance
-- verifying the web interface
-- opening a known feed URL
-- choosing the next path
+- creating a generated feed from your own page URL
+- entering the token from your local setup
+- choosing the fallback or advanced path only when needed
 
 ## What is html2rss?
 
@@ -30,7 +30,7 @@ Most people should start with the web application:
 ### I want a working instance first
 
 1. **[Run html2rss-web with Docker](/web-application/getting-started)**: recommended starting path
-2. **[Use the included configs](/web-application/how-to/use-included-configs/)**: optional guide for the embedded feed set
+2. **[Use the included configs](/web-application/how-to/use-included-configs/)**: fallback guide when the packaged feed set already covers your site
 
 ### I need more control
 
@@ -55,8 +55,9 @@ Most people should start with the web application:
 ## Practical Notes
 
 - Start with Docker, not a public instance.
-- Verify the deployment with one known feed first.
-- Enable automatic generation only when you want the direct page-URL workflow and are ready to allow it on your self-hosted instance.
+- Start with your own listing, newsroom, changelog, or updates URL.
+- Automatic page-to-feed generation is the normal path.
+- Use included configs when the packaged catalog already covers your site.
 - Move to custom configs when you need a stable, reviewable setup.
 
 **Need help?** Continue to the [troubleshooting guide](/troubleshooting/troubleshooting) or join [GitHub Discussions](https://github.com/orgs/html2rss/discussions).
