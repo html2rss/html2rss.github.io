@@ -15,6 +15,8 @@ export default defineConfig({
     "/components": "/",
     "/web-application/how-to/deployment": "/web-application/deployment/",
     "/web-application/how-to/automatic-updates": "/web-application/deployment/#auto-update-with-watchtower",
+    "/web-application/how-to": "/web-application/guides/",
+    "/ruby-gem/how-to": "/ruby-gem/guides/",
   },
   build: {
     inlineStylesheets: "auto",
@@ -251,7 +253,7 @@ export default defineConfig({
       sidebar: [
         {
           label: "Getting Started",
-          link: "/getting-started",
+          link: "/getting-started/",
         },
         {
           label: "Feed Directory",
@@ -259,7 +261,7 @@ export default defineConfig({
         },
         {
           label: "Create Custom Feeds",
-          link: "/creating-custom-feeds",
+          link: "/creating-custom-feeds/",
         },
         {
           label: "Web Application",
@@ -269,16 +271,12 @@ export default defineConfig({
             "web-application/getting-started",
             "web-application/deployment",
             {
-              label: "How-to",
-              autogenerate: { directory: "web-application/how-to" },
+              label: "Guides",
+              autogenerate: { directory: "web-application/guides" },
             },
             {
               label: "Reference",
               autogenerate: { directory: "web-application/reference" },
-            },
-            {
-              label: "Tutorials",
-              autogenerate: { directory: "web-application/tutorials" },
             },
           ],
         },
@@ -289,22 +287,22 @@ export default defineConfig({
             "ruby-gem",
             "ruby-gem/installation",
             {
-              label: "How-to",
-              autogenerate: { directory: "ruby-gem/how-to" },
-            },
-            {
-              label: "Reference",
-              autogenerate: { directory: "ruby-gem/reference" },
+              label: "Guides",
+              autogenerate: { directory: "ruby-gem/guides" },
             },
             {
               label: "Tutorials",
               autogenerate: { directory: "ruby-gem/tutorials" },
             },
+            {
+              label: "Reference",
+              autogenerate: { directory: "ruby-gem/reference" },
+            },
           ],
         },
         {
           label: "About",
-          link: "/about",
+          link: "/about/",
         },
         {
           label: "Get Involved",

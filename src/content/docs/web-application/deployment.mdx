@@ -9,7 +9,7 @@ import { Code } from "@astrojs/starlight/components";
 
 import DockerComposeSnippet from "../../../components/docs/DockerComposeSnippet.astro";
 
-html2rss-web ships on Docker Hub. Start with the [Getting Started guide](/web-application/getting-started), which uses [`html2rss-web/docker-compose.quickstart.yml`](https://github.com/html2rss/html2rss-web/blob/main/docker-compose.quickstart.yml). Make sure the one-file demo works first, then add the production pieces below.
+html2rss-web ships on Docker Hub. Start with the [Getting Started guide](/web-application/getting-started/), which uses [`html2rss-web/docker-compose.quickstart.yml`](https://github.com/html2rss/html2rss-web/blob/main/docker-compose.quickstart.yml). Make sure the one-file demo works first, then add the production pieces below.
 
 The examples use `html2rss/web:1`, the recommended major-version tag. Pin an exact release if your deployment process requires it.
 
@@ -67,7 +67,7 @@ Before starting the stack:
 - Set a strong `HTML2RSS_ACCESS_TOKEN`. This is the token users paste into the web UI.
 - Leave `HEALTH_CHECK_TOKEN` unset unless you intentionally use authenticated `GET /api/v1/health`.
 - Leave `BUILD_TAG` and `GIT_SHA` unset unless you intentionally override image metadata in logs.
-- Adjust optional knobs such as `AUTO_SOURCE_ENABLED` and `SENTRY_DSN` as needed; refer to the [environment reference](/web-application/reference/env-variables) for details.
+- Adjust optional knobs such as `AUTO_SOURCE_ENABLED` and `SENTRY_DSN` as needed; refer to the [environment reference/web-application/reference/env-variables/) for details.
 
 After `docker compose up -d`, run `docker compose logs caddy --tail 20`; look for `certificate obtained`.
 
@@ -116,5 +116,5 @@ Adjust limits to match host capacity. Increase memory for large feeds.
 - Test different feed sources before inviting external users
 - Publish `/openapi.yaml` from the running instance if you expect agents or integrations to call the API directly
 - Add your instance to the [community wiki](https://github.com/html2rss/html2rss-web/wiki/Instances) if you want it listed publicly
-- Visit the [troubleshooting guide](/troubleshooting/troubleshooting) or join the [community discussions](https://github.com/orgs/html2rss/discussions) when you need help
-- Ready to contribute fixes or docs? See the [contributing guide](/get-involved/contributing)
+- Visit the [troubleshooting guide](/troubleshooting/troubleshooting/) or join the [community discussions](https://github.com/orgs/html2rss/discussions) when you need help
+- Ready to contribute fixes or docs? See the [contributing guide/get-involved/contributing/)
