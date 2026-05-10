@@ -76,6 +76,7 @@ Maintain a directed "funnel" for documentation to maximize user success and conv
 3.  **Phase 3: Refinement (Custom Configs)** — Secondary optimization. Author custom YAML configs only when automatic generation needs precise control.
 
 **Rules for Funnel Maintenance:**
+
 - Avoid branching paths in introductory pages; always point toward the next phase in the funnel.
 - Define "html2rss-web" as the primary interface and "page-to-RSS" as the primary workflow.
 - Do not introduce new terminology (e.g., "toolkit") or unrelated infrastructure concepts (e.g., "custom domains") unless they are essential to a specific guide.
