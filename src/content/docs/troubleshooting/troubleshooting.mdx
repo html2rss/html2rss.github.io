@@ -144,14 +144,16 @@ If you are getting a "command not found" error, try the following:
 
 ### Authentication Errors
 
-- **401 Unauthorized when creating feeds:** The create-feed API expects a bearer token. Re-enter a valid access token in the UI or send `Authorization: Bearer ...` to `POST /api/v1/feeds`.
+- **401 Unauthorized when creating feeds:** Re-enter the same access token you set as `HTML2RSS_ACCESS_TOKEN` for your instance.
 - **403 Forbidden when creating feeds:** Automatic feed generation may be disabled (`AUTO_SOURCE_ENABLED=false`) or the requested URL may not be allowed for the authenticated account.
 - **500 Internal Server Error:** Check the application logs for detailed error information.
-- **Health endpoint failures:** Use `GET /api/v1/health/live`, `GET /api/v1/health/ready`, or authenticated `GET /api/v1/health` depending on which probe you are testing.
+- **Health endpoint failures:** Start with `GET /api/v1/health/ready` for standard readiness checks. Use `GET /api/v1/health/live` for process-alive checks, and use authenticated `GET /api/v1/health` only when you intentionally configured `HEALTH_CHECK_TOKEN`.
 
 ### Feed Problems
 
-- Some sites may require JavaScript rendering; ensure the `browserless` service is running
+- Try a more specific listing, newsroom, changelog, or updates URL before changing infrastructure
+- If your first-run stack includes Botasaurus, ensure the `botasaurus` service is running
+- Add Browserless later only when harder sites prove they need it
 - Check the feed configuration in `feeds.yml` for typos or invalid selectors
 - Look for parsing errors in the logs:
   <Code code={`docker compose logs html2rss-web`} lang="bash" />
@@ -169,4 +171,4 @@ If you are getting a "command not found" error, try the following:
 ## Still Stuck?
 
 - Join our [community discussions](https://github.com/orgs/html2rss/discussions)
-- Review the [deployment guide](/web-application/how-to/deployment) for production best practices
+- Review the [deployment guide](/web-application/deployment/) for production best practices

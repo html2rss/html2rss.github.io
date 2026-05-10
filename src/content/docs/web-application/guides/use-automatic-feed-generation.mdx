@@ -1,0 +1,36 @@
+---
+title: "Use automatic feed generation"
+description: "Understand how the token-gated web UI flow creates a stable feed from a page URL."
+---
+
+import { Code } from "@astrojs/starlight/components";
+
+Automatic feed generation lets `html2rss-web` create a stable feed from just a page's URL without you writing any YAML configs. It uses heuristics to find the main content list on a page.
+
+## How it Works
+
+This flow depends on three components working together:
+
+1.  **The Server:** `AUTO_SOURCE_ENABLED=true` (default in development) must be set.
+2.  **Access Control:** The server expects `HTML2RSS_ACCESS_TOKEN`.
+3.  **The Web UI:** You provide the URL and the token in the browser.
+
+When you click "Generate," the server parses the page, identifies the items, and generates a unique, stable URL for that feed.
+
+## Input Quality Tips
+
+Automatic generation is most successful when the input URL is a dedicated listing page.
+
+- **Prefer:** Newsrooms, press releases, changelogs, or category archives.
+- **Avoid:** Generic homepages, search results, or sites that require heavy JavaScript to show content.
+
+If a generated feed's quality is poor, try a more specific sub-page URL before switching to a custom config.
+
+## When to Switch to Custom Feeds
+
+While automatic generation is fast, it is not a "set and forget" solution for complex sites. Move to [Creating Custom Feeds](/creating-custom-feeds/) when:
+
+- You need to extract specific fields (like custom tags or authors).
+- The heuristic picks the wrong content area.
+- You want a reviewable, version-controlled scraping rule.
+- The site structure changes and breaks the automatic extraction.

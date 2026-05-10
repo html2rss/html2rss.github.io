@@ -5,19 +5,20 @@ description: "Configuration reference for html2rss-web environment variables."
 
 ## Supported ENV variables
 
-| Name                              | Description                                                                                                                                                                                               |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `HTML2RSS_SECRET_KEY`             | required in production; development/test gets a temporary default                                                                                                                                         |
-| `HEALTH_CHECK_TOKEN`              | bearer token for authenticated `GET /api/v1/health`; optional unless you use that endpoint (the documented Compose stack includes it); `/api/v1/health/live` and `/api/v1/health/ready` do not require it |
-| `BUILD_TAG`                       | release metadata used in logs; published Docker images set this to the release version                                                                                                                    |
-| `GIT_SHA`                         | deployed commit metadata used in logs; published Docker images set this to the released commit                                                                                                            |
-| `SENTRY_DSN`                      | optional; enables Sentry errors/logs when set                                                                                                                                                             |
-| `BROWSERLESS_IO_WEBSOCKET_URL`    | optional; Browserless websocket endpoint for `browserless` strategy                                                                                                                                       |
-| `BROWSERLESS_IO_API_TOKEN`        | required by this site's Compose stack and by custom websocket endpoints; standalone `html2rss` local defaults can omit it                                                                                 |
-| `AUTO_SOURCE_ENABLED`             | `true` by default in development/test, `false` otherwise                                                                                                                                                  |
-| `ASYNC_FEED_REFRESH_ENABLED`      | optional boolean; default `false`                                                                                                                                                                         |
-| `ASYNC_FEED_REFRESH_STALE_FACTOR` | optional integer `>= 1`; default `3`                                                                                                                                                                      |
-| `PORT`                            | app listen port; compose uses `4000`                                                                                                                                                                      |
-| `RACK_ENV`                        | Rack environment; compose uses `production`                                                                                                                                                               |
+| Name                              | Description                                                                                                                                                  |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `HTML2RSS_SECRET_KEY`             | required in production; development/test gets a temporary default                                                                                            |
+| `HTML2RSS_ACCESS_TOKEN`           | token for the main feed-creation flow; paste the same value into the web UI when prompted                                                                    |
+| `HEALTH_CHECK_TOKEN`              | optional bearer token for authenticated `GET /api/v1/health`; not part of the first-run quickstart; use `/api/v1/health/ready` for standard readiness checks |
+| `BUILD_TAG`                       | release metadata used in logs; published Docker images set this to the release version                                                                       |
+| `GIT_SHA`                         | deployed commit metadata used in logs; published Docker images set this to the released commit                                                               |
+| `SENTRY_DSN`                      | optional; enables Sentry errors/logs when set                                                                                                                |
+| `BROWSERLESS_IO_WEBSOCKET_URL`    | optional; Browserless websocket endpoint for harder sites when you add Browserless later                                                                     |
+| `BROWSERLESS_IO_API_TOKEN`        | optional unless you explicitly add Browserless to your stack or point at a custom Browserless endpoint                                                       |
+| `AUTO_SOURCE_ENABLED`             | `true` by default in development/test, `false` otherwise                                                                                                     |
+| `ASYNC_FEED_REFRESH_ENABLED`      | optional boolean; default `false`                                                                                                                            |
+| `ASYNC_FEED_REFRESH_STALE_FACTOR` | optional integer `>= 1`; default `3`                                                                                                                         |
+| `PORT`                            | app listen port; compose uses `4000`                                                                                                                         |
+| `RACK_ENV`                        | Rack environment; quickstart uses `development`, production examples use `production`                                                                        |
 
-Older environment-variable examples from previous docs revisions are obsolete. Use only the supported table above and the `Environment & Runtime Flags` table in [`html2rss-web/docs/README.md`](https://github.com/html2rss/html2rss-web/blob/main/docs/README.md).
+Older environment-variable examples from previous docs revisions are obsolete. Use only the supported table above and the `Environment & Runtime Flags` table in [`docs/README.md`](https://github.com/html2rss/html2rss-web/blob/main/docs/README.md).

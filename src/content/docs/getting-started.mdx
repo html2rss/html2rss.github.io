@@ -1,6 +1,6 @@
 ---
 title: "Getting Started"
-description: "Start html2rss-web locally, verify one feed, and decide when to enable automatic generation or move to custom configs."
+description: "Start html2rss-web locally, paste your own URL, enter one token, and open the generated feed."
 sidebar:
   order: 1
 ---
@@ -11,21 +11,23 @@ This page points to the main onboarding flow.
 
 ## Start Here
 
-If you want the recommended path, go to [Run html2rss-web with Docker](/web-application/getting-started).
+If you want the recommended path, go to [Run html2rss-web with Docker](/web-application/getting-started/).
 
 That guide is the canonical setup flow for:
 
 - running `html2rss-web` locally
-- confirming the interface is working
-- opening a known feed URL
-- deciding when to use automatic generation or custom configs
+- creating a feed from your own page URL
+- using the demo token first
+- moving to production setup only after first success
+- choosing fallback or custom-config paths only when needed
 
 ## Quick Shortcuts
 
-- **[Run html2rss-web with Docker](/web-application/getting-started)**: recommended first step
-- **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: enable direct feed creation from a page URL when you want that workflow
-- **[Create Custom Feeds](/creating-custom-feeds)**: write configs when you need more control
-- **[Troubleshooting Guide](/troubleshooting/troubleshooting)**: fix startup or extraction problems
+- **[Run html2rss-web with Docker](/web-application/getting-started/)**: recommended first step
+- **[Use automatic feed generation](/web-application/guides/use-automatic-feed-generation/)**: understand the normal direct page-URL workflow
+- **[Use the Feed Directory](/web-application/guides/use-the-feed-directory/)**: fallback when the Feed Directory already covers your site
+- **[Create Custom Feeds](/creating-custom-feeds/)**: write configs when you need more control
+- **[Troubleshooting Guide](/troubleshooting/troubleshooting/)**: fix startup or extraction problems
 
 ## Using the Ruby CLI
 
@@ -33,7 +35,7 @@ If you are working directly with the gem instead of `html2rss-web`, start with:
 
 <Code code={`html2rss auto https://example.com/blog`} lang="bash" />
 
-For strategy behavior and manual overrides, see the [Strategy reference](/ruby-gem/reference/strategy).
+For strategy behavior and manual overrides, see the [Strategy reference](/ruby-gem/reference/strategy/).
 
 If the target site is unusually redirect-heavy or needs extra follow-up requests, the CLI also supports:
 

@@ -67,6 +67,21 @@ Preferred verification flow for docs/content changes:
 
 ## Docs Authoring Rules
 
+### User Journey Funnel
+
+Maintain a directed "funnel" for documentation to maximize user success and conversion:
+
+1.  **Phase 1: Quickstart (Local Demo)** — The primary entry point. Run `html2rss-web` with Docker and generate a feed from a page URL in minutes.
+2.  **Phase 2: Production (Deployment)** — The goal for invested users. Move to a stable, production-ready instance.
+3.  **Phase 3: Refinement (Custom Configs)** — Secondary optimization. Author custom YAML configs only when automatic generation needs precise control.
+
+**Rules for Funnel Maintenance:**
+
+- Avoid branching paths in introductory pages; always point toward the next phase in the funnel.
+- Define "html2rss-web" as the primary interface and "page-to-RSS" as the primary workflow.
+- Use "Feed Directory" consistently to refer to the pre-built feed catalog; avoid terms like "catalog", "included feeds", or "packaged configs" in user-facing docs.
+- Do not introduce new terminology (e.g., "toolkit") or unrelated infrastructure concepts (e.g., "custom domains") unless they are essential to a specific guide.
+
 ### Code Snippets
 
 In docs content (`src/content/docs/**`) and docs-supporting components:

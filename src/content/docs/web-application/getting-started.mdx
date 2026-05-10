@@ -1,40 +1,34 @@
 ---
 title: "Getting Started"
-description: "Run html2rss-web locally with Docker, verify the interface, and open your first included feed."
+description: "Run html2rss-web locally with Docker, use the demo token once, and then move to the real deployment setup."
 sidebar:
   order: 2
 ---
 
 import { Code } from "@astrojs/starlight/components";
 
-import AutoGenerationOptional from "../../../components/docs/AutoGenerationOptional.astro";
 import MinimalDockerCompose from "../../../components/docs/MinimalDockerCompose.astro";
 
-Run `html2rss-web` locally with Docker and verify one included feed before enabling direct feed generation.
+Run `html2rss-web` locally with Docker, confirm one generated feed works, then move to the real operator setup.
 
 ## What You Will Have When This Works
 
 After this guide, you should have:
 
 - `html2rss-web` running at `http://localhost:4000`
-- the web interface loading correctly
-- a first included feed URL you can copy into your reader
-- a clear path to either token-gated feed generation or custom configs
+- successful feed generated from your own page URL
+- a clear handoff from the demo stack to the real deployment setup
+- a generated feed URL from your own page URL
+- a clear fallback path when direct generation is not the right fit
 
-## Installation Guide
-
-This guide uses a local Docker Compose stack.
-
-### What You'll Need
+## What You'll Need
 
 - **Docker**
 - **About 10 minutes**
 
 If you do not already have Docker, [install it first](https://docs.docker.com/get-started/).
 
-### Step 1: Create a Folder
-
-Create a new folder for `html2rss-web`:
+## Step 1: Create a Folder
 
 <Code
   code={`
@@ -44,62 +38,70 @@ Create a new folder for `html2rss-web`:
   lang="bash"
 />
 
-### Step 2: Create a Minimal Configuration File
+## Step 2: Copy `docker-compose.yml`
 
-Create a file called `docker-compose.yml` in that folder and start with the minimal local stack:
+Use the quickstart stack from [`docker-compose.quickstart.yml`](https://github.com/html2rss/html2rss-web/blob/main/docker-compose.quickstart.yml).
+
+Create your local `docker-compose.yml` from that file:
 
 <MinimalDockerCompose />
 
-Add automatic updates, reverse proxying, or your own config file after this first run works.
+This first-run stack keeps the path narrow:
 
-### Step 3: Start html2rss-web
+- `html2rss-web`
+- `botasaurus`
+- automatic feed generation enabled
+- `RACK_ENV=development`
 
-Create a `.env` file in the same folder (minimum required values for this stack):
-
-<Code
-  code={`
-  cat > .env <<EOF
-  HTML2RSS_SECRET_KEY=$(openssl rand -hex 32)
-  HEALTH_CHECK_TOKEN=$(openssl rand -hex 24)
-  BROWSERLESS_IO_API_TOKEN=trial-browserless-token
-  EOF
-`}
-  lang="bash"
-/>
-
-Then run:
+## Step 3: Start the Stack
 
 <Code code={`docker compose up -d`} lang="bash" />
 
 ## First Success Check
 
 1. Open `http://localhost:4000`
-2. Confirm the web interface loads
-3. Open one of the included feed URLs from your own instance:
-   - `http://localhost:4000/microsoft.com/azure-products.rss`
-   - `http://localhost:4000/phys.org/weekly.rss`
-   - `http://localhost:4000/softwareleadweekly.com/issues.rss`
-4. Confirm the feed opens
-5. Copy that feed URL into your reader if you want to keep it
+2. Paste your own page URL into `Page URL`
+3. Start with a listing, newsroom, changelog, releases, or updates page instead of a homepage
+4. Enter `CHANGE_ME_ADMIN_TOKEN` when prompted
+5. Open the generated feed URL
 
-If that works, the local app and included-feed path are ready.
+If that works, the demo stack is behaving correctly.
 
-## What Changes If You Enable Feed Generation
+## Move To Real Setup Next
 
-Automatic feed generation is off by default in production. When you enable it later:
+After the demo works, continue with the real operator setup.
 
-- the web app creates feeds through `POST /api/v1/feeds`
-- that API requires a bearer token
-- the UI starts with `faraday` and automatically retries once with `browserless` when appropriate
-- Browserless still needs to be configured for JavaScript-heavy pages
+1. **[Deployment & Production](/web-application/deployment/)**: convert the demo into a stable, production-ready setup
+2. **[Use automatic feed generation](/web-application/guides/use-automatic-feed-generation/)**: understand the page-URL flow in more detail
+3. **[Monitoring](/web-application/reference/monitoring/)**: choose readiness or authenticated health checks for your deployment
 
-If you are integrating this flow programmatically, the generated OpenAPI is available at `/openapi.yaml`.
+## If The First URL Is Poor
 
-<AutoGenerationOptional />
+Automatic mode works best when the input URL is already a page that lists updates.
+
+Higher-success inputs:
+
+- newsroom or press pages
+- changelog or release pages
+- category, tag, archive, or listing pages
+
+Lower-success inputs:
+
+- generic homepages
+- search pages
+- entry pages
+
+When output quality is poor, change the input URL first before assuming setup is broken.
+
+## Fallback Path
+
+If the site you want is already in the feed directory, or you want a fast sample before creating another generated feed, use the feed directory on your own instance.
+
+- [Use the Feed Directory](/web-application/guides/use-the-feed-directory/)
+- [Feed Directory](/feed-directory/)
 
 ## Next Steps
 
-1. **[Use the included configs](/web-application/how-to/use-included-configs/)**: understand how built-in feed paths work
-2. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: enable direct feed creation from page URLs when you want that workflow
-3. **[Create Custom Feeds](/creating-custom-feeds)**: write your own configs when you need reviewable extraction rules
-4. **[Need help?](/troubleshooting/troubleshooting)**: troubleshoot startup and extraction problems
+1. **[Deployment & Production](/web-application/deployment/)**: convert the demo into a real operator setup
+2. **[Create Custom Feeds](/creating-custom-feeds/)**: write your own config when you need reviewable extraction rules
+3. **[Need help?](/troubleshooting/troubleshooting/)**: troubleshoot startup and extraction problems

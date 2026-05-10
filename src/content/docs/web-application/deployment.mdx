@@ -1,13 +1,15 @@
 ---
 title: "Deployment & Production"
-description: "Deploy html2rss-web with Docker, keep the included-feed path simple, and only enable token-gated feed generation when you are ready to operate it."
+description: "Deploy html2rss-web with Docker, keep first success small, then add production pieces after the local token-gated flow works."
+sidebar:
+  order: 3
 ---
 
 import { Code } from "@astrojs/starlight/components";
 
-import DockerComposeSnippet from "../../../../components/docs/DockerComposeSnippet.astro";
+import DockerComposeSnippet from "../../../components/docs/DockerComposeSnippet.astro";
 
-html2rss-web ships on Docker Hub. Start with the [Getting Started guide](/web-application/getting-started), then add the production pieces below.
+html2rss-web ships on Docker Hub. Start with the [Getting Started guide](/web-application/getting-started/), which uses [`docker-compose.quickstart.yml`](https://github.com/html2rss/html2rss-web/blob/main/docker-compose.quickstart.yml). Make sure the one-file demo works first, then add the production pieces below.
 
 The examples use `html2rss/web:1`, the recommended major-version tag. Pin an exact release if your deployment process requires it.
 
@@ -15,10 +17,10 @@ The examples use `html2rss/web:1`, the recommended major-version tag. Pin an exa
 
 There are two materially different deployment modes:
 
-- **Included feeds only:** lowest-maintenance path, suitable when the packaged feed set already covers your needs
-- **Included feeds plus automatic generation:** requires `AUTO_SOURCE_ENABLED=true`, bearer-token distribution, and Browserless capacity planning
+- **Automatic generation enabled:** primary self-hosted workflow, requires `AUTO_SOURCE_ENABLED=true` and `HTML2RSS_ACCESS_TOKEN`
+- **Included feeds fallback only:** lower-maintenance path when the Feed Directory already covers your needs
 
-If you do not need page-URL generation yet, keep `AUTO_SOURCE_ENABLED` off and ship the simpler mode first.
+If you do not need page-URL generation yet, keep `AUTO_SOURCE_ENABLED` off and ship the fallback mode only.
 
 ## Prepare for Production
 
@@ -28,13 +30,12 @@ Before exposing html2rss-web, ensure:
 - Inbound TCP ports 80 and 443 reach the host (check firewalls and cloud security groups)
 - You are ready to watch the first deployment logs for certificate issuance
 - You have a value ready for `HTML2RSS_SECRET_KEY`
-- You have a value ready for `HEALTH_CHECK_TOKEN` if you plan to monitor authenticated `GET /api/v1/health` (the documented Compose stack uses it; `/api/v1/health/live` and `/api/v1/health/ready` do not require it)
+- You have a value ready for `HTML2RSS_ACCESS_TOKEN`
 
 If you plan to enable automatic feed generation, also prepare:
 
-- `BROWSERLESS_IO_API_TOKEN`
-- Browserless capacity appropriate for the sites you expect to render
-- an operator plan for how users obtain valid bearer tokens
+- a clear way to give users the same `HTML2RSS_ACCESS_TOKEN` your instance expects
+- optional advanced-rendering infrastructure only if harder sites later prove they need it
 
 ### Why a Reverse Proxy?
 
@@ -52,8 +53,9 @@ Create a `.env` file beside your compose file:
   code={`
   CADDY_HOST=yourdomain.com
   HTML2RSS_SECRET_KEY=<openssl rand -hex 32>
-  HEALTH_CHECK_TOKEN=<strong bearer token>
-  BROWSERLESS_IO_API_TOKEN=<browserless token>
+  HTML2RSS_ACCESS_TOKEN=<strong access token>
+  # Optional only if you want authenticated GET /api/v1/health
+  # HEALTH_CHECK_TOKEN=<strong health token>
 `}
   lang="dotenv"
 />
@@ -62,9 +64,10 @@ Before starting the stack:
 
 - Set `CADDY_HOST` for your domain.
 - Generate `HTML2RSS_SECRET_KEY` with `openssl rand -hex 32`.
-- Set a strong `HEALTH_CHECK_TOKEN` when you use authenticated `GET /api/v1/health`; liveness/readiness probes can use `/api/v1/health/live` and `/api/v1/health/ready` without it.
+- Set a strong `HTML2RSS_ACCESS_TOKEN`. This is the token users paste into the web UI.
+- Leave `HEALTH_CHECK_TOKEN` unset unless you intentionally use authenticated `GET /api/v1/health`.
 - Leave `BUILD_TAG` and `GIT_SHA` unset unless you intentionally override image metadata in logs.
-- Adjust optional knobs such as `AUTO_SOURCE_ENABLED` and `SENTRY_DSN` as needed; refer to the [environment reference](/web-application/reference/env-variables) for details.
+- Adjust optional knobs such as `AUTO_SOURCE_ENABLED` and `SENTRY_DSN` as needed; refer to the [environment reference](/web-application/reference/env-variables/) for details.
 
 After `docker compose up -d`, run `docker compose logs caddy --tail 20`; look for `certificate obtained`.
 
@@ -74,9 +77,11 @@ Re-test after DNS changes with [SSL Labs](https://www.ssllabs.com/ssltest/).
 
 Harden the application before inviting other users:
 
-- Set a strong `HEALTH_CHECK_TOKEN` for authenticated `GET /api/v1/health`, and separate strong bearer tokens for any protected feeds
+- Set a strong `HTML2RSS_ACCESS_TOKEN` and rotate it when needed
 - Prefer environment files (`.env`) stored outside version control for secrets
-- Keep any operator-only token distribution flow outside public docs and outside version control
+- Keep token sharing/distribution outside public docs and outside version control
+- Give trusted users the same current `HTML2RSS_ACCESS_TOKEN` through your normal operator channel
+- If you use authenticated `GET /api/v1/health`, set a strong `HEALTH_CHECK_TOKEN`; do not leave `CHANGE_ME_HEALTH_CHECK_TOKEN` anywhere in production
 
 <DockerComposeSnippet variant="secure" />
 
@@ -86,16 +91,17 @@ Store these variables in a `.env` file and reference it with `env_file:` as demo
 
 Keep the instance healthy once it is in production:
 
-- Monitor `https://yourdomain.com/api/v1/health` with the configured bearer token for authenticated health checks
 - Review `docker compose logs` regularly for feed errors or certificate renewals
 - Enable automatic image updates for the Docker tag you selected
 - Right-size CPU and memory to avoid starvation when parsing large feeds
+- Use `GET /api/v1/health/ready` for standard readiness checks
+- Add authenticated `GET /api/v1/health` only when your operator tooling needs it
 
 ### Auto-update with Watchtower
 
 <DockerComposeSnippet variant="watchtower" />
 
-This Watchtower shape scopes updates to `html2rss-web`, `browserless`, and `caddy`; change the service names if your stack differs.
+This Watchtower shape scopes updates to `html2rss-web`, `botasaurus`, and `caddy`; change the service names if your stack differs.
 
 Check `docker compose logs watchtower` occasionally to confirm updates are applied.
 
@@ -110,5 +116,5 @@ Adjust limits to match host capacity. Increase memory for large feeds.
 - Test different feed sources before inviting external users
 - Publish `/openapi.yaml` from the running instance if you expect agents or integrations to call the API directly
 - Add your instance to the [community wiki](https://github.com/html2rss/html2rss-web/wiki/Instances) if you want it listed publicly
-- Visit the [troubleshooting guide](/troubleshooting/troubleshooting) or join the [community discussions](https://github.com/orgs/html2rss/discussions) when you need help
-- Ready to contribute fixes or docs? See the [contributing guide](/get-involved/contributing)
+- Visit the [troubleshooting guide](/troubleshooting/troubleshooting/) or join the [community discussions](https://github.com/orgs/html2rss/discussions) when you need help
+- Ready to contribute fixes or docs? See the [contributing guide](/get-involved/contributing/)

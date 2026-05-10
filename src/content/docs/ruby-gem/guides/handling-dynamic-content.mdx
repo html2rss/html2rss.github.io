@@ -9,7 +9,7 @@ Some websites load their content dynamically using JavaScript. Static fetch path
 
 ## Solution
 
-Use a [browser-based extraction strategy](/ruby-gem/reference/strategy) when JavaScript-heavy pages do not work with default static fetching.
+Use a [browser-based extraction strategy](/ruby-gem/reference/strategy/) when JavaScript-heavy pages do not work with default static fetching.
 
 `browserless` is common for this workflow, and `botasaurus` is an alternate browser-based strategy when you run a Botasaurus scrape API.
 
@@ -108,10 +108,10 @@ Browser-based extraction is slower than default static HTTP fetching because it:
 - Renders the full page with JavaScript
 - Takes more memory and CPU resources
 
-**Use static HTTP fetching for static content** and switch to browser-based extraction when needed. See the [Strategy Reference](/ruby-gem/reference/strategy) for concrete transports, defaults, and environment requirements.
+**Use static HTTP fetching for static content** and switch to browser-based extraction when needed. See the [Strategy Reference](/ruby-gem/reference/strategy/) for concrete transports, defaults, and environment requirements.
 
 ## Related Topics
 
-- **[Strategy Reference](/ruby-gem/reference/strategy)** - Complete strategy documentation
-- **[Troubleshooting](/troubleshooting/troubleshooting)** - Common issues with dynamic content
-- **[Advanced Features](/ruby-gem/how-to/advanced-features/)** - Performance optimization tips
+- **[Strategy Reference](/ruby-gem/reference/strategy/)** - Complete strategy documentation
+- **[Troubleshooting](/troubleshooting/troubleshooting/)** - Common issues with dynamic content
+- **[Advanced Features](/ruby-gem/guides/advanced-features/)** - Performance optimization tips
