@@ -1,85 +1,36 @@
 ---
 title: "Use automatic feed generation"
-description: "Enable the token-gated web UI flow that creates a stable feed from a page URL."
+description: "Understand how the token-gated web UI flow creates a stable feed from a page URL."
 ---
 
 import { Code } from "@astrojs/starlight/components";
 
-Automatic feed generation lets `html2rss-web` create a stable feed from just a page's URL.
+Automatic feed generation lets `html2rss-web` create a stable feed from just a page's URL without you writing any YAML configs. It uses heuristics to find the main content list on a page.
 
-Follow the [Getting Started](/web-application/getting-started/) for a quick test drive.
+## How it Works
 
-## What This Flow Requires
+This flow depends on three components working together:
 
-This flow depends on three separate things:
+1.  **The Server:** `AUTO_SOURCE_ENABLED=true` (default in development) must be set.
+2.  **Access Control:** The server expects `HTML2RSS_ACCESS_TOKEN`.
+3.  **The Web UI:** You provide the URL and the token in the browser.
 
-- the server allows automatic feed generation
-- the server accepts a feed-creation access token
-- the same token is pasted into the web UI when prompted
+When you click "Generate," the server parses the page, identifies the items, and generates a unique, stable URL for that feed.
 
-The generated API contract for this flow is published at `/openapi.yaml`.
+## Input Quality Tips
 
-## How to Use It
+Automatic generation is most successful when the input URL is a dedicated listing page.
 
-1. Open your instance at `http://localhost:4000`
-2. Paste a page URL into the text field.
-3. Paste the token your instance expects when prompted
-4. Click `Generate feed URL`
-5. Open the generated feed URL
+- **Prefer:** Newsrooms, press releases, changelogs, or category archives.
+- **Avoid:** Generic homepages, search results, or sites that require heavy JavaScript to show content.
 
-## What Success Looks Like
+If a generated feed's quality is poor, try a more specific sub-page URL before switching to a custom config.
 
-When the flow works, you should see:
+## When to Switch to Custom Feeds
 
-- a generated feed URL
-- a copy action
-- an open-feed action
-- a preview of recent entries when available
-- the same feed staying available at its tokenized URL
+While automatic generation is fast, it is not a "set and forget" solution for complex sites. Move to [Creating Custom Feeds](/creating-custom-feeds) when:
 
-That is enough to confirm the self-hosted flow is working.
-
-## Input URL Guidance (Quality First)
-
-Automatic generation is most successful when the input URL is already a listing/update surface.
-
-- Higher-success inputs:
-  - newsroom/press listing pages
-  - category/tag/archive/listing pages
-  - changelog/release/update pages
-- Lower-success inputs:
-  - generic homepages
-  - search pages
-  - app-shell entrypoints (client-rendered shells)
-
-If output quality is poor, switch the input to a direct listing/update URL before assuming the feature is broken.
-
-## Failure Meanings You May See
-
-What users typically see:
-
-- access token rejected
-- invalid or unsupported input URL
-- preview unavailable right now
-- a feed render error when opening the generated feed URL directly
-
-For local setup problems, check container state and logs:
-
-<Code
-  code={`
-  docker compose ps
-  docker compose logs html2rss-web
-`}
-  lang="bash"
-/>
-
-## When to Stop and Switch
-
-Automatic feed generation is the fast first pass, not the final answer for every site.
-
-Move on to [Creating Custom Feeds](/creating-custom-feeds) when:
-
-- the generated feed misses important fields
-- the wrong items are extracted
-- the site needs a stable, reviewable setup
-- you need repeatable selector-level control to make the feed reliable
+- You need to extract specific fields (like custom tags or authors).
+- The heuristic picks the wrong content area.
+- You want a reviewable, version-controlled scraping rule.
+- The site structure changes and breaks the automatic extraction.

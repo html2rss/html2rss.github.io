@@ -1,11 +1,13 @@
 ---
 title: "Deployment & Production"
 description: "Deploy html2rss-web with Docker, keep first success small, then add production pieces after the local token-gated flow works."
+sidebar:
+  order: 3
 ---
 
 import { Code } from "@astrojs/starlight/components";
 
-import DockerComposeSnippet from "../../../../components/docs/DockerComposeSnippet.astro";
+import DockerComposeSnippet from "../../../components/docs/DockerComposeSnippet.astro";
 
 html2rss-web ships on Docker Hub. Start with the [Getting Started guide](/web-application/getting-started), which uses [`html2rss-web/docker-compose.quickstart.yml`](https://github.com/html2rss/html2rss-web/blob/main/docker-compose.quickstart.yml). Make sure the one-file demo works first, then add the production pieces below.
 

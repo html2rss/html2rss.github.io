@@ -13,6 +13,8 @@ export default defineConfig({
     "/components/html2rss": "/ruby-gem/",
     "/components/html2rss-configs": "/creating-custom-feeds/",
     "/components": "/",
+    "/web-application/how-to/deployment": "/web-application/deployment/",
+    "/web-application/how-to/automatic-updates": "/web-application/deployment/#auto-update-with-watchtower",
   },
   build: {
     inlineStylesheets: "auto",
@@ -265,6 +267,7 @@ export default defineConfig({
           items: [
             "web-application",
             "web-application/getting-started",
+            "web-application/deployment",
             {
               label: "How-to",
               autogenerate: { directory: "web-application/how-to" },
