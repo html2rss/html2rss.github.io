@@ -15,8 +15,16 @@ export default defineConfig({
     "/components": "/",
     "/web-application/how-to/deployment": "/web-application/deployment/",
     "/web-application/how-to/automatic-updates": "/web-application/deployment/#auto-update-with-watchtower",
+    "/web-application/how-to/use-automatic-feed-generation":
+      "/web-application/guides/use-the-feed-directory/",
+    "/web-application/how-to/use-automatic-feed-generation/":
+      "/web-application/guides/use-the-feed-directory/",
     "/web-application/how-to": "/web-application/guides/",
+    "/ruby-gem/how-to/dynamic-parameters": "/ruby-gem/guides/dynamic-parameters/",
+    "/ruby-gem/how-to/dynamic-parameters/": "/ruby-gem/guides/dynamic-parameters/",
     "/ruby-gem/how-to": "/ruby-gem/guides/",
+    "/ruby-gem/tutorials": "/ruby-gem/guides/",
+    "/ruby-gem/tutorials/": "/ruby-gem/guides/",
     "/web-application/guides/use-included-configs": "/web-application/guides/use-the-feed-directory/",
   },
   build: {
