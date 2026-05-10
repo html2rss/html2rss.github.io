@@ -17,6 +17,7 @@ export default defineConfig({
     "/web-application/how-to/automatic-updates": "/web-application/deployment/#auto-update-with-watchtower",
     "/web-application/how-to": "/web-application/guides/",
     "/ruby-gem/how-to": "/ruby-gem/guides/",
+    "/web-application/guides/use-included-configs": "/web-application/guides/use-the-feed-directory/",
   },
   build: {
     inlineStylesheets: "auto",

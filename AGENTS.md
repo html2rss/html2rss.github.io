@@ -79,6 +79,7 @@ Maintain a directed "funnel" for documentation to maximize user success and conv
 
 - Avoid branching paths in introductory pages; always point toward the next phase in the funnel.
 - Define "html2rss-web" as the primary interface and "page-to-RSS" as the primary workflow.
+- Use "Feed Directory" consistently to refer to the pre-built feed catalog; avoid terms like "catalog", "included feeds", or "packaged configs" in user-facing docs.
 - Do not introduce new terminology (e.g., "toolkit") or unrelated infrastructure concepts (e.g., "custom domains") unless they are essential to a specific guide.
 
 ### Code Snippets
