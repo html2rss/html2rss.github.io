@@ -29,10 +29,12 @@ Set the environment variable `HEALTH_CHECK_TOKEN`, then send it as a bearer toke
 
 The response is JSON and reports the current status, timestamp, environment, uptime, and reserved checks payload.
 
+Do not leave `CHANGE_ME_HEALTH_CHECK_TOKEN` anywhere in production. Once the production hardening change is released, boot will fail if any account still uses that placeholder token.
+
 ## Probe Selection
 
 - Use `/api/v1/health/live` for a simple process-alive signal.
-- Use `/api/v1/health/ready` for config-readiness checks without auth.
+- Use `/api/v1/health/ready` for the standard config-readiness check without auth.
 - Use `/api/v1/health` for authenticated monitoring from your uptime system or operator tooling.
 
 ## Application Performance Monitoring using Sentry

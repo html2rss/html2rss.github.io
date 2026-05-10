@@ -5,68 +5,25 @@ description: "Enable the token-gated web UI flow that creates a stable feed from
 
 import { Code } from "@astrojs/starlight/components";
 
-Automatic feed generation lets `html2rss-web` create a stable feed from a page URL. This is the primary onboarding flow for your own instance. Included feeds stay available as a fallback when the packaged catalog already covers the site you want.
+Automatic feed generation lets `html2rss-web` create a stable feed from just a page's URL.
 
-## What This Flow Actually Requires
+Follow the [Getting Started](/web-application/getting-started/) for a quick test drive.
+
+## What This Flow Requires
 
 This flow depends on three separate things:
 
-- `AUTO_SOURCE_ENABLED=true` on the server
-- `HTML2RSS_ACCESS_TOKEN` set on the server
-- the same token pasted into the web UI when prompted
+- the server allows automatic feed generation
+- the server accepts a feed-creation access token
+- the same token is pasted into the web UI when prompted
 
 The generated API contract for this flow is published at `/openapi.yaml`.
-
-## Minimal Local Setup
-
-Use a minimal `docker-compose.yml`:
-
-<Code
-  code={`
-  services:
-    html2rss-web:
-      image: html2rss/web:1
-      restart: unless-stopped
-      ports:
-        - "127.0.0.1:4000:4000"
-      env_file:
-        - path: .env
-          required: false
-      environment:
-        RACK_ENV: production
-        PORT: 4000
-        HTML2RSS_SECRET_KEY: \${HTML2RSS_SECRET_KEY:?set HTML2RSS_SECRET_KEY}
-        HTML2RSS_ACCESS_TOKEN: \${HTML2RSS_ACCESS_TOKEN:?set HTML2RSS_ACCESS_TOKEN}
-        AUTO_SOURCE_ENABLED: "true"
-        BOTASAURUS_SCRAPER_URL: http://botasaurus:4010
-
-    botasaurus:
-      image: html2rss/botasaurus-scrape-api:latest
-      restart: unless-stopped
-
-`}
-lang="yaml"
-/>
-
-Then create `.env` beside it:
-
-<Code
-  code={`
-  HTML2RSS_SECRET_KEY=<openssl rand -hex 32>
-  HTML2RSS_ACCESS_TOKEN=<your strong access token>
-  `}
-  lang="dotenv"
-/>
-
-Then start the stack:
-
-<Code code={`docker compose up -d`} lang="bash" />
 
 ## How to Use It
 
 1. Open your instance at `http://localhost:4000`
-2. Paste a page URL into `Page URL`
-3. Paste the same `HTML2RSS_ACCESS_TOKEN` from `.env` when prompted
+2. Paste a page URL into the text field.
+3. Paste the token your instance expects when prompted
 4. Click `Generate feed URL`
 5. Open the generated feed URL
 

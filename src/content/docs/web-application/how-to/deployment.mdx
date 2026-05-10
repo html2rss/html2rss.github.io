@@ -7,7 +7,7 @@ import { Code } from "@astrojs/starlight/components";
 
 import DockerComposeSnippet from "../../../../components/docs/DockerComposeSnippet.astro";
 
-html2rss-web ships on Docker Hub. Start with the [Getting Started guide](/web-application/getting-started), make sure `docker-compose.yml` + `.env` + your own URL + token + generated feed work first, then add the production pieces below.
+html2rss-web ships on Docker Hub. Start with the [Getting Started guide](/web-application/getting-started), which uses [`html2rss-web/docker-compose.quickstart.yml`](https://github.com/html2rss/html2rss-web/blob/main/docker-compose.quickstart.yml). Make sure the one-file demo works first, then add the production pieces below.
 
 The examples use `html2rss/web:1`, the recommended major-version tag. Pin an exact release if your deployment process requires it.
 
@@ -33,7 +33,7 @@ Before exposing html2rss-web, ensure:
 If you plan to enable automatic feed generation, also prepare:
 
 - a clear way to give users the same `HTML2RSS_ACCESS_TOKEN` your instance expects
-- any optional rendering infrastructure you want to add later for harder sites
+- optional advanced-rendering infrastructure only if harder sites later prove they need it
 
 ### Why a Reverse Proxy?
 
@@ -52,6 +52,8 @@ Create a `.env` file beside your compose file:
   CADDY_HOST=yourdomain.com
   HTML2RSS_SECRET_KEY=<openssl rand -hex 32>
   HTML2RSS_ACCESS_TOKEN=<strong access token>
+  # Optional only if you want authenticated GET /api/v1/health
+  # HEALTH_CHECK_TOKEN=<strong health token>
 `}
   lang="dotenv"
 />
@@ -61,6 +63,7 @@ Before starting the stack:
 - Set `CADDY_HOST` for your domain.
 - Generate `HTML2RSS_SECRET_KEY` with `openssl rand -hex 32`.
 - Set a strong `HTML2RSS_ACCESS_TOKEN`. This is the token users paste into the web UI.
+- Leave `HEALTH_CHECK_TOKEN` unset unless you intentionally use authenticated `GET /api/v1/health`.
 - Leave `BUILD_TAG` and `GIT_SHA` unset unless you intentionally override image metadata in logs.
 - Adjust optional knobs such as `AUTO_SOURCE_ENABLED` and `SENTRY_DSN` as needed; refer to the [environment reference](/web-application/reference/env-variables) for details.
 
@@ -75,6 +78,8 @@ Harden the application before inviting other users:
 - Set a strong `HTML2RSS_ACCESS_TOKEN` and rotate it when needed
 - Prefer environment files (`.env`) stored outside version control for secrets
 - Keep token sharing/distribution outside public docs and outside version control
+- Give trusted users the same current `HTML2RSS_ACCESS_TOKEN` through your normal operator channel
+- If you use authenticated `GET /api/v1/health`, set a strong `HEALTH_CHECK_TOKEN`; do not leave `CHANGE_ME_HEALTH_CHECK_TOKEN` anywhere in production
 
 <DockerComposeSnippet variant="secure" />
 
@@ -87,6 +92,8 @@ Keep the instance healthy once it is in production:
 - Review `docker compose logs` regularly for feed errors or certificate renewals
 - Enable automatic image updates for the Docker tag you selected
 - Right-size CPU and memory to avoid starvation when parsing large feeds
+- Use `GET /api/v1/health/ready` for standard readiness checks
+- Add authenticated `GET /api/v1/health` only when your operator tooling needs it
 
 ### Auto-update with Watchtower
 

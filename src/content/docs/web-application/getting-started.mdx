@@ -1,6 +1,6 @@
 ---
 title: "Getting Started"
-description: "Run html2rss-web locally with Docker, paste your own page URL, enter one token, and open the generated feed."
+description: "Run html2rss-web locally with Docker, use the demo token once, and then move to the real deployment setup."
 sidebar:
   order: 2
 ---
@@ -9,14 +9,15 @@ import { Code } from "@astrojs/starlight/components";
 
 import MinimalDockerCompose from "../../../components/docs/MinimalDockerCompose.astro";
 
-Run `html2rss-web` locally with Docker, then create your first feed from your own page URL.
+Run `html2rss-web` locally with Docker, confirm one generated feed works, then move to the real operator setup.
 
 ## What You Will Have When This Works
 
 After this guide, you should have:
 
 - `html2rss-web` running at `http://localhost:4000`
-- one access token stored in your local `.env`
+- successful feed generated from your own page URL
+- a clear handoff from the demo stack to the real deployment setup
 - a generated feed URL from your own page URL
 - a clear fallback path when direct generation is not the right fit
 
@@ -39,7 +40,9 @@ If you do not already have Docker, [install it first](https://docs.docker.com/ge
 
 ## Step 2: Copy `docker-compose.yml`
 
-Create `docker-compose.yml` with the minimal local stack:
+Use the quickstart stack from [`html2rss-web/docker-compose.quickstart.yml`](https://github.com/html2rss/html2rss-web/blob/main/docker-compose.quickstart.yml).
+
+Create your local `docker-compose.yml` from that file:
 
 <MinimalDockerCompose />
 
@@ -48,26 +51,9 @@ This first-run stack keeps the path narrow:
 - `html2rss-web`
 - `botasaurus`
 - automatic feed generation enabled
-- no reverse proxy
-- no Watchtower
-- no Browserless
-- no health-check token setup
+- `RACK_ENV=development`
 
-## Step 3: Copy `.env`
-
-Create `.env` beside `docker-compose.yml`:
-
-<Code
-  code={`
-  cat > .env <<EOF
-  HTML2RSS_SECRET_KEY=$(openssl rand -hex 32)
-  HTML2RSS_ACCESS_TOKEN=$(openssl rand -hex 24)
-  EOF
-`}
-  lang="bash"
-/>
-
-## Step 4: Start the Stack
+## Step 3: Start the Stack
 
 <Code code={`docker compose up -d`} lang="bash" />
 
@@ -76,10 +62,18 @@ Create `.env` beside `docker-compose.yml`:
 1. Open `http://localhost:4000`
 2. Paste your own page URL into `Page URL`
 3. Start with a listing, newsroom, changelog, releases, or updates page instead of a homepage
-4. Enter the access token from `.env` when prompted
+4. Enter `CHANGE_ME_ADMIN_TOKEN` when prompted
 5. Open the generated feed URL
 
-If that works, your instance is ready for the core `url -> rss` workflow.
+If that works, the demo stack is behaving correctly.
+
+## Move To Real Setup Next
+
+After the demo works, continue with the real operator setup.
+
+1. **[Deployment & Production](/web-application/how-to/deployment/)**: the URLs of the feed become stable
+2. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: understand the flow in more detail
+3. **[Monitoring](/web-application/reference/monitoring/)**: choose readiness or authenticated health checks for your deployment
 
 ## If The First URL Is Poor
 
@@ -95,20 +89,20 @@ Lower-success inputs:
 
 - generic homepages
 - search pages
-- app-shell entry pages
+- entry pages
 
 When output quality is poor, change the input URL first before assuming setup is broken.
 
 ## Fallback Path
 
-If the site you want is already in the packaged catalog, or direct generation is not the best fit, use the built-in feed set from your own instance.
+If the site you want is already in the feed directory, or you want a fast sample before creating another generated feed, use the feed directory on your own instance.
 
 - [Use the included configs](/web-application/how-to/use-included-configs/)
 - [Feed Directory](/feed-directory/)
 
 ## Next Steps
 
-1. **[Use automatic feed generation](/web-application/how-to/use-automatic-feed-generation/)**: understand the normal page-URL flow in more detail
+1. **[Deployment & Production](/web-application/how-to/deployment/)**: convert the demo into a real operator setup
 2. **[Use the included configs](/web-application/how-to/use-included-configs/)**: use the fallback catalog when it already covers your site
 3. **[Create Custom Feeds](/creating-custom-feeds)**: write your own config when you need reviewable extraction rules
 4. **[Need help?](/troubleshooting/troubleshooting)**: troubleshoot startup and extraction problems

@@ -147,7 +147,7 @@ If you are getting a "command not found" error, try the following:
 - **401 Unauthorized when creating feeds:** Re-enter the same access token you set as `HTML2RSS_ACCESS_TOKEN` for your instance.
 - **403 Forbidden when creating feeds:** Automatic feed generation may be disabled (`AUTO_SOURCE_ENABLED=false`) or the requested URL may not be allowed for the authenticated account.
 - **500 Internal Server Error:** Check the application logs for detailed error information.
-- **Health endpoint failures:** Use `GET /api/v1/health/live`, `GET /api/v1/health/ready`, or authenticated `GET /api/v1/health` depending on which probe you are testing.
+- **Health endpoint failures:** Start with `GET /api/v1/health/ready` for standard readiness checks. Use `GET /api/v1/health/live` for process-alive checks, and use authenticated `GET /api/v1/health` only when you intentionally configured `HEALTH_CHECK_TOKEN`.
 
 ### Feed Problems
 
