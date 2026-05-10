@@ -3,62 +3,44 @@ title: "Turn Any Website Into an RSS Feed"
 description: "Run html2rss-web with Docker, paste your own page URL, enter one token, and open the generated feed."
 ---
 
-Run `html2rss-web` with Docker, create one generated feed with the demo token, then move to the real operator setup.
+`html2rss` turns any website into a stable RSS feed. Run the 10-minute quickstart to see it in action, then move to a production setup when you are ready to stay updated.
 
 ## Start Here
 
-**Recommended path:** [Run html2rss-web with Docker](/web-application/getting-started)
+**Quickstart:** [Run html2rss-web with Docker](/web-application/getting-started/)
 
-That guide is the canonical onboarding flow for:
+The canonical path to your first feed:
 
-- starting a local instance
-- creating a generated feed from your own page URL
-- using the demo token first
-- moving to real deployment setup after first success
-- choosing the fallback or advanced path only when needed
+1.  **Phase 1: Local Demo** — Run the stack and generate a feed from any page URL in minutes.
+2.  **Phase 2: Production** — Move to [Deployment](/web-application/deployment/) for a stable, production-ready instance.
+3.  **Phase 3: Refinement** — Create [Custom Feeds](/creating-custom-feeds/) only when you need absolute control over extraction.
 
-## What is html2rss?
+## Deep Dives
 
-html2rss is a toolkit for turning websites into feeds.
+### Features & Operations
 
-Most people should start with the web application:
+- **[Use included configs](/web-application/how-to/use-included-configs/)**: Use the built-in catalog for popular sites.
+- **[Monitoring](/web-application/reference/monitoring/)**: Keep your instance healthy with probes and Sentry.
+- **[Reference](/web-application/reference/)**: Environment variables and versioning strategy.
 
-- **`html2rss-web`**: the self-hosted web interface and feed server
-- **`html2rss` gem**: the Ruby engine, CLI, and lower-level config workflow
+### Engine & Customization
 
-## Choose Your Path
-
-### I want a working instance first
-
-1. **[Run html2rss-web with Docker](/web-application/getting-started)**: recommended starting path
-2. **[Use the included configs](/web-application/how-to/use-included-configs/)**: fallback guide when the packaged feed set already covers your site
-
-### I need more control
-
-1. **[Creating Custom Feeds](/creating-custom-feeds)**: write and test your own configs
-2. **[Selectors Reference](/ruby-gem/reference/selectors/)**: learn the matching rules
-3. **[Strategy Reference](/ruby-gem/reference/strategy/)**: choose the right extraction strategy for static vs JavaScript-heavy pages
-
-### I'm building or integrating
-
-1. **[Ruby Gem Reference](/ruby-gem/)**: full API documentation
-2. **[Advanced Features](/ruby-gem/how-to/advanced-features/)**: custom HTTP requests and advanced extraction
-3. **[Contribute to Core](/get-involved/contributing/)**: help improve the engine
+- **[Creating Custom Feeds](/creating-custom-feeds/)**: Write and test your own scraping rules.
+- **[Selectors Reference](/ruby-gem/reference/selectors/)**: Learn the CSS/XPath matching rules.
+- **[Strategy Reference](/ruby-gem/reference/strategy/)**: Handle static vs. JavaScript-heavy pages.
+- **[Ruby Gem Reference](/ruby-gem/)**: Full engine API documentation and CLI usage.
 
 ## What People Use It For
 
-- follow blogs and news sites without social media algorithms
-- track product updates and release notes
-- monitor job postings from company websites
-- subscribe to forums and communities that do not publish feeds
-- follow local news without repeated manual checking
+- Follow blogs and news sites without social media algorithms.
+- Track product updates, changelogs, and release notes.
+- Monitor job postings and community forums.
+- Subscribe to any site that does not publish its own feed.
 
 ## Practical Notes
 
-- Start with Docker, not a public instance.
-- Start with your own listing, newsroom, changelog, or updates URL.
-- Automatic page-to-feed generation is the normal path.
-- Use included configs when the packaged catalog already covers your site.
-- Move to custom configs when you need a stable, reviewable setup.
+- **Start with Docker**: It is the recommended way to run `html2rss-web`.
+- **Start with a Page URL**: Automatic generation is the primary workflow.
+- **Use Included Configs**: Check the [Feed Directory](/feed-directory/) first; the site you want might already be covered.
 
 **Need help?** Continue to the [troubleshooting guide](/troubleshooting/troubleshooting) or join [GitHub Discussions](https://github.com/orgs/html2rss/discussions).
