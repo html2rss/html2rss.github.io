@@ -281,11 +281,11 @@ export default defineConfig({
             "web-application/deployment",
             {
               label: "Guides",
-              autogenerate: { directory: "web-application/guides" },
+              items: [{ autogenerate: { directory: "web-application/guides" } }],
             },
             {
               label: "Reference",
-              autogenerate: { directory: "web-application/reference" },
+              items: [{ autogenerate: { directory: "web-application/reference" } }],
             },
           ],
         },
@@ -297,15 +297,15 @@ export default defineConfig({
             "ruby-gem/installation",
             {
               label: "Guides",
-              autogenerate: { directory: "ruby-gem/guides" },
+              items: [{ autogenerate: { directory: "ruby-gem/guides" } }],
             },
             {
               label: "Tutorials",
-              autogenerate: { directory: "ruby-gem/tutorials" },
+              items: [{ autogenerate: { directory: "ruby-gem/tutorials" } }],
             },
             {
               label: "Reference",
-              autogenerate: { directory: "ruby-gem/reference" },
+              items: [{ autogenerate: { directory: "ruby-gem/reference" } }],
             },
           ],
         },
@@ -316,7 +316,7 @@ export default defineConfig({
         {
           label: "Get Involved",
           collapsed: false,
-          autogenerate: { directory: "get-involved" },
+          items: [{ autogenerate: { directory: "get-involved" } }],
         },
       ],
       defaultLocale: "root",
