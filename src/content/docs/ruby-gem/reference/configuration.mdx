@@ -1,0 +1,172 @@
+---
+title: Global Configuration
+description: "Learn how to use Html2rss.configure to set up global defaults like custom headers, minimum TTL boundaries, custom stylesheets, and default request strategies."
+---
+
+import { Code } from "@astrojs/starlight/components";
+
+You can configure global defaults for `html2rss` using `Html2rss.configure`. This allows you to define options that apply across all generated feeds, rather than repeating them in individual feed configurations.
+
+Global configuration is thread-safe and implements an RCU (Read-Copy-Update) mechanism: once configured, the global configuration instance is frozen and thread-safe.
+
+```ruby
+require 'html2rss'
+
+Html2rss.configure do |config|
+  config.log_level = :info
+  config.min_ttl = 60
+  config.default_strategy = :faraday
+  config.headers = { 'User-Agent' => 'MyCustomUserAgent/1.0' }
+end
+```
+
+## Options
+
+### `log_level`
+
+Sets the global log level for the gem.
+
+- **Type**: `Symbol`, `String`, or `Integer`
+- **Default**: `ENV['LOG_LEVEL']` (normalized to a symbol) or `:warn`
+- **Valid Values**: `:debug`, `:info`, `:warn`, `:error`, `:fatal`, `:unknown` (or their string equivalents, or `Logger` constant integers `0` to `5`)
+
+<Code
+  code={`
+  Html2rss.configure do |config|
+    config.log_level = :info
+  end
+  `}
+  lang="ruby"
+/>
+
+### `headers`
+
+Defines HTTP headers that are globally appended/prepended to all requests. You can pass a static `Hash` or a dynamic callable (`Proc` / `lambda`) that returns a `Hash` (e.g. for dynamic or token-refreshed headers).
+
+- **Type**: `Hash`, `Proc`, `#call`, or `nil`
+- **Default**: `nil`
+
+#### Static Headers
+
+<Code
+  code={`
+  Html2rss.configure do |config|
+    config.headers = {
+      'User-Agent' => 'MyGlobalUserAgent/1.0',
+      'X-Custom-Header' => 'CustomValue'
+    }
+  end
+  `}
+  lang="ruby"
+/>
+
+#### Dynamic/Callable Headers
+
+<Code
+  code={`
+  Html2rss.configure do |config|
+    config.headers = -> { { 'X-Request-Timestamp' => Time.now.to_i.to_s } }
+  end
+  `}
+  lang="ruby"
+/>
+
+### `default_strategy`
+
+Sets the default scraper strategy name used when a feed configuration doesn't specify a `strategy`. The strategy name must correspond to a registered strategy.
+
+- **Type**: `Symbol`, `String`, or `nil`
+- **Default**: `nil` (falls back to the gem default strategy, usually `auto`)
+
+<Code
+  code={`
+  Html2rss.configure do |config|
+    config.default_strategy = :faraday
+  end
+  `}
+  lang="ruby"
+/>
+
+### `min_ttl`
+
+Enforces a strict lower bound on the computed Time to Live (TTL) in minutes for generated feeds. If a feed's calculated TTL or config-override TTL is lower than `min_ttl`, it will be clamped to `min_ttl`.
+
+- **Type**: `Integer` or `String` (must represent a positive integer)
+- **Default**: `nil` (no minimum boundary enforced)
+
+<Code
+  code={`
+  Html2rss.configure do |config|
+    config.min_ttl = 60 # Clamps all feed TTLs to at least 60 minutes
+  end
+  `}
+  lang="ruby"
+/>
+
+### `stylesheets`
+
+Sets the global list of XML stylesheet processing instructions to include in all generated feeds. Stylesheets are added at the top of the generated RSS XML.
+
+- **Type**: `Array<Hash>`
+- **Default**: `[]`
+
+<Code
+  code={`
+  Html2rss.configure do |config|
+    config.stylesheets = [
+      {
+        href: '/global-style.xsl',
+        type: 'text/xsl',
+        media: 'all'
+      }
+    ]
+  end
+  `}
+  lang="ruby"
+/>
+
+### `logger`
+
+Defines a custom logger for the gem. The gem accepts any duck-typed logger object. If the object responds to `#level=` and/or `#formatter=`, they will be configured using the values set via `log_level` and `logger_formatter`.
+
+- **Type**: `Object`
+- **Default**: `Logger.new($stdout)`
+
+<Code
+  code={`
+  # Example: Using a custom logger (such as a semantic or JSON logger)
+  class CustomLogger
+    def info(msg)
+      puts "[CUSTOM INFO] #{msg}"
+    end
+    # Implement debug, warn, error, fatal, etc.
+  end
+
+Html2rss.configure do |config|
+config.logger = CustomLogger.new
+end
+`}
+lang="ruby"
+/>
+
+### `logger_formatter`
+
+Specifies a custom formatter for the default logger. This must be a callable object (like a `Proc` or `lambda`) that accepts the standard block arguments: `severity`, `datetime`, `progname`, and `msg`.
+
+- **Type**: `Proc`, `#call`, or `nil`
+- **Default**: A proc that formats logs as `"#{datetime} [#{severity}] #{msg}\n"`
+
+<Code
+  code={`
+  Html2rss.configure do |config|
+    config.logger_formatter = proc do |severity, datetime, _progname, msg|
+      "#{datetime} [#{severity}] - #{msg}\n"
+    end
+  end
+  `}
+  lang="ruby"
+/>
+
+---
+
+For detailed documentation on the Ruby API, see the [official YARD documentation](https://www.rubydoc.info/gems/html2rss).
