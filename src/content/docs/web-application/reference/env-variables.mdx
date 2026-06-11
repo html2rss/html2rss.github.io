@@ -20,5 +20,17 @@ description: "Configuration reference for html2rss-web environment variables."
 | `ASYNC_FEED_REFRESH_STALE_FACTOR` | optional integer `>= 1`; default `3`                                                                                                                         |
 | `PORT`                            | app listen port; compose uses `4000`                                                                                                                         |
 | `RACK_ENV`                        | Rack environment; quickstart uses `development`, production examples use `production`                                                                        |
+| `RACK_TIMEOUT_SERVICE_TIMEOUT`    | optional; total web-request timeout in seconds; default `30`                                                                                                 |
+| `HTML2RSS_TOTAL_TIMEOUT_SECONDS`  | optional; internal gem request timeout in seconds; default `25`                                                                                              |
+
+## Timeout Chain
+
+When fetching feeds from complex websites, multiple components work together. To prevent premature request termination, ensure your timeouts are configured in a "chain" where the outer layers wait longer than the inner layers.
+
+For an overall 30-second budget:
+
+1.  **Botasaurus Scraper (`SCRAPE_TIMEOUT_SECONDS`)**: Set to **20s**. This is the time allowed for the browser to fetch and render the page.
+2.  **html2rss Gem (`HTML2RSS_TOTAL_TIMEOUT_SECONDS`)**: Set to **25s**. This allows the gem enough time to wait for Botasaurus and process the results.
+3.  **html2rss-web (`RACK_TIMEOUT_SERVICE_TIMEOUT`)**: Set to **30s**. This is the total time the web server will wait before killing the request.
 
 Older environment-variable examples from previous docs revisions are obsolete. Use only the supported table above and the `Environment & Runtime Flags` table in [`docs/README.md`](https://github.com/html2rss/html2rss-web/blob/main/docs/README.md).
