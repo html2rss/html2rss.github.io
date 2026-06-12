@@ -37,15 +37,9 @@ If you plan to enable automatic feed generation, also prepare:
 - a clear way to give users the same `HTML2RSS_ACCESS_TOKEN` your instance expects
 - optional advanced-rendering infrastructure only if harder sites later prove they need it
 
-### Why a Reverse Proxy?
+### Configure Caddy & SSL (Automatic HTTPS)
 
-A reverse proxy terminates public HTTPS traffic and forwards requests to html2rss-web on your private Docker network.
-
-### Option A: Caddy (Automatic HTTPS)
-
-Caddy handles certificates and redirects.
-
-<DockerComposeSnippet variant="productionCaddy" />
+The default `docker-compose.yml` includes Caddy out-of-the-box as the entry point. Caddy automatically terminates public HTTPS traffic, manages SSL/TLS certificates (via Let's Encrypt / ZeroSSL), redirects HTTP to HTTPS, and sanitizes headers to mitigate IP spoofing rate-limit bypasses.
 
 Create a `.env` file beside your compose file:
 
@@ -56,16 +50,19 @@ Create a `.env` file beside your compose file:
   HTML2RSS_ACCESS_TOKEN=<strong access token>
   # Optional only if you want authenticated GET /api/v1/health
   # HEALTH_CHECK_TOKEN=<strong health token>
+  # Optional CDN/Load-balancer trusted proxies configuration
+  # CADDY_GLOBAL_OPTIONS="servers { trusted_proxies static 172.16.0.0/12 }"
 `}
   lang="dotenv"
 />
 
 Before starting the stack:
 
-- Set `CADDY_HOST` for your domain.
+- Set `CADDY_HOST` for your domain. If unset or left as `localhost`, Caddy will run with a local self-signed certificate.
 - Generate `HTML2RSS_SECRET_KEY` with `openssl rand -hex 32`.
 - Set a strong `HTML2RSS_ACCESS_TOKEN`. This is the token users paste into the web UI.
 - Leave `HEALTH_CHECK_TOKEN` unset unless you intentionally use authenticated `GET /api/v1/health`.
+- If you run behind a CDN (like Cloudflare), define `CADDY_GLOBAL_OPTIONS` in your `.env` with your trusted proxy configurations.
 - Leave `BUILD_TAG` and `GIT_SHA` unset unless you intentionally override image metadata in logs.
 - Adjust optional knobs such as `AUTO_SOURCE_ENABLED` and `SENTRY_DSN` as needed; refer to the [environment reference](/web-application/reference/env-variables/) for details.
 
@@ -82,8 +79,6 @@ Harden the application before inviting other users:
 - Keep token sharing/distribution outside public docs and outside version control
 - Give trusted users the same current `HTML2RSS_ACCESS_TOKEN` through your normal operator channel
 - If you use authenticated `GET /api/v1/health`, set a strong `HEALTH_CHECK_TOKEN`; do not leave `CHANGE_ME_HEALTH_CHECK_TOKEN` anywhere in production
-
-<DockerComposeSnippet variant="secure" />
 
 Store these variables in a `.env` file and reference it with `env_file:` as demonstrated in the Caddy example.
 
