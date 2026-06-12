@@ -18,6 +18,11 @@ description: "Configuration reference for html2rss-web environment variables."
 | `AUTO_SOURCE_ENABLED`             | `true` by default in development/test, `false` otherwise                                                                                                     |
 | `ASYNC_FEED_REFRESH_ENABLED`      | optional boolean; default `false`                                                                                                                            |
 | `ASYNC_FEED_REFRESH_STALE_FACTOR` | optional integer `>= 1`; default `3`                                                                                                                         |
+| `FEEDS_CACHE_MAX_SIZE`            | optional integer `>= 1`; default `500`; maximum number of feeds to cache in memory before eviction                                                           |
+| `RATE_LIMIT_ENABLED`              | optional boolean; default `true` (except `false` in `test`); enables or disables client IP rate limiting                                                     |
+| `RATE_LIMIT_MAX_REQUESTS`         | optional integer `>= 1`; default `60`; maximum requests allowed per IP per window                                                                            |
+| `RATE_LIMIT_WINDOW_SECONDS`       | optional integer `>= 1`; default `60`; rate limiter sliding window duration in seconds                                                                       |
+| `RETRY_AFTER_TIMEOUT_SECONDS`     | optional integer `>= 1`; default `300`; Retry-After header backoff duration returned on timeouts                                                             |
 | `PORT`                            | app listen port; compose uses `4000`                                                                                                                         |
 | `RACK_ENV`                        | Rack environment; quickstart uses `development`, production examples use `production`                                                                        |
 | `RACK_TIMEOUT_SERVICE_TIMEOUT`    | optional; total web-request timeout in seconds; default `30`                                                                                                 |

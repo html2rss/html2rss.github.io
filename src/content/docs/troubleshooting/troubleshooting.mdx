@@ -149,6 +149,12 @@ If you are getting a "command not found" error, try the following:
 - **500 Internal Server Error:** Check the application logs for detailed error information.
 - **Health endpoint failures:** Start with `GET /api/v1/health/ready` for standard readiness checks. Use `GET /api/v1/health/live` for process-alive checks, and use authenticated `GET /api/v1/health` only when you intentionally configured `HEALTH_CHECK_TOKEN`.
 
+### Rate Limiting & Timeouts
+
+- **429 Too Many Requests:** The client IP has exceeded the rate limit. Check the `RATE_LIMIT_MAX_REQUESTS` and `RATE_LIMIT_WINDOW_SECONDS` settings. The response includes a `Retry-After` header indicating how many seconds to wait before retrying.
+- **503 Service Unavailable:** The server is busy or the request timed out at the rack/server layer (e.g. `RACK_TIMEOUT_SERVICE_TIMEOUT`). Returns a `Retry-After` header matching `RETRY_AFTER_TIMEOUT_SECONDS`.
+- **504 Gateway Timeout:** The target website or scraper took too long to respond (exceeding `HTML2RSS_TOTAL_TIMEOUT_SECONDS`).
+
 ### Feed Problems
 
 - Try a more specific listing, newsroom, changelog, or updates URL before changing infrastructure
