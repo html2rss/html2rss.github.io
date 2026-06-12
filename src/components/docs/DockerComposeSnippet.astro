@@ -1,9 +1,9 @@
 ---
 import { Code } from "@astrojs/starlight/components";
-import { botasaurusImage, browserlessImage, caddyImage, watchtowerImage, webImage } from "../../data/docker";
+import { botasaurusImage, browserlessImage, caddyImage, webImage } from "../../data/docker";
 
 interface Props {
-  variant: "minimal" | "productionCaddy" | "watchtower" | "resourceGuardrails";
+  variant: "minimal" | "productionCaddy" | "resourceGuardrails";
 }
 
 const { variant } = Astro.props;
@@ -99,14 +99,6 @@ volumes:
       BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:4002
       BROWSERLESS_IO_API_TOKEN: \${BROWSERLESS_IO_API_TOKEN:?set BROWSERLESS_IO_API_TOKEN}
 
-  watchtower:
-    image: ${watchtowerImage}
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - "\${HOME}/.docker/config.json:/config.json"
-    command: --cleanup --interval 7200
-
   browserless:
     image: ${browserlessImage}
     restart: unless-stopped
@@ -120,15 +112,6 @@ volumes:
 volumes:
   caddy_data:
   caddy_config:`,
-  watchtower: `services:
-  watchtower:
-    image: ${watchtowerImage}
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      # Optional for private registries only:
-      # - "\${HOME}/.docker/config.json:/config.json:ro"
-    command: --cleanup --interval 7200 html2rss-web botasaurus caddy`,
   resourceGuardrails: `services:
   html2rss-web:
     image: ${webImage}
