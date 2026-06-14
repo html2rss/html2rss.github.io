@@ -30,16 +30,16 @@
     }
   },
   {
-    "domain": "avherald.com",
-    "name": "index",
+    "domain": "apple.com",
+    "name": "newsroom",
     "valid_channel_url": true,
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
-      "url": "https://avherald.com/",
+      "url": "https://www.apple.com/newsroom/",
       "language": "en",
-      "ttl": 120,
-      "time_zone": "UTC"
+      "time_zone": "UTC",
+      "ttl": 360
     }
   },
   {
@@ -172,6 +172,19 @@
     }
   },
   {
+    "domain": "deepmind.google",
+    "name": "blog",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://deepmind.google/blog/",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    }
+  },
+  {
     "domain": "deraktionaer.de",
     "name": "meistgelesen",
     "valid_channel_url": true,
@@ -179,7 +192,7 @@
     "default_parameters": {},
     "channel": {
       "title": "deraktionaer.de: meistgelesen",
-      "url": "https://deraktionaer.de/",
+      "url": "https://www.deraktionaer.de/",
       "time_zone": "Europe/Berlin",
       "ttl": 360,
       "language": "de"
@@ -225,6 +238,19 @@
     }
   },
   {
+    "domain": "elastic.co",
+    "name": "elasticsearch-release-notes",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.elastic.co/docs/release-notes/elasticsearch",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    }
+  },
+  {
     "domain": "espn.com",
     "name": "f1",
     "valid_channel_url": true,
@@ -243,7 +269,7 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
-      "url": "https://www.fia.com/documents/championships/fia-formula-one-world-championship-14/season/season-2025-2071",
+      "url": "https://www.fia.com/documents/championships/fia-formula-one-world-championship-14/season/season-2026-2072",
       "ttl": 360,
       "time_zone": "UTC"
     }
@@ -280,13 +306,39 @@
     }
   },
   {
+    "domain": "go.dev",
+    "name": "release-history",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://go.dev/doc/devel/release",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    }
+  },
+  {
+    "domain": "grafana.com",
+    "name": "whatsnew",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://grafana.com/docs/grafana/latest/whatsnew/",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    }
+  },
+  {
     "domain": "iaapa.org",
     "name": "news",
     "valid_channel_url": true,
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
-      "url": "https://www.iaapa.org/news",
+      "url": "https://iaapa.org/news-funworld",
       "time_zone": "UTC",
       "ttl": 720
     }
@@ -334,6 +386,32 @@
     }
   },
   {
+    "domain": "microsoft.com",
+    "name": "azure-products",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://azure.microsoft.com/en-us/products",
+      "language": "en",
+      "time_zone": "US/Pacific",
+      "ttl": 3600
+    }
+  },
+  {
+    "domain": "mozilla.org",
+    "name": "security-advisories",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.mozilla.org/en-US/security/advisories/",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    }
+  },
+  {
     "domain": "newyorker.com",
     "name": "magazine",
     "valid_channel_url": true,
@@ -357,6 +435,19 @@
       "language": "en-GB",
       "ttl": 360,
       "time_zone": "UTC"
+    }
+  },
+  {
+    "domain": "notion.com",
+    "name": "blog",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.notion.com/blog",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
     }
   },
   {
@@ -438,6 +529,18 @@
     }
   },
   {
+    "domain": "shopify.com",
+    "name": "blog",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.shopify.com/blog/latest",
+      "time_zone": "UTC",
+      "ttl": 360
+    }
+  },
+  {
     "domain": "softwareleadweekly.com",
     "name": "issues",
     "valid_channel_url": true,
@@ -490,6 +593,19 @@
       "time_zone": "Europe/Berlin",
       "ttl": 180,
       "language": "de"
+    }
+  },
+  {
+    "domain": "spotify.com",
+    "name": "newsroom",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://newsroom.spotify.com/",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
     }
   },
   {
@@ -615,7 +731,7 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
-      "url": "https://www.tourismusnetzwerk-brandenburg.de/nc/aktuelle-nachrichten/",
+      "url": "https://tourismusnetzwerk-brandenburg.de/",
       "time_zone": "Europe/Berlin",
       "ttl": 720,
       "language": "de"
