@@ -42,6 +42,7 @@ export default defineConfig({
   vite: {
     build: {
       rollupOptions: {
+        external: ["satteri"],
         output: {
           manualChunks: {
             vendor: ["@astrojs/starlight"],
