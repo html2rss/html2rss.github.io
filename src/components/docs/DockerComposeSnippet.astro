@@ -1,42 +1,85 @@
 ---
 import { Code } from "@astrojs/starlight/components";
-import { botasaurusImage, caddyImage, watchtowerImage, webImage } from "../../data/docker";
+import { botasaurusImage, browserlessImage, caddyImage, webImage } from "../../data/docker";
 
 interface Props {
-  variant: "minimal" | "productionCaddy" | "secure" | "watchtower" | "resourceGuardrails";
+  variant: "minimal" | "productionCaddy" | "resourceGuardrails";
 }
 
 const { variant } = Astro.props;
 
 const snippets: Record<Props["variant"], string> = {
   minimal: `services:
-  html2rss-web:
-    image: ${webImage}
+  caddy:
+    image: ${caddyImage}
+    restart: unless-stopped
+    depends_on:
+      - html2rss-web
     ports:
       - "127.0.0.1:4000:4000"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    command:
+      - sh
+      - -c
+      - |
+        caddy run --config - --adapter caddyfile <<EOF
+        {
+          admin off
+          \${CADDY_GLOBAL_OPTIONS:-}
+        }
+        https://localhost:4000 {
+          reverse_proxy html2rss-web:4000 {
+            header_up   X-Forwarded-For {client_ip}
+            header_up   X-Real-IP       {client_ip}
+            header_down -Via
+          }
+        }
+        EOF
+
+  html2rss-web:
+    image: ${webImage}
     environment:
       RACK_ENV: development
       HTML2RSS_ACCESS_TOKEN: CHANGE_ME_ADMIN_TOKEN
       BOTASAURUS_SCRAPER_URL: http://botasaurus:4010
 
   botasaurus:
-    image: ${botasaurusImage}`,
+    image: ${botasaurusImage}
+
+volumes:
+  caddy_data:
+  caddy_config:`,
   productionCaddy: `services:
   caddy:
     image: ${caddyImage}
     restart: unless-stopped
+    depends_on:
+      - html2rss-web
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - caddy_data:/data
+      - caddy_config:/config
     command:
-      - caddy
-      - reverse-proxy
-      - --from
-      - \${CADDY_HOST}
-      - --to
-      - html2rss-web:4000
+      - sh
+      - -c
+      - |
+        caddy run --config - --adapter caddyfile <<EOF
+        {
+          admin off
+          \${CADDY_GLOBAL_OPTIONS:-}
+        }
+        https://\${CADDY_HOST:-localhost} {
+          reverse_proxy html2rss-web:4000 {
+            header_up   X-Forwarded-For {client_ip}
+            header_up   X-Real-IP       {client_ip}
+            header_down -Via
+          }
+        }
+        EOF
 
   html2rss-web:
     image: ${webImage}
@@ -47,46 +90,30 @@ const snippets: Record<Props["variant"], string> = {
     environment:
       RACK_ENV: production
       PORT: 4000
+      AUTO_SOURCE_ENABLED: \${AUTO_SOURCE_ENABLED:-false}
+      HTML2RSS_ACCESS_TOKEN: \${HTML2RSS_ACCESS_TOKEN:-}
       HTML2RSS_SECRET_KEY: \${HTML2RSS_SECRET_KEY:?set HTML2RSS_SECRET_KEY}
-      HTML2RSS_ACCESS_TOKEN: \${HTML2RSS_ACCESS_TOKEN:?set HTML2RSS_ACCESS_TOKEN}
-      AUTO_SOURCE_ENABLED: "true"
+      HEALTH_CHECK_TOKEN: \${HEALTH_CHECK_TOKEN:?set HEALTH_CHECK_TOKEN}
       SENTRY_DSN: \${SENTRY_DSN:-}
-      BOTASAURUS_SCRAPER_URL: http://botasaurus:4010
+      SENTRY_ENABLE_LOGS: \${SENTRY_ENABLE_LOGS:-false}
+      HTML2RSS_TOTAL_TIMEOUT_SECONDS: 25
+      RACK_TIMEOUT_SERVICE_TIMEOUT: 30
+      BROWSERLESS_IO_WEBSOCKET_URL: ws://browserless:4002
+      BROWSERLESS_IO_API_TOKEN: \${BROWSERLESS_IO_API_TOKEN:?set BROWSERLESS_IO_API_TOKEN}
 
-  botasaurus:
-    image: ${botasaurusImage}
+  browserless:
+    image: ${browserlessImage}
     restart: unless-stopped
+    ports:
+      - "127.0.0.1:4002:4002"
+    environment:
+      PORT: 4002
+      CONCURRENT: 10
+      TOKEN: \${BROWSERLESS_IO_API_TOKEN:?set BROWSERLESS_IO_API_TOKEN}
 
 volumes:
-  caddy_data:`,
-  secure: `services:
-  html2rss-web:
-    image: ${webImage}
-    restart: unless-stopped
-    env_file:
-      - path: .env
-        required: false
-    environment:
-      RACK_ENV: production
-      PORT: 4000
-      HTML2RSS_SECRET_KEY: \${HTML2RSS_SECRET_KEY:?set HTML2RSS_SECRET_KEY}
-      HTML2RSS_ACCESS_TOKEN: \${HTML2RSS_ACCESS_TOKEN:?set HTML2RSS_ACCESS_TOKEN}
-      AUTO_SOURCE_ENABLED: "true"
-      SENTRY_DSN: \${SENTRY_DSN:-}
-      BOTASAURUS_SCRAPER_URL: http://botasaurus:4010
-
-  botasaurus:
-    image: ${botasaurusImage}
-    restart: unless-stopped`,
-  watchtower: `services:
-  watchtower:
-    image: ${watchtowerImage}
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      # Optional for private registries only:
-      # - "\${HOME}/.docker/config.json:/config.json:ro"
-    command: --cleanup --interval 7200 html2rss-web botasaurus caddy`,
+  caddy_data:
+  caddy_config:`,
   resourceGuardrails: `services:
   html2rss-web:
     image: ${webImage}
