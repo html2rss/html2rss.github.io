@@ -14,7 +14,7 @@ export default defineConfig({
     "/components/html2rss-configs": "/creating-custom-feeds/",
     "/components": "/",
     "/web-application/how-to/deployment": "/web-application/deployment/",
-    "/web-application/how-to/automatic-updates": "/web-application/deployment/#auto-update-with-watchtower",
+    "/web-application/how-to/automatic-updates": "/web-application/deployment/#updating-the-stack",
     "/web-application/how-to/use-automatic-feed-generation":
       "/web-application/guides/use-the-feed-directory/",
     "/web-application/how-to/use-automatic-feed-generation/":
