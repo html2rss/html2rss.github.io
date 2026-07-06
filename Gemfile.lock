@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: b613d83a81f02e033869ec3513c792c5e6706831
+  revision: 4a23fb69459c154014f9e15b2c69686a082176ac
   specs:
     html2rss (0.22.2)
       addressable (~> 2.7)
@@ -33,7 +33,7 @@ GEM
   specs:
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
-    async (2.41.0)
+    async (2.42.0)
       console (~> 1.29)
       fiber-annotation
       io-event (~> 1.11)
@@ -117,7 +117,7 @@ GEM
       fiber-storage
     fiber-storage (1.0.1)
     io-endpoint (0.17.2)
-    io-event (1.17.0)
+    io-event (1.19.1)
     io-stream (0.13.1)
     json (2.20.0)
     kramdown (2.5.2)
@@ -127,7 +127,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0414)
+    mime-types-data (3.2026.0701)
     net-http (0.9.1)
       uri (>= 0.11.1)
     nokogiri (1.19.4-arm64-darwin)
