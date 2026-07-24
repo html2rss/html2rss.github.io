@@ -17,14 +17,10 @@ export default defineConfig({
     "/web-application/how-to/automatic-updates": "/web-application/deployment/#auto-update-with-watchtower",
     "/web-application/how-to/use-automatic-feed-generation":
       "/web-application/guides/use-the-feed-directory/",
-    "/web-application/how-to/use-automatic-feed-generation/":
-      "/web-application/guides/use-the-feed-directory/",
     "/web-application/how-to": "/web-application/guides/",
     "/ruby-gem/how-to/dynamic-parameters": "/ruby-gem/guides/dynamic-parameters/",
-    "/ruby-gem/how-to/dynamic-parameters/": "/ruby-gem/guides/dynamic-parameters/",
     "/ruby-gem/how-to": "/ruby-gem/guides/",
     "/ruby-gem/tutorials": "/ruby-gem/guides/",
-    "/ruby-gem/tutorials/": "/ruby-gem/guides/",
     "/web-application/guides/use-included-configs": "/web-application/guides/use-the-feed-directory/",
   },
   build: {
@@ -44,8 +40,9 @@ export default defineConfig({
       rollupOptions: {
         external: ["satteri"],
         output: {
-          manualChunks: {
-            vendor: ["@astrojs/starlight"],
+          // Vite 8 / Rolldown: object-form manualChunks is gone; use codeSplitting.
+          codeSplitting: {
+            groups: [{ name: "vendor", test: /@astrojs\/starlight/ }],
           },
         },
       },
