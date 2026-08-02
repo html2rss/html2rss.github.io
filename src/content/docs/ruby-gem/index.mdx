@@ -10,8 +10,11 @@ This section provides comprehensive documentation for the `html2rss` Ruby gem.
 If you are looking for the stable machine-readable contract for config authoring, use the JSON Schema exported by the core repo:
 
 - Repository file: [**`html2rss-config.schema.json`**](https://github.com/html2rss/html2rss/blob/master/schema/html2rss-config.schema.json)
-- CLI export: `html2rss schema`
-- Runtime validation: `html2rss validate config.yml`
+- CLI export: `html2rss schema` (also `--write`, `--no-pretty`)
+- Runtime validation: `html2rss validate config.yml` or `Html2rss::Config.validate`
+- Ruby discovery: `Html2rss::Config.json_schema` / `Html2rss::Config.schema_path`
+
+The exported schema covers client-side validation. Runtime validation remains authoritative for dynamic cross-field checks such as selector-key references. Contributors regenerating the checked-in artifact should run `bundle exec rake config:schema` in the core repo.
 
 ## Getting Started
 

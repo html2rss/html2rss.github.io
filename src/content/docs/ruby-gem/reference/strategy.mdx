@@ -22,6 +22,10 @@ The default strategy chain is:
 
 `faraday` -> `botasaurus` -> `browserless`
 
+Auto fallback shares one request budget across all strategy attempts. For pagination-heavy or dynamic pages, increase `request.max_requests` (or `--max-requests`) when retries exhaust the budget.
+
+Auto fallback decisions are hidden at the default `LOG_LEVEL=warn`; run with `LOG_LEVEL=info` to include them in CLI output.
+
 ## `browserless`
 
 To use the `browserless` strategy, you need a running instance of [Browserless.io](https://www.browserless.io/).
@@ -169,39 +173,55 @@ For custom Browserless websocket endpoints, `BROWSERLESS_IO_API_TOKEN` is mandat
 - `strategy: botasaurus`
 - `BOTASAURUS_SCRAPER_URL` set to your Botasaurus scrape API base URL (for example `http://localhost:4010`)
 
+html2rss still enforces local request policy preflight and timeout budget. Botasaurus handles browser navigation/rendering internals, so some policy details are delegated to upstream execution.
+
 ### Configuration
 
 <Code
   code={`
+  channel:
+    url: "https://example.com"
   strategy: botasaurus
+  auto_source: {}
   request:
-    max_redirects: 5
-    max_requests: 6
     botasaurus:
       navigation_mode: auto
       max_retries: 2
       headless: false
-  channel:
-    url: "https://example.com/protected-listing"
-  auto_source: {}
   `}
   lang="yml"
 />
 
 Supported `request.botasaurus` options:
 
-- `navigation_mode` (`auto`, `get`, `google_get`, `google_get_bypass`)
-- `max_retries` (`0..3`)
-- `wait_for_selector`
-- `wait_timeout_seconds`
-- `block_images`
-- `block_images_and_css`
-- `wait_for_complete_page_load`
-- `headless`
-- `proxy`
-- `user_agent`
-- `window_size` (two integers, for example `[1920, 1080]`)
-- `lang`
+- `navigation_mode` (`auto`, `get`, `google_get`, `google_get_bypass`; default `auto`)
+- `max_retries` (`0..3`; default `2`)
+- `wait_for_selector` (string)
+- `wait_timeout_seconds` (integer)
+- `block_images` (boolean)
+- `block_images_and_css` (boolean)
+- `wait_for_complete_page_load` (boolean)
+- `headless` (boolean, default `false`)
+- `proxy` (string)
+- `user_agent` (string)
+- `window_size` (two-item integer array, for example `[1920, 1080]`)
+- `lang` (string, for example `en-US`)
+
+### Request payload shape
+
+Example scrape-API payload shape:
+
+<Code
+  code={`
+  {
+    "url": "https://example.com",
+    "navigation_mode": "auto",
+    "max_retries": 2,
+    "headless": false
+  }
+  `}
+  lang="json"
+/>
 
 ### Command-Line Usage
 
