@@ -61,34 +61,139 @@ Available options:
 
 ## Paginated Feeds
 
-`html2rss` can follow a single `rel="next"` pagination chain when you configure `selectors.items.pagination.max_pages`.
+Configure `selectors.items.pagination` to fetch items across multiple pages. `html2rss` supports several pagination strategies to handle different website architectures.
+
+### Common Options
+
+- **`strategy`**: The pagination strategy name (default: `rel_next`).
+- **`max_pages`**: The total page budget for the item selector chain, including the initial page (default: `5`).
+
+If you specify `pagination` as a simple integer (e.g., `pagination: 5`), it defaults to the `rel_next` strategy with the specified `max_pages`.
+
+---
+
+### Strategies
+
+#### 1. `rel_next` (Default)
+
+Follows standard HTML next page relationships via `<link rel="next">` or `<a rel="next">` tags.
 
 <Code
   code={`
-  channel:
-    url: "https://example.com/news"
   selectors:
     items:
       selector: "article"
-      pagination:
-        max_pages: 3
-    title:
-      selector: "h1"
-    url:
-      selector: "a"
-      extractor: "href"
+      pagination: 5 # or { strategy: rel_next, max_pages: 5 }
   `}
   lang="yml"
 />
 
-Behavior:
+#### 2. `custom_selector`
 
-- `max_pages` is the total page budget for the item selector chain, including the initial page.
-- `max_pages` is capped by the system request ceiling of 10 pages per feed build.
-- Pagination follows strict `link[rel~="next"]` or `a[rel~="next"]` targets only.
-- Follow-up pages use the current page's effective origin after redirects.
-- Pagination stops when there is no next link, a page repeats, or the shared request budget is exhausted.
-- The same request safeguards apply to pagination and Browserless navigation, including timeout limits, redirect limits, response-size guards, and private-network denial.
+Uses a custom CSS or XPath selector to locate the link pointing to the next page. It reads the element's `href` attribute or text content as the next URL.
+
+- **`selector`** (String, required): The CSS selector or XPath expression for the next-page element.
+
+<Code
+  code={`
+  selectors:
+    items:
+      selector: "article"
+      pagination:
+        strategy: custom_selector
+        selector: "a.next-page-link"
+        max_pages: 5
+  `}
+  lang="yml"
+/>
+
+#### 3. `url_template`
+
+Increments a page number in a query parameter or replaces a `{page}` token inside the URL template.
+
+- **`param`** (String, default: `page`): The name of the query parameter representing the page number.
+- **`start_page`** (Integer, default: `1`): The initial page number.
+- **`step`** (Integer, default: `1`): The step value to increment by for each subsequent page.
+
+If the initial URL contains the `{page}` placeholder, `html2rss` replaces `{page}` with the calculated page number. Otherwise, it appends/replaces the query parameter specified by `param`.
+
+<Code
+  code={`
+  selectors:
+    items:
+      selector: "article"
+      pagination:
+        strategy: url_template
+        param: "page"
+        start_page: 1
+        step: 1
+        max_pages: 5
+  `}
+  lang="yml"
+/>
+
+#### 4. `offset`
+
+Increments a numeric offset in a query parameter or replaces an `{offset}` token inside the URL template.
+
+- **`param`** (String, default: `offset`): The name of the query parameter representing the offset.
+- **`start_offset`** (Integer, default: `0`): The initial offset value.
+- **`increment`** (Integer, default: `20`): The offset value to add for each subsequent page.
+
+If the initial URL contains the `{offset}` placeholder, `html2rss` replaces `{offset}` with the calculated offset. Otherwise, it appends/replaces the query parameter specified by `param`.
+
+<Code
+  code={`
+  selectors:
+    items:
+      selector: "article"
+      pagination:
+        strategy: offset
+        param: "offset"
+        start_offset: 0
+        increment: 20
+        max_pages: 5
+  `}
+  lang="yml"
+/>
+
+#### 5. `json_cursor`
+
+Digs next-page URLs or cursor tokens directly from JSON response payloads.
+
+Requires configuring **either** `cursor_path` or `next_url_path`:
+
+- **`cursor_path`** (String): Dot-notation path to the cursor value in the JSON payload (e.g., `meta.next_cursor`). When present, `html2rss` appends/updates the query parameter specified by `param` (defaults to `cursor`) with the cursor value.
+- **`next_url_path`** (String): Dot-notation path to the next page URL in the JSON payload (e.g., `links.next`).
+- **`param`** (String, default: `cursor`): The query parameter name used with `cursor_path`.
+
+<Code
+  code={`
+  selectors:
+    items:
+      selector: "items"
+      pagination:
+        strategy: json_cursor
+        cursor_path: "meta.next_cursor" # or next_url_path: "links.next"
+        param: "cursor"
+        max_pages: 5
+  `}
+  lang="yml"
+/>
+
+---
+
+### Behavior & Request Budgeting
+
+- **Auto-budgeting**: The request budget (`max_requests`) is automatically calculated and adjusted based on your `max_pages` configuration so you do not need to manually configure `request.max_requests` under normal circumstances.
+- **System ceiling**: The absolute request limit is capped at `10` requests per build. If `max_pages` exceeds the system request ceiling, it will be clamped to the ceiling, and a warning will be logged.
+- **Stop conditions**: Pagination stops automatically if:
+  - The configured `max_pages` is reached.
+  - The request budget is exhausted.
+  - A page yields 0 new items.
+  - An already visited URL is encountered (loop protection).
+  - A network or extraction error occurs.
+- **Request safeguards**: All request safeguards apply to pagination (such as redirect limits, timeout boundaries, private-network denial, and response-size limits).
 
 ## RSS 2.0 Selectors
 
