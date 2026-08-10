@@ -9,16 +9,19 @@ You can configure global defaults for `html2rss` using `Html2rss.configure`. Thi
 
 Global configuration is thread-safe and implements an RCU (Read-Copy-Update) mechanism: once configured, the global configuration instance is frozen and thread-safe.
 
-```ruby
-require 'html2rss'
+<Code
+  code={`
+  require 'html2rss'
 
 Html2rss.configure do |config|
-  config.log_level = :info
-  config.min_ttl = 60
-  config.default_strategy = :faraday
-  config.headers = { 'User-Agent' => 'MyCustomUserAgent/1.0' }
+config.log_level = :info
+config.min_ttl = 60
+config.default_strategy = :faraday
+config.headers = { 'User-Agent' => 'MyCustomUserAgent/1.0' }
 end
-```
+`}
+lang="ruby"
+/>
 
 ## Options
 
