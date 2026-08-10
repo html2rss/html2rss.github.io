@@ -24,11 +24,12 @@ To enable it, add `auto_source: {}` to your configuration:
 
 1.  **`wordpress_api`:** Detects the `<link rel="https://api.w.org/">` tag used by WordPress and pulls posts from the REST API without parsing article HTML. See [WordPress API](/ruby-gem/reference/wordpress-api/).
 2.  **`sitemap`:** Automatically locates XML sitemap documents (`<link rel="sitemap">`, `/sitemap.xml`, or `/robots.txt`), filtering entries by priority and recency, with support for Google News tags (`<news:news>`).
-3.  **`schema`:** Parses `<script type="json/ld">` tags containing structured data (e.g., [Schema.org](https://schema.org/)).
-4.  **`microdata`:** Extracts HTML Microdata annotations (`itemscope itemtype`).
-5.  **`semantic_html`:** Searches for semantic HTML5 tags like `<article>`, `<main>`, and `<section>`.
-6.  **`html`:** Analyzes the HTML structure to find frequently occurring selectors that are likely to contain the main content.
-7.  **`json_state`:** Single-page applications often stash pre-rendered article data in `<script type="application/json">` tags or global variables
+3.  **`meta_oembed`:** Extracts single-item articles, video pages, and media updates from OpenGraph/Twitter meta tags and resolves JSON oEmbed endpoints (`<link rel="alternate" type="application/json+oembed">`).
+4.  **`schema`:** Parses `<script type="json/ld">` tags containing structured data (e.g., [Schema.org](https://schema.org/)).
+5.  **`microdata`:** Extracts HTML Microdata annotations (`itemscope itemtype`).
+6.  **`semantic_html`:** Searches for semantic HTML5 tags like `<article>`, `<main>`, and `<section>`.
+7.  **`html`:** Analyzes the HTML structure to find frequently occurring selectors that are likely to contain the main content.
+8.  **`json_state`:** Single-page applications often stash pre-rendered article data in `<script type="application/json">` tags or global variables
     such as `window.__NEXT_DATA__`, `window.__NUXT__`, or `window.STATE`. The JSON-state scraper walks those blobs, finds arrays with
     `title`/`url` pairs, and converts them into the same hashes produced by `HtmlExtractor`.
 
@@ -57,6 +58,8 @@ Enable or disable specific scrapers and adjust their settings:
         enabled: true # default: true
         min_priority: 0.3 # default: 0.3
         max_age_days: 30 # default: 30
+      meta_oembed:
+        enabled: true # default: true
       schema:
         enabled: false # default: true
       semantic_html:
