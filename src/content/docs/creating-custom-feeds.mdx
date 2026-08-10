@@ -80,9 +80,9 @@ This is where you tell the html2rss engine exactly what to find on the page. You
       selector: "article.post"
     title:
       selector: "h2 a"
-    link:
+    url:
       selector: "h2 a"
-      attribute: href
+      extractor: "href"
   `}
   lang="yaml"
 />
@@ -100,21 +100,21 @@ This says: "Find each article, get the title from the h2 anchor, and get the lin
 **Step 2:** Create a file called `example.com.yml` with this basic structure:
 
 <Code
-  code={
-    "channel:\n" +
-    "  url: https://example.com/blog\n" +
-    "  title: My Blog\n" +
-    "\n" +
-    "selectors:\n" +
-    "  items:\n" +
-    '    selector: "article.post"\n' +
-    "  title:\n" +
-    '    selector: "h2 a"\n' +
-    "  link:\n" +
-    '    selector: "h2 a"\n' +
-    "    attribute: href"
-  }
-  lang="yaml"
+  code={`
+  channel:
+    url: https://example.com/blog
+    title: My Blog
+
+selectors:
+items:
+selector: "article.post"
+title:
+selector: "h2 a"
+url:
+selector: "h2 a"
+extractor: "href"
+`}
+lang="yaml"
 />
 
 **Step 3:** Test it with your html2rss-web instance or the [Ruby gem](/ruby-gem/installation/).
@@ -148,9 +148,13 @@ html2rss supports many configuration options:
 
 <Code code={`html2rss feed your-config.yml`} lang="bash" />
 
-3. **Test with `html2rss-web`:** Add your config to the `feeds.yml` file and restart your instance
+3. **Or test against a locally saved HTML file without network requests:**
 
-4. **Check the output:** Make sure all items have titles, links, and descriptions
+<Code code={`html2rss feed your-config.yml --input sample.html`} lang="bash" />
+
+4. **Test with `html2rss-web`:** Add your config to the `feeds.yml` file and restart your instance
+
+5. **Check the output:** Make sure all items have titles, links, and descriptions
 
 ### Useful CLI flags when a site is difficult
 
@@ -158,11 +162,13 @@ Some sites need a little more request budget than the defaults.
 
 - Use `--max-redirects` when the site bounces through several canonicalization or tracking redirects before the real page loads.
 - Use `--max-requests` when your config needs more than one request, for example pagination or other follow-up fetches.
+- Use `--input` to supply a local HTML file to inspect extraction offline.
 
 <Code
   code={`
   html2rss feed your-config.yml --max-redirects 10 && \
   html2rss feed your-config.yml --max-requests 5 && \
+  html2rss feed your-config.yml --input /path/to/page.html && \
   html2rss auto https://example.com/blog --max-redirects 10 --max-requests 5
 `}
   lang="bash"

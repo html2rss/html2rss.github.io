@@ -1,54 +1,69 @@
 ---
-title: "Backward Compatibility"
-description: "html2rss maintains backward compatibility with older configuration formats and attribute names."
+title: "Backward Compatibility & Migrations"
+description: "Migration guide and backward-compatibility reference for html2rss configuration formats."
 ---
 
 import { Code } from "@astrojs/starlight/components";
 
-html2rss maintains backward compatibility with older configuration formats and attribute names.
+This page outlines recent breaking changes, purged legacy aliases, and migration steps for older feed configurations.
 
-## Renamed Attributes
+## Removed Legacy Selector Aliases
 
-Some attribute names have been renamed for clarity, but the old names still work:
+In previous versions, `html2rss` accepted legacy selector names with a deprecation warning. These shims have been removed:
 
-| Current Name   | Legacy Names         | Description                  |
-| -------------- | -------------------- | ---------------------------- |
-| `published_at` | `updated`, `pubDate` | Publication date of the item |
+| Removed Name | Required Name  | Description           |
+| :----------- | :------------- | :-------------------- |
+| `pubDate`    | `published_at` | Item publication date |
+| `updated`    | `published_at` | Item publication date |
 
-### Example
+### Migration Example
 
-Both of these configurations work identically:
+Update any occurrences of `pubDate` or `updated` in your `selectors` block to `published_at`:
 
 <Code
   code={`
-  # Current format (recommended)
+  # Deprecated / Removed
   selectors:
-    published_at:
+    updated:
       selector: ".date"
 
-# Legacy format (still supported)
+# Current & Required
 
 selectors:
-updated:
+published_at:
 selector: ".date"
-`} lang="yaml"
+`}
+lang="yaml"
 />
 
-## Migration Guide
+## Removed Channel Attributes
 
-If you're upgrading from an older version of html2rss:
+`strategy` and `headers` were previously tolerated inside the `channel` block. These legacy shims have been removed. Both keys must now be placed at the top level of your feed configuration:
 
-1. **Update attribute names**: Replace `updated` with `published_at` in your configurations
-2. **Test your feeds**: Verify that all feeds still work correctly after the update
+<Code
+  code={`
+  # Deprecated / Removed
+  channel:
+    url: "https://example.com/articles"
+    strategy: browserless
+    headers:
+      User-Agent: "CustomAgent/1.0"
 
-## Deprecated Features
+# Current & Required
 
-The following features are deprecated but still supported:
+strategy: browserless
+headers:
+User-Agent: "CustomAgent/1.0"
+channel:
+url: "https://example.com/articles"
+`}
+lang="yaml"
+/>
 
-- **Legacy attribute names**: While still supported, use the current names for new configurations
+## Migration Checklist
 
-## Getting Help
+When upgrading to modern `html2rss` releases:
 
-If you encounter issues with backward compatibility:
-
-- **Report issues**: Open an issue if you find compatibility problems
+1. **Rename date selectors**: Ensure date selectors use `published_at` rather than `updated` or `pubDate`.
+2. **Move channel-level transport keys**: Ensure `strategy` and `headers` are defined at the top level of the YAML file.
+3. **Validate configurations**: Run `html2rss validate config.yml` to ensure your YAML conforms to the current schema.
