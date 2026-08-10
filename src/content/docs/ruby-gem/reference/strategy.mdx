@@ -181,13 +181,13 @@ You can also specify the strategy on the command line:
 <Code
   code={`
   # Set environment variables for your Browserless.io instance
-  BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
-  BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
-  html2rss feed my_config.yml --strategy browserless ; \
-  html2rss feed my_config.yml --max-redirects 5 --max-requests 6 ; \
-  html2rss feed my_config.yml
+  BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \\
+  BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \\
+  html2rss feed my_config.yml --strategy browserless
+
+html2rss feed my_config.yml --max-redirects 5 --max-requests 6
 `}
-  lang="sh"
+lang="bash"
 />
 
 ### Browserless Troubleshooting
@@ -263,11 +263,13 @@ Example scrape-API payload shape:
 
 <Code
   code={`
-  BOTASAURUS_SCRAPER_URL="http://localhost:4010" \
-  html2rss auto https://example.com/updates --strategy botasaurus ; \
-  html2rss feed my_config.yml --strategy botasaurus
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" \\
+  html2rss auto https://example.com/updates --strategy botasaurus
+
+BOTASAURUS_SCRAPER_URL="http://localhost:4010" \\
+html2rss feed my_config.yml --strategy botasaurus
 `}
-  lang="sh"
+lang="bash"
 />
 
 ---
