@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: eaebbf2159f9e82734c216da55bddb346db9865a
+  revision: 537b09f2d7b4b3e54898c614bb358f94cd54c8bf
   specs:
     html2rss (0.22.2)
       addressable (~> 2.7)
@@ -33,7 +33,7 @@ GEM
   specs:
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
-    async (2.44.0)
+    async (2.44.1)
       console (~> 1.29)
       fiber-annotation
       io-event (~> 1.11)
@@ -132,8 +132,8 @@ GEM
       racc (~> 1.4)
     openssl (4.0.2)
     protocol-hpack (1.5.1)
-    protocol-http (0.68.0)
-    protocol-http1 (0.40.0)
+    protocol-http (0.70.0)
+    protocol-http1 (0.40.2)
       protocol-http (~> 0.68)
     protocol-http2 (0.26.2)
       protocol-hpack (~> 1.4)
@@ -142,7 +142,7 @@ GEM
       io-stream (>= 0.10)
       protocol-http (~> 0.58)
       rack (>= 1.0)
-    protocol-url (0.5.0)
+    protocol-url (0.10.0)
     protocol-websocket (0.21.1)
       protocol-http (~> 0.2)
     public_suffix (7.0.5)
