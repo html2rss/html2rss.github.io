@@ -104,17 +104,16 @@ This says: "Find each article, get the title from the h2 anchor, and get the lin
   channel:
     url: https://example.com/blog
     title: My Blog
-
-selectors:
-items:
-selector: "article.post"
-title:
-selector: "h2 a"
-url:
-selector: "h2 a"
-extractor: "href"
-`}
-lang="yaml"
+  selectors:
+    items:
+      selector: "article.post"
+    title:
+      selector: "h2 a"
+    url:
+      selector: "h2 a"
+      extractor: "href"
+  `}
+  lang="yaml"
 />
 
 **Step 3:** Test it with your html2rss-web instance or the [Ruby gem](/ruby-gem/installation/).
