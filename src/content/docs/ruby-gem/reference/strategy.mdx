@@ -11,6 +11,7 @@ The `strategy` key defines how `html2rss` fetches a website's content.
 - **`faraday`**: Makes a direct HTTP request. It is fast but does not execute JavaScript.
 - **`browserless`**: Renders the website in a headless Chrome browser, which is necessary for JavaScript-heavy sites.
 - **`botasaurus`**: Delegates fetching to a Botasaurus scrape API. This is opt-in and requires `BOTASAURUS_SCRAPER_URL`.
+- **`local_file`**: Reads HTML content directly from a local file on disk without making network requests.
 
 `strategy` is a top-level config key. Request-specific controls live under `request`.
 
@@ -22,6 +23,41 @@ The default strategy chain is:
 
 `faraday` -> `botasaurus` -> `browserless`
 
+Auto fallback shares one request budget across all strategy attempts. For pagination-heavy or dynamic pages, increase `request.max_requests` (or `--max-requests`) when retries exhaust the budget.
+
+Auto fallback decisions are hidden at the default `LOG_LEVEL=warn`; run with `LOG_LEVEL=info` to include them in CLI output.
+
+## `faraday`
+
+`faraday` is the standard static HTTP transport. When no custom `User-Agent` header is supplied in `headers`, `html2rss` sends `html2rss/<VERSION>` by default.
+
+## `local_file`
+
+`local_file` parses content directly from a local file on disk. It is designed for offline testing, local fixtures, and CLI `--input` workflows.
+
+Because no remote network connection is established, `local_file` skips remote network guards and SSRF preflight checks.
+
+### Configuration
+
+<Code
+  code={`
+  strategy: local_file
+  request:
+    local_file_path: "tmp/page.html"
+  channel:
+    url: "https://example.com/articles"
+  selectors:
+    items:
+      selector: ".article"
+    title:
+      selector: "h2"
+    url:
+      selector: "a"
+      extractor: "href"
+  `}
+  lang="yml"
+/>
+
 ## `browserless`
 
 To use the `browserless` strategy, you need a running instance of [Browserless.io](https://www.browserless.io/).
@@ -32,11 +68,11 @@ You can run a local Browserless.io instance using Docker:
 
 <Code
   code={`
-  docker run \
-    --rm \
-    -p 3000:3000 \
-    -e "CONCURRENT=10" \
-    -e "TOKEN=6R0W53R135510" \
+  docker run \\
+    --rm \\
+    -p 3000:3000 \\
+    -e "CONCURRENT=10" \\
+    -e "TOKEN=6R0W53R135510" \\
     ghcr.io/browserless/chromium
 `}
   lang="sh"
@@ -52,6 +88,7 @@ Set the `strategy` at the top level of your feed configuration and put request c
   request:
     max_redirects: 5
     max_requests: 6
+    total_timeout_seconds: 30
   channel:
     url: "https://example.com/app"
   selectors:
@@ -70,10 +107,12 @@ Set the `strategy` at the top level of your feed configuration and put request c
 
 Use this split consistently:
 
-- `strategy`: selects `auto`, `faraday`, `browserless`, or `botasaurus`
-- `headers`: top-level headers shared by all strategies
-- `request.max_redirects`: redirect limit for the request session
-- `request.max_requests`: total request budget for the whole feed build
+- `strategy`: selects `auto`, `faraday`, `browserless`, `botasaurus`, or `local_file`
+- `headers`: top-level headers shared by remote strategies (defaults to `html2rss/<VERSION>` User-Agent)
+- `request.max_redirects`: redirect limit for the request session (default: `5`)
+- `request.max_requests`: total request budget for the whole feed build (default: `10`)
+- `request.total_timeout_seconds`: maximum total wall-clock budget for the entire feed build
+- `request.local_file_path`: file path for `local_file` strategy
 - `request.browserless.*`: Browserless-only options
 - `request.botasaurus.*`: Botasaurus-only options
 
@@ -87,6 +126,7 @@ Example:
   request:
     max_redirects: 5
     max_requests: 6
+    total_timeout_seconds: 45
     browserless:
       preload:
         wait_after_ms: 5000
@@ -141,13 +181,13 @@ You can also specify the strategy on the command line:
 <Code
   code={`
   # Set environment variables for your Browserless.io instance
-  BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
-  BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
-  html2rss feed my_config.yml --strategy browserless ; \
-  html2rss feed my_config.yml --max-redirects 5 --max-requests 6 ; \
-  html2rss feed my_config.yml
+  BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \\
+  BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \\
+  html2rss feed my_config.yml --strategy browserless
+
+html2rss feed my_config.yml --max-redirects 5 --max-requests 6
 `}
-  lang="sh"
+lang="bash"
 />
 
 ### Browserless Troubleshooting
@@ -169,49 +209,67 @@ For custom Browserless websocket endpoints, `BROWSERLESS_IO_API_TOKEN` is mandat
 - `strategy: botasaurus`
 - `BOTASAURUS_SCRAPER_URL` set to your Botasaurus scrape API base URL (for example `http://localhost:4010`)
 
+html2rss still enforces local request policy preflight and timeout budget. Botasaurus handles browser navigation/rendering internals, so some policy details are delegated to upstream execution.
+
 ### Configuration
 
 <Code
   code={`
+  channel:
+    url: "https://example.com"
   strategy: botasaurus
+  auto_source: {}
   request:
-    max_redirects: 5
-    max_requests: 6
     botasaurus:
       navigation_mode: auto
       max_retries: 2
       headless: false
-  channel:
-    url: "https://example.com/protected-listing"
-  auto_source: {}
   `}
   lang="yml"
 />
 
 Supported `request.botasaurus` options:
 
-- `navigation_mode` (`auto`, `get`, `google_get`, `google_get_bypass`)
-- `max_retries` (`0..3`)
-- `wait_for_selector`
-- `wait_timeout_seconds`
-- `block_images`
-- `block_images_and_css`
-- `wait_for_complete_page_load`
-- `headless`
-- `proxy`
-- `user_agent`
-- `window_size` (two integers, for example `[1920, 1080]`)
-- `lang`
+- `navigation_mode` (`auto`, `get`, `google_get`, `google_get_bypass`; default `auto`)
+- `max_retries` (`0..3`; default `2`)
+- `wait_for_selector` (string)
+- `wait_timeout_seconds` (integer)
+- `block_images` (boolean)
+- `block_images_and_css` (boolean)
+- `wait_for_complete_page_load` (boolean)
+- `headless` (boolean, default `false`)
+- `proxy` (string)
+- `user_agent` (string)
+- `window_size` (two-item integer array, for example `[1920, 1080]`)
+- `lang` (string, for example `en-US`)
+
+### Request payload shape
+
+Example scrape-API payload shape:
+
+<Code
+  code={`
+  {
+    "url": "https://example.com",
+    "navigation_mode": "auto",
+    "max_retries": 2,
+    "headless": false
+  }
+  `}
+  lang="json"
+/>
 
 ### Command-Line Usage
 
 <Code
   code={`
-  BOTASAURUS_SCRAPER_URL="http://localhost:4010" \
-  html2rss auto https://example.com/updates --strategy botasaurus ; \
-  html2rss feed my_config.yml --strategy botasaurus
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" \\
+  html2rss auto https://example.com/updates --strategy botasaurus
+
+BOTASAURUS_SCRAPER_URL="http://localhost:4010" \\
+html2rss feed my_config.yml --strategy botasaurus
 `}
-  lang="sh"
+lang="bash"
 />
 
 ---
