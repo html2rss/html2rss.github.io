@@ -124,7 +124,7 @@ You can add custom validation by using post-processors:
       selector: "article"
     title:
       selector: "h2"
-      post_processors:
+      post_process:
         - name: "gsub"
           pattern: "^\\s*$"
           replacement: "Untitled"
