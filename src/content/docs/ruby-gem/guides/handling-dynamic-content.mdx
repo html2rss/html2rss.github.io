@@ -9,9 +9,9 @@ Some websites load their content dynamically using JavaScript. Static fetch path
 
 ## Solution
 
-Use a [browser-based extraction strategy](/ruby-gem/reference/strategy/) when JavaScript-heavy pages do not work with default static fetching.
+Default `strategy: auto` already tries `faraday` then `botasaurus` (when `BOTASAURUS_SCRAPER_URL` is configured). That covers many JS-rendered listing pages without pinning a strategy.
 
-`browserless` is common for this workflow, and `botasaurus` is an alternate browser-based strategy when you run a Botasaurus scrape API.
+Pin [`browserless`](/ruby-gem/reference/strategy/#browserless) when you need headless Chrome with preload (wait, click, scroll) or other Browserless-only controls — Browserless is not part of the `auto` chain.
 
 Keep the strategy at the top level and put request-specific options under `request`:
 

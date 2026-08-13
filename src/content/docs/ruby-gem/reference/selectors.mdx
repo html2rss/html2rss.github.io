@@ -288,7 +288,9 @@ To create a custom GUID for an item, provide a list of selector names to the `gu
 
 ### Enclosures
 
-To add an enclosure (e.g., an image, audio, or video file) to an item, use the `enclosure` selector to specify the URL of the file.
+Use the `enclosure` selector to attach media (audio, video, or other non-image files) to an item. The selector is wired into each article and rendered into the feed.
+
+RSS `<enclosure>` uses the first **non-image** enclosure. Images stay on the item description (and on JSON Feed `image` / attachments) — they are not promoted into RSS `<enclosure>`. For podcast/media RSS, select a non-image resource with `enclosure`.
 
 <Code
   code={`

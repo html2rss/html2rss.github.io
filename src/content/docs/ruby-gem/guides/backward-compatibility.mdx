@@ -7,6 +7,14 @@ import { Code } from "@astrojs/starlight/components";
 
 This page outlines recent breaking changes, purged legacy aliases, and migration steps for older feed configurations.
 
+## 0.24.0
+
+Upgrade notes for configs and integrators targeting gem **0.24.0**:
+
+1. **`auto` strategy chain** — Default `strategy: auto` is `faraday` → `botasaurus` only. Pin `strategy: browserless` (or `--strategy browserless`) when you need Browserless preload/interaction; Browserless is not a fallback tier.
+2. **RSS enclosures** — Configure media with the `enclosure` selector. RSS does not promote `image` into `<enclosure>`; images stay on the description / JSON Feed `image`.
+3. **Ruby dual-format / telemetry** — Prefer `Html2rss.feed_result` for one scrape that must render RSS and JSON Feed (or be Marshal-cached). Read `result.status.to_h` for scrape telemetry (`selected_strategy`, `attempt_count`, `strategy_attempts` under `auto`).
+
 ## Removed Legacy Selector Aliases
 
 In previous versions, `html2rss` accepted legacy selector names with a deprecation warning. These shims have been removed:
@@ -26,14 +34,12 @@ Update any occurrences of `pubDate` or `updated` in your `selectors` block to `p
   selectors:
     updated:
       selector: ".date"
-
-# Current & Required
-
-selectors:
-  published_at:
-    selector: ".date"
+  # Current & Required
+  selectors:
+    published_at:
+      selector: ".date"
 `}
-lang="yaml"
+  lang="yaml"
 />
 
 ## Removed Channel Attributes
@@ -48,16 +54,14 @@ lang="yaml"
     strategy: browserless
     headers:
       User-Agent: "CustomAgent/1.0"
-
-# Current & Required
-
-strategy: browserless
-headers:
-  User-Agent: "CustomAgent/1.0"
-channel:
-  url: "https://example.com/articles"
+  # Current & Required
+  strategy: browserless
+  headers:
+    User-Agent: "CustomAgent/1.0"
+  channel:
+    url: "https://example.com/articles"
 `}
-lang="yaml"
+  lang="yaml"
 />
 
 ## Migration Checklist
@@ -66,4 +70,7 @@ When upgrading to modern `html2rss` releases:
 
 1. **Rename date selectors**: Ensure date selectors use `published_at` rather than `updated` or `pubDate`.
 2. **Move channel-level transport keys**: Ensure `strategy` and `headers` are defined at the top level of the YAML file.
-3. **Validate configurations**: Run `html2rss validate config.yml` to ensure your YAML conforms to the current schema.
+3. **Pin Browserless when needed**: If you relied on `auto` falling through to Browserless, set `strategy: browserless` (or `--strategy browserless`).
+4. **Use `enclosure` for RSS media**: Do not rely on `image` becoming an RSS `<enclosure>`; select podcast/media URLs with `enclosure`.
+5. **Prefer `feed_result` for dual-format / cache**: Integrators that need RSS + JSON Feed from one scrape (or Marshal caching) should use `Html2rss.feed_result` and `status.to_h`.
+6. **Validate configurations**: Run `html2rss validate config.yml` to ensure your YAML conforms to the current schema.
