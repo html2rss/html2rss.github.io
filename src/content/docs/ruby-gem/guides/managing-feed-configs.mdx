@@ -83,20 +83,19 @@ Prefer `Html2rss.feed_result` when one scrape must render as both RSS and JSON F
 `status.to_h` is the stable observability payload. Always includes `version` and `dedup_dropped`. When present, it may also include `scraper_tallies`, `selected_strategy`, `attempt_count`, and `strategy_attempts` (auto-fallback attempts; empty outside `strategy: auto`).
 
 <Code
-  code={`
-  require 'html2rss'
-
-config = Html2rss.config_from_yaml_file('feeds.yml', 'my-first-feed')
-result = Html2rss.feed_result(config)
-
-result.to_rss
-result.to_json_feed(feed_url: 'https://example.com/feeds/my-first-feed.json')
-result.status.to_h
-
-# => { version: "...", dedup_dropped: 0, selected_strategy: :botasaurus, ... }
-
-`}
-lang="ruby"
+  code={
+    "require 'html2rss'\n" +
+    "\n" +
+    "config = Html2rss.config_from_yaml_file('feeds.yml', 'my-first-feed')\n" +
+    "result = Html2rss.feed_result(config)\n" +
+    "\n" +
+    "result.to_rss\n" +
+    "result.to_json_feed(feed_url: 'https://example.com/feeds/my-first-feed.json')\n" +
+    "result.status.to_h\n" +
+    "\n" +
+    '# => { version: "...", dedup_dropped: 0, selected_strategy: :botasaurus, ... }'
+  }
+  lang="ruby"
 />
 
 Depth and method contracts: [YARD for `html2rss`](https://www.rubydoc.info/gems/html2rss).
