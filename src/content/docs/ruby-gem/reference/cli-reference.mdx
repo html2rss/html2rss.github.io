@@ -36,7 +36,7 @@ Command: `html2rss auto [URL]`
 
 Available options:
 
-- `--strategy`: Optional request strategy (`auto`, `faraday`, `browserless`, `botasaurus`, `local_file`). Defaults to `auto`, which tries `faraday` -> `botasaurus` -> `browserless`.
+- `--strategy`: Optional request strategy (`auto`, `faraday`, `browserless`, `botasaurus`, `local_file`). Defaults to `auto`, which tries `faraday` -> `botasaurus`. Pin `browserless` explicitly when you need headless Chrome (preload/interaction).
 - `--format`: Output format for the auto-sourced feed (`rss` or `jsonfeed`). Defaults to `rss`.
 - `--items_selector`: Optional CSS selector hint for item extraction.
 - `--max-redirects`: Maximum redirects to follow per request.
@@ -77,7 +77,7 @@ If all fallback tiers run but still extract zero items, html2rss raises:
 
 - `No RSS feed items extracted after auto fallback ...`
 
-If failures continue after URL/surface fixes, retry with an explicit browser-based override (`--strategy browserless`), or `--strategy botasaurus` when `BOTASAURUS_SCRAPER_URL` is configured.
+If failures continue after URL/surface fixes, ensure `BOTASAURUS_SCRAPER_URL` is set so the `auto` Botasaurus tier can run, or pin `--strategy browserless` when you need Browserless preload/interaction.
 
 Start by changing the input URL to a direct listing/update page, then move to explicit selectors if needed.
 

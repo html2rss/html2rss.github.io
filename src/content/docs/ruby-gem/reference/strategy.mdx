@@ -7,25 +7,27 @@ import { Code } from "@astrojs/starlight/components";
 
 The `strategy` key defines how `html2rss` fetches a website's content.
 
-- **`auto`** (default): Tries concrete strategies in order: `faraday` -> `botasaurus` -> `browserless`.
+- **`auto`** (default): Tries concrete strategies in order: `faraday` -> `botasaurus`.
 - **`faraday`**: Makes a direct HTTP request. It is fast but does not execute JavaScript.
-- **`browserless`**: Renders the website in a headless Chrome browser, which is necessary for JavaScript-heavy sites.
-- **`botasaurus`**: Delegates fetching to a Botasaurus scrape API. This is opt-in and requires `BOTASAURUS_SCRAPER_URL`.
+- **`botasaurus`**: Delegates fetching to a Botasaurus scrape API. Included in the `auto` chain; requires `BOTASAURUS_SCRAPER_URL` when that tier runs (or when you pin `strategy: botasaurus`).
+- **`browserless`**: Renders the website in a headless Chrome browser. **Explicit only** — set `strategy: browserless` or `--strategy browserless` (not part of `auto`).
 - **`local_file`**: Reads HTML content directly from a local file on disk without making network requests.
 
 `strategy` is a top-level config key. Request-specific controls live under `request`.
 
-`auto` falls back to the next strategy when the current attempt errors or extracts zero items. Use explicit `--strategy ...` only when you need to force a specific transport for troubleshooting or reproducibility.
+`auto` falls back to the next strategy when the current attempt errors or extracts zero items. Pin a concrete strategy when you need a specific transport (for example Browserless preload/interaction, or a forced Botasaurus-only run).
 
 ## `auto` (default)
 
 The default strategy chain is:
 
-`faraday` -> `botasaurus` -> `browserless`
+`faraday` -> `botasaurus`
+
+`browserless` is not in this chain. Pin it when you need headless Chrome with preload (wait/click/scroll) or other Browserless-only controls.
 
 Auto fallback shares one request budget across all strategy attempts. For pagination-heavy or dynamic pages, increase `request.max_requests` (or `--max-requests`) when retries exhaust the budget.
 
-Auto fallback decisions are hidden at the default `LOG_LEVEL=warn`; run with `LOG_LEVEL=info` to include them in CLI output.
+Under `auto`, `Html2rss.feed_result(...).status` exposes scrape telemetry: `selected_strategy`, `attempt_count`, and `strategy_attempts` (see [Managing Feed Configs](/ruby-gem/guides/managing-feed-configs/#ruby-api-feedresult)). Auto fallback decisions are also visible at `LOG_LEVEL=info` (hidden at the default `LOG_LEVEL=warn`).
 
 ## `faraday`
 
@@ -204,12 +206,14 @@ For custom Browserless websocket endpoints, `BROWSERLESS_IO_API_TOKEN` is mandat
 
 ## `botasaurus`
 
-`botasaurus` delegates page fetching to a Botasaurus scrape API endpoint. This strategy is explicit opt-in and requires:
+`botasaurus` delegates page fetching to a Botasaurus scrape API endpoint. It runs as the second tier of `auto`, or when you pin `strategy: botasaurus`.
 
-- `strategy: botasaurus`
+Requirements:
+
 - `BOTASAURUS_SCRAPER_URL` set to your Botasaurus scrape API base URL (for example `http://localhost:4010`)
+- pin `strategy: botasaurus` only when you want to skip Faraday and force this transport
 
-html2rss still enforces local request policy preflight and timeout budget. Botasaurus handles browser navigation/rendering internals, so some policy details are delegated to upstream execution.
+html2rss still enforces local request policy preflight and timeout budget. When a total request timeout remains, Botasaurus `max_retries` and `wait_timeout_seconds` are clamped so upstream work fits the remaining budget. Botasaurus handles browser navigation/rendering internals, so some policy details are delegated to upstream execution.
 
 ### Configuration
 
@@ -222,7 +226,7 @@ html2rss still enforces local request policy preflight and timeout budget. Botas
   request:
     botasaurus:
       navigation_mode: auto
-      max_retries: 2
+      max_retries: 1
       headless: false
   `}
   lang="yml"
@@ -231,7 +235,7 @@ html2rss still enforces local request policy preflight and timeout budget. Botas
 Supported `request.botasaurus` options:
 
 - `navigation_mode` (`auto`, `get`, `google_get`, `google_get_bypass`; default `auto`)
-- `max_retries` (`0..3`; default `2`)
+- `max_retries` (`0..3`; default `1`)
 - `wait_for_selector` (string)
 - `wait_timeout_seconds` (integer)
 - `block_images` (boolean)
@@ -252,7 +256,7 @@ Example scrape-API payload shape:
   {
     "url": "https://example.com",
     "navigation_mode": "auto",
-    "max_retries": 2,
+    "max_retries": 1,
     "headless": false
   }
   `}
