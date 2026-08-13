@@ -23,6 +23,7 @@ Automatically discovers items from a page and prints the generated RSS or JSONFe
   code={`
   html2rss auto https://example.com/articles ; \
   html2rss auto https://example.com/articles --format jsonfeed ; \
+  html2rss auto https://example.com/articles --limit 10 ; \
   html2rss auto https://example.com/app --strategy browserless --max-redirects 5 --max-requests 6 ; \
   BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss auto https://example.com/protected --strategy botasaurus ; \
   html2rss auto https://example.com/articles --items_selector ".post-card" ; \
@@ -38,6 +39,7 @@ Available options:
 
 - `--strategy`: Optional request strategy (`auto`, `faraday`, `browserless`, `botasaurus`, `local_file`). Defaults to `auto`, which tries `faraday` -> `botasaurus`. Pin `browserless` explicitly when you need headless Chrome (preload/interaction).
 - `--format`: Output format for the auto-sourced feed (`rss` or `jsonfeed`). Defaults to `rss`.
+- `--limit`: Maximum number of articles to extract during discovery (defaults to `20`).
 - `--items_selector`: Optional CSS selector hint for item extraction.
 - `--max-redirects`: Maximum redirects to follow per request.
 - `--max-requests`: Maximum requests to allow for this feed build (defaults to `4` for auto discovery).
