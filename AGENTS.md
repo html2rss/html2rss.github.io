@@ -92,6 +92,10 @@ In docs content (`src/content/docs/**`) and docs-supporting components:
   `import { Code } from '@astrojs/starlight/components';`
 - Do not use:
   `import Code from "astro/components/Code.astro";`
+- Prefer multiline template literals: `code={\`...\`}`.
+- Give every content line the same 2-space base indent (Starlight strips the common indent on render).
+- Do not put blank lines inside the template — Prettier MDX strips indentation after blank lines and corrupts nested YAML/Ruby. Separate sections with `#` comment lines instead.
+- Do not use `"...\n" +` string concat for snippets unless a concrete Prettier conflict remains after following the no-blank-line rule (should be rare).
 
 ### Accuracy Rules
 

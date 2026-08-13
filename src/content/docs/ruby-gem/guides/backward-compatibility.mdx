@@ -29,18 +29,16 @@ In previous versions, `html2rss` accepted legacy selector names with a deprecati
 Update any occurrences of `pubDate` or `updated` in your `selectors` block to `published_at`:
 
 <Code
-  code={
-    "# Deprecated / Removed\n" +
-    "selectors:\n" +
-    "  updated:\n" +
-    '    selector: ".date"\n' +
-    "\n" +
-    "# Current & Required\n" +
-    "\n" +
-    "selectors:\n" +
-    "  published_at:\n" +
-    '    selector: ".date"'
-  }
+  code={`
+  # Deprecated / Removed
+  selectors:
+    updated:
+      selector: ".date"
+  # Current & Required
+  selectors:
+    published_at:
+      selector: ".date"
+`}
   lang="yaml"
 />
 
@@ -49,22 +47,20 @@ Update any occurrences of `pubDate` or `updated` in your `selectors` block to `p
 `strategy` and `headers` were previously tolerated inside the `channel` block. These legacy shims have been removed. Both keys must now be placed at the top level of your feed configuration:
 
 <Code
-  code={
-    "# Deprecated / Removed\n" +
-    "channel:\n" +
-    '  url: "https://example.com/articles"\n' +
-    "  strategy: browserless\n" +
-    "  headers:\n" +
-    '    User-Agent: "CustomAgent/1.0"\n' +
-    "\n" +
-    "# Current & Required\n" +
-    "\n" +
-    "strategy: browserless\n" +
-    "headers:\n" +
-    '  User-Agent: "CustomAgent/1.0"\n' +
-    "channel:\n" +
-    '  url: "https://example.com/articles"'
-  }
+  code={`
+  # Deprecated / Removed
+  channel:
+    url: "https://example.com/articles"
+    strategy: browserless
+    headers:
+      User-Agent: "CustomAgent/1.0"
+  # Current & Required
+  strategy: browserless
+  headers:
+    User-Agent: "CustomAgent/1.0"
+  channel:
+    url: "https://example.com/articles"
+`}
   lang="yaml"
 />
 
