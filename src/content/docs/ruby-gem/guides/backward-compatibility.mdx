@@ -7,6 +7,15 @@ import { Code } from "@astrojs/starlight/components";
 
 This page outlines recent breaking changes, purged legacy aliases, and migration steps for older feed configurations.
 
+## 0.25.0
+
+Upgrade notes for configs and integrators targeting gem **0.25.0**:
+
+1. **Removed `link` selector alias** — Custom selector configurations must use the canonical `url` key. The legacy `link` selector alias and exclusivity checks have been removed.
+2. **`auto` article limit (`--limit N`)** — Discovery now supports a configurable article limit (`--limit N` CLI flag, default `20`) and `Html2rss.auto_source(url, limit: 20)` in Ruby.
+3. **Channel metadata in `auto`** — `auto_source` automatically extracts channel-level `author` and `image` (favicon, touch-icon, or OpenGraph images) from the host page.
+4. **Actionable `NoFeedItemsExtracted` error** — `auto` mode fails loud with diagnostic surface classifications (blocked surface, app-shell, unsupported extraction surface) when zero items are found.
+
 ## 0.24.0
 
 Upgrade notes for configs and integrators targeting gem **0.24.0**:
@@ -21,21 +30,28 @@ In previous versions, `html2rss` accepted legacy selector names with a deprecati
 
 | Removed Name | Required Name  | Description           |
 | :----------- | :------------- | :-------------------- |
+| `link`       | `url`          | Item destination URL  |
 | `pubDate`    | `published_at` | Item publication date |
 | `updated`    | `published_at` | Item publication date |
 
 ### Migration Example
 
-Update any occurrences of `pubDate` or `updated` in your `selectors` block to `published_at`:
+Update any occurrences of `link`, `pubDate`, or `updated` in your `selectors` block to `url` or `published_at`:
 
 <Code
   code={`
   # Deprecated / Removed
   selectors:
+    link:
+      selector: "a.title"
+      extractor: "href"
     updated:
       selector: ".date"
   # Current & Required
   selectors:
+    url:
+      selector: "a.title"
+      extractor: "href"
     published_at:
       selector: ".date"
 `}
@@ -68,9 +84,10 @@ Update any occurrences of `pubDate` or `updated` in your `selectors` block to `p
 
 When upgrading to modern `html2rss` releases:
 
-1. **Rename date selectors**: Ensure date selectors use `published_at` rather than `updated` or `pubDate`.
-2. **Move channel-level transport keys**: Ensure `strategy` and `headers` are defined at the top level of the YAML file.
-3. **Pin Browserless when needed**: If you relied on `auto` falling through to Browserless, set `strategy: browserless` (or `--strategy browserless`).
-4. **Use `enclosure` for RSS media**: Do not rely on `image` becoming an RSS `<enclosure>`; select podcast/media URLs with `enclosure`.
-5. **Prefer `feed_result` for dual-format / cache**: Integrators that need RSS + JSON Feed from one scrape (or Marshal caching) should use `Html2rss.feed_result` and `status.to_h`.
-6. **Validate configurations**: Run `html2rss validate config.yml` to ensure your YAML conforms to the current schema.
+1. **Rename URL selectors**: Ensure article URL selectors use `url` rather than `link`.
+2. **Rename date selectors**: Ensure date selectors use `published_at` rather than `updated` or `pubDate`.
+3. **Move channel-level transport keys**: Ensure `strategy` and `headers` are defined at the top level of the YAML file.
+4. **Pin Browserless when needed**: If you relied on `auto` falling through to Browserless, set `strategy: browserless` (or `--strategy browserless`).
+5. **Use `enclosure` for RSS media**: Do not rely on `image` becoming an RSS `<enclosure>`; select podcast/media URLs with `enclosure`.
+6. **Prefer `feed_result` for dual-format / cache**: Integrators that need RSS + JSON Feed from one scrape (or Marshal caching) should use `Html2rss.feed_result` and `status.to_h`.
+7. **Validate configurations**: Run `html2rss validate config.yml` to ensure your YAML conforms to the current schema.
