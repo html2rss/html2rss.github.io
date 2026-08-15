@@ -1,15 +1,15 @@
 GIT
   remote: https://github.com/html2rss/html2rss-configs.git
-  revision: 71981aff28d88e4553c206d78bf54d5633bcdd19
+  revision: 7f40e65325f33383a8bdabfc5261f8cff33a3a9e
   specs:
     html2rss-configs (0.2.0)
       html2rss
 
 GIT
   remote: https://github.com/html2rss/html2rss.git
-  revision: 537b09f2d7b4b3e54898c614bb358f94cd54c8bf
+  revision: 644c7f06ccd70f8ed231a26ffc9d8d3279a2617b
   specs:
-    html2rss (0.22.2)
+    html2rss (0.25.0)
       addressable (~> 2.7)
       brotli
       dry-validation
@@ -113,7 +113,7 @@ GEM
       fiber-storage
     fiber-storage (1.0.1)
     io-endpoint (0.17.2)
-    io-event (1.19.4)
+    io-event (1.19.5)
     io-stream (0.14.0)
       openssl (>= 3.3)
     json (2.21.2)
@@ -142,7 +142,7 @@ GEM
       io-stream (>= 0.10)
       protocol-http (~> 0.58)
       rack (>= 1.0)
-    protocol-url (0.10.0)
+    protocol-url (0.18.0)
     protocol-websocket (0.21.1)
       protocol-http (~> 0.2)
     public_suffix (7.0.5)
@@ -154,7 +154,7 @@ GEM
       mime-types (>= 3.0)
       urlpattern (~> 0.1.1)
     racc (1.8.1)
-    rack (3.2.6)
+    rack (3.2.7)
     regexp_parser (2.12.0)
     reverse_markdown (3.0.2)
       nokogiri
