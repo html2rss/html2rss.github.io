@@ -7,6 +7,13 @@ import { Code } from "@astrojs/starlight/components";
 
 This page outlines recent breaking changes, purged legacy aliases, and migration steps for older feed configurations.
 
+## 0.26.0
+
+Upgrade notes for configs and integrators targeting gem **0.26.0**:
+
+1. **Browserless strategy removal** — The `browserless` strategy, `puppeteer-ruby` dependency, interaction budgets, and `request.browserless.*` options have been completely removed.
+2. **Botasaurus as browser transport** — Browser-based scraping and anti-bot bypassing now run through `botasaurus` (`BOTASAURUS_SCRAPER_URL`). Use `strategy: auto` (which tries `faraday` -> `botasaurus`) or pin `strategy: botasaurus` directly.
+
 ## 0.25.0
 
 Upgrade notes for configs and integrators targeting gem **0.25.0**:
@@ -16,78 +23,13 @@ Upgrade notes for configs and integrators targeting gem **0.25.0**:
 3. **Channel metadata in `auto`** — `auto_source` automatically extracts channel-level `author` and `image` (favicon, touch-icon, or OpenGraph images) from the host page.
 4. **Actionable `NoFeedItemsExtracted` error** — `auto` mode fails loud with diagnostic surface classifications (blocked surface, app-shell, unsupported extraction surface) when zero items are found.
 
-## 0.24.0
-
-Upgrade notes for configs and integrators targeting gem **0.24.0**:
-
-1. **`auto` strategy chain** — Default `strategy: auto` is `faraday` → `botasaurus` only. Pin `strategy: browserless` (or `--strategy browserless`) when you need Browserless preload/interaction; Browserless is not a fallback tier.
-2. **RSS enclosures** — Configure media with the `enclosure` selector. RSS does not promote `image` into `<enclosure>`; images stay on the description / JSON Feed `image`.
-3. **Ruby dual-format / telemetry** — Prefer `Html2rss.feed_result` for one scrape that must render RSS and JSON Feed (or be Marshal-cached). Read `result.status.to_h` for scrape telemetry (`selected_strategy`, `attempt_count`, `strategy_attempts` under `auto`).
-
-## Removed Legacy Selector Aliases
-
-In previous versions, `html2rss` accepted legacy selector names with a deprecation warning. These shims have been removed:
-
-| Removed Name | Required Name  | Description           |
-| :----------- | :------------- | :-------------------- |
-| `link`       | `url`          | Item destination URL  |
-| `pubDate`    | `published_at` | Item publication date |
-| `updated`    | `published_at` | Item publication date |
-
-### Migration Example
-
-Update any occurrences of `link`, `pubDate`, or `updated` in your `selectors` block to `url` or `published_at`:
-
-<Code
-  code={`
-  # Deprecated / Removed
-  selectors:
-    link:
-      selector: "a.title"
-      extractor: "href"
-    updated:
-      selector: ".date"
-  # Current & Required
-  selectors:
-    url:
-      selector: "a.title"
-      extractor: "href"
-    published_at:
-      selector: ".date"
-`}
-  lang="yaml"
-/>
-
-## Removed Channel Attributes
-
-`strategy` and `headers` were previously tolerated inside the `channel` block. These legacy shims have been removed. Both keys must now be placed at the top level of your feed configuration:
-
-<Code
-  code={`
-  # Deprecated / Removed
-  channel:
-    url: "https://example.com/articles"
-    strategy: browserless
-    headers:
-      User-Agent: "CustomAgent/1.0"
-  # Current & Required
-  strategy: browserless
-  headers:
-    User-Agent: "CustomAgent/1.0"
-  channel:
-    url: "https://example.com/articles"
-`}
-  lang="yaml"
-/>
-
 ## Migration Checklist
 
 When upgrading to modern `html2rss` releases:
 
-1. **Rename URL selectors**: Ensure article URL selectors use `url` rather than `link`.
-2. **Rename date selectors**: Ensure date selectors use `published_at` rather than `updated` or `pubDate`.
-3. **Move channel-level transport keys**: Ensure `strategy` and `headers` are defined at the top level of the YAML file.
-4. **Pin Browserless when needed**: If you relied on `auto` falling through to Browserless, set `strategy: browserless` (or `--strategy browserless`).
+1. **Migrate Browserless to Botasaurus**: Update any feeds using `strategy: browserless` or `request.browserless` to `strategy: botasaurus` or `strategy: auto` with `BOTASAURUS_SCRAPER_URL`.
+2. **Rename URL selectors**: Ensure article URL selectors use `url` rather than `link`.
+3. **Rename date selectors**: Ensure date selectors use `published_at` rather than `updated` or `pubDate`.
+4. **Move channel-level transport keys**: Ensure `strategy` and `headers` are defined at the top level of the YAML file.
 5. **Use `enclosure` for RSS media**: Do not rely on `image` becoming an RSS `<enclosure>`; select podcast/media URLs with `enclosure`.
-6. **Prefer `feed_result` for dual-format / cache**: Integrators that need RSS + JSON Feed from one scrape (or Marshal caching) should use `Html2rss.feed_result` and `status.to_h`.
-7. **Validate configurations**: Run `html2rss validate config.yml` to ensure your YAML conforms to the current schema.
+6. **Validate configurations**: Run `html2rss validate config.yml` to ensure your YAML conforms to the current schema.

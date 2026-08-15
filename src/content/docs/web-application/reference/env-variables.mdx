@@ -13,8 +13,7 @@ description: "Configuration reference for html2rss-web environment variables."
 | `BUILD_TAG`                       | release metadata used in logs; published Docker images set this to the release version                                                                       |
 | `GIT_SHA`                         | deployed commit metadata used in logs; published Docker images set this to the released commit                                                               |
 | `SENTRY_DSN`                      | optional; enables Sentry errors/logs when set                                                                                                                |
-| `BROWSERLESS_IO_WEBSOCKET_URL`    | optional; Browserless websocket endpoint for harder sites when you add Browserless later                                                                     |
-| `BROWSERLESS_IO_API_TOKEN`        | optional unless you explicitly add Browserless to your stack or point at a custom Browserless endpoint                                                       |
+| `BOTASAURUS_SCRAPER_URL`          | optional; Botasaurus scrape API base URL (e.g. `http://botasaurus:4010`) for browser rendering and anti-bot bypass                                           |
 | `AUTO_SOURCE_ENABLED`             | `true` by default in development/test, `false` otherwise                                                                                                     |
 | `ASYNC_FEED_REFRESH_ENABLED`      | optional boolean; default `false`                                                                                                                            |
 | `ASYNC_FEED_REFRESH_STALE_FACTOR` | optional integer `>= 1`; default `3`                                                                                                                         |

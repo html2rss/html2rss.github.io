@@ -58,42 +58,35 @@ Known anti-bot interstitial patterns (for example Cloudflare challenge pages) ar
 
 When all auto fallback tiers complete but still extract zero items, html2rss raises `No RSS feed items extracted after auto fallback ...`.
 
-If failures continue after URL/surface fixes, retry with an explicit browser-based override (`--strategy browserless`), or `--strategy botasaurus` when `BOTASAURUS_SCRAPER_URL` is configured.
+If failures continue after URL/surface fixes, configure `BOTASAURUS_SCRAPER_URL` or use `--strategy botasaurus` for browser rendering.
 
-### Browserless Connection / Setup Failures
+### Botasaurus Setup & Diagnostics
 
-If you receive `Browserless connection failed (...)`:
+If you receive a Botasaurus configuration error or connection failure:
 
-1. Confirm Browserless is running and reachable from the machine running `html2rss`.
-2. Confirm `BROWSERLESS_IO_WEBSOCKET_URL` points at that running service.
-3. Confirm `BROWSERLESS_IO_API_TOKEN` matches the Browserless `TOKEN`.
+1. Confirm the Botasaurus scrape API service is running and reachable from the machine running `html2rss`.
+2. Confirm `BOTASAURUS_SCRAPER_URL` points at your Botasaurus instance (for example `http://localhost:4010`).
 
-Example local startup:
+Example local startup via Docker:
 
-<Code
-  code={`docker run --rm -p 3000:3000 -e "CONCURRENT=10" -e "TOKEN=6R0W53R135510" ghcr.io/browserless/chromium`}
-  lang="bash"
-/>
+<Code code={`docker run -d --rm -p 4010:4010 html2rss/botasaurus-scrape-api:latest`} lang="bash" />
 
 Then run with:
 
 <Code
   code={`
-  BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \
-  BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \
-  html2rss auto https://example.com/updates --strategy browserless
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" \\
+  html2rss auto https://example.com/updates --strategy botasaurus
 `}
   lang="bash"
 />
-
-For custom websocket endpoints, `BROWSERLESS_IO_API_TOKEN` is required.
 
 ### Configuration Errors
 
 Common configuration-related errors:
 
 - **`UnsupportedResponseContentType`:** The website returned content that html2rss can't parse (not HTML or JSON).
-- **`UnsupportedStrategy`:** The specified strategy is not available. Use `auto`, `faraday`, `browserless`, or `botasaurus`.
+- **`UnsupportedStrategy`:** The specified strategy is not available. Use `auto`, `faraday`, `botasaurus`, or `local_file`.
 - **`BOTASAURUS_SCRAPER_URL is required for strategy=botasaurus.`:** Set `BOTASAURUS_SCRAPER_URL` to your Botasaurus scrape API base URL when using `--strategy botasaurus`.
 - **`BOTASAURUS_SCRAPER_URL is invalid`:** Fix the URL format and retry.
 - **`Configuration must include at least 'selectors' or 'auto_source'`:** You need to specify either manual selectors or enable auto-source.
@@ -105,7 +98,7 @@ If parts of your items (e.g., title, link) are missing, check the following:
 
 - **Selector:** Ensure the selector for the missing part is correct and relative to the `items.selector`.
 - **Extractor:** Verify that you are using the correct `extractor` (e.g., `text`, `href`, `attribute`).
-- **Dynamic Content:** `faraday` does not render JavaScript. If content loads dynamically, run with `--strategy browserless` (with Browserless available) or `--strategy botasaurus` (with `BOTASAURUS_SCRAPER_URL` configured) so the page can be rendered before extraction.
+- **Dynamic Content:** `faraday` does not render JavaScript. If content loads dynamically, configure `BOTASAURUS_SCRAPER_URL` or run with `--strategy botasaurus` so the page can be rendered before extraction.
 
 ### Date/Time Parsing Errors
 
@@ -159,7 +152,6 @@ If you are getting a "command not found" error, try the following:
 
 - Try a more specific listing, newsroom, changelog, or updates URL before changing infrastructure
 - If your first-run stack includes Botasaurus, ensure the `botasaurus` service is running
-- Add Browserless later only when harder sites prove they need it
 - Check the feed configuration in `feeds.yml` for typos or invalid selectors
 - Look for parsing errors in the logs:
   <Code code={`docker compose logs html2rss-web`} lang="bash" />

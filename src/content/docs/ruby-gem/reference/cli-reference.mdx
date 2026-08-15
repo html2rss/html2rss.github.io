@@ -21,13 +21,12 @@ Automatically discovers items from a page and prints the generated RSS or JSONFe
 
 <Code
   code={`
-  html2rss auto https://example.com/articles ; \
-  html2rss auto https://example.com/articles --format jsonfeed ; \
-  html2rss auto https://example.com/articles --limit 10 ; \
-  html2rss auto https://example.com/app --strategy browserless --max-redirects 5 --max-requests 6 ; \
-  BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss auto https://example.com/protected --strategy botasaurus ; \
-  html2rss auto https://example.com/articles --items_selector ".post-card" ; \
-  html2rss auto --input sample.html ; \
+  html2rss auto https://example.com/articles ; \\
+  html2rss auto https://example.com/articles --format jsonfeed ; \\
+  html2rss auto https://example.com/articles --limit 10 ; \\
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss auto https://example.com/protected --strategy botasaurus ; \\
+  html2rss auto https://example.com/articles --items_selector ".post-card" ; \\
+  html2rss auto --input sample.html ; \\
   html2rss auto https://example.com/articles --input sample.html
 `}
   lang="bash"
@@ -37,7 +36,7 @@ Command: `html2rss auto [URL]`
 
 Available options:
 
-- `--strategy`: Optional request strategy (`auto`, `faraday`, `browserless`, `botasaurus`, `local_file`). Defaults to `auto`, which tries `faraday` -> `botasaurus`. Pin `browserless` explicitly when you need headless Chrome (preload/interaction).
+- `--strategy`: Optional request strategy (`auto`, `faraday`, `botasaurus`, `local_file`). Defaults to `auto`, which tries `faraday` -> `botasaurus`.
 - `--format`: Output format for the auto-sourced feed (`rss` or `jsonfeed`). Defaults to `rss`.
 - `--limit`: Maximum number of articles to extract during discovery (defaults to `20`).
 - `--items_selector`: Optional CSS selector hint for item extraction.
@@ -66,9 +65,9 @@ When possible, pass a direct listing/update URL instead of a top-level homepage 
 When no extractable items are found, `auto` classifies likely causes instead of only returning a generic message:
 
 - `blocked surface likely (anti-bot or interstitial)`:
-  - try a more specific public listing URL
+  - try a more specific public listing URL or configure `BOTASAURUS_SCRAPER_URL`
 - `app-shell surface detected`:
-  - switch to a direct listing/update URL
+  - switch to a direct listing/update URL or configure `BOTASAURUS_SCRAPER_URL`
 - `unsupported extraction surface for auto mode`:
   - switch to listing/changelog/category URLs
   - use explicit selectors in a feed config
@@ -79,47 +78,13 @@ If all fallback tiers run but still extract zero items, html2rss raises:
 
 - `No RSS feed items extracted after auto fallback ...`
 
-If failures continue after URL/surface fixes, ensure `BOTASAURUS_SCRAPER_URL` is set so the `auto` Botasaurus tier can run, or pin `--strategy browserless` when you need Browserless preload/interaction.
+If failures continue after URL/surface fixes, ensure `BOTASAURUS_SCRAPER_URL` is set so the `auto` Botasaurus tier can run.
 
 Start by changing the input URL to a direct listing/update page, then move to explicit selectors if needed.
 
-#### Browserless Setup And Diagnostics (CLI)
-
-`browserless` is an explicit override for CLI usage.
-
-<Code
-  code={`
-  # 1) Start Browserless in the background
-  docker run -d --rm --name html2rss-browserless \\
-    -p 3000:3000 \\
-    -e "CONCURRENT=10" \\
-    -e "TOKEN=6R0W53R135510" \\
-    ghcr.io/browserless/chromium
-
-# 2) Run html2rss against Browserless
-
-BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \\
-BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \\
-html2rss auto https://example.com/updates --strategy browserless
-
-# 3) Stop Browserless when done
-
-docker stop html2rss-browserless
-`}
-lang="bash"
-/>
-
-If you see `Browserless connection failed`, check:
-
-- `BROWSERLESS_IO_WEBSOCKET_URL` points to a reachable Browserless endpoint
-- `BROWSERLESS_IO_API_TOKEN` matches the Browserless `TOKEN`
-- the Browserless service is running and reachable from your shell environment
-
-For custom Browserless endpoints, `BROWSERLESS_IO_API_TOKEN` is required.
-
 #### Botasaurus Environment Requirement (CLI)
 
-`botasaurus` is an explicit override for CLI usage and requires `BOTASAURUS_SCRAPER_URL`:
+`botasaurus` is an explicit strategy option for CLI usage and requires `BOTASAURUS_SCRAPER_URL`:
 
 <Code
   code={`
@@ -141,13 +106,12 @@ Loads a YAML config, builds the feed, and prints the RSS XML to stdout.
 
 <Code
   code={`
-  html2rss feed single.yml ; \
-  html2rss feed feeds.yml my-first-feed ; \
-  html2rss feed single.yml --strategy auto ; \
-  html2rss feed single.yml --strategy browserless ; \
-  BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss feed single.yml --strategy botasaurus ; \
-  html2rss feed single.yml --max-redirects 5 --max-requests 6 ; \
-  html2rss feed single.yml --params id:42 foo:bar ; \
+  html2rss feed single.yml ; \\
+  html2rss feed feeds.yml my-first-feed ; \\
+  html2rss feed single.yml --strategy auto ; \\
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss feed single.yml --strategy botasaurus ; \\
+  html2rss feed single.yml --max-redirects 5 --max-requests 6 ; \\
+  html2rss feed single.yml --params id:42 foo:bar ; \\
   html2rss feed single.yml --input sample.html
 `}
   lang="bash"
@@ -157,7 +121,7 @@ Command: `html2rss feed YAML_FILE [feed_name]`
 
 Available options:
 
-- `--strategy`: Request strategy override (`auto`, `faraday`, `browserless`, `botasaurus`, `local_file`).
+- `--strategy`: Request strategy override (`auto`, `faraday`, `botasaurus`, `local_file`).
 - `--params`: Dynamic parameters passed as key-value pairs (e.g. `--params id:42 section:news`).
 - `--max-redirects`: Maximum redirects to follow per request.
 - `--max-requests`: Total request budget allowed for this feed build.
@@ -171,8 +135,8 @@ Prints or writes the exported JSON Schema for the current gem version.
 
 <Code
   code={`
-  html2rss schema ; \
-  html2rss schema --no-pretty ; \
+  html2rss schema ; \\
+  html2rss schema --no-pretty ; \\
   html2rss schema --write tmp/html2rss-config.schema.json
 `}
   lang="bash"
@@ -191,8 +155,8 @@ Validates a config with the runtime validator without generating a feed.
 
 <Code
   code={`
-  html2rss validate single.yml ; \
-  html2rss validate feeds.yml my-first-feed ; \
+  html2rss validate single.yml ; \\
+  html2rss validate feeds.yml my-first-feed ; \\
   html2rss validate single.yml --params id:42
 `}
   lang="bash"

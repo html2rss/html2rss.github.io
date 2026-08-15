@@ -1,6 +1,6 @@
 ---
 title: Strategy
-description: "Learn how html2rss chooses request strategies by default with auto fallback, and when to override with faraday, botasaurus, or browserless."
+description: "Learn how html2rss chooses request strategies by default with auto fallback, and when to override with faraday, botasaurus, or local_file."
 ---
 
 import { Code } from "@astrojs/starlight/components";
@@ -10,20 +10,17 @@ The `strategy` key defines how `html2rss` fetches a website's content.
 - **`auto`** (default): Tries concrete strategies in order: `faraday` -> `botasaurus`.
 - **`faraday`**: Makes a direct HTTP request. It is fast but does not execute JavaScript.
 - **`botasaurus`**: Delegates fetching to a Botasaurus scrape API. Included in the `auto` chain; requires `BOTASAURUS_SCRAPER_URL` when that tier runs (or when you pin `strategy: botasaurus`).
-- **`browserless`**: Renders the website in a headless Chrome browser. **Explicit only** — set `strategy: browserless` or `--strategy browserless` (not part of `auto`).
 - **`local_file`**: Reads HTML content directly from a local file on disk without making network requests.
 
 `strategy` is a top-level config key. Request-specific controls live under `request`.
 
-`auto` falls back to the next strategy when the current attempt errors or extracts zero items. Pin a concrete strategy when you need a specific transport (for example Browserless preload/interaction, or a forced Botasaurus-only run).
+`auto` falls back to `botasaurus` when `faraday` errors or extracts zero items. Pin a concrete strategy when you need a specific transport (for example, forcing `botasaurus` directly).
 
 ## `auto` (default)
 
 The default strategy chain is:
 
 `faraday` -> `botasaurus`
-
-`browserless` is not in this chain. Pin it when you need headless Chrome with preload (wait/click/scroll) or other Browserless-only controls.
 
 Auto fallback shares one request budget across all strategy attempts. For pagination-heavy or dynamic pages, increase `request.max_requests` (or `--max-requests`) when retries exhaust the budget.
 
@@ -33,177 +30,6 @@ Under `auto`, `Html2rss.feed_result(...).status` exposes scrape telemetry: `sele
 
 `faraday` is the standard static HTTP transport. When no custom `User-Agent` header is supplied in `headers`, `html2rss` sends `html2rss/<VERSION>` by default.
 
-## `local_file`
-
-`local_file` parses content directly from a local file on disk. It is designed for offline testing, local fixtures, and CLI `--input` workflows.
-
-Because no remote network connection is established, `local_file` skips remote network guards and SSRF preflight checks.
-
-### Configuration
-
-<Code
-  code={`
-  strategy: local_file
-  request:
-    local_file_path: "tmp/page.html"
-  channel:
-    url: "https://example.com/articles"
-  selectors:
-    items:
-      selector: ".article"
-    title:
-      selector: "h2"
-    url:
-      selector: "a"
-      extractor: "href"
-  `}
-  lang="yml"
-/>
-
-## `browserless`
-
-To use the `browserless` strategy, you need a running instance of [Browserless.io](https://www.browserless.io/).
-
-### Docker
-
-You can run a local Browserless.io instance using Docker:
-
-<Code
-  code={`
-  docker run \\
-    --rm \\
-    -p 3000:3000 \\
-    -e "CONCURRENT=10" \\
-    -e "TOKEN=6R0W53R135510" \\
-    ghcr.io/browserless/chromium
-`}
-  lang="sh"
-/>
-
-### Configuration
-
-Set the `strategy` at the top level of your feed configuration and put request controls under `request`:
-
-<Code
-  code={`
-  strategy: browserless
-  request:
-    max_redirects: 5
-    max_requests: 6
-    total_timeout_seconds: 30
-  channel:
-    url: "https://example.com/app"
-  selectors:
-    items:
-      selector: ".article"
-    title:
-      selector: "h2"
-    url:
-      selector: "a"
-      extractor: "href"
-  `}
-  lang="yml"
-/>
-
-### Request Structure
-
-Use this split consistently:
-
-- `strategy`: selects `auto`, `faraday`, `browserless`, `botasaurus`, or `local_file`
-- `headers`: top-level headers shared by remote strategies (defaults to `html2rss/<VERSION>` User-Agent)
-- `request.max_redirects`: redirect limit for the request session (default: `5`)
-- `request.max_requests`: total request budget for the whole feed build (default: `10`)
-- `request.total_timeout_seconds`: maximum total wall-clock budget for the entire feed build
-- `request.local_file_path`: file path for `local_file` strategy
-- `request.browserless.*`: Browserless-only options
-- `request.botasaurus.*`: Botasaurus-only options
-
-Example:
-
-<Code
-  code={`
-  strategy: browserless
-  headers:
-    User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
-  request:
-    max_redirects: 5
-    max_requests: 6
-    total_timeout_seconds: 45
-    browserless:
-      preload:
-        wait_after_ms: 5000
-  channel:
-    url: "https://example.com/app"
-  selectors:
-    items:
-      selector: ".article"
-    title:
-      selector: "h2"
-    url:
-      selector: "a"
-      extractor: "href"
-  `}
-  lang="yml"
-/>
-
-### Browserless Preload
-
-Browserless can interact with the page before html2rss captures the final HTML. Configure preload steps under
-`request.browserless.preload`.
-
-<Code
-  code={`
-  strategy: browserless
-  request:
-    browserless:
-      preload:
-        wait_after_ms: 5000
-        click_selectors:
-          - selector: ".load-more"
-            max_clicks: 3
-            wait_after_ms: 250
-        scroll_down:
-          iterations: 5
-          wait_after_ms: 200
-  `}
-  lang="yml"
-/>
-
-- `wait_after_ms`: inserts a fixed wait before or after preload steps
-- `click_selectors`: clicks matching elements until they disappear or `max_clicks` is reached
-- `scroll_down`: scrolls until the page height stops growing or `iterations` is reached
-
-If preload triggers a real navigation or redirect, html2rss keeps the final document metadata. Relative links and follow-up
-pagination therefore resolve against the page that was actually rendered after preload completed.
-
-### Command-Line Usage
-
-You can also specify the strategy on the command line:
-
-<Code
-  code={`
-  # Set environment variables for your Browserless.io instance
-  BROWSERLESS_IO_WEBSOCKET_URL="ws://127.0.0.1:3000" \\
-  BROWSERLESS_IO_API_TOKEN="6R0W53R135510" \\
-  html2rss feed my_config.yml --strategy browserless
-
-html2rss feed my_config.yml --max-redirects 5 --max-requests 6
-`}
-lang="bash"
-/>
-
-### Browserless Troubleshooting
-
-If Browserless cannot connect, html2rss surfaces a `Browserless connection failed (...)` error with endpoint/token hints.
-
-Check these first:
-
-- `BROWSERLESS_IO_WEBSOCKET_URL` is reachable from where html2rss runs
-- `BROWSERLESS_IO_API_TOKEN` matches your Browserless `TOKEN`
-- your Browserless service is running and accepting connections
-
-For custom Browserless websocket endpoints, `BROWSERLESS_IO_API_TOKEN` is mandatory. The local default endpoint (`ws://127.0.0.1:3000`) can use the default local token `6R0W53R135510`.
-
 ## `botasaurus`
 
 `botasaurus` delegates page fetching to a Botasaurus scrape API endpoint. It runs as the second tier of `auto`, or when you pin `strategy: botasaurus`.
@@ -211,9 +37,9 @@ For custom Browserless websocket endpoints, `BROWSERLESS_IO_API_TOKEN` is mandat
 Requirements:
 
 - `BOTASAURUS_SCRAPER_URL` set to your Botasaurus scrape API base URL (for example `http://localhost:4010`)
-- pin `strategy: botasaurus` only when you want to skip Faraday and force this transport
+- pin `strategy: botasaurus` when you want to skip Faraday and force this transport directly
 
-html2rss still enforces local request policy preflight and timeout budget. When a total request timeout remains, Botasaurus `max_retries` and `wait_timeout_seconds` are clamped so upstream work fits the remaining budget. Botasaurus handles browser navigation/rendering internals, so some policy details are delegated to upstream execution.
+html2rss enforces local request policy preflight and timeout budget. When a total request timeout remains, Botasaurus `max_retries` and `wait_timeout_seconds` are clamped so upstream work fits the remaining budget.
 
 ### Configuration
 
@@ -247,7 +73,7 @@ Supported `request.botasaurus` options:
 - `window_size` (two-item integer array, for example `[1920, 1080]`)
 - `lang` (string, for example `en-US`)
 
-### Request payload shape
+### Request Payload Shape
 
 Example scrape-API payload shape:
 
@@ -274,6 +100,73 @@ BOTASAURUS_SCRAPER_URL="http://localhost:4010" \\
 html2rss feed my_config.yml --strategy botasaurus
 `}
 lang="bash"
+/>
+
+## `local_file`
+
+`local_file` parses content directly from a local file on disk. It is designed for offline testing, local fixtures, and CLI `--input` workflows.
+
+Because no remote network connection is established, `local_file` skips remote network guards and SSRF preflight checks.
+
+### Configuration
+
+<Code
+  code={`
+  strategy: local_file
+  request:
+    local_file_path: "tmp/page.html"
+  channel:
+    url: "https://example.com/articles"
+  selectors:
+    items:
+      selector: ".article"
+    title:
+      selector: "h2"
+    url:
+      selector: "a"
+      extractor: "href"
+  `}
+  lang="yml"
+/>
+
+## Request Structure
+
+Use this split consistently:
+
+- `strategy`: selects `auto`, `faraday`, `botasaurus`, or `local_file`
+- `headers`: top-level headers shared by remote strategies (defaults to `html2rss/<VERSION>` User-Agent)
+- `request.max_redirects`: redirect limit for the request session (default: `5`)
+- `request.max_requests`: total request budget for the whole feed build (default: `10`)
+- `request.total_timeout_seconds`: maximum total wall-clock budget for the entire feed build
+- `request.local_file_path`: file path for `local_file` strategy
+- `request.botasaurus.*`: Botasaurus-only options
+
+Example:
+
+<Code
+  code={`
+  strategy: botasaurus
+  headers:
+    User-Agent: "Mozilla/5.0 (compatible; html2rss/1.0)"
+  request:
+    max_redirects: 5
+    max_requests: 6
+    total_timeout_seconds: 45
+    botasaurus:
+      navigation_mode: google_get_bypass
+      wait_timeout_seconds: 15
+  channel:
+    url: "https://example.com/app"
+  selectors:
+    items:
+      selector: ".article"
+    title:
+      selector: "h2"
+    url:
+      selector: "a"
+      extractor: "href"
+  `}
+  lang="yml"
 />
 
 ---
