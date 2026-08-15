@@ -60,18 +60,24 @@ html2rss enforces local request policy preflight and timeout budget. When a tota
 
 Supported `request.botasaurus` options:
 
-- `navigation_mode` (`auto`, `get`, `google_get`, `google_get_bypass`; default `auto`)
+- `execution_mode` (`auto`, `request`, `browser`; default `auto`)
+- `navigation_mode` (`auto`, `get`, `google_get`, `google_get_bypass`, `organic_get`; default `auto`)
 - `max_retries` (`0..3`; default `1`)
 - `wait_for_selector` (string)
 - `wait_timeout_seconds` (integer)
+- `scroll` (boolean)
+- `scroll_to_bottom` (boolean)
 - `block_images` (boolean)
 - `block_images_and_css` (boolean)
+- `block_trackers` (boolean)
 - `wait_for_complete_page_load` (boolean)
 - `headless` (boolean, default `false`)
 - `proxy` (string)
 - `user_agent` (string)
 - `window_size` (two-item integer array, for example `[1920, 1080]`)
 - `lang` (string, for example `en-US`)
+- `headers` (hash, forwarded to the Botasaurus scrape API alongside config-level `headers`)
+- `cookies` (hash)
 
 ### Request Payload Shape
 
