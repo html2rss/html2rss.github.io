@@ -54,11 +54,21 @@ If your feed is empty, check the following:
   - switch to listing/changelog/category URLs
   - or use explicit selectors in YAML config
 
-Known anti-bot interstitial patterns (for example Cloudflare challenge pages) are surfaced as blocked-surface errors instead of silent empty extraction results.
+Known anti-bot interstitial patterns (for example Cloudflare or DataDome challenge pages) are surfaced as blocked-surface errors instead of silent empty extraction results.
 
 When all auto fallback tiers complete but still extract zero items, html2rss raises `No RSS feed items extracted after auto fallback ...`.
 
 If failures continue after URL/surface fixes, configure `BOTASAURUS_SCRAPER_URL` or use `--strategy botasaurus` for browser rendering.
+
+### DataDome And Similar Challenges
+
+DataDome (and similar) challenge pages are classified as a blocked surface. Prefer:
+
+1. A direct public listing/update URL instead of a challenge-prone entrypoint
+2. `strategy: botasaurus` with `BOTASAURUS_SCRAPER_URL` so the browser tier can complete navigation
+3. A session that already has resolved challenge cookies when the site still blocks automated browsers
+
+Do not expect Faraday-only fetches to succeed against active DataDome interstitials.
 
 ### Botasaurus Setup & Diagnostics
 

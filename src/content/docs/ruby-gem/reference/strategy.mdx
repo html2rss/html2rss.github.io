@@ -41,6 +41,8 @@ Requirements:
 
 html2rss enforces local request policy preflight and timeout budget. When a total request timeout remains, Botasaurus `max_retries` and `wait_timeout_seconds` are clamped so upstream work fits the remaining budget.
 
+During the **browser** execution tier, the Botasaurus scrape API always captures JSON XHR/fetch response bodies (`xhr_responses`). html2rss forwards them as `Response#captured_responses` so AutoSource `xhr_articles` can extract articles without extra requests. The HTTP-request tier returns an empty capture list. Caps and filtering live in the scrape API (see its README); article-likeness filtering is a client concern.
+
 ### Configuration
 
 <Code
