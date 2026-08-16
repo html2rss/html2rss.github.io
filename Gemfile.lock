@@ -1,13 +1,11 @@
-GIT
-  remote: https://github.com/html2rss/html2rss-configs.git
-  revision: 7f40e65325f33383a8bdabfc5261f8cff33a3a9e
+PATH
+  remote: ../html2rss-configs
   specs:
     html2rss-configs (0.2.0)
       html2rss
 
-GIT
-  remote: https://github.com/html2rss/html2rss.git
-  revision: 644c7f06ccd70f8ed231a26ffc9d8d3279a2617b
+PATH
+  remote: ../html2rss
   specs:
     html2rss (0.25.0)
       addressable (~> 2.7)
@@ -17,15 +15,18 @@ GIT
       faraday-follow_redirects
       faraday-gzip (~> 3)
       kramdown
+      mcp (~> 1.0)
       mime-types (> 3.0)
       nokogiri (>= 1.10, < 2.0)
-      puppeteer-ruby
+      rack (~> 3.0)
+      rackup (~> 2.0)
       regexp_parser
       reverse_markdown (~> 3.0)
       rss
       sanitize
       thor
       tzinfo
+      webrick (~> 1.9)
       zeitwerk
 
 GEM
@@ -33,34 +34,9 @@ GEM
   specs:
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
-    async (2.44.1)
-      console (~> 1.29)
-      fiber-annotation
-      io-event (~> 1.11)
-    async-http (0.99.0)
-      async (>= 2.35.1)
-      async-pool (~> 0.11)
-      io-endpoint (~> 0.14)
-      io-stream (~> 0.14)
-      protocol-http (~> 0.66)
-      protocol-http1 (~> 0.39)
-      protocol-http2 (~> 0.26)
-      protocol-url (~> 0.2)
-    async-pool (0.11.2)
-      async (>= 2.0)
-    async-websocket (0.30.1)
-      async-http (~> 0.76)
-      protocol-http (~> 0.34)
-      protocol-rack (~> 0.7)
-      protocol-websocket (~> 0.17)
-    base64 (0.3.0)
     bigdecimal (4.1.2)
     brotli (0.8.0)
     concurrent-ruby (1.3.8)
-    console (1.37.0)
-      fiber-annotation
-      fiber-local (~> 1.1)
-      json
     crass (1.0.7)
     dry-configurable (1.4.0)
       dry-core (~> 1.0)
@@ -108,18 +84,18 @@ GEM
       zlib (~> 3.0)
     faraday-net_http (3.4.4)
       net-http (~> 0.5)
-    fiber-annotation (0.2.0)
-    fiber-local (1.1.0)
-      fiber-storage
-    fiber-storage (1.0.1)
-    io-endpoint (0.17.2)
-    io-event (1.19.5)
-    io-stream (0.14.0)
-      openssl (>= 3.3)
+    hana (1.3.7)
     json (2.21.2)
+    json_schemer (2.5.0)
+      bigdecimal
+      hana (~> 1.3)
+      regexp_parser (~> 2.0)
+      simpleidn (~> 0.2)
     kramdown (2.5.2)
       rexml (>= 3.4.4)
     logger (1.7.0)
+    mcp (1.2.0)
+      json_schemer (>= 2.4)
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
@@ -130,31 +106,11 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.4-x86_64-linux-gnu)
       racc (~> 1.4)
-    openssl (4.0.2)
-    protocol-hpack (1.5.1)
-    protocol-http (0.70.0)
-    protocol-http1 (0.40.2)
-      protocol-http (~> 0.68)
-    protocol-http2 (0.26.2)
-      protocol-hpack (~> 1.4)
-      protocol-http (~> 0.62)
-    protocol-rack (0.22.1)
-      io-stream (>= 0.10)
-      protocol-http (~> 0.58)
-      rack (>= 1.0)
-    protocol-url (0.18.0)
-    protocol-websocket (0.21.1)
-      protocol-http (~> 0.2)
     public_suffix (7.0.5)
-    puppeteer-ruby (0.53.0)
-      async (>= 2.35.1, < 3.0)
-      async-http (>= 0.60, < 1.0)
-      async-websocket (>= 0.27, < 1.0)
-      base64
-      mime-types (>= 3.0)
-      urlpattern (~> 0.1.1)
     racc (1.8.1)
     rack (3.2.7)
+    rackup (2.3.1)
+      rack (>= 3)
     regexp_parser (2.12.0)
     reverse_markdown (3.0.2)
       nokogiri
@@ -164,16 +120,17 @@ GEM
     sanitize (7.0.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.16.8)
+    simpleidn (0.2.3)
     thor (1.5.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uri (1.1.1)
-    urlpattern (0.1.1-arm64-darwin)
-    urlpattern (0.1.1-x86_64-linux)
+    webrick (1.9.2)
     zeitwerk (2.8.3)
     zlib (3.2.3)
 
 PLATFORMS
+  arm64-darwin-23
   arm64-darwin-24
   arm64-darwin-25
   x86_64-linux

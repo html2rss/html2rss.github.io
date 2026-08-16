@@ -10,6 +10,11 @@
       "time_zone": "Europe/Berlin",
       "ttl": 720,
       "language": "de"
+    },
+    "directory": {
+      "topics": [
+        "civic"
+      ]
     }
   },
   {
@@ -27,6 +32,11 @@
       "language": "en",
       "ttl": 120,
       "time_zone": "UTC"
+    },
+    "directory": {
+      "topics": [
+        "news"
+      ]
     }
   },
   {
@@ -40,6 +50,12 @@
       "language": "en",
       "time_zone": "UTC",
       "ttl": 360
+    },
+    "directory": {
+      "topics": [
+        "tech",
+        "product"
+      ]
     }
   },
   {
@@ -53,9 +69,15 @@
       "id": "b006wkfp"
     },
     "channel": {
+      "language": "en",
       "url": "https://www.bbc.co.uk/programmes/%<id>s/episodes/player",
       "time_zone": "UTC",
       "ttl": 720
+    },
+    "directory": {
+      "topics": [
+        "entertainment"
+      ]
     }
   },
   {
@@ -69,6 +91,11 @@
       "language": "es",
       "ttl": 360,
       "time_zone": "UTC"
+    },
+    "directory": {
+      "topics": [
+        "news"
+      ]
     }
   },
   {
@@ -82,10 +109,16 @@
       "blog": "-Defense-en-ligne-"
     },
     "channel": {
+      "language": "en",
       "url": "https://blog.mondediplo.net/%<blog>s",
       "time_zone": "Europe/Paris",
       "title": "blog.mondediplo.net: %<blog>s",
       "ttl": 120
+    },
+    "directory": {
+      "topics": [
+        "news"
+      ]
     }
   },
   {
@@ -99,6 +132,12 @@
       "time_zone": "Europe/London",
       "ttl": 720,
       "language": "en"
+    },
+    "directory": {
+      "topics": [
+        "news",
+        "travel"
+      ]
     }
   },
   {
@@ -108,10 +147,16 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
+      "language": "en",
       "url": "https://webapp.cinemascore.com/guest/surveys",
       "ttl": 720,
       "json": true,
       "time_zone": "America/Los_Angeles"
+    },
+    "directory": {
+      "topics": [
+        "entertainment"
+      ]
     }
   },
   {
@@ -121,9 +166,16 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
-      "url": "https://www.cleanenergywire.org/news-archive",
+      "language": "en",
+      "url": "https://www.cleanenergywire.org/news",
       "time_zone": "Europe/Berlin",
       "ttl": 360
+    },
+    "directory": {
+      "topics": [
+        "energy",
+        "environment"
+      ]
     }
   },
   {
@@ -131,18 +183,22 @@
     "name": "section_sub",
     "valid_channel_url": false,
     "url_parameters": {
-      "section": "String",
-      "sub": "String"
+      "section": "String"
     },
     "default_parameters": {
-      "section": "news",
-      "sub": "tech"
+      "section": "tech"
     },
     "channel": {
-      "url": "https://www.cnet.com/%<section>s/%<sub>s/",
+      "url": "https://www.cnet.com/%<section>s/",
       "language": "en",
       "ttl": 360,
       "time_zone": "UTC"
+    },
+    "directory": {
+      "topics": [
+        "tech",
+        "news"
+      ]
     }
   },
   {
@@ -157,6 +213,11 @@
       "time_zone": "Europe/Berlin",
       "ttl": 360,
       "language": "de"
+    },
+    "directory": {
+      "topics": [
+        "tech"
+      ]
     }
   },
   {
@@ -166,9 +227,15 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
+      "language": "en",
       "url": "https://cutle.fish/",
       "ttl": 360,
       "time_zone": "UTC"
+    },
+    "directory": {
+      "topics": [
+        "tech"
+      ]
     }
   },
   {
@@ -182,6 +249,12 @@
       "language": "en",
       "time_zone": "UTC",
       "ttl": 360
+    },
+    "directory": {
+      "topics": [
+        "science",
+        "research"
+      ]
     }
   },
   {
@@ -196,6 +269,11 @@
       "time_zone": "Europe/Berlin",
       "ttl": 360,
       "language": "de"
+    },
+    "directory": {
+      "topics": [
+        "finance"
+      ]
     }
   },
   {
@@ -205,10 +283,17 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
+      "language": "en",
       "json": true,
       "url": "https://developer.apple.com/tutorials/data/documentation/Technotes.json",
       "ttl": 360,
       "time_zone": "UTC"
+    },
+    "directory": {
+      "topics": [
+        "tech",
+        "product"
+      ]
     }
   },
   {
@@ -222,6 +307,11 @@
       "time_zone": "Europe/Berlin",
       "ttl": 1440,
       "language": "de"
+    },
+    "directory": {
+      "topics": [
+        "civic"
+      ]
     }
   },
   {
@@ -231,10 +321,16 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
-      "url": "https://www.dsw-info.de/presse",
+      "url": "https://www.dsw-info.de/presse/pressemitteilungen-2026/",
       "time_zone": "Europe/Berlin",
       "ttl": 720,
       "language": "de"
+    },
+    "directory": {
+      "topics": [
+        "civic",
+        "consumer"
+      ]
     }
   },
   {
@@ -248,6 +344,12 @@
       "language": "en",
       "time_zone": "UTC",
       "ttl": 360
+    },
+    "directory": {
+      "topics": [
+        "tech",
+        "product"
+      ]
     }
   },
   {
@@ -257,9 +359,15 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
+      "language": "en",
       "url": "https://www.espn.com/f1/",
       "time_zone": "UTC",
       "ttl": 60
+    },
+    "directory": {
+      "topics": [
+        "sports"
+      ]
     }
   },
   {
@@ -269,9 +377,15 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
+      "language": "en",
       "url": "https://www.fia.com/documents/championships/fia-formula-one-world-championship-14/season/season-2026-2072",
       "ttl": 360,
       "time_zone": "UTC"
+    },
+    "directory": {
+      "topics": [
+        "sports"
+      ]
     }
   },
   {
@@ -281,9 +395,15 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
-      "url": "https://www.formula1.com/en/latest/all.html",
+      "language": "en",
+      "url": "https://www.formula1.com/en/latest",
       "time_zone": "UTC",
       "ttl": 120
+    },
+    "directory": {
+      "topics": [
+        "sports"
+      ]
     }
   },
   {
@@ -296,13 +416,20 @@
     },
     "default_parameters": {
       "username": "nuxt",
-      "repository": "nuxt.js"
+      "repository": "nuxt"
     },
     "channel": {
+      "language": "en",
       "url": "https://github.com/%<username>s/%<repository>s/releases",
       "time_zone": "UTC",
       "ttl": 720,
       "description": "Releases of %<username>s/%<repository>s on github.com."
+    },
+    "directory": {
+      "topics": [
+        "tech",
+        "product"
+      ]
     }
   },
   {
@@ -316,6 +443,12 @@
       "language": "en",
       "time_zone": "UTC",
       "ttl": 360
+    },
+    "directory": {
+      "topics": [
+        "tech",
+        "product"
+      ]
     }
   },
   {
@@ -329,6 +462,12 @@
       "language": "en",
       "time_zone": "UTC",
       "ttl": 360
+    },
+    "directory": {
+      "topics": [
+        "tech",
+        "product"
+      ]
     }
   },
   {
@@ -338,9 +477,15 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
+      "language": "en",
       "url": "https://iaapa.org/news-funworld",
       "time_zone": "UTC",
       "ttl": 720
+    },
+    "directory": {
+      "topics": [
+        "entertainment"
+      ]
     }
   },
   {
@@ -354,9 +499,15 @@
       "user_id": "ur7019649"
     },
     "channel": {
+      "language": "en",
       "url": "https://www.imdb.com/user/%<user_id>s/ratings",
       "time_zone": "UTC",
       "ttl": 1440
+    },
+    "directory": {
+      "topics": [
+        "entertainment"
+      ]
     }
   },
   {
@@ -370,6 +521,11 @@
       "language": "de-DE",
       "ttl": 360,
       "time_zone": "UTC"
+    },
+    "directory": {
+      "topics": [
+        "jobs"
+      ]
     }
   },
   {
@@ -383,6 +539,11 @@
       "time_zone": "Europe/Berlin",
       "ttl": 1440,
       "language": "de"
+    },
+    "directory": {
+      "topics": [
+        "entertainment"
+      ]
     }
   },
   {
@@ -396,6 +557,12 @@
       "language": "en",
       "time_zone": "US/Pacific",
       "ttl": 3600
+    },
+    "directory": {
+      "topics": [
+        "tech",
+        "product"
+      ]
     }
   },
   {
@@ -409,6 +576,12 @@
       "language": "en",
       "time_zone": "UTC",
       "ttl": 360
+    },
+    "directory": {
+      "topics": [
+        "security",
+        "tech"
+      ]
     }
   },
   {
@@ -422,6 +595,11 @@
       "language": "en",
       "ttl": 360,
       "time_zone": "UTC"
+    },
+    "directory": {
+      "topics": [
+        "news"
+      ]
     }
   },
   {
@@ -435,6 +613,11 @@
       "language": "en-GB",
       "ttl": 360,
       "time_zone": "UTC"
+    },
+    "directory": {
+      "topics": [
+        "entertainment"
+      ]
     }
   },
   {
@@ -448,6 +631,12 @@
       "language": "en",
       "time_zone": "UTC",
       "ttl": 360
+    },
+    "directory": {
+      "topics": [
+        "tech",
+        "product"
+      ]
     }
   },
   {
@@ -461,6 +650,12 @@
       "language": "de",
       "ttl": 360,
       "time_zone": "Europe/Berlin"
+    },
+    "directory": {
+      "topics": [
+        "consumer",
+        "civic"
+      ]
     }
   },
   {
@@ -470,9 +665,15 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
+      "language": "en",
       "url": "https://phys.org/weekly-news/",
       "time_zone": "Europe/London",
       "ttl": 1440
+    },
+    "directory": {
+      "topics": [
+        "science"
+      ]
     }
   },
   {
@@ -483,10 +684,15 @@
     "default_parameters": {},
     "channel": {
       "title": "rbb24.de: meistgeklickt",
-      "url": "https://rbb24.de/",
+      "url": "https://www.rbb24.de/das-beste/",
       "time_zone": "Europe/Berlin",
       "ttl": 30,
       "language": "de"
+    },
+    "directory": {
+      "topics": [
+        "news"
+      ]
     }
   },
   {
@@ -496,10 +702,15 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
-      "url": "https://www.robinwood.de/was-gibt-es-neues/aktuelles",
+      "url": "https://www.robinwood.de/was-gibt-es-neues",
       "time_zone": "Europe/Berlin",
       "ttl": 720,
       "language": "de"
+    },
+    "directory": {
+      "topics": [
+        "environment"
+      ]
     }
   },
   {
@@ -509,10 +720,16 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
+      "language": "en",
       "url": "https://s3.amazonaws.com/popular-movies/movies.json",
       "time_zone": "UTC",
       "ttl": 1440,
       "json": true
+    },
+    "directory": {
+      "topics": [
+        "entertainment"
+      ]
     }
   },
   {
@@ -522,10 +739,15 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
-      "url": "https://sebastianvettel.de/news/",
+      "url": "https://sebastianvettel.de/",
       "language": "de-DE",
       "ttl": 8640,
       "time_zone": "Europe/Berlin"
+    },
+    "directory": {
+      "topics": [
+        "sports"
+      ]
     }
   },
   {
@@ -535,9 +757,16 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
+      "language": "en",
       "url": "https://www.shopify.com/blog/latest",
       "time_zone": "UTC",
       "ttl": 360
+    },
+    "directory": {
+      "topics": [
+        "tech",
+        "product"
+      ]
     }
   },
   {
@@ -547,9 +776,15 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
+      "language": "en",
       "url": "https://softwareleadweekly.com/issues",
       "time_zone": "UTC",
       "ttl": 720
+    },
+    "directory": {
+      "topics": [
+        "tech"
+      ]
     }
   },
   {
@@ -559,9 +794,15 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
+      "language": "en",
       "url": "https://solarthermalworld.org/news",
       "time_zone": "UTC",
       "ttl": 180
+    },
+    "directory": {
+      "topics": [
+        "energy"
+      ]
     }
   },
   {
@@ -576,6 +817,11 @@
       "time_zone": "Europe/Berlin",
       "ttl": 60,
       "language": "de"
+    },
+    "directory": {
+      "topics": [
+        "science"
+      ]
     }
   },
   {
@@ -593,6 +839,11 @@
       "time_zone": "Europe/Berlin",
       "ttl": 180,
       "language": "de"
+    },
+    "directory": {
+      "topics": [
+        "news"
+      ]
     }
   },
   {
@@ -606,6 +857,11 @@
       "language": "en",
       "time_zone": "UTC",
       "ttl": 360
+    },
+    "directory": {
+      "topics": [
+        "entertainment"
+      ]
     }
   },
   {
@@ -615,10 +871,16 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
+      "language": "en",
       "title": "stackoverflow.com: Hot Network Questions",
       "url": "https://stackoverflow.com/questions",
       "time_zone": "America/New_York",
       "ttl": 30
+    },
+    "directory": {
+      "topics": [
+        "tech"
+      ]
     }
   },
   {
@@ -628,10 +890,15 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
-      "url": "https://www.steuerzahler.de/news",
+      "url": "https://www.steuerzahler.de/news/",
       "time_zone": "Europe/Berlin",
       "ttl": 720,
       "language": "de"
+    },
+    "directory": {
+      "topics": [
+        "civic"
+      ]
     }
   },
   {
@@ -645,6 +912,11 @@
       "language": "en",
       "ttl": 360,
       "time_zone": "America/New_York"
+    },
+    "directory": {
+      "topics": [
+        "news"
+      ]
     }
   },
   {
@@ -654,10 +926,16 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
-      "url": "https://support.apple.com/en-gb/HT201222",
+      "url": "https://support.apple.com/en-gb/100100",
       "language": "en",
       "ttl": 360,
       "time_zone": "UTC"
+    },
+    "directory": {
+      "topics": [
+        "tech",
+        "security"
+      ]
     }
   },
   {
@@ -667,9 +945,16 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
-      "url": "https://support.apple.com/exchange_repair",
+      "language": "en",
+      "url": "https://support.apple.com/service-programs",
       "time_zone": "America/Los_Angeles",
       "ttl": 720
+    },
+    "directory": {
+      "topics": [
+        "tech",
+        "security"
+      ]
     }
   },
   {
@@ -683,6 +968,12 @@
       "time_zone": "Europe/Lisbon",
       "ttl": 720,
       "language": "de"
+    },
+    "directory": {
+      "topics": [
+        "news",
+        "travel"
+      ]
     }
   },
   {
@@ -696,6 +987,11 @@
       "language": "de",
       "ttl": 360,
       "time_zone": "Europe/Berlin"
+    },
+    "directory": {
+      "topics": [
+        "consumer"
+      ]
     }
   },
   {
@@ -705,10 +1001,16 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
+      "language": "en",
       "title": "theguardian.com: International most popular",
       "url": "https://www.theguardian.com/international",
       "time_zone": "Europe/London",
       "ttl": 60
+    },
+    "directory": {
+      "topics": [
+        "news"
+      ]
     }
   },
   {
@@ -718,10 +1020,16 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
-      "url": "https://www.thoughtworks.com/insights",
+      "url": "https://www.thoughtworks.com/insights/blog",
       "language": "en",
       "ttl": 360,
       "time_zone": "UTC"
+    },
+    "directory": {
+      "topics": [
+        "tech",
+        "research"
+      ]
     }
   },
   {
@@ -735,6 +1043,11 @@
       "time_zone": "Europe/Berlin",
       "ttl": 720,
       "language": "de"
+    },
+    "directory": {
+      "topics": [
+        "travel"
+      ]
     }
   },
   {
@@ -752,6 +1065,11 @@
       "language": "de",
       "ttl": 360,
       "time_zone": "Europe/Berlin"
+    },
+    "directory": {
+      "topics": [
+        "jobs"
+      ]
     }
   }
 ]

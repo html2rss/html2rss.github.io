@@ -2,5 +2,6 @@
 
 source 'https://rubygems.org'
 
-gem 'html2rss', git: 'https://github.com/html2rss/html2rss.git'
-gem 'html2rss-configs', git: 'https://github.com/html2rss/html2rss-configs.git'
+# Path gems until directory.topics ships in released html2rss / html2rss-configs.
+gem 'html2rss', path: '../html2rss'
+gem 'html2rss-configs', path: '../html2rss-configs'

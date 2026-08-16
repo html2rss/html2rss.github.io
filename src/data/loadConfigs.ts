@@ -15,6 +15,9 @@ export interface Config {
     title?: string;
     json?: boolean;
   };
+  directory?: {
+    topics?: string[];
+  };
 }
 
 export function loadConfigs(): Config[] {
