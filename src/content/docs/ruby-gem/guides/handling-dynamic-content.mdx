@@ -88,6 +88,10 @@ Configure browser actions under `request.botasaurus`:
   lang="yaml"
 />
 
+### JSON Loaded Over XHR
+
+When Botasaurus uses the browser tier, captured JSON XHR/fetch bodies feed AutoSource `xhr_articles` automatically (enabled by default). Prefer `strategy: botasaurus` (or `auto` with `BOTASAURUS_SCRAPER_URL`) for SPA listing pages that hydrate article lists over the network rather than embedding them in HTML. See [Auto Source](/ruby-gem/reference/auto-source/) and [Strategy](/ruby-gem/reference/strategy/#botasaurus).
+
 ## Performance Considerations
 
 Browser-based extraction uses more resources than static HTTP fetching because it:
