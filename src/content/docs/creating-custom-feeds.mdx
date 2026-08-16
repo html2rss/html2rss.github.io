@@ -31,11 +31,12 @@ When existing feeds or auto-sourcing are not enough, write a YAML config for the
 ## Recommended Workflow
 
 1. **Inspect the live page** in your browser developer tools
-2. **Write the smallest useful config** that extracts items, titles, and links
-3. **Validate the config** with `html2rss validate your-config.yml`
-4. **Render the feed** with `html2rss feed your-config.yml`
-5. **Add it to `html2rss-web`** so you can use it through your normal instance
-6. **Escalate request strategy when needed**: use a browser-based rendering strategy only when troubleshooting requires it
+2. **Optionally draft with capture** — `html2rss capture https://example.com/articles > your-config.yml` (see [Capturing Feed Configs](/ruby-gem/guides/capturing-feed-configs/))
+3. **Write or refine the smallest useful config** that extracts items, titles, and links
+4. **Validate the config** with `html2rss validate your-config.yml`
+5. **Render the feed** with `html2rss feed your-config.yml`
+6. **Add it to `html2rss-web`** so you can use it through your normal instance
+7. **Escalate request strategy when needed**: use Botasaurus (`strategy: botasaurus` or `auto` with `BOTASAURUS_SCRAPER_URL`) only when troubleshooting requires browser rendering
 
 This order keeps iteration fast and makes it easier to see whether the problem is the page structure, your
 selectors, or the fetch strategy.
@@ -188,8 +189,34 @@ there.
 **Help the community by sharing your config:**
 
 1. Go to [html2rss-configs on GitHub](https://github.com/html2rss/html2rss-configs)
-2. Click "Fork" → "Add file" → Create `domain.com.yml`
-3. Paste your config → "Commit new file" → "Open pull request"
+2. Click "Fork" → "Add file" → Create `domain.com/name.yml` under `lib/html2rss/configs/`
+3. Include top-level `directory.topics` (required for Feed Directory configs) using the controlled vocabulary below
+4. Paste your config → "Commit new file" → "Open pull request"
+
+Example catalog metadata:
+
+<Code
+  code={`
+  directory:
+    topics:
+      - tech
+      - research
+  channel:
+    url: https://example.com/blog
+    language: en
+  selectors:
+    items:
+      selector: "article.post"
+    title:
+      selector: "h2 a"
+    url:
+      selector: "h2 a"
+      extractor: "href"
+`}
+  lang="yaml"
+/>
+
+Allowed `directory.topics` values (prefer 1–2 primary topics): `sports`, `energy`, `tech`, `science`, `news`, `entertainment`, `jobs`, `finance`, `security`, `travel`, `environment`, `consumer`, `civic`, `product`, `research`.
 
 **Need help?** See our [contribution guide](/get-involved/contributing/) for detailed instructions.
 
