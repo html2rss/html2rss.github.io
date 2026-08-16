@@ -28,18 +28,20 @@ To enable it, add `auto_source: {}` to your configuration:
 4.  **`schema`:** Parses `<script type="json/ld">` tags containing structured data (e.g., [Schema.org](https://schema.org/)), extracting authors and publishers.
 5.  **`microdata`:** Extracts HTML Microdata annotations (`itemscope itemtype`).
 6.  **`microformats2`:** Parses Microformats2 `h-entry` markup, extracting `p-name`, `e-content`, `u-url`, `dt-published`, `p-author`, `p-category`, and `u-photo` / `u-featured` media.
-7.  **`semantic_html`:** Searches for semantic HTML5 tags like `<article>`, `<main>`, and `<section>`, with fallback clustering for anchorless lists.
-8.  **`html`:** Analyzes HTML structure to find frequently occurring item selectors, with tag-structure and class-clustering fallbacks.
-9.  **`json_state`:** Single-page applications often stash pre-rendered article data in `<script type="application/json">` tags or global variables
+7.  **`json_state`:** Single-page applications often stash pre-rendered article data in `<script type="application/json">` tags or global variables
     such as `window.__NEXT_DATA__`, `window.__NUXT__`, or `window.STATE`. The JSON-state scraper walks those blobs, finds arrays with
     `title`/`url` pairs, and converts them into feed items.
+8.  **`xhr_articles`:** When Botasaurus runs the browser tier, it always captures JSON XHR/fetch response bodies. This scraper reuses those
+    captured bodies (no extra HTTP requests) and extracts article-like arrays the same way `json_state` does. Empty for Faraday or Botasaurus HTTP-request tiers.
+9.  **`semantic_html`:** Searches for semantic HTML5 tags like `<article>`, `<main>`, and `<section>`, with fallback clustering for anchorless lists.
+10. **`html`:** Analyzes HTML structure to find frequently occurring item selectors, with tag-structure and class-clustering fallbacks.
 
 `auto_source` also automatically extracts and prepends kicker/teaser labels to article titles when present, and discovers channel-level `author` and `image` (favicon, touch-icon, or OpenGraph images) from the host page.
 
 You can also restrict the maximum number of discovered articles via the `limit:` keyword argument in Ruby (`Html2rss.auto_source(url, limit: 10)`) or the `--limit` CLI flag.
 
-**`json_state` Limitations:** the scraper requires discoverable arrays of hashes containing clear `title` and `url` fields. Minified or
-obfuscated state objects, heavily encoded values, or blobs that require executing embedded functions are ignored.
+**`json_state` / `xhr_articles` Limitations:** both scrapers require discoverable arrays of hashes containing clear `title` and `url` fields. Minified or
+obfuscated payloads, heavily encoded values, or blobs that require executing embedded functions are ignored. `xhr_articles` only sees JSON bodies captured during the current Botasaurus browser scrape (capped by the scrape API).
 
 **`wordpress_api` Limitations:** this scraper depends on the page exposing a public WordPress REST API root. The current implementation fetches post records directly, but it does not yet resolve category names or featured media metadata.
 
@@ -76,6 +78,8 @@ Enable or disable specific scrapers and adjust their settings:
         fallback_anchorless: true # default: true
       json_state:
         enabled: false # default: true
+      xhr_articles:
+        enabled: true # default: true; uses Botasaurus-captured XHR JSON only
       html:
         enabled: true
         minimum_selector_frequency: 3 # default: 2
