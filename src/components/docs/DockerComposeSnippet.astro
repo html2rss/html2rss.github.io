@@ -1,9 +1,9 @@
 ---
 import { Code } from "@astrojs/starlight/components";
-import { botasaurusImage, caddyImage, watchtowerImage, webImage } from "../../data/docker";
+import { botasaurusImage, caddyImage, webImage } from "../../data/docker";
 
 interface Props {
-  variant: "minimal" | "productionCaddy" | "secure" | "watchtower" | "resourceGuardrails";
+  variant: "minimal" | "productionCaddy" | "secure" | "resourceGuardrails";
 }
 
 const { variant } = Astro.props;
@@ -78,15 +78,6 @@ volumes:
   botasaurus:
     image: ${botasaurusImage}
     restart: unless-stopped`,
-  watchtower: `services:
-  watchtower:
-    image: ${watchtowerImage}
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      # Optional for private registries only:
-      # - "\${HOME}/.docker/config.json:/config.json:ro"
-    command: --cleanup --interval 7200 html2rss-web botasaurus caddy`,
   resourceGuardrails: `services:
   html2rss-web:
     image: ${webImage}

@@ -26,10 +26,12 @@ Are you missing an RSS feed for a website? You can create your own feed config a
 **The easiest way to contribute:**
 
 1. Go to [html2rss-configs on GitHub](https://github.com/html2rss/html2rss-configs)
-2. Click "Fork" → "Add file" → Create `domain.com.yml`
-3. Paste your config → "Commit new file" → "Open pull request"
+2. Click "Fork" → "Add file" → Create `domain.com/name.yml` under `lib/html2rss/configs/`
+3. Include top-level `directory.topics` (non-empty) from the controlled vocabulary (`tech`, `news`, `security`, `research`, … — see [Creating Custom Feeds](/creating-custom-feeds/#sharing-your-config))
+4. Prefer setting `channel.language` when the page language is clear
+5. Paste your config → "Commit new file" → "Open pull request"
 
-**Need help writing configs?** See our [Creating Custom Feeds](/creating-custom-feeds/) guide.
+**Need help writing configs?** Start from [Capturing Feed Configs](/ruby-gem/guides/capturing-feed-configs/) or the [Creating Custom Feeds](/creating-custom-feeds/) guide.
 
 **Want to test your config first?** Use the [Ruby gem](/ruby-gem/installation/) to test it locally:
 

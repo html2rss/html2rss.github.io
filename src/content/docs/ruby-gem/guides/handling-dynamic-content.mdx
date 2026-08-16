@@ -1,6 +1,6 @@
 ---
 title: Handling Dynamic Content
-description: "Learn how to handle JavaScript-heavy websites and dynamic content with html2rss using browser-based extraction strategies."
+description: "Learn how to handle JavaScript-heavy websites and dynamic content with html2rss using Botasaurus browser-based extraction strategies."
 ---
 
 import { Code } from "@astrojs/starlight/components";
@@ -9,26 +9,25 @@ Some websites load their content dynamically using JavaScript. Static fetch path
 
 ## Solution
 
-Default `strategy: auto` already tries `faraday` then `botasaurus` (when `BOTASAURUS_SCRAPER_URL` is configured). That covers many JS-rendered listing pages without pinning a strategy.
+Default `strategy: auto` automatically tries `faraday` first, then falls back to `botasaurus` when `BOTASAURUS_SCRAPER_URL` is configured. This handles many JS-rendered listing pages without needing custom configuration.
 
-Pin [`browserless`](/ruby-gem/reference/strategy/#browserless) when you need headless Chrome with preload (wait, click, scroll) or other Browserless-only controls — Browserless is not part of the `auto` chain.
-
-Keep the strategy at the top level and put request-specific options under `request`:
+When a site requires browser rendering or anti-bot bypass by default, you can explicitly set `strategy: botasaurus` and configure request controls under `request.botasaurus`:
 
 <Code
   code={`
-  strategy: browserless
+  strategy: botasaurus
   request:
     max_redirects: 5
     max_requests: 6
-    browserless:
-      preload:
-        wait_after_ms: 5000
+    botasaurus:
+      navigation_mode: google_get_bypass
+      wait_for_selector: ".article-card"
+      scroll_to_bottom: true
   channel:
     url: https://example.com/app
   selectors:
     items:
-      selector: .article
+      selector: .article-card
     title:
       selector: h2
     url:
@@ -38,80 +37,72 @@ Keep the strategy at the top level and put request-specific options under `reque
   lang="yaml"
 />
 
-## When to Use Browser-Based Extraction
+## When to Use Botasaurus Extraction
 
-A browser-based extraction strategy is necessary when:
+Botasaurus extraction is ideal when:
 
-- **Content loads after page load** - JavaScript fetches data from APIs
+- **Content loads after page load** - JavaScript fetches data dynamically
 - **Single Page Applications (SPAs)** - React, Vue, Angular apps
-- **Infinite scroll** - Content loads as you scroll
-- **Dynamic forms** - Content changes based on user interaction
+- **Anti-bot interstitials** - Cloudflare, Google search referrers, or challenge pages
+- **Scroll-triggered content** - Infinite scroll lists (`scroll_to_bottom: true`)
 
-## Preload Actions
+## Botasaurus Request Controls
 
-For dynamic sites, rendering once is often not enough. Use `request.browserless.preload` to wait, click, or scroll before the
-HTML snapshot is taken.
+Configure browser actions under `request.botasaurus`:
 
-### Wait Before Capturing Dynamic Content
+### Wait for Elements
 
 <Code
   code={`
-  strategy: browserless
+  strategy: botasaurus
   request:
-    browserless:
-      preload:
-        wait_after_ms: 4000
+    botasaurus:
+      wait_for_selector: ".content-loaded"
+      wait_timeout_seconds: 15
   `}
   lang="yaml"
 />
 
-### Click "Load More" Buttons
+### Scroll for Infinite Content
 
 <Code
   code={`
-  strategy: browserless
+  strategy: botasaurus
   request:
-    browserless:
-      preload:
-        wait_after_ms: 3000
-        click_selectors:
-          - selector: ".load-more"
-            max_clicks: 3
-            wait_after_ms: 250
+    botasaurus:
+      scroll_to_bottom: true
   `}
   lang="yaml"
 />
 
-### Scroll Infinite Lists
+### Anti-Bot Bypass Navigation Modes
 
 <Code
   code={`
-  strategy: browserless
+  strategy: botasaurus
   request:
-    browserless:
-      preload:
-        scroll_down:
-          iterations: 5
-          wait_after_ms: 200
-        wait_after_ms: 2500
+    botasaurus:
+      navigation_mode: google_get_bypass
+      max_retries: 2
   `}
   lang="yaml"
 />
 
-These preload steps can be combined in a single config when a site needs several interactions before all items appear.
+### JSON Loaded Over XHR
+
+When Botasaurus uses the browser tier, captured JSON XHR/fetch bodies feed AutoSource `xhr_articles` automatically (enabled by default). Prefer `strategy: botasaurus` (or `auto` with `BOTASAURUS_SCRAPER_URL`) for SPA listing pages that hydrate article lists over the network rather than embedding them in HTML. See [Auto Source](/ruby-gem/reference/auto-source/) and [Strategy](/ruby-gem/reference/strategy/#botasaurus).
 
 ## Performance Considerations
 
-Browser-based extraction is slower than default static HTTP fetching because it:
+Browser-based extraction uses more resources than static HTTP fetching because it:
 
-- Launches a headless Chrome browser
-- Renders the full page with JavaScript
-- Takes more memory and CPU resources
+- Renders pages in an automated Chrome instance
+- Executes JavaScript and handles DOM events
+- Manages browser pools and network emulation
 
-**Use static HTTP fetching for static content** and switch to browser-based extraction when needed. See the [Strategy Reference](/ruby-gem/reference/strategy/) for concrete transports, defaults, and environment requirements.
+Use static HTTP fetching (`faraday`) for static content, and lean on `auto` or explicit `botasaurus` strategies when browser rendering is required. See the [Strategy Reference](/ruby-gem/reference/strategy/) for details.
 
 ## Related Topics
 
 - **[Strategy Reference](/ruby-gem/reference/strategy/)** - Complete strategy documentation
 - **[Troubleshooting](/troubleshooting/troubleshooting/)** - Common issues with dynamic content
-- **[Advanced Features](/ruby-gem/guides/advanced-features/)** - Performance optimization tips

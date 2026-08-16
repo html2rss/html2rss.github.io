@@ -1,0 +1,103 @@
+---
+title: AI Agent Workflows with MCP
+description: Guide to integrating html2rss with AI agents, Claude Desktop, and Cursor using the Model Context Protocol (MCP).
+---
+
+import { Code } from "@astrojs/starlight/components";
+
+`html2rss` includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server. This allows AI assistants in tools like Cursor, Claude Desktop, and GitHub Copilot to scrape pages, capture feed configurations, and generate RSS feeds autonomously.
+
+## Why Use MCP?
+
+Without MCP, agents must invoke shell commands, manage output buffers, and parse unstructured text. With MCP:
+
+- The agent automatically discovers available tools, arguments, and return types.
+- Responses are structured (JSON Feed objects, configuration schemas, and RSS XML).
+- Agents can inspect, capture, validate, and verify feeds iteratively in a closed feedback loop.
+
+## Client Setup
+
+### 1. Version Manager Shims (mise, asdf, rbenv, chruby)
+
+Because version managers manage Ruby runtimes and gem paths through environment shims, configure your MCP client to invoke the version manager executable rather than a bare `html2rss` command.
+
+<Code
+  code={`
+  # Install the gem in your global environment
+  mise exec -- gem install html2rss
+  # Or add it to your project Gemfile
+  mise exec -- bundle add html2rss
+`}
+  lang="bash"
+/>
+
+### 2. Cursor Configuration
+
+Add `html2rss` to your Cursor MCP settings (`~/.cursor/mcp.json` or `.cursor/mcp.json`):
+
+<Code
+  code={`
+  {
+    "mcpServers": {
+      "html2rss": {
+        "command": "mise",
+        "args": ["exec", "--", "html2rss", "mcp"]
+      }
+    }
+  }
+`}
+  lang="json"
+/>
+
+_(If using `asdf`, replace `"command": "mise"` with `"asdf"` and `"args": ["exec", "html2rss", "mcp"]`.)_
+
+### 3. Claude Desktop Configuration
+
+Add `html2rss` to your Claude Desktop configuration (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS or `%APPDATA%\\Claude\\claude_desktop_config.json` on Windows):
+
+<Code
+  code={`
+  {
+    "mcpServers": {
+      "html2rss": {
+        "command": "mise",
+        "args": ["exec", "--", "html2rss", "mcp"]
+      }
+    }
+  }
+`}
+  lang="json"
+/>
+
+## Autonomous Workflow Patterns
+
+### Pattern A: One-Shot Content Scraping
+
+When an agent needs articles immediately without saving a feed configuration:
+
+1. The agent calls `scrape_url` with the target URL.
+2. `html2rss` runs auto-source extraction (Schema.org, JSON state, semantic HTML) and returns a JSON Feed items array.
+3. If the page is protected or rendered with JavaScript, the agent calls `inspect_url` to diagnose the structure, then retries `scrape_url` with `strategy: "botasaurus"`.
+
+### Pattern B: Iterative Feed Config Authoring
+
+When an agent is tasked with creating a durable YAML feed configuration:
+
+1. **Inspect:** The agent calls `inspect_url` to check content type, SST node counts, and eligible scrapers.
+2. **Capture:** The agent runs `capture_config` to derive CSS selectors for items, title, link, and description.
+3. **Refine:** The agent reviews the derived selectors or asks the human user for domain-specific adjustments.
+4. **Validate:** The agent passes the configuration to `validate_config` to verify schema conformance.
+5. **Apply:** The agent tests the final configuration with `apply_config` to produce and inspect live RSS XML.
+
+## JavaScript-Rendered Sites (Botasaurus)
+
+For dynamic JavaScript single-page applications or sites protected by anti-bot measures, launch the Botasaurus scrape service:
+
+<Code
+  code={`
+  docker compose -f docker-compose.botasaurus.yml up -d
+`}
+  lang="bash"
+/>
+
+Ensure `BOTASAURUS_SCRAPER_URL` is accessible (typically `http://127.0.0.1:4010`) in the environment where the MCP server runs. Agents can then pass `strategy: "botasaurus"` to `scrape_url`, `inspect_url`, and `capture_config`.

@@ -16,6 +16,54 @@
     }
   },
   {
+    "domain": "ai.meta.com",
+    "name": "blog",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://ai.meta.com/blog/",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["tech", "research"]
+    }
+  },
+  {
+    "domain": "anthropic.com",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.anthropic.com/news",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["tech", "research"]
+    }
+  },
+  {
+    "domain": "anu.edu.au",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.anu.edu.au/news/all-news",
+      "language": "en",
+      "time_zone": "Australia/Sydney",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "research"]
+    }
+  },
+  {
     "domain": "apnews.com",
     "name": "hub",
     "valid_channel_url": false,
@@ -49,6 +97,38 @@
     },
     "directory": {
       "topics": ["tech", "product"]
+    }
+  },
+  {
+    "domain": "asml.com",
+    "name": "press-releases",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.asml.com/en/news/press-releases",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["tech", "product"]
+    }
+  },
+  {
+    "domain": "aspi.org.au",
+    "name": "strategist",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.aspi.org.au/strategist-posts/",
+      "language": "en",
+      "time_zone": "Australia/Sydney",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "research"]
     }
   },
   {
@@ -109,6 +189,38 @@
     }
   },
   {
+    "domain": "brookings.edu",
+    "name": "articles",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.brookings.edu/",
+      "language": "en",
+      "time_zone": "America/New_York",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "research"]
+    }
+  },
+  {
+    "domain": "bundesregierung.de",
+    "name": "pressemitteilungen",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.bundesregierung.de/breg-de/aktuelles/pressemitteilungen",
+      "language": "de",
+      "time_zone": "Europe/Berlin",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic"]
+    }
+  },
+  {
     "domain": "canarianweekly.com",
     "name": "front",
     "valid_channel_url": true,
@@ -122,6 +234,38 @@
     },
     "directory": {
       "topics": ["news", "travel"]
+    }
+  },
+  {
+    "domain": "carnegieendowment.org",
+    "name": "research",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://carnegieendowment.org/research",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "research"]
+    }
+  },
+  {
+    "domain": "chathamhouse.org",
+    "name": "research-publications",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.chathamhouse.org/publications/research-publications",
+      "language": "en",
+      "time_zone": "Europe/London",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "research"]
     }
   },
   {
@@ -178,6 +322,22 @@
     }
   },
   {
+    "domain": "cohere.com",
+    "name": "blog",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://cohere.com/blog",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["tech", "research"]
+    }
+  },
+  {
     "domain": "computerbase.de",
     "name": "meistgelesen",
     "valid_channel_url": true,
@@ -192,6 +352,38 @@
     },
     "directory": {
       "topics": ["tech"]
+    }
+  },
+  {
+    "domain": "csiro.au",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.csiro.au/en/news",
+      "language": "en",
+      "time_zone": "Australia/Sydney",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "research"]
+    }
+  },
+  {
+    "domain": "curia.europa.eu",
+    "name": "press-releases",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://curia.europa.eu/jcms/jcms/Jo2_7052/",
+      "language": "en",
+      "time_zone": "Europe/Brussels",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic"]
     }
   },
   {
@@ -309,6 +501,22 @@
     }
   },
   {
+    "domain": "elysee.fr",
+    "name": "actualites",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.elysee.fr/toutes-les-actualites",
+      "language": "fr",
+      "time_zone": "Europe/Paris",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic"]
+    }
+  },
+  {
     "domain": "espn.com",
     "name": "f1",
     "valid_channel_url": true,
@@ -322,6 +530,54 @@
     },
     "directory": {
       "topics": ["sports"]
+    }
+  },
+  {
+    "domain": "ethz.ch",
+    "name": "eth-news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://ethz.ch/en/news-and-events/eth-news.html",
+      "language": "en",
+      "time_zone": "Europe/Zurich",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "research"]
+    }
+  },
+  {
+    "domain": "faa.gov",
+    "name": "newsroom",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.faa.gov/newsroom",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic"]
+    }
+  },
+  {
+    "domain": "fao.org",
+    "name": "newsroom",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.fao.org/newsroom/en",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["environment", "civic"]
     }
   },
   {
@@ -341,6 +597,22 @@
     }
   },
   {
+    "domain": "figma.com",
+    "name": "blog",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.figma.com/blog/",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["tech", "product"]
+    }
+  },
+  {
     "domain": "formula1.com",
     "name": "latest",
     "valid_channel_url": true,
@@ -354,6 +626,22 @@
     },
     "directory": {
       "topics": ["sports"]
+    }
+  },
+  {
+    "domain": "ftc.gov",
+    "name": "press-releases",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.ftc.gov/news-events/news/press-releases",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["security", "civic"]
     }
   },
   {
@@ -412,6 +700,38 @@
     }
   },
   {
+    "domain": "haaretz.com",
+    "name": "israel-news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.haaretz.com/israel-news",
+      "language": "en",
+      "time_zone": "Asia/Jerusalem",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["news"]
+    }
+  },
+  {
+    "domain": "hai.stanford.edu",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://hai.stanford.edu/news",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "research"]
+    }
+  },
+  {
     "domain": "iaapa.org",
     "name": "news",
     "valid_channel_url": true,
@@ -425,6 +745,70 @@
     },
     "directory": {
       "topics": ["entertainment"]
+    }
+  },
+  {
+    "domain": "icj-cij.org",
+    "name": "press-releases",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.icj-cij.org/press-releases",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic"]
+    }
+  },
+  {
+    "domain": "icrc.org",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.icrc.org/en/news",
+      "language": "en",
+      "time_zone": "Europe/Zurich",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic"]
+    }
+  },
+  {
+    "domain": "iea.org",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.iea.org/news",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["energy", "environment"]
+    }
+  },
+  {
+    "domain": "iiss.org",
+    "name": "online-analysis",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.iiss.org/online-analysis",
+      "language": "en",
+      "time_zone": "Europe/London",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "research"]
     }
   },
   {
@@ -448,6 +832,38 @@
     }
   },
   {
+    "domain": "imo.org",
+    "name": "press-briefings",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.imo.org/en/MediaCentre/PressBriefings/Pages/default.aspx",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic"]
+    }
+  },
+  {
+    "domain": "imperial.ac.uk",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.imperial.ac.uk/news/articles/",
+      "language": "en",
+      "time_zone": "Europe/London",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "research"]
+    }
+  },
+  {
     "domain": "ingenieur.de",
     "name": "karriere_arbeitsleben_heiko_mell",
     "valid_channel_url": true,
@@ -461,6 +877,38 @@
     },
     "directory": {
       "topics": ["jobs"]
+    }
+  },
+  {
+    "domain": "isro.gov.in",
+    "name": "press",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.isro.gov.in/Press.html",
+      "language": "en",
+      "time_zone": "Asia/Kolkata",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "research"]
+    }
+  },
+  {
+    "domain": "kaist.ac.kr",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://news.kaist.ac.kr/newsen/html/news/",
+      "language": "en",
+      "time_zone": "Asia/Seoul",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "research"]
     }
   },
   {
@@ -480,6 +928,22 @@
     }
   },
   {
+    "domain": "machinelearning.apple.com",
+    "name": "research",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://machinelearning.apple.com/research/",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["tech", "research"]
+    }
+  },
+  {
     "domain": "microsoft.com",
     "name": "azure-products",
     "valid_channel_url": true,
@@ -493,6 +957,22 @@
     },
     "directory": {
       "topics": ["tech", "product"]
+    }
+  },
+  {
+    "domain": "mistral.ai",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://mistral.ai/news/",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["tech", "research"]
     }
   },
   {
@@ -512,6 +992,38 @@
     }
   },
   {
+    "domain": "msf.org",
+    "name": "latest",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.msf.org/latest-portal",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["news", "civic"]
+    }
+  },
+  {
+    "domain": "news.cn",
+    "name": "latest",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://english.news.cn/list/latestnews.htm",
+      "language": "en",
+      "time_zone": "Asia/Shanghai",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["news"]
+    }
+  },
+  {
     "domain": "newyorker.com",
     "name": "magazine",
     "valid_channel_url": true,
@@ -525,6 +1037,22 @@
     },
     "directory": {
       "topics": ["news"]
+    }
+  },
+  {
+    "domain": "nikkei.com",
+    "name": "asia-technology",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://asia.nikkei.com/business/technology",
+      "language": "en",
+      "time_zone": "Asia/Tokyo",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["news", "tech"]
     }
   },
   {
@@ -557,6 +1085,70 @@
     },
     "directory": {
       "topics": ["tech", "product"]
+    }
+  },
+  {
+    "domain": "ntu.edu.sg",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.ntu.edu.sg/news",
+      "language": "en",
+      "time_zone": "Asia/Singapore",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "research"]
+    }
+  },
+  {
+    "domain": "occrp.org",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.occrp.org/en/news",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["news", "civic"]
+    }
+  },
+  {
+    "domain": "oecd.org",
+    "name": "newsroom",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.oecd.org/en/about/newsroom.html",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["finance", "civic"]
+    }
+  },
+  {
+    "domain": "opec.org",
+    "name": "press-releases",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.opec.org/press-releases.html",
+      "language": "en",
+      "time_zone": "Europe/Vienna",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["energy", "civic"]
     }
   },
   {
@@ -598,7 +1190,7 @@
     "url_parameters": {},
     "default_parameters": {},
     "channel": {
-      "title": "rbb24.de: meistgeklickt",
+      "title": "rbb24.de: Das Beste",
       "url": "https://www.rbb24.de/das-beste/",
       "time_zone": "Europe/Berlin",
       "ttl": 30,
@@ -671,6 +1263,22 @@
     },
     "directory": {
       "topics": ["tech", "product"]
+    }
+  },
+  {
+    "domain": "sipri.org",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.sipri.org/news",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "research"]
     }
   },
   {
@@ -889,6 +1497,22 @@
     }
   },
   {
+    "domain": "thenationalnews.com",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.thenationalnews.com/news/",
+      "language": "en",
+      "time_zone": "Asia/Dubai",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["news"]
+    }
+  },
+  {
     "domain": "thoughtworks.com",
     "name": "insights",
     "valid_channel_url": true,
@@ -938,6 +1562,102 @@
     },
     "directory": {
       "topics": ["jobs"]
+    }
+  },
+  {
+    "domain": "who.int",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.who.int/news",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "civic"]
+    }
+  },
+  {
+    "domain": "worldbank.org",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.worldbank.org/ext/en/news",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["finance", "civic"]
+    }
+  },
+  {
+    "domain": "www.consilium.europa.eu",
+    "name": "press-releases",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.consilium.europa.eu/en/press/press-releases/",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic"]
+    }
+  },
+  {
+    "domain": "www.ecdc.europa.eu",
+    "name": "news-events",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.ecdc.europa.eu/en/news-events",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "civic"]
+    }
+  },
+  {
+    "domain": "www.enisa.europa.eu",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.enisa.europa.eu/news",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["security", "civic"]
+    }
+  },
+  {
+    "domain": "www.europarl.europa.eu",
+    "name": "press-room",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.europarl.europa.eu/news/en/press-room",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic"]
     }
   }
 ]
