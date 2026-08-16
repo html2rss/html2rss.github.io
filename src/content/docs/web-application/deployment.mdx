@@ -92,18 +92,10 @@ Store these variables in a `.env` file and reference it with `env_file:` as demo
 Keep the instance healthy once it is in production:
 
 - Review `docker compose logs` regularly for feed errors or certificate renewals
-- Enable automatic image updates for the Docker tag you selected
+- Pull newer images for the Docker tag you selected on your update cadence
 - Right-size CPU and memory to avoid starvation when parsing large feeds
 - Use `GET /api/v1/health/ready` for standard readiness checks
 - Add authenticated `GET /api/v1/health` only when your operator tooling needs it
-
-### Auto-update with Watchtower
-
-<DockerComposeSnippet variant="watchtower" />
-
-This Watchtower shape scopes updates to `html2rss-web`, `botasaurus`, and `caddy`; change the service names if your stack differs.
-
-Check `docker compose logs watchtower` occasionally to confirm updates are applied.
 
 ### Resource Guardrails
 
