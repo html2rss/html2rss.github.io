@@ -78,7 +78,7 @@ Diagnostic page analysis. Inspects HTTP response headers, content type, scraper 
 
 ### `capture_config`
 
-Analyzes a target URL and derives a reusable `html2rss` feed configuration hash with calculated CSS selectors.
+Analyzes a target URL and derives a reusable `html2rss` feed configuration hash with calculated CSS selectors. Full schema options live in resource `html2rss://schema`.
 
 - **Parameters:**
   - `url` _(string, required)_: Source page URL.
@@ -89,12 +89,12 @@ Analyzes a target URL and derives a reusable `html2rss` feed configuration hash 
 
 ### `validate_config`
 
-Validates a feed configuration hash against the official `html2rss` JSON schema and runtime constraints.
+Validates a feed configuration hash against the official `html2rss` JSON schema (`html2rss://schema`) and runtime constraints.
 
 - **Parameters:**
   - `config` _(object, required)_: Feed configuration object with `channel` and `selectors`.
 - **Return value:** Text response `Config is valid.` on success.
-- **Error handling:** Returns `isError: true` with a formatted error dictionary if schema validation fails.
+- **Error handling:** Returns `isError: true` with a serialized JSON error dictionary if schema validation fails.
 
 ### `apply_config`
 
