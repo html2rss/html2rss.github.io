@@ -15,7 +15,7 @@ Run `html2rss-web` locally with Docker, confirm one generated feed works, then m
 
 After this guide, you should have:
 
-- `html2rss-web` running at `http://localhost:4000`
+- `html2rss-web` running at `https://localhost:4000`
 - successful feed generated from your own page URL
 - a clear handoff from the demo stack to the real deployment setup
 - a generated feed URL from your own page URL
@@ -59,7 +59,9 @@ This first-run stack keeps the path narrow:
 
 ## First Success Check
 
-1. Open `http://localhost:4000`
+1. Open `https://localhost:4000`
+   > [!NOTE]
+   > Because the local stack runs securely over HTTPS using Caddy's internal certificate authority, your browser will show a warning about an untrusted or self-signed certificate. You can safely bypass/accept the warning to access the interface.
 2. Paste your own page URL into `Page URL`
 3. Start with a listing, newsroom, changelog, releases, or updates page instead of a homepage
 4. Enter `CHANGE_ME_ADMIN_TOKEN` when prompted

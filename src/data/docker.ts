@@ -3,5 +3,4 @@ export const dockerHubUrl = `https://hub.docker.com/r/${dockerHubRepository}`;
 export const webImage = `${dockerHubRepository}:1`;
 export const browserlessImage = 'ghcr.io/browserless/chromium';
 export const caddyImage = 'caddy:2-alpine';
-export const watchtowerImage = 'containrrr/watchtower';
 export const botasaurusImage = 'html2rss/botasaurus-scrape-api:latest';
