@@ -1,0 +1,139 @@
+---
+title: MCP Server Reference
+description: Complete protocol reference for the html2rss Model Context Protocol (MCP) server, tools, resources, prompts, and transports.
+---
+
+import { Code } from "@astrojs/starlight/components";
+
+`html2rss` includes a built-in [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that exposes gem capabilities directly to AI agents, clients, and IDEs (such as Cursor, Claude Desktop, and GitHub Copilot).
+
+## Overview
+
+The MCP server allows AI agents to inspect pages, capture reusable feed configurations, validate configs, and generate feeds without executing ad-hoc shell scripts or parsing CLI output.
+
+<Code
+  code={`
+  # Start with standard I/O transport (default for AI desktop clients)
+  html2rss mcp
+  # Start with local HTTP transport (loopback only)
+  html2rss mcp --transport http --port 8080
+`}
+  lang="bash"
+/>
+
+## Transports & Security
+
+The MCP server supports two transport mechanisms:
+
+| Transport   | Command                                     | Default Port | Description                                                                     |
+| :---------- | :------------------------------------------ | :----------- | :------------------------------------------------------------------------------ |
+| **`stdio`** | `html2rss mcp --transport stdio`            | N/A          | Standard input/output communication. Recommended for Cursor and Claude Desktop. |
+| **`http`**  | `html2rss mcp --transport http --port 8080` | `8080`       | Streamable HTTP transport bound strictly to `127.0.0.1` (loopback only).        |
+
+### Security & Dependencies for HTTP
+
+- **Loopback binding:** The HTTP transport only binds to `127.0.0.1`. Never expose it to public interfaces without authentication and reverse proxy origin controls.
+- **Dependencies:** The HTTP transport requires the `rack`, `rackup`, and `webrick` gems. If they are not present, starting the server raises a descriptive `LoadError`.
+
+## Strategy Resolution in MCP
+
+Inside the MCP server, passing `strategy: "auto"` (or omitting strategy) resolves directly to `faraday` without running the multitenant Botasaurus fallback chain.
+
+If a scraped target is JavaScript-rendered, Cloudflare-protected, or returns an empty article list under Faraday:
+
+1. Use `inspect_url` to confirm page structure and scraper eligibility.
+2. Retry `scrape_url` or `capture_config` with `strategy: "botasaurus"`.
+3. Ensure the Botasaurus service is running and `BOTASAURUS_SCRAPER_URL` is set in the environment (e.g. `http://127.0.0.1:4010`).
+
+## Tools Reference
+
+The server registers 5 primary tools for AI agent orchestration.
+
+### `scrape_url`
+
+One-shot article extraction as JSON Feed items. Use when you need articles immediately without authoring or saving a YAML feed config.
+
+- **Parameters:**
+  - `url` _(string, required)_: Source page URL to scrape.
+  - `strategy` _(string, optional)_: Request strategy (`auto`, `faraday`, `botasaurus`). Default: `auto`.
+  - `limit` _(integer, optional)_: Maximum articles to keep. Default: `25`.
+  - `items_selector` _(string, optional)_: CSS selector hint for items.
+- **Return value:** JSON string containing an array of article objects (`title`, `url`, `description`, `published_at`, `author`, `image`, `categories`).
+- **Metadata (`_meta`):** Includes `total`, `strategy`, and `channel_title`.
+- **Error handling:** Unhandled exceptions return `isError: true` with error message text.
+
+### `inspect_url`
+
+Diagnostic page analysis. Inspects HTTP response headers, content type, scraper eligibility, Semantic Structural Tree (SST) node count, and discovered article segments.
+
+- **Parameters:**
+  - `url` _(string, required)_: Source page URL.
+  - `strategy` _(string, optional)_: Request strategy (`auto`, `faraday`, `botasaurus`). Default: `auto`.
+- **Return value:** Pretty-printed JSON object with diagnostic details:
+  - `content_type`: Detected MIME type.
+  - `html_response`: Boolean indicating whether the payload was parsed as HTML.
+  - `scraper_eligibility`: Eligible scrapers (e.g. `wordpress_api`, `schema`, `microdata`, `semantic_html`).
+  - `sst_stats`: Node count and degradation status.
+  - `sst.segment_stats`: Number of segments discovered, strategies matched, and sample CSS tag paths.
+
+### `capture_config`
+
+Analyzes a target URL and derives a reusable `html2rss` feed configuration hash with calculated CSS selectors.
+
+- **Parameters:**
+  - `url` _(string, required)_: Source page URL.
+  - `strategy` _(string, optional)_: Request strategy (`auto`, `faraday`, `botasaurus`). Default: `auto`.
+  - `items_selector` _(string, optional)_: Optional CSS selector hint for items.
+- **Return value:** Pretty-printed JSON configuration hash containing `:channel` and `:selectors`.
+- **Metadata (`_meta`):** Includes `articles_count`, `channel_title`, `has_selectors` (boolean), and `strategy`.
+
+### `validate_config`
+
+Validates a feed configuration hash against the official `html2rss` JSON schema and runtime constraints.
+
+- **Parameters:**
+  - `config` _(object, required)_: Feed configuration object with `channel` and `selectors`.
+- **Return value:** Text response `Config is valid.` on success.
+- **Error handling:** Returns `isError: true` with a formatted error dictionary if schema validation fails.
+
+### `apply_config`
+
+Executes a validated feed configuration against a page and returns valid RSS 2.0 XML.
+
+- **Parameters:**
+  - `url` _(string, required)_: Source page URL (populates `channel.url` if omitted from config).
+  - `config` _(object, required)_: Feed configuration object.
+- **Return value:** RSS 2.0 XML string.
+
+## Resources Reference
+
+The MCP server exposes reference data under the `html2rss://` URI scheme:
+
+| URI                         | MIME Type          | Description                                                                                                              |
+| :-------------------------- | :----------------- | :----------------------------------------------------------------------------------------------------------------------- |
+| **`html2rss://schema`**     | `application/json` | The complete JSON Schema for `html2rss` feed configurations, including selector rules, extractors, and request controls. |
+| **`html2rss://extractors`** | `application/json` | Alphabetical list of all registered extractor names (`attribute`, `html`, `href`, `text`, `static`, etc.).               |
+| **`html2rss://strategies`** | `application/json` | List of all registered request strategies (`auto`, `faraday`, `botasaurus`, `local_file`).                               |
+
+## Prompts Reference
+
+The server publishes guided prompt workflows for AI assistants:
+
+### `scrape-webpage`
+
+Guided one-shot extraction prompt that instructs the agent to run `scrape_url`, inspect the response if empty or JS-gated, and retry with `botasaurus` when needed.
+
+- **Arguments:**
+  - `url` _(string, required)_: Target URL to scrape.
+
+### `capture-feed-config`
+
+Four-step workflow prompt for generating durable feed configurations:
+
+1. Call `capture_config` to derive initial selectors and check `articles_count`.
+2. If selectors are weak, call `inspect_url` and retry with `botasaurus`.
+3. Call `validate_config` to ensure schema conformance.
+4. Call `apply_config` to verify the resulting RSS feed XML.
+
+- **Arguments:**
+  - `url` _(string, required)_: Target URL to analyze.

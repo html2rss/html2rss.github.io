@@ -129,6 +129,53 @@ Available options:
 
 The CLI keeps `strategy` as a top-level override and writes runtime request limits into the generated config under `request`.
 
+### Capture
+
+Analyzes a URL using auto-source structural analysis and prints a reusable YAML feed configuration with derived CSS selectors to stdout.
+
+<Code
+  code={`
+  html2rss capture https://example.com/articles ; \\
+  html2rss capture https://example.com/articles --strategy botasaurus ; \\
+  html2rss capture https://example.com/articles --items_selector ".post-card" ; \\
+  html2rss capture --input sample.html
+`}
+  lang="bash"
+/>
+
+Command: `html2rss capture [URL]`
+
+Available options:
+
+- `--strategy`: Optional request strategy (`auto`, `faraday`, `botasaurus`, `local_file`). Defaults to `auto`.
+- `--items_selector`: Optional CSS selector hint for item extraction.
+- `--limit`: Maximum number of articles to keep (defaults to `25`).
+- `--max-redirects`: Maximum redirects to follow per request.
+- `--max-requests`: Maximum requests to allow for this feed build.
+- `--input`: Local HTML file path to read input from without making network requests.
+
+### MCP
+
+Starts the Model Context Protocol (MCP) server for integration with AI clients and agent workflows (Cursor, Claude Desktop, Copilot).
+
+<Code
+  code={`
+  html2rss mcp ; \\
+  html2rss mcp --transport stdio ; \\
+  html2rss mcp --transport http --port 8080
+`}
+  lang="bash"
+/>
+
+Command: `html2rss mcp`
+
+Available options:
+
+- `--transport`: MCP transport protocol (`stdio` or `http`). Defaults to `stdio`.
+- `--port`: Port for HTTP transport (default: `8080`). Bound strictly to `127.0.0.1` (loopback only).
+
+HTTP transport requires the `rack`, `rackup`, and `webrick` gems. See the [MCP Server Reference](/ruby-gem/reference/mcp-server/) and [AI Agent Workflows Guide](/ruby-gem/guides/ai-agent-workflows/) for full configuration and tool schemas.
+
 ### Schema
 
 Prints or writes the exported JSON Schema for the current gem version.
