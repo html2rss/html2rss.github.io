@@ -159,11 +159,17 @@ function createUpdateFeedUrlsFunction() {
   };
 }
 
-function updateSearchState(feedItems, query) {
+function updateSearchState(feedItems, query, selectedTopics = [], selectedLanguage = '') {
   let visibleCount = 0;
   feedItems.forEach((item) => {
     const searchableText = item.dataset.searchable?.toLowerCase() || '';
-    const matches = fuzzyMatch(searchableText, query);
+    const matchesSearch = fuzzyMatch(searchableText, query);
+    const itemTopics = (item.dataset.topics || '').split(/\s+/).filter(Boolean);
+    const matchesTopics =
+      selectedTopics.length === 0 || selectedTopics.some((topic) => itemTopics.includes(topic));
+    const itemLanguage = item.dataset.language || '';
+    const matchesLanguage = !selectedLanguage || itemLanguage === selectedLanguage;
+    const matches = matchesSearch && matchesTopics && matchesLanguage;
     item.hidden = !matches;
     if (matches) visibleCount++;
   });
@@ -173,14 +179,14 @@ function updateSearchState(feedItems, query) {
   const emptyState = document.querySelector('[data-empty-state]');
   const emptyCopy = document.querySelector('[data-empty-copy]');
   const feedList = document.querySelector('[data-feed-list]');
+  const hasActiveFilters = Boolean(query.trim()) || selectedTopics.length > 0 || Boolean(selectedLanguage);
 
   if (resultCount) {
     resultCount.textContent = String(visibleCount);
   }
 
   if (resultLabel) {
-    const hasQuery = Boolean(query.trim());
-    if (hasQuery) {
+    if (hasActiveFilters) {
       resultLabel.textContent = visibleCount === 1 ? 'matching feed' : 'matching feeds';
     } else {
       resultLabel.textContent = visibleCount === 1 ? 'ready-to-use feed' : 'ready-to-use feeds';
@@ -192,25 +198,115 @@ function updateSearchState(feedItems, query) {
     emptyState.hidden = !hasNoResults;
     feedList.hidden = hasNoResults;
     if (hasNoResults) {
-      emptyCopy.textContent = query
-        ? `No configurations found for "${query}". Try another domain or feed name, check the community wiki, or contribute a new configuration.`
+      emptyCopy.textContent = hasActiveFilters
+        ? 'No configurations match the current search and filters. Try clearing a topic or language filter.'
         : 'Try a different domain or feed name, or contribute a new configuration.';
     }
   }
 }
 
-function setupSearch(searchInput, feedItems) {
-  if (!searchInput) return;
+function getSelectedTopics() {
+  return Array.from(document.querySelectorAll('[data-topic-filter][aria-pressed="true"]')).map(
+    (button) => button.dataset.topicFilter
+  );
+}
 
-  const applySearch = debounce((query) => {
-    updateSearchState(feedItems, query.toLowerCase());
+function getSelectedLanguage() {
+  const languageFilter = document.querySelector('[data-language-filter]');
+  return languageFilter?.value || '';
+}
+
+function setupFilters(searchInput, feedItems) {
+  const applyFilters = debounce(() => {
+    updateSearchState(
+      feedItems,
+      (searchInput?.value || '').toLowerCase(),
+      getSelectedTopics(),
+      getSelectedLanguage()
+    );
   }, 120);
 
-  searchInput.addEventListener('input', (event) => {
-    applySearch(event.target.value);
+  if (searchInput) {
+    searchInput.addEventListener('input', applyFilters);
+  }
+
+  document.querySelectorAll('[data-topic-filter]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const pressed = button.getAttribute('aria-pressed') === 'true';
+      button.setAttribute('aria-pressed', String(!pressed));
+      applyFilters();
+    });
   });
 
-  updateSearchState(feedItems, searchInput.value.toLowerCase());
+  const languageFilter = document.querySelector('[data-language-filter]');
+  if (languageFilter) {
+    languageFilter.addEventListener('change', applyFilters);
+  }
+
+  applyFilters();
+}
+
+function escapeXml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;');
+}
+
+function buildOpmlDocument(visibleItems) {
+  const outlines = visibleItems
+    .map((item) => {
+      const feedLink = item.querySelector('[data-feed-url]');
+      const title =
+        item.querySelector('.feed-title')?.textContent?.trim() ||
+        `${item.dataset.domain}/${item.dataset.name}`;
+      const xmlUrl = feedLink?.href;
+      if (!xmlUrl || xmlUrl === '#' || xmlUrl.endsWith('/#')) return null;
+
+      const htmlUrl = item.querySelector('.meta-link[title]')?.getAttribute('href') || '';
+      const htmlAttr = htmlUrl ? ` htmlUrl="${escapeXml(htmlUrl)}"` : '';
+      return `    <outline type="rss" text="${escapeXml(title)}" title="${escapeXml(title)}" xmlUrl="${escapeXml(xmlUrl)}"${htmlAttr} />`;
+    })
+    .filter(Boolean)
+    .join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>html2rss feeds</title>
+  </head>
+  <body>
+${outlines}
+  </body>
+</opml>
+`;
+}
+
+function setupOpmlExport(feedItems) {
+  const exportButton = document.querySelector('[data-export-opml]');
+  if (!exportButton) return;
+
+  exportButton.addEventListener('click', () => {
+    const visibleItems = feedItems.filter((item) => !item.hidden);
+    if (visibleItems.length === 0) return;
+
+    const opml = buildOpmlDocument(visibleItems);
+    const blob = new Blob([opml], { type: 'text/x-opml+xml' });
+    const objectUrl = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = objectUrl;
+    anchor.download = 'html2rss-feeds.opml';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(objectUrl);
+  });
+}
+
+function setupSearch(searchInput, feedItems) {
+  setupFilters(searchInput, feedItems);
 }
 
 function setupInstanceEditor(
@@ -363,6 +459,7 @@ function initializeFeedDirectory() {
   }
 
   setupSearch(searchInput, feedItems);
+  setupOpmlExport(feedItems);
   setupInstanceEditor(
     defaultInstanceUrl,
     () => currentInstanceUrl,

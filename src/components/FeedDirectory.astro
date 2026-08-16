@@ -11,6 +11,18 @@ function formatDefaultParameters(defaultParameters: Record<string, string> = {})
     .join(", ");
 }
 
+const availableTopics = [...new Set(configs.flatMap((config) => config.directory?.topics || []))].sort(
+  (a, b) => a.localeCompare(b),
+);
+
+const availableLanguages = [
+  ...new Set(
+    configs
+      .map((config) => config.channel?.language)
+      .filter((language): language is string => Boolean(language)),
+  ),
+].sort((a, b) => a.localeCompare(b));
+
 const staticFeedUrls = configs.map((config) => ({
   ...config,
   staticFeedUrl: "#",
@@ -19,6 +31,8 @@ const staticFeedUrls = configs.map((config) => ({
     ?.replace(/^https?:\/\//, "")
     .replace(/^www\./, "")
     .replace(/\/$/, ""),
+  topics: config.directory?.topics || [],
+  language: config.channel?.language || "",
 }));
 ---
 
@@ -45,6 +59,38 @@ const staticFeedUrls = configs.map((config) => ({
         <span data-result-count>{feedCount}</span>
         <span data-result-label>ready-to-use feeds</span>
       </p>
+    </div>
+
+    <div class="filter-block">
+      <div class="filter-group">
+        <p class="filter-label" id="topic-filter-label">Topics</p>
+        <div class="topic-chips" role="group" aria-labelledby="topic-filter-label">
+          {
+            availableTopics.map((topic) => (
+              <button type="button" class="topic-chip" data-topic-filter={topic} aria-pressed="false">
+                {topic}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <div class="language-filter">
+          <label class="filter-label" for="language-filter">Language</label>
+          <select
+            id="language-filter"
+            class="language-select"
+            data-language-filter
+            aria-label="Filter by language"
+          >
+            <option value="">All languages</option>
+            {availableLanguages.map((language) => <option value={language}>{language}</option>)}
+          </select>
+        </div>
+
+        <button type="button" class="export-opml" data-export-opml> Export OPML </button>
+      </div>
     </div>
 
     <div class="instance-block">
@@ -114,7 +160,9 @@ const staticFeedUrls = configs.map((config) => ({
           class="feed-row"
           data-domain={config.domain}
           data-name={config.name}
-          data-searchable={`${config.domain}/${config.name} ${config.channel?.url || ""}`}
+          data-topics={config.topics.join(" ")}
+          data-language={config.language}
+          data-searchable={`${config.domain}/${config.name} ${config.channel?.url || ""} ${config.topics.join(" ")} ${config.language}`}
         >
           <div class="feed-info">
             <div class="feed-mainline">
@@ -272,6 +320,7 @@ const staticFeedUrls = configs.map((config) => ({
   }
 
   .search-block,
+  .filter-block,
   .instance-block,
   .empty-state,
   .feed-row,
@@ -279,7 +328,8 @@ const staticFeedUrls = configs.map((config) => ({
     padding: var(--fd-padding);
   }
 
-  .search-block {
+  .search-block,
+  .filter-block {
     display: grid;
     gap: var(--fd-gap);
     border-bottom: 1px solid var(--fd-border);
@@ -323,6 +373,81 @@ const staticFeedUrls = configs.map((config) => ({
 
   .search-input:focus {
     outline: none;
+  }
+
+  .filter-group {
+    display: grid;
+    gap: 0.375rem;
+  }
+
+  .filter-label {
+    margin: 0;
+    color: var(--fd-muted);
+    font-size: var(--sl-text-xs);
+  }
+
+  .topic-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .topic-chip {
+    appearance: none;
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--fd-border);
+    border-radius: calc(var(--fd-radius) - 0.125rem);
+    background: transparent;
+    color: var(--fd-muted);
+    font: inherit;
+    font-size: var(--sl-text-xs);
+    cursor: pointer;
+  }
+
+  .topic-chip[aria-pressed="true"] {
+    border-color: var(--sl-color-accent);
+    background: var(--sl-color-accent-low);
+    color: var(--sl-color-white);
+  }
+
+  .filter-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--fd-gap);
+    align-items: end;
+    justify-content: space-between;
+  }
+
+  .language-filter {
+    display: grid;
+    gap: 0.375rem;
+    min-width: 10rem;
+  }
+
+  .language-select {
+    min-width: 0;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--fd-border);
+    border-radius: calc(var(--fd-radius) - 0.125rem);
+    background: var(--fd-surface-alt);
+    color: var(--sl-color-white);
+    font: inherit;
+    font-size: var(--sl-text-sm);
+  }
+
+  .export-opml {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--fd-border);
+    border-radius: calc(var(--fd-radius) - 0.125rem);
+    background: transparent;
+    color: var(--sl-color-white);
+    font: inherit;
+    font-size: var(--sl-text-sm);
+    cursor: pointer;
   }
 
   .result-summary,
@@ -551,6 +676,11 @@ const staticFeedUrls = configs.map((config) => ({
   .instance-apply:focus-visible,
   .done-button:hover,
   .done-button:focus-visible,
+  .topic-chip:hover,
+  .topic-chip:focus-visible,
+  .export-opml:hover,
+  .export-opml:focus-visible,
+  .language-select:focus-visible,
   .instance-input:focus-visible,
   .form-input:focus-visible {
     border-color: var(--sl-color-accent);
@@ -650,6 +780,11 @@ const staticFeedUrls = configs.map((config) => ({
 
     .feed-meta {
       justify-content: flex-start;
+    }
+
+    .filter-actions {
+      flex-direction: column;
+      align-items: stretch;
     }
   }
 </style>
