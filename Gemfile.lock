@@ -1,11 +1,13 @@
-PATH
-  remote: ../html2rss-configs
+GIT
+  remote: https://github.com/html2rss/html2rss-configs.git
+  revision: d9e3dc55b38514eb9cd4a17cb0285d9ef73bc9d5
   specs:
     html2rss-configs (0.2.0)
       html2rss
 
-PATH
-  remote: ../html2rss
+GIT
+  remote: https://github.com/html2rss/html2rss.git
+  revision: aa974733c6e88a5c934f445516d9752dfa316067
   specs:
     html2rss (0.25.0)
       addressable (~> 2.7)
