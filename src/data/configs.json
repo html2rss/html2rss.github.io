@@ -12,9 +12,7 @@
       "language": "de"
     },
     "directory": {
-      "topics": [
-        "civic"
-      ]
+      "topics": ["civic"]
     }
   },
   {
@@ -34,9 +32,7 @@
       "time_zone": "UTC"
     },
     "directory": {
-      "topics": [
-        "news"
-      ]
+      "topics": ["news"]
     }
   },
   {
@@ -52,10 +48,7 @@
       "ttl": 360
     },
     "directory": {
-      "topics": [
-        "tech",
-        "product"
-      ]
+      "topics": ["tech", "product"]
     }
   },
   {
@@ -75,9 +68,7 @@
       "ttl": 720
     },
     "directory": {
-      "topics": [
-        "entertainment"
-      ]
+      "topics": ["entertainment"]
     }
   },
   {
@@ -93,9 +84,7 @@
       "time_zone": "UTC"
     },
     "directory": {
-      "topics": [
-        "news"
-      ]
+      "topics": ["news"]
     }
   },
   {
@@ -116,9 +105,7 @@
       "ttl": 120
     },
     "directory": {
-      "topics": [
-        "news"
-      ]
+      "topics": ["news"]
     }
   },
   {
@@ -134,10 +121,7 @@
       "language": "en"
     },
     "directory": {
-      "topics": [
-        "news",
-        "travel"
-      ]
+      "topics": ["news", "travel"]
     }
   },
   {
@@ -154,9 +138,7 @@
       "time_zone": "America/Los_Angeles"
     },
     "directory": {
-      "topics": [
-        "entertainment"
-      ]
+      "topics": ["entertainment"]
     }
   },
   {
@@ -172,10 +154,7 @@
       "ttl": 360
     },
     "directory": {
-      "topics": [
-        "energy",
-        "environment"
-      ]
+      "topics": ["energy", "environment"]
     }
   },
   {
@@ -195,10 +174,7 @@
       "time_zone": "UTC"
     },
     "directory": {
-      "topics": [
-        "tech",
-        "news"
-      ]
+      "topics": ["tech", "news"]
     }
   },
   {
@@ -215,9 +191,7 @@
       "language": "de"
     },
     "directory": {
-      "topics": [
-        "tech"
-      ]
+      "topics": ["tech"]
     }
   },
   {
@@ -233,9 +207,7 @@
       "time_zone": "UTC"
     },
     "directory": {
-      "topics": [
-        "tech"
-      ]
+      "topics": ["tech"]
     }
   },
   {
@@ -251,10 +223,7 @@
       "ttl": 360
     },
     "directory": {
-      "topics": [
-        "science",
-        "research"
-      ]
+      "topics": ["science", "research"]
     }
   },
   {
@@ -271,9 +240,7 @@
       "language": "de"
     },
     "directory": {
-      "topics": [
-        "finance"
-      ]
+      "topics": ["finance"]
     }
   },
   {
@@ -290,10 +257,7 @@
       "time_zone": "UTC"
     },
     "directory": {
-      "topics": [
-        "tech",
-        "product"
-      ]
+      "topics": ["tech", "product"]
     }
   },
   {
@@ -309,9 +273,7 @@
       "language": "de"
     },
     "directory": {
-      "topics": [
-        "civic"
-      ]
+      "topics": ["civic"]
     }
   },
   {
@@ -327,10 +289,7 @@
       "language": "de"
     },
     "directory": {
-      "topics": [
-        "civic",
-        "consumer"
-      ]
+      "topics": ["civic", "consumer"]
     }
   },
   {
@@ -346,10 +305,7 @@
       "ttl": 360
     },
     "directory": {
-      "topics": [
-        "tech",
-        "product"
-      ]
+      "topics": ["tech", "product"]
     }
   },
   {
@@ -365,9 +321,7 @@
       "ttl": 60
     },
     "directory": {
-      "topics": [
-        "sports"
-      ]
+      "topics": ["sports"]
     }
   },
   {
@@ -383,9 +337,7 @@
       "time_zone": "UTC"
     },
     "directory": {
-      "topics": [
-        "sports"
-      ]
+      "topics": ["sports"]
     }
   },
   {
@@ -401,9 +353,7 @@
       "ttl": 120
     },
     "directory": {
-      "topics": [
-        "sports"
-      ]
+      "topics": ["sports"]
     }
   },
   {
@@ -426,10 +376,7 @@
       "description": "Releases of %<username>s/%<repository>s on github.com."
     },
     "directory": {
-      "topics": [
-        "tech",
-        "product"
-      ]
+      "topics": ["tech", "product"]
     }
   },
   {
@@ -445,10 +392,7 @@
       "ttl": 360
     },
     "directory": {
-      "topics": [
-        "tech",
-        "product"
-      ]
+      "topics": ["tech", "product"]
     }
   },
   {
@@ -464,10 +408,7 @@
       "ttl": 360
     },
     "directory": {
-      "topics": [
-        "tech",
-        "product"
-      ]
+      "topics": ["tech", "product"]
     }
   },
   {
@@ -483,9 +424,7 @@
       "ttl": 720
     },
     "directory": {
-      "topics": [
-        "entertainment"
-      ]
+      "topics": ["entertainment"]
     }
   },
   {
@@ -505,9 +444,7 @@
       "ttl": 1440
     },
     "directory": {
-      "topics": [
-        "entertainment"
-      ]
+      "topics": ["entertainment"]
     }
   },
   {
@@ -523,9 +460,7 @@
       "time_zone": "UTC"
     },
     "directory": {
-      "topics": [
-        "jobs"
-      ]
+      "topics": ["jobs"]
     }
   },
   {
@@ -541,9 +476,7 @@
       "language": "de"
     },
     "directory": {
-      "topics": [
-        "entertainment"
-      ]
+      "topics": ["entertainment"]
     }
   },
   {
@@ -559,10 +492,7 @@
       "ttl": 3600
     },
     "directory": {
-      "topics": [
-        "tech",
-        "product"
-      ]
+      "topics": ["tech", "product"]
     }
   },
   {
@@ -578,10 +508,7 @@
       "ttl": 360
     },
     "directory": {
-      "topics": [
-        "security",
-        "tech"
-      ]
+      "topics": ["security", "tech"]
     }
   },
   {
@@ -597,9 +524,7 @@
       "time_zone": "UTC"
     },
     "directory": {
-      "topics": [
-        "news"
-      ]
+      "topics": ["news"]
     }
   },
   {
@@ -615,9 +540,7 @@
       "time_zone": "UTC"
     },
     "directory": {
-      "topics": [
-        "entertainment"
-      ]
+      "topics": ["entertainment"]
     }
   },
   {
@@ -633,10 +556,7 @@
       "ttl": 360
     },
     "directory": {
-      "topics": [
-        "tech",
-        "product"
-      ]
+      "topics": ["tech", "product"]
     }
   },
   {
@@ -652,10 +572,7 @@
       "time_zone": "Europe/Berlin"
     },
     "directory": {
-      "topics": [
-        "consumer",
-        "civic"
-      ]
+      "topics": ["consumer", "civic"]
     }
   },
   {
@@ -671,9 +588,7 @@
       "ttl": 1440
     },
     "directory": {
-      "topics": [
-        "science"
-      ]
+      "topics": ["science"]
     }
   },
   {
@@ -690,9 +605,7 @@
       "language": "de"
     },
     "directory": {
-      "topics": [
-        "news"
-      ]
+      "topics": ["news"]
     }
   },
   {
@@ -708,9 +621,7 @@
       "language": "de"
     },
     "directory": {
-      "topics": [
-        "environment"
-      ]
+      "topics": ["environment"]
     }
   },
   {
@@ -727,9 +638,7 @@
       "json": true
     },
     "directory": {
-      "topics": [
-        "entertainment"
-      ]
+      "topics": ["entertainment"]
     }
   },
   {
@@ -745,9 +654,7 @@
       "time_zone": "Europe/Berlin"
     },
     "directory": {
-      "topics": [
-        "sports"
-      ]
+      "topics": ["sports"]
     }
   },
   {
@@ -763,10 +670,7 @@
       "ttl": 360
     },
     "directory": {
-      "topics": [
-        "tech",
-        "product"
-      ]
+      "topics": ["tech", "product"]
     }
   },
   {
@@ -782,9 +686,7 @@
       "ttl": 720
     },
     "directory": {
-      "topics": [
-        "tech"
-      ]
+      "topics": ["tech"]
     }
   },
   {
@@ -800,9 +702,7 @@
       "ttl": 180
     },
     "directory": {
-      "topics": [
-        "energy"
-      ]
+      "topics": ["energy"]
     }
   },
   {
@@ -819,9 +719,7 @@
       "language": "de"
     },
     "directory": {
-      "topics": [
-        "science"
-      ]
+      "topics": ["science"]
     }
   },
   {
@@ -841,9 +739,7 @@
       "language": "de"
     },
     "directory": {
-      "topics": [
-        "news"
-      ]
+      "topics": ["news"]
     }
   },
   {
@@ -859,9 +755,7 @@
       "ttl": 360
     },
     "directory": {
-      "topics": [
-        "entertainment"
-      ]
+      "topics": ["entertainment"]
     }
   },
   {
@@ -878,9 +772,7 @@
       "ttl": 30
     },
     "directory": {
-      "topics": [
-        "tech"
-      ]
+      "topics": ["tech"]
     }
   },
   {
@@ -896,9 +788,7 @@
       "language": "de"
     },
     "directory": {
-      "topics": [
-        "civic"
-      ]
+      "topics": ["civic"]
     }
   },
   {
@@ -914,9 +804,7 @@
       "time_zone": "America/New_York"
     },
     "directory": {
-      "topics": [
-        "news"
-      ]
+      "topics": ["news"]
     }
   },
   {
@@ -932,10 +820,7 @@
       "time_zone": "UTC"
     },
     "directory": {
-      "topics": [
-        "tech",
-        "security"
-      ]
+      "topics": ["tech", "security"]
     }
   },
   {
@@ -951,10 +836,7 @@
       "ttl": 720
     },
     "directory": {
-      "topics": [
-        "tech",
-        "security"
-      ]
+      "topics": ["tech", "security"]
     }
   },
   {
@@ -970,10 +852,7 @@
       "language": "de"
     },
     "directory": {
-      "topics": [
-        "news",
-        "travel"
-      ]
+      "topics": ["news", "travel"]
     }
   },
   {
@@ -989,9 +868,7 @@
       "time_zone": "Europe/Berlin"
     },
     "directory": {
-      "topics": [
-        "consumer"
-      ]
+      "topics": ["consumer"]
     }
   },
   {
@@ -1008,9 +885,7 @@
       "ttl": 60
     },
     "directory": {
-      "topics": [
-        "news"
-      ]
+      "topics": ["news"]
     }
   },
   {
@@ -1026,10 +901,7 @@
       "time_zone": "UTC"
     },
     "directory": {
-      "topics": [
-        "tech",
-        "research"
-      ]
+      "topics": ["tech", "research"]
     }
   },
   {
@@ -1045,9 +917,7 @@
       "language": "de"
     },
     "directory": {
-      "topics": [
-        "travel"
-      ]
+      "topics": ["travel"]
     }
   },
   {
@@ -1067,9 +937,7 @@
       "time_zone": "Europe/Berlin"
     },
     "directory": {
-      "topics": [
-        "jobs"
-      ]
+      "topics": ["jobs"]
     }
   }
 ]

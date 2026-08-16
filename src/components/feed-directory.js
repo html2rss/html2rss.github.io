@@ -179,8 +179,7 @@ function updateSearchState(feedItems, query, selectedTopics = [], selectedLangua
   const emptyState = document.querySelector('[data-empty-state]');
   const emptyCopy = document.querySelector('[data-empty-copy]');
   const feedList = document.querySelector('[data-feed-list]');
-  const hasActiveFilters =
-    Boolean(query.trim()) || selectedTopics.length > 0 || Boolean(selectedLanguage);
+  const hasActiveFilters = Boolean(query.trim()) || selectedTopics.length > 0 || Boolean(selectedLanguage);
 
   if (resultCount) {
     resultCount.textContent = String(visibleCount);
