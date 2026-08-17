@@ -90,7 +90,7 @@ Capture focuses on:
 
 It does not invent per-field title/url/description selectors, author, `published_at`, categories, or enclosure selectors. `enhance: true` fills missing article fields via the HTML article extractor at feed-build time.
 
-MCP `capture_config` returns the same YAML. `validate_config` / `apply_config` accept that YAML string (XOR a config hash). `apply_config` is `isError` when the feed has zero items.
+MCP `capture_config` returns that YAML in `payload.yaml`. `validate_config` / `apply_config` accept the YAML string (XOR a config hash). `apply_config` is `isError` when the feed has zero items (`payload.item_count`).
 
 ## Recommended Follow-Up
 

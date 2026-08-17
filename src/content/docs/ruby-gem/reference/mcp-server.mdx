@@ -43,7 +43,17 @@ The MCP server supports two transport mechanisms:
 
 Read `html2rss://runtime` for `botasaurus_configured` (boolean only). Set `BOTASAURUS_SCRAPER_URL` on the **MCP process** env (see [AI agent workflows](/ruby-gem/guides/ai-agent-workflows/)).
 
-**Tool-call budget:** `scrape_url` = 1 call. Durable config = `capture_config` → `validate_config` → `apply_config`. Call `inspect_url` only when scrape/capture is weak or you need recon.
+**Tool-call budget:** `scrape_url` = 1 call. Durable config = `capture_config` → `validate_config` → `apply_config`. Call `inspect_url` only when scrape/capture is weak or you need recon. Follow envelope `next_step` / `guidance` rather than guessing the next tool.
+
+## Result envelope
+
+Every tool returns the same JSON object in both the text content and `structuredContent` (there is no `_meta` quality channel):
+
+```json
+{ "ok": true, "next_step": "validate_config", "guidance": "...", "payload": {} }
+```
+
+`isError` matches `ok: false`. Hosts that parsed scrape text as a raw JSON array must read `payload.items` instead.
 
 ## Tools Reference
 
@@ -58,9 +68,8 @@ One-shot article extraction as JSON Feed items. Use when you need articles immed
   - `strategy` _(string, optional)_: Request strategy (`auto`, `faraday`, `botasaurus`). Default: `auto`.
   - `limit` _(integer, optional)_: Maximum articles to keep. Default: `25`.
   - `items_selector` _(string, optional)_: CSS selector hint for items.
-- **Return value:** JSON string containing an array of article objects (`title`, `url`, `description`, `published_at`, `author`, `image`, `categories`).
-- **Metadata (`_meta`):** Includes `total`, `requested_strategy`, `channel_title`, and Status tallies.
-- **Error handling:** Unhandled exceptions return `isError: true`. An empty item list is still success (articles-now is not a ship gate).
+- **Return value:** Envelope with `payload.items` (JSON Feed article objects: `title`, `url`, `description`, `published_at`, `author`, `image`, `categories`). Also `payload.total`, `requested_strategy`, `channel_title`, and `admission_drops` when present.
+- **Error handling:** Unhandled exceptions return `isError: true` with `payload.class` / `payload.message`. An empty item list is still success (`ok: true`; follow `next_step`, which may be `inspect_url` or `read_runtime`).
 
 ### `inspect_url`
 
@@ -69,12 +78,13 @@ Diagnostic page analysis plus recon from the same fetch. `auto` uses Faraday; pi
 - **Parameters:**
   - `url` _(string, required)_: Source page URL.
   - `strategy` _(string, optional)_: Request strategy (`auto`, `faraday`, `botasaurus`). Default: `auto`.
-- **Return value:** Pretty-printed JSON object with diagnostic details:
+- **Return value:** Envelope whose `payload` is the diagnostic object:
   - `requested_url` / `final_url`: requested URL vs `Response#url` after redirects.
   - `status`: HTTP status when the strategy reports one.
   - `scheme_downgrade`: `true` when the fetch went https → http.
   - `alternate_feeds`: `rel=alternate` RSS/Atom links from the document head (no `/feed` path guessing).
   - `content_type` / `html_response` / `scraper_eligibility` / `sst_stats` / `sst.segment_stats`.
+- **next_step:** `done` when native alternate feeds exist, `capture_config` when articles were found, otherwise `scrape_url`.
 
 ### `capture_config`
 
@@ -84,8 +94,8 @@ Analyzes a target URL and derives a reusable YAML draft (`items` selector + `enh
   - `url` _(string, required)_: Source page URL.
   - `strategy` _(string, optional)_: Request strategy (`auto`, `faraday`, `botasaurus`). Default: `auto`.
   - `items_selector` _(string, optional)_: Optional CSS selector hint for items.
-- **Return value:** YAML document (string keys). Treat as a draft: catalog feeds still need `directory.topics` and explicit channel `title`/`url`. Strive to keep `enhance: true`.
-- **Metadata (`_meta`):** Includes `articles_count`, `channel_title`, `has_selectors`, and `requested_strategy`.
+- **Return value:** Envelope with `payload.yaml` (string keys; same serializer as CLI `html2rss capture`). Treat as a draft: catalog feeds still need `directory.topics` and explicit channel `title`/`url`. Strive to keep `enhance: true`.
+- **payload:** Also `articles_count`, `channel_title`, `has_selectors`, and `requested_strategy`. Follow `next_step` (`validate_config` or `inspect_url`).
 
 ### `validate_config`
 
@@ -94,8 +104,8 @@ Validates a feed configuration against the official `html2rss` JSON schema (`htm
 - **Parameters** (exactly one of `config` or `yaml`):
   - `config` _(object, optional)_: Feed configuration object.
   - `yaml` _(string, optional)_: Feed configuration YAML (same form as CLI capture / catalog files).
-- **Return value:** Text response `Config is valid.` on success.
-- **Error handling:** Returns `isError: true` with a serialized JSON error dictionary if schema validation fails, or if both/neither argument is provided.
+- **Return value:** Envelope with empty `payload` on success (`next_step`: `apply_config`).
+- **Error handling:** Returns `isError: true` with `payload.errors` if schema validation fails, or `next_step: validate_config` if both/neither argument is provided.
 
 ### `apply_config`
 
@@ -105,9 +115,8 @@ Executes a validated feed configuration against a page and returns RSS 2.0 XML. 
   - `url` _(string, required)_: Source page URL (populates `channel.url` if omitted from config).
   - `config` _(object, optional)_: Feed configuration object (XOR `yaml`).
   - `yaml` _(string, optional)_: Feed configuration YAML (XOR `config`).
-- **Return value:** RSS 2.0 XML string.
-- **Metadata (`_meta`):** `item_count` from the rendered RSS `items` (not a regex over the XML).
-- **Error handling:** `isError: true` when the scrape produced no items, or on unhandled exceptions.
+- **Return value:** Envelope with `payload.rss` (RSS 2.0 XML) and `payload.item_count` from the rendered RSS `items` (not a regex over the XML).
+- **Error handling:** `isError: true` when the scrape produced no items (`payload.item_count: 0`), or on unhandled exceptions.
 
 ## Resources Reference
 
@@ -117,7 +126,7 @@ The MCP server exposes reference data under the `html2rss://` URI scheme:
 | :-------------------------- | :----------------- | :----------------------------------------------------------------------------------------------------------------------- |
 | **`html2rss://schema`**     | `application/json` | The complete JSON Schema for `html2rss` feed configurations, including selector rules, extractors, and request controls. |
 | **`html2rss://extractors`** | `application/json` | Alphabetical list of all registered extractor names (`attribute`, `html`, `href`, `text`, `static`, etc.).               |
-| **`html2rss://strategies`** | `application/json` | List of all registered request strategies (`auto`, `faraday`, `botasaurus`, `local_file`).                               |
+| **`html2rss://strategies`** | `application/json` | Published MCP request strategies (`auto`, `faraday`, `botasaurus`). Does not list `local_file`.                          |
 | **`html2rss://runtime`**    | `application/json` | Boolean `botasaurus_configured` from process env. Never includes the scraper URL.                                        |
 
 ## Prompts Reference
@@ -135,10 +144,10 @@ One `scrape_url` call with `strategy: auto` (AutoFallback already hops). Call `i
 
 Four-step workflow for a durable feed config:
 
-1. Call `capture_config` — YAML draft. Check `_meta.articles_count` and `has_selectors`. Strive `enhance: true`.
+1. Call `capture_config` — YAML is `payload.yaml`. Check `payload.articles_count` and `has_selectors`. Strive `enhance: true`.
 2. If weak or you need recon, call `inspect_url`. Auto already hops to Botasaurus.
 3. Call `validate_config` with `yaml` (or `config`) — must not be `isError`.
-4. Call `apply_config` — `isError` if zero items. Confirm `_meta.item_count` before shipping.
+4. Call `apply_config` — `isError` if zero items. Confirm `payload.item_count` before shipping.
 
 If the destination is html2rss-configs, rewrite the draft for `directory.topics` and explicit channel `title`/`url`.
 

@@ -12,7 +12,7 @@ import { Code } from "@astrojs/starlight/components";
 Without MCP, agents must invoke shell commands, manage output buffers, and parse unstructured text. With MCP:
 
 - The agent automatically discovers available tools, arguments, and return types.
-- Responses are structured (JSON Feed items, YAML configs, RSS XML).
+- Responses are structured envelopes (`ok`, `next_step`, `guidance`, `payload`) — articles in `payload.items`, YAML in `payload.yaml`, RSS in `payload.rss`.
 - Agents can inspect, capture, validate, and verify feeds iteratively in a closed feedback loop.
 - `html2rss://runtime` reports whether Botasaurus is configured in this MCP process (boolean only).
 
@@ -85,18 +85,18 @@ Add `html2rss` to your Claude Desktop configuration (`~/Library/Application Supp
 When an agent needs articles immediately without saving a feed configuration:
 
 1. Call `scrape_url` with `strategy: "auto"`. Auto already runs Faraday then Botasaurus.
-2. An empty item list is still success for articles-now. Read `html2rss://runtime` if `botasaurus_configured` is false.
+2. An empty item list is still success for articles-now. Read `payload.items`. Follow `next_step` (including `read_runtime` / `html2rss://runtime` if Botasaurus is unset).
 3. Call `inspect_url` only if the result is weak or you need recon. Do not retry `scrape_url` with explicit `faraday` after auto.
 
 ### Pattern B: Iterative Feed Config Authoring
 
 When an agent is tasked with creating a durable YAML feed configuration:
 
-1. **Capture:** Call `capture_config`. It returns YAML (`items` + `enhance: true`). Check `_meta.articles_count` and `has_selectors`.
+1. **Capture:** Call `capture_config`. YAML is `payload.yaml` (`items` + `enhance: true`). Check `payload.articles_count` and `has_selectors`.
 2. **Recon (optional):** Call `inspect_url` for `final_url`, `status`, `scheme_downgrade`, and `alternate_feeds` if the draft is weak.
 3. **Rewrite:** If the destination is html2rss-configs, add `directory.topics` and explicit channel `title`/`url`. Strive to keep `enhance: true` (set `false` only when chrome leaks into items).
 4. **Validate:** Pass `yaml` (or `config`) to `validate_config`. Exactly one of those arguments.
-5. **Apply:** Call `apply_config`. `isError` plus `_meta.item_count: 0` means the config is not shippable — channel title in the XML is not success.
+5. **Apply:** Call `apply_config`. `isError` plus `payload.item_count: 0` means the config is not shippable — channel title in the XML is not success.
 
 ## JavaScript-Rendered Sites (Botasaurus)
 
