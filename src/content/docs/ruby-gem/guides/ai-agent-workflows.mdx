@@ -12,8 +12,9 @@ import { Code } from "@astrojs/starlight/components";
 Without MCP, agents must invoke shell commands, manage output buffers, and parse unstructured text. With MCP:
 
 - The agent automatically discovers available tools, arguments, and return types.
-- Responses are structured (JSON Feed objects, configuration schemas, and RSS XML).
+- Responses are structured (JSON Feed items, YAML configs, RSS XML).
 - Agents can inspect, capture, validate, and verify feeds iteratively in a closed feedback loop.
+- `html2rss://runtime` reports whether Botasaurus is configured in this MCP process (boolean only).
 
 ## Client Setup
 
@@ -41,7 +42,10 @@ Add `html2rss` to your Cursor MCP settings (`~/.cursor/mcp.json` or `.cursor/mcp
     "mcpServers": {
       "html2rss": {
         "command": "mise",
-        "args": ["exec", "--", "html2rss", "mcp"]
+        "args": ["exec", "--", "html2rss", "mcp"],
+        "env": {
+          "BOTASAURUS_SCRAPER_URL": "http://127.0.0.1:4010"
+        }
       }
     }
   }
@@ -61,7 +65,10 @@ Add `html2rss` to your Claude Desktop configuration (`~/Library/Application Supp
     "mcpServers": {
       "html2rss": {
         "command": "mise",
-        "args": ["exec", "--", "html2rss", "mcp"]
+        "args": ["exec", "--", "html2rss", "mcp"],
+        "env": {
+          "BOTASAURUS_SCRAPER_URL": "http://127.0.0.1:4010"
+        }
       }
     }
   }
@@ -71,23 +78,25 @@ Add `html2rss` to your Claude Desktop configuration (`~/Library/Application Supp
 
 ## Autonomous Workflow Patterns
 
+**Budget:** `scrape_url` is one call. Durable config is `capture_config` → `validate_config` → `apply_config`. Call `inspect_url` only when the result is weak or you need recon (final URL, status, https→http, native RSS/Atom).
+
 ### Pattern A: One-Shot Content Scraping
 
 When an agent needs articles immediately without saving a feed configuration:
 
-1. The agent calls `scrape_url` with the target URL.
-2. `html2rss` runs auto-source extraction (Schema.org, JSON state, semantic HTML) and returns a JSON Feed items array.
-3. If the page is protected or rendered with JavaScript, the agent calls `inspect_url` to diagnose the structure, then retries `scrape_url` with `strategy: "botasaurus"`.
+1. Call `scrape_url` with `strategy: "auto"`. Auto already runs Faraday then Botasaurus.
+2. An empty item list is still success for articles-now. Read `html2rss://runtime` if `botasaurus_configured` is false.
+3. Call `inspect_url` only if the result is weak or you need recon. Do not retry `scrape_url` with explicit `faraday` after auto.
 
 ### Pattern B: Iterative Feed Config Authoring
 
 When an agent is tasked with creating a durable YAML feed configuration:
 
-1. **Inspect:** The agent calls `inspect_url` to check content type, SST node counts, and eligible scrapers.
-2. **Capture:** The agent runs `capture_config` to derive CSS selectors for items, title, link, and description.
-3. **Refine:** The agent reviews the derived selectors or asks the human user for domain-specific adjustments.
-4. **Validate:** The agent passes the configuration to `validate_config` to verify schema conformance.
-5. **Apply:** The agent tests the final configuration with `apply_config` to produce and inspect live RSS XML.
+1. **Capture:** Call `capture_config`. It returns YAML (`items` + `enhance: true`). Check `_meta.articles_count` and `has_selectors`.
+2. **Recon (optional):** Call `inspect_url` for `final_url`, `status`, `scheme_downgrade`, and `alternate_feeds` if the draft is weak.
+3. **Rewrite:** If the destination is html2rss-configs, add `directory.topics` and explicit channel `title`/`url`. Strive to keep `enhance: true` (set `false` only when chrome leaks into items).
+4. **Validate:** Pass `yaml` (or `config`) to `validate_config`. Exactly one of those arguments.
+5. **Apply:** Call `apply_config`. `isError` plus `_meta.item_count: 0` means the config is not shippable — channel title in the XML is not success.
 
 ## JavaScript-Rendered Sites (Botasaurus)
 
@@ -100,4 +109,4 @@ For dynamic JavaScript single-page applications or sites protected by anti-bot m
   lang="bash"
 />
 
-Ensure `BOTASAURUS_SCRAPER_URL` is accessible (typically `http://127.0.0.1:4010`) in the environment where the MCP server runs. Agents can then pass `strategy: "botasaurus"` to `scrape_url`, `inspect_url`, and `capture_config`.
+Put `BOTASAURUS_SCRAPER_URL` (typically `http://127.0.0.1:4010`) in the MCP server `env` block above — a shell export does not reach the Cursor/Claude MCP process. Confirm with `html2rss://runtime` (`botasaurus_configured: true`). AutoFallback then hops without a second tool call.

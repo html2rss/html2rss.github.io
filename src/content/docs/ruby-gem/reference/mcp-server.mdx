@@ -37,13 +37,13 @@ The MCP server supports two transport mechanisms:
 
 ## Strategy Resolution in MCP
 
-Inside the MCP server, passing `strategy: "auto"` (or omitting strategy) resolves directly to `faraday` without running the multitenant Botasaurus fallback chain.
+`scrape_url` and `capture_config` with `strategy: "auto"` (the default) run Faraday → Botasaurus AutoFallback. One call is enough; do not retry with explicit `faraday` after `auto`.
 
-If a scraped target is JavaScript-rendered, Cloudflare-protected, or returns an empty article list under Faraday:
+`inspect_url` is the exception: `auto` stays on Faraday for a cheap diagnostic. Pin `strategy: "botasaurus"` on inspect when you need browser rendering.
 
-1. Use `inspect_url` to confirm page structure and scraper eligibility.
-2. Retry `scrape_url` or `capture_config` with `strategy: "botasaurus"`.
-3. Ensure the Botasaurus service is running and `BOTASAURUS_SCRAPER_URL` is set in the environment (e.g. `http://127.0.0.1:4010`).
+Read `html2rss://runtime` for `botasaurus_configured` (boolean only). Set `BOTASAURUS_SCRAPER_URL` on the **MCP process** env (see [AI agent workflows](/ruby-gem/guides/ai-agent-workflows/)).
+
+**Tool-call budget:** `scrape_url` = 1 call. Durable config = `capture_config` → `validate_config` → `apply_config`. Call `inspect_url` only when scrape/capture is weak or you need recon.
 
 ## Tools Reference
 
@@ -59,51 +59,55 @@ One-shot article extraction as JSON Feed items. Use when you need articles immed
   - `limit` _(integer, optional)_: Maximum articles to keep. Default: `25`.
   - `items_selector` _(string, optional)_: CSS selector hint for items.
 - **Return value:** JSON string containing an array of article objects (`title`, `url`, `description`, `published_at`, `author`, `image`, `categories`).
-- **Metadata (`_meta`):** Includes `total`, `strategy`, and `channel_title`.
-- **Error handling:** Unhandled exceptions return `isError: true` with error message text.
+- **Metadata (`_meta`):** Includes `total`, `requested_strategy`, `channel_title`, and Status tallies.
+- **Error handling:** Unhandled exceptions return `isError: true`. An empty item list is still success (articles-now is not a ship gate).
 
 ### `inspect_url`
 
-Diagnostic page analysis. Inspects HTTP response headers, content type, scraper eligibility, Semantic Structural Tree (SST) node count, and discovered article segments.
+Diagnostic page analysis plus recon from the same fetch. `auto` uses Faraday; pin `botasaurus` when you need browser rendering.
 
 - **Parameters:**
   - `url` _(string, required)_: Source page URL.
   - `strategy` _(string, optional)_: Request strategy (`auto`, `faraday`, `botasaurus`). Default: `auto`.
 - **Return value:** Pretty-printed JSON object with diagnostic details:
-  - `content_type`: Detected MIME type.
-  - `html_response`: Boolean indicating whether the payload was parsed as HTML.
-  - `scraper_eligibility`: Eligible scrapers (e.g. `wordpress_api`, `schema`, `microdata`, `semantic_html`).
-  - `sst_stats`: Node count and degradation status.
-  - `sst.segment_stats`: Number of segments discovered, strategies matched, and sample CSS tag paths.
+  - `requested_url` / `final_url`: requested URL vs `Response#url` after redirects.
+  - `status`: HTTP status when the strategy reports one.
+  - `scheme_downgrade`: `true` when the fetch went https → http.
+  - `alternate_feeds`: `rel=alternate` RSS/Atom links from the document head (no `/feed` path guessing).
+  - `content_type` / `html_response` / `scraper_eligibility` / `sst_stats` / `sst.segment_stats`.
 
 ### `capture_config`
 
-Analyzes a target URL and derives a reusable `html2rss` feed configuration hash with calculated CSS selectors. Full schema options live in resource `html2rss://schema`.
+Analyzes a target URL and derives a reusable YAML draft (`items` selector + `enhance: true`). Same serializer as CLI `html2rss capture`. Full schema options live in resource `html2rss://schema`.
 
 - **Parameters:**
   - `url` _(string, required)_: Source page URL.
   - `strategy` _(string, optional)_: Request strategy (`auto`, `faraday`, `botasaurus`). Default: `auto`.
   - `items_selector` _(string, optional)_: Optional CSS selector hint for items.
-- **Return value:** Pretty-printed JSON configuration hash containing `:channel` and `:selectors`.
-- **Metadata (`_meta`):** Includes `articles_count`, `channel_title`, `has_selectors` (boolean), and `strategy`.
+- **Return value:** YAML document (string keys). Treat as a draft: catalog feeds still need `directory.topics` and explicit channel `title`/`url`. Strive to keep `enhance: true`.
+- **Metadata (`_meta`):** Includes `articles_count`, `channel_title`, `has_selectors`, and `requested_strategy`.
 
 ### `validate_config`
 
-Validates a feed configuration hash against the official `html2rss` JSON schema (`html2rss://schema`) and runtime constraints.
+Validates a feed configuration against the official `html2rss` JSON schema (`html2rss://schema`) and runtime constraints.
 
-- **Parameters:**
-  - `config` _(object, required)_: Feed configuration object with `channel` and `selectors`.
+- **Parameters** (exactly one of `config` or `yaml`):
+  - `config` _(object, optional)_: Feed configuration object.
+  - `yaml` _(string, optional)_: Feed configuration YAML (same form as CLI capture / catalog files).
 - **Return value:** Text response `Config is valid.` on success.
-- **Error handling:** Returns `isError: true` with a serialized JSON error dictionary if schema validation fails.
+- **Error handling:** Returns `isError: true` with a serialized JSON error dictionary if schema validation fails, or if both/neither argument is provided.
 
 ### `apply_config`
 
-Executes a validated feed configuration against a page and returns valid RSS 2.0 XML.
+Executes a validated feed configuration against a page and returns RSS 2.0 XML. This is the ship gate: `isError` when the feed has zero items.
 
 - **Parameters:**
   - `url` _(string, required)_: Source page URL (populates `channel.url` if omitted from config).
-  - `config` _(object, required)_: Feed configuration object.
+  - `config` _(object, optional)_: Feed configuration object (XOR `yaml`).
+  - `yaml` _(string, optional)_: Feed configuration YAML (XOR `config`).
 - **Return value:** RSS 2.0 XML string.
+- **Metadata (`_meta`):** `item_count` from the rendered RSS `items` (not a regex over the XML).
+- **Error handling:** `isError: true` when the scrape produced no items, or on unhandled exceptions.
 
 ## Resources Reference
 
@@ -114,6 +118,7 @@ The MCP server exposes reference data under the `html2rss://` URI scheme:
 | **`html2rss://schema`**     | `application/json` | The complete JSON Schema for `html2rss` feed configurations, including selector rules, extractors, and request controls. |
 | **`html2rss://extractors`** | `application/json` | Alphabetical list of all registered extractor names (`attribute`, `html`, `href`, `text`, `static`, etc.).               |
 | **`html2rss://strategies`** | `application/json` | List of all registered request strategies (`auto`, `faraday`, `botasaurus`, `local_file`).                               |
+| **`html2rss://runtime`**    | `application/json` | Boolean `botasaurus_configured` from process env. Never includes the scraper URL.                                        |
 
 ## Prompts Reference
 
@@ -121,19 +126,21 @@ The server publishes guided prompt workflows for AI assistants:
 
 ### `scrape-webpage`
 
-Guided one-shot extraction prompt that instructs the agent to run `scrape_url`, inspect the response if empty or JS-gated, and retry with `botasaurus` when needed.
+One `scrape_url` call with `strategy: auto` (AutoFallback already hops). Call `inspect_url` only if the result is weak or you need recon.
 
 - **Arguments:**
   - `url` _(string, required)_: Target URL to scrape.
 
 ### `capture-feed-config`
 
-Four-step workflow prompt for generating durable feed configurations:
+Four-step workflow for a durable feed config:
 
-1. Call `capture_config` to derive initial selectors and check `articles_count`.
-2. If selectors are weak, call `inspect_url` and retry with `botasaurus`.
-3. Call `validate_config` to ensure schema conformance.
-4. Call `apply_config` to verify the resulting RSS feed XML.
+1. Call `capture_config` — YAML draft. Check `_meta.articles_count` and `has_selectors`. Strive `enhance: true`.
+2. If weak or you need recon, call `inspect_url`. Auto already hops to Botasaurus.
+3. Call `validate_config` with `yaml` (or `config`) — must not be `isError`.
+4. Call `apply_config` — `isError` if zero items. Confirm `_meta.item_count` before shipping.
+
+If the destination is html2rss-configs, rewrite the draft for `directory.topics` and explicit channel `title`/`url`.
 
 - **Arguments:**
   - `url` _(string, required)_: Target URL to analyze.
