@@ -34,6 +34,7 @@ The MCP server supports two transport mechanisms:
 
 - **Loopback binding:** The HTTP transport only binds to `127.0.0.1`. Never expose it to public interfaces without authentication and reverse proxy origin controls.
 - **Dependencies:** The HTTP transport requires the `rack`, `rackup`, and `webrick` gems. If they are not present, starting the server raises a descriptive `LoadError`.
+- **Logging:** stdio JSON-RPC uses stdout. The daemon logs to stderr and defaults to `LOG_LEVEL=info` unless `LOG_LEVEL` is set (`debug` for more, `warn` to quiet).
 
 ## Strategy Resolution in MCP
 
@@ -47,13 +48,23 @@ Read `html2rss://runtime` for `botasaurus_configured` (boolean only). Set `BOTAS
 
 ## Result envelope
 
-Every tool returns the same JSON object in both the text content and `structuredContent` (there is no `_meta` quality channel):
+Every tool returns the same JSON object in both the text content and `structuredContent`:
 
-```json
-{ "ok": true, "next_step": "validate_config", "guidance": "...", "payload": {} }
-```
+<Code
+  code={`
+  {
+    "ok": true,
+    "next_step": "validate_config",
+    "guidance": "...",
+    "payload": {}
+  }
+`}
+  lang="json"
+/>
 
 `isError` matches `ok: false`. Hosts that parsed scrape text as a raw JSON array must read `payload.items` instead.
+
+`next_step` is one of: `done`, `inspect_url`, `validate_config`, `apply_config`, `scrape_url`, `capture_config`, `read_runtime`.
 
 ## Tools Reference
 
@@ -84,6 +95,9 @@ Diagnostic page analysis plus recon from the same fetch. `auto` uses Faraday; pi
   - `scheme_downgrade`: `true` when the fetch went https → http.
   - `alternate_feeds`: `rel=alternate` RSS/Atom links from the document head (no `/feed` path guessing).
   - `content_type` / `html_response` / `scraper_eligibility` / `sst_stats` / `sst.segment_stats`.
+  - `articles_count` and `admission_drops` when the response is HTML (Cleanup drop-reason counts).
+  - `blocked_surface` when an interstitial signature is detected.
+  - `xhr_capture` when the inspect strategy is `botasaurus` (`count`, redacted `sample_endpoints`, `candidate_articles`).
 - **next_step:** `done` when native alternate feeds exist, `capture_config` when articles were found, otherwise `scrape_url`.
 
 ### `capture_config`
@@ -128,6 +142,8 @@ The MCP server exposes reference data under the `html2rss://` URI scheme:
 | **`html2rss://extractors`** | `application/json` | Alphabetical list of all registered extractor names (`attribute`, `html`, `href`, `text`, `static`, etc.).               |
 | **`html2rss://strategies`** | `application/json` | Published MCP request strategies (`auto`, `faraday`, `botasaurus`). Does not list `local_file`.                          |
 | **`html2rss://runtime`**    | `application/json` | Boolean `botasaurus_configured` from process env. Never includes the scraper URL.                                        |
+
+`validate_config` / `apply_config` reject `strategy: local_file` and `request.local_file_path`. Use CLI `--input` for fixtures.
 
 ## Prompts Reference
 

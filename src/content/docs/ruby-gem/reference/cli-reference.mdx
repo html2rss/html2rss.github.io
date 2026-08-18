@@ -26,6 +26,7 @@ Automatically discovers items from a page and prints the generated RSS or JSONFe
   html2rss auto https://example.com/articles --limit 10 ; \\
   BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss auto https://example.com/protected --strategy botasaurus ; \\
   html2rss auto https://example.com/articles --items_selector ".post-card" ; \\
+  html2rss auto https://example.com/articles --explain ; \\
   html2rss auto --input sample.html ; \\
   html2rss auto https://example.com/articles --input sample.html
 `}
@@ -38,11 +39,12 @@ Available options:
 
 - `--strategy`: Optional request strategy (`auto`, `faraday`, `botasaurus`, `local_file`). Defaults to `auto`, which tries `faraday` -> `botasaurus`.
 - `--format`: Output format for the auto-sourced feed (`rss` or `jsonfeed`). Defaults to `rss`.
-- `--limit`: Maximum number of articles to extract during discovery (defaults to `20`).
+- `--limit`: Maximum number of articles to extract during discovery (defaults to `25`).
 - `--items_selector`: Optional CSS selector hint for item extraction.
 - `--max-redirects`: Maximum redirects to follow per request.
 - `--max-requests`: Maximum requests to allow for this feed build (defaults to `4` for auto discovery).
 - `--input`: Local HTML file path to read input from without making network requests. When provided without a `URL`, `html2rss` attempts to detect the base URL from `<link rel="canonical">` or OpenGraph metadata in the HTML.
+- `--explain`: Print `Html2rss::Status` JSON to stderr (`version`, `dedup_dropped`, and when present `scraper_tallies`, `selected_strategy`, `attempt_count`, `strategy_attempts`, `admission_drops`). Stdout stays the RSS or JSON Feed.
 
 #### URL Surface Guidance For `auto`
 
@@ -131,13 +133,14 @@ The CLI keeps `strategy` as a top-level override and writes runtime request limi
 
 ### Capture
 
-Analyzes a URL using auto-source structural analysis and prints a reusable YAML feed configuration with derived CSS selectors to stdout.
+Analyzes a URL using auto-source structural analysis and prints a reusable YAML feed configuration (`items` selector + `enhance: true`) to stdout.
 
 <Code
   code={`
   html2rss capture https://example.com/articles ; \\
   html2rss capture https://example.com/articles --strategy botasaurus ; \\
   html2rss capture https://example.com/articles --items_selector ".post-card" ; \\
+  html2rss capture https://example.com/articles --explain ; \\
   html2rss capture --input sample.html
 `}
   lang="bash"
@@ -153,6 +156,9 @@ Available options:
 - `--max-redirects`: Maximum redirects to follow per request.
 - `--max-requests`: Maximum requests to allow for this feed build.
 - `--input`: Local HTML file path to read input from without making network requests.
+- `--explain`: Print capture quality JSON to stderr (`articles_count`, `channel_title`, `has_selectors`, `segment_strategy`, `selected_strategy`, `admission_drops`). Stdout stays YAML.
+
+When AutoFallback (or a pinned strategy) selects a concrete transport, the printed YAML includes a top-level `strategy:` so later `html2rss feed` uses the same hop.
 
 ### MCP
 
@@ -174,7 +180,7 @@ Available options:
 - `--transport`: MCP transport protocol (`stdio` or `http`). Defaults to `stdio`.
 - `--port`: Port for HTTP transport (default: `8080`). Bound strictly to `127.0.0.1` (loopback only).
 
-HTTP transport requires the `rack`, `rackup`, and `webrick` gems. See the [MCP Server Reference](/ruby-gem/reference/mcp-server/) and [AI Agent Workflows Guide](/ruby-gem/guides/ai-agent-workflows/) for full configuration and tool schemas.
+HTTP transport requires the `rack`, `rackup`, and `webrick` gems. stdio keeps JSON-RPC on stdout; the daemon logs to stderr and defaults to `LOG_LEVEL=info` unless you set `LOG_LEVEL`. See the [MCP Server Reference](/ruby-gem/reference/mcp-server/) and [AI Agent Workflows Guide](/ruby-gem/guides/ai-agent-workflows/) for full configuration and tool schemas.
 
 ### Schema
 
