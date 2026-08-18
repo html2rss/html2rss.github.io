@@ -76,7 +76,9 @@ Prefer `Html2rss.feed_result` when one scrape must render as both RSS and JSON F
 - `to_rss` / `to_json_feed(feed_url:)` — render formats
 - `status` — scrape telemetry (`Html2rss::Status`)
 
-`status.to_h` is the stable observability payload. Always includes `version` and `dedup_dropped`. When present, it may also include `scraper_tallies`, `selected_strategy`, `attempt_count`, and `strategy_attempts` (auto-fallback attempts; empty outside `strategy: auto`).
+`status.to_h` is the stable observability payload. Always includes `version` and `dedup_dropped`. When present, it may also include `scraper_tallies`, `selected_strategy`, `attempt_count`, `strategy_attempts` (auto-fallback attempts; empty outside `strategy: auto`), and `admission_drops` (Cleanup reason → count).
+
+For URL-only auto discovery, `Html2rss.auto_feed_result(url)` returns the same `FeedResult` (CLI `html2rss auto --explain` prints `status.to_h` on stderr).
 
 <Code
   code={`

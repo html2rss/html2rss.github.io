@@ -28,7 +28,11 @@ At a minimum, you need an `items` selector to define the list of articles and a 
 
 ## Automatic Item Enhancement
 
-To simplify configuration, `html2rss` can automatically extract the `title`, `url`, and `image` from each item. This feature is enabled by default.
+With `enhance: true` (the default), `html2rss` fills **missing** fields on each matched item from the card HTML: `title`, `url`, `description`, `published_at`, `image`, `categories`, and enclosures. Explicit selectors still win when they produce a value.
+
+Description leftover text drops listing chrome (CTA lines such as “read more”, date-shaped chips, type chips, title echoes, section names). When the `items` selector is a heading or wrapping link with no date or description, extraction can climb to the parent card — it aborts if that parent looks like a listing (multiple headings or article links).
+
+Capture emits `items` + `enhance: true` only. Keep `enhance: true` unless page chrome leaks into items.
 
 <Code
   code={`
