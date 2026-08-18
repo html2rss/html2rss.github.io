@@ -109,7 +109,7 @@ Analyzes a target URL and derives a reusable YAML draft (`items` selector + `enh
   - `strategy` _(string, optional)_: Request strategy (`auto`, `faraday`, `botasaurus`). Default: `auto`.
   - `items_selector` _(string, optional)_: Optional CSS selector hint for items.
 - **Return value:** Envelope with `payload.yaml` (string keys; same serializer as CLI `html2rss capture`). Treat as a draft: catalog feeds still need `directory.topics` and explicit channel `title`/`url`. Strive to keep `enhance: true`.
-- **payload:** Also `articles_count`, `channel_title`, `has_selectors`, and `requested_strategy`. Follow `next_step` (`validate_config` or `inspect_url`).
+- **payload:** Also `articles_count`, `channel_title`, `has_selectors`, `requested_strategy`, and when present `segment_strategy`, `selected_strategy`, `admission_drops`. Follow `next_step` (`validate_config` or `inspect_url`).
 
 ### `validate_config`
 
@@ -130,7 +130,7 @@ Executes a validated feed configuration against a page and returns RSS 2.0 XML. 
   - `config` _(object, optional)_: Feed configuration object (XOR `yaml`).
   - `yaml` _(string, optional)_: Feed configuration YAML (XOR `config`).
 - **Return value:** Envelope with `payload.rss` (RSS 2.0 XML) and `payload.item_count` from the rendered RSS `items` (not a regex over the XML).
-- **Error handling:** `isError: true` when the scrape produced no items (`payload.item_count: 0`), or on unhandled exceptions.
+- **Error handling:** `isError: true` when the scrape produced no items (`payload.item_count: 0`, `next_step: inspect_url`), or on unhandled exceptions.
 
 ## Resources Reference
 
