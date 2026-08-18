@@ -110,3 +110,7 @@ For dynamic JavaScript single-page applications or sites protected by anti-bot m
 />
 
 Put `BOTASAURUS_SCRAPER_URL` (typically `http://127.0.0.1:4010`) in the MCP server `env` block above — a shell export does not reach the Cursor/Claude MCP process. Confirm with `html2rss://runtime` (`botasaurus_configured: true`). AutoFallback then hops without a second tool call.
+
+## Daemon logs (stderr)
+
+`html2rss mcp` uses stdout for JSON-RPC, so the daemon logs to **stderr**. Unless you set `LOG_LEVEL`, the MCP process uses `info` (the gem library default stays `warn`). A foreground watcher sees the start banner, each tool call, and pipeline fallbacks. Use `LOG_LEVEL=debug` for more detail or `LOG_LEVEL=warn` to quiet it.

@@ -22,7 +22,7 @@ When a site requires browser rendering or anti-bot bypass by default, you can ex
     botasaurus:
       navigation_mode: google_get_bypass
       wait_for_selector: ".article-card"
-      scroll_to_bottom: true
+      scroll: true
   channel:
     url: https://example.com/app
   selectors:
@@ -44,7 +44,7 @@ Botasaurus extraction is ideal when:
 - **Content loads after page load** - JavaScript fetches data dynamically
 - **Single Page Applications (SPAs)** - React, Vue, Angular apps
 - **Anti-bot interstitials** - Cloudflare, Google search referrers, or challenge pages
-- **Scroll-triggered content** - Infinite scroll lists (`scroll_to_bottom: true`)
+- **Scroll-triggered content** - Infinite scroll lists (`scroll: true`)
 
 ## Botasaurus Request Controls
 
@@ -70,7 +70,7 @@ Configure browser actions under `request.botasaurus`:
   strategy: botasaurus
   request:
     botasaurus:
-      scroll_to_bottom: true
+      scroll: true
   `}
   lang="yaml"
 />

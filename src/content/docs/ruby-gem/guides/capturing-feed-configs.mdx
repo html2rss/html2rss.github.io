@@ -36,6 +36,8 @@ Print YAML to stdout:
   html2rss capture https://example.com/articles --items_selector ".post-card"
   # Analyze a local HTML fixture
   html2rss capture https://example.com/articles --input ./page.html
+  # Quality JSON on stderr; YAML stays on stdout
+  html2rss capture https://example.com/articles --explain
   # Save the draft
   html2rss capture https://example.com/articles > my-feed.yml
 `}
@@ -46,9 +48,10 @@ Common options:
 
 - `--strategy` — `auto`, `faraday`, `botasaurus`, or `local_file` (default `auto`)
 - `--items_selector` — CSS selector hint for item cards
-- `--limit` — maximum articles kept while deriving selectors
+- `--limit` — maximum articles kept while deriving selectors (default `25`)
 - `--max-redirects` / `--max-requests` — request budget overrides
 - `--input` — local HTML file (sets `local_file` strategy)
+- `--explain` — print capture quality JSON on stderr (`articles_count`, `channel_title`, `has_selectors`, `segment_strategy`, `selected_strategy`, `admission_drops`); YAML stays on stdout
 
 See the [CLI reference](/ruby-gem/reference/cli-reference/#capture) for the full flag list.
 
@@ -77,7 +80,7 @@ See the [CLI reference](/ruby-gem/reference/cli-reference/#capture) for the full
 2. **Discover** — AutoSource extracts admitted articles
 3. **Segment** — SST Segmenter strategies `:list` → `:cluster` → `:semantic`
 4. **Gate** — emit an items selector only when enough articles match
-5. **Assemble** — `{ items: { selector:, enhance: true } }` plus channel
+5. **Assemble** — `{ items: { selector:, enhance: true } }` plus channel. When AutoFallback selects a concrete transport (or you pin one), Capture **stamps** `strategy:` into the YAML so later `html2rss feed` / `Html2rss.feed` replay the same transport.
 
 When the quality gate fails, selectors are omitted (`has_selectors: false`) rather than inventing attribute selectors. Hint with `--items_selector` or refine by hand.
 

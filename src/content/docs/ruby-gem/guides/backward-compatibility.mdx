@@ -7,6 +7,17 @@ import { Code } from "@astrojs/starlight/components";
 
 This page outlines recent breaking changes, purged legacy aliases, and migration steps for older feed configurations.
 
+## Current Botasaurus request schema
+
+`request.botasaurus` matches the scrape-API OpenAPI 2.0 `ScrapeRequest` (unknown keys rejected):
+
+1. **`scroll`** — boolean. There is no `scroll_to_bottom` key; use `scroll: true` for infinite lists.
+2. **`window_size`** — object `{ width: 1920, height: 1080 }`, not a two-item array.
+3. **`wait_timeout_seconds`** — integer `1..20` (omit to use the scrape-API default of `15`).
+4. **`max_retries`** — integer `0..3` (omit to use the scrape-API default of `2`).
+
+Run `html2rss validate config.yml` after editing Botasaurus options.
+
 ## 0.26.0
 
 Upgrade notes for configs and integrators targeting gem **0.26.0**:
@@ -97,4 +108,5 @@ When upgrading to modern `html2rss` releases:
 4. **Move channel-level transport keys**: Ensure `strategy` and `headers` are defined at the top level of the YAML file.
 5. **Use `enclosure` for RSS media**: Do not rely on `image` becoming an RSS `<enclosure>`; select podcast/media URLs with `enclosure`.
 6. **Prefer `feed_result` for dual-format / cache**: Integrators that need RSS + JSON Feed from one scrape (or Marshal caching) should use `Html2rss.feed_result` and `status.to_h`.
-7. **Validate configurations**: Run `html2rss validate config.yml` to ensure your YAML conforms to the current schema.
+7. **Align `request.botasaurus` with OpenAPI 2.0**: Replace `scroll_to_bottom` with `scroll`, use `{ width, height }` for `window_size`, and keep `wait_timeout_seconds` in `1..20`.
+8. **Validate configurations**: Run `html2rss validate config.yml` to ensure your YAML conforms to the current schema.
