@@ -5,11 +5,11 @@ description: Derive a reusable YAML feed config from a URL with html2rss capture
 
 import { Aside, Code } from "@astrojs/starlight/components";
 
-`html2rss capture` analyzes a page through the auto-source pipeline and prints a reusable feed config with derived CSS selectors. Use it when you want a first draft faster than hand-writing selectors from scratch.
+`html2rss capture` analyzes a page through the auto-source pipeline and prints a reusable YAML draft: an **items selector plus `enhance: true`**. At feed-build time, `enhance: true` fills missing article fields from each matched card.
 
 <Aside type="tip" title="Treat capture as a draft">
-  Selector quality depends on page structure. Complex layouts often need a manual `items_selector` hint or
-  small edits before you ship the config.
+  Selector quality depends on page structure. Catalog feeds still need `directory.topics` and explicit channel
+  `title`/`url`. Strive to keep `enhance: true`; set it `false` only when page chrome leaks into items.
 </Aside>
 
 ## When to Capture
@@ -36,6 +36,8 @@ Print YAML to stdout:
   html2rss capture https://example.com/articles --items_selector ".post-card"
   # Analyze a local HTML fixture
   html2rss capture https://example.com/articles --input ./page.html
+  # Quality JSON on stderr; YAML stays on stdout
+  html2rss capture https://example.com/articles --explain
   # Save the draft
   html2rss capture https://example.com/articles > my-feed.yml
 `}
@@ -46,9 +48,10 @@ Common options:
 
 - `--strategy` — `auto`, `faraday`, `botasaurus`, or `local_file` (default `auto`)
 - `--items_selector` — CSS selector hint for item cards
-- `--limit` — maximum articles kept while deriving selectors
+- `--limit` — maximum articles kept while deriving selectors (default `25`)
 - `--max-redirects` / `--max-requests` — request budget overrides
 - `--input` — local HTML file (sets `local_file` strategy)
+- `--explain` — print capture quality JSON on stderr (`articles_count`, `channel_title`, `has_selectors`, `segment_strategy`, `selected_strategy`, `admission_drops`); YAML stays on stdout
 
 See the [CLI reference](/ruby-gem/reference/cli-reference/#capture) for the full flag list.
 
@@ -57,8 +60,7 @@ See the [CLI reference](/ruby-gem/reference/cli-reference/#capture) for the full
 <Code
   code={`
   require 'html2rss'
-  require 'yaml'
-  # Derive a config hash (:channel and :selectors)
+  # Derive a config hash (channel + items selector with enhance: true)
   config = Html2rss.capture('https://example.com/articles')
   # Pin strategy or provide an items hint
   config = Html2rss.capture(
@@ -66,12 +68,7 @@ See the [CLI reference](/ruby-gem/reference/cli-reference/#capture) for the full
     strategy: :botasaurus,
     items_selector: '.article-card'
   )
-  # Serialize with string keys (same wire form as hand-written YAML)
-  File.write(
-    'my-feed.yml',
-    YAML.dump(Html2rss::HashUtil.deep_stringify_keys(config))
-  )
-  # Use immediately
+  File.write('my-feed.yml', Html2rss::Config.to_yaml(config))
   feed = Html2rss.feed(config)
 `}
   lang="ruby"
@@ -79,34 +76,31 @@ See the [CLI reference](/ruby-gem/reference/cli-reference/#capture) for the full
 
 ## How It Works
 
-1. **Request** — fetches the page with the chosen strategy
-2. **Discover** — runs AutoSource to extract articles
-3. **Analyze** — normalizes the page into an SST document and maps segment positions back to articles
-4. **Derive** — builds CSS selectors from SST tag paths for items, title, link, and description
-5. **Assemble** — returns a config hash ready for YAML or `Html2rss.feed`
+1. **Request** — `FeedPipeline` (AutoFallback when `:auto`)
+2. **Discover** — AutoSource extracts admitted articles
+3. **Segment** — SST Segmenter strategies `:list` → `:cluster` → `:semantic`
+4. **Gate** — emit an items selector only when enough articles match
+5. **Assemble** — `{ items: { selector:, enhance: true } }` plus channel. When AutoFallback selects a concrete transport (or you pin one), Capture **stamps** `strategy:` into the YAML so later `html2rss feed` / `Html2rss.feed` replay the same transport.
 
-Capture segment discovery currently uses the list Segmenter strategy only (not AutoSource cluster/semantic heuristics). When the draft is weak, pass `--items_selector` or refine selectors by hand.
+When the quality gate fails, selectors are omitted (`has_selectors: false`) rather than inventing attribute selectors. Hint with `--items_selector` or refine by hand.
 
 ## What Capture Derives
 
 Capture focuses on:
 
 - `channel.url` (and related channel defaults)
-- `selectors.items`
-- `selectors.title`
-- `selectors.url` (derived href selector)
-- `selectors.description` when a distinct description root exists
+- `selectors.items` with `enhance: true`
 
-It does not invent author, `published_at`, categories, or enclosure selectors. Add those manually when the page exposes them reliably.
+It does not invent per-field title/url/description selectors, author, `published_at`, categories, or enclosure selectors. `enhance: true` fills missing article fields via the HTML article extractor at feed-build time.
 
-Description is omitted when it would resolve to the invalid CSS selector `.` (item root equals description root).
+MCP `capture_config` returns that YAML in `payload.yaml`. `validate_config` / `apply_config` accept the YAML string (XOR a config hash). `apply_config` is `isError` when the feed has zero items (`payload.item_count`).
 
 ## Recommended Follow-Up
 
 1. Validate: `html2rss validate my-feed.yml`
 2. Render: `html2rss feed my-feed.yml`
-3. Tighten selectors, strategy, or `request.botasaurus` options if needed
-4. For Feed Directory contributions, add `directory.topics` (see [Creating Custom Feeds](/creating-custom-feeds/#sharing-your-config))
+3. Tighten the items selector, strategy, or `request.botasaurus` options if needed
+4. For Feed Directory contributions, add `directory.topics` and keep `enhance: true` unless chrome leaks (see [Creating Custom Feeds](/creating-custom-feeds/#sharing-your-config))
 
 ## Related
 

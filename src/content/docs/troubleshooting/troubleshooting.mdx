@@ -30,7 +30,7 @@ The `auto` flow is URL-surface sensitive.
   - search result pages
   - client-rendered app-shell entrypoints
 
-If extraction quality is poor, switch to a more specific listing/update URL before tuning selectors.
+If extraction quality is poor, switch to a more specific listing/update URL before tuning selectors. `html2rss auto URL --explain` prints admission drop counts on stderr so you can see why items were dropped (junk titles, non-article destinations) without mixing JSON into the feed.
 
 ### Empty Feeds
 
@@ -95,12 +95,13 @@ Then run with:
 
 Common configuration-related errors:
 
-- **`UnsupportedResponseContentType`:** The website returned content that html2rss can't parse (not HTML or JSON).
+- **`UnsupportedResponseContentType`:** The website returned content that html2rss can't parse (not HTML or JSON). Faraday still treats bodies that sniff as HTML (`<!DOCTYPE html` / `<html`) as HTML, and decodes gzip/brotli even when `Content-Encoding` is missing.
 - **`UnsupportedStrategy`:** The specified strategy is not available. Use `auto`, `faraday`, `botasaurus`, or `local_file`.
 - **`BOTASAURUS_SCRAPER_URL is required for strategy=botasaurus.`:** Set `BOTASAURUS_SCRAPER_URL` to your Botasaurus scrape API base URL when using `--strategy botasaurus`.
 - **`BOTASAURUS_SCRAPER_URL is invalid`:** Fix the URL format and retry.
 - **`Configuration must include at least 'selectors' or 'auto_source'`:** You need to specify either manual selectors or enable auto-source.
 - **`stylesheet.type invalid`:** Only `text/css` and `text/xsl` are supported for stylesheets.
+- **`request.botasaurus` validation:** Unknown keys are rejected. Valid scroll, window size, and wait-timeout shapes are documented in [Strategy — Botasaurus](/ruby-gem/reference/strategy/#botasaurus).
 
 ### Missing Item Parts
 

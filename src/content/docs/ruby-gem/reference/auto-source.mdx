@@ -20,25 +20,33 @@ To enable it, add `auto_source: {}` to your configuration:
 
 ## How It Works
 
-`auto_source` uses the following strategies to find content:
+One fetch, then scrapers run in **tiers**. Within a tier, results merge. The pipeline stops when Cleanup has admitted enough articles (`limit`, default `25`).
 
-1.  **`wordpress_api`:** Detects the `<link rel="https://api.w.org/">` tag used by WordPress and pulls posts from the REST API without parsing article HTML. See [WordPress API](/ruby-gem/reference/wordpress-api/).
-2.  **`sitemap`:** Automatically locates XML sitemap documents (`<link rel="sitemap">`, `/sitemap.xml`, or `/robots.txt`), filtering entries by priority and recency, with support for Google News tags (`<news:news>`).
-3.  **`meta_oembed`:** Extracts single-item articles, video pages, and media updates from OpenGraph/Twitter meta tags and resolves JSON oEmbed endpoints (`<link rel="alternate" type="application/json+oembed">`).
-4.  **`schema`:** Parses `<script type="json/ld">` tags containing structured data (e.g., [Schema.org](https://schema.org/)), extracting authors and publishers.
-5.  **`microdata`:** Extracts HTML Microdata annotations (`itemscope itemtype`).
-6.  **`microformats2`:** Parses Microformats2 `h-entry` markup, extracting `p-name`, `e-content`, `u-url`, `dt-published`, `p-author`, `p-category`, and `u-photo` / `u-featured` media.
-7.  **`json_state`:** Single-page applications often stash pre-rendered article data in `<script type="application/json">` tags or global variables
-    such as `window.__NEXT_DATA__`, `window.__NUXT__`, or `window.STATE`. The JSON-state scraper walks those blobs, finds arrays with
-    `title`/`url` pairs, and converts them into feed items.
-8.  **`xhr_articles`:** When Botasaurus runs the browser tier, it always captures JSON XHR/fetch response bodies. This scraper reuses those
-    captured bodies (no extra HTTP requests) and extracts article-like arrays the same way `json_state` does. Empty for Faraday or Botasaurus HTTP-request tiers.
-9.  **`semantic_html`:** Searches for semantic HTML5 tags like `<article>`, `<main>`, and `<section>`, with fallback clustering for anchorless lists.
-10. **`html`:** Analyzes HTML structure to find frequently occurring item selectors, with tag-structure and class-clustering fallbacks.
+1. **In-page structured:** `schema`, `microdata`, `microformats2`, `json_state`, `xhr_articles`
+2. **Follow-up IO:** `wordpress_api`, `sitemap`, `meta_oembed`
+3. **Heuristic:** `semantic_html`
+4. **Heuristic:** `html` — skipped when an earlier tier already admitted at least one clean article
 
-`auto_source` also automatically extracts and prepends kicker/teaser labels to article titles when present, and discovers channel-level `author` and `image` (favicon, touch-icon, or OpenGraph images) from the host page.
+What each scraper does:
 
-You can also restrict the maximum number of discovered articles via the `limit:` keyword argument in Ruby (`Html2rss.auto_source(url, limit: 10)`) or the `--limit` CLI flag.
+- **`schema`:** Parses `<script type="json/ld">` tags containing structured data (e.g., [Schema.org](https://schema.org/)), extracting authors and publishers.
+- **`microdata`:** Extracts HTML Microdata annotations (`itemscope itemtype`).
+- **`microformats2`:** Parses Microformats2 `h-entry` markup, extracting `p-name`, `e-content`, `u-url`, `dt-published`, `p-author`, `p-category`, and `u-photo` / `u-featured` media.
+- **`json_state`:** Walks in-page JSON (`<script type="application/json">`, `window.__NEXT_DATA__`, `window.__NUXT__`, `window.STATE`) for arrays with `title`/`url` pairs.
+- **`xhr_articles`:** Reuses JSON XHR/fetch bodies captured during a Botasaurus **browser** scrape (no extra HTTP). Empty for Faraday and Botasaurus HTTP-request tiers.
+- **`wordpress_api`:** Detects `<link rel="https://api.w.org/">` and pulls posts from the REST API. See [WordPress API](/ruby-gem/reference/wordpress-api/).
+- **`sitemap`:** Locates XML sitemaps (`<link rel="sitemap">`, `/sitemap.xml`, or `/robots.txt`), filtering by priority and recency, with Google News tags (`<news:news>`).
+- **`meta_oembed`:** OpenGraph/Twitter meta tags plus JSON oEmbed (`<link rel="alternate" type="application/json+oembed">`).
+- **`semantic_html`:** Semantic HTML5 (`<article>`, `<main>`, `<section>`), with fallback clustering for anchorless lists.
+- **`html`:** Repeated item structure (list / cluster / semantic segmenter). Last resort only.
+
+After scrapers, **Cleanup** is the admission gate: merge, dedupe, hard-exclude non-article destinations, drop junk titles, trim to `limit`. Scoring ranks and demotes; it does not refill `limit` after Cleanup.
+
+Drop reasons (counts) land on `Html2rss::Status#admission_drops`. Print them with `html2rss auto URL --explain` (JSON on stderr; the feed stays on stdout). Prefer `Html2rss.auto_feed_result` in Ruby when you need that status object.
+
+`auto_source` also prepends kicker/teaser labels to titles when present, and discovers channel-level `author` and `image` (favicon, touch-icon, or OpenGraph images) from the host page.
+
+Ruby `limit:` and CLI `--limit` cap kept articles (default `25`).
 
 **`json_state` / `xhr_articles` Limitations:** both scrapers require discoverable arrays of hashes containing clear `title` and `url` fields. Minified or
 obfuscated payloads, heavily encoded values, or blobs that require executing embedded functions are ignored. `xhr_articles` only sees JSON bodies captured during the current Botasaurus browser scrape (capped by the scrape API).

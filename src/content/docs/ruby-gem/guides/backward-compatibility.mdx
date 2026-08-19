@@ -5,7 +5,22 @@ description: "Migration guide and backward-compatibility reference for html2rss 
 
 import { Code } from "@astrojs/starlight/components";
 
-This page outlines recent breaking changes, purged legacy aliases, and migration steps for older feed configurations.
+This page outlines breaking changes, purged legacy aliases, and migration steps when upgrading the gem.
+
+## 0.27.0
+
+Upgrade notes for configs and integrators targeting gem **0.27.0** (current `master` after `0.26.0`):
+
+1. **MCP result envelope** — Every MCP tool returns `{ ok, next_step, guidance, payload }` in text and `structuredContent`. Read `payload.items`, `payload.yaml`, and `payload.rss`; scrape text is not a raw item array.
+2. **MCP AutoFallback** — `scrape_url` and `capture_config` with `strategy: "auto"` run Faraday → Botasaurus in one call. `inspect_url` with `auto` stays on Faraday (pin `botasaurus` when you need browser rendering for inspect).
+3. **Capture output** — `html2rss capture` and MCP `capture_config` emit an items selector plus `enhance: true` only (no per-field title/url/description selector soup). Capture stamps `strategy:` when AutoFallback selects a concrete transport.
+4. **CLI `--explain`** — `html2rss auto --explain` and `html2rss capture --explain` print telemetry JSON on stderr; stdout stays the feed or YAML. Status includes `admission_drops` when Cleanup dropped items.
+5. **`Html2rss.auto_feed_result`** — URL-only auto discovery returns `FeedResult` with the same `status` telemetry as config builds.
+6. **`request.botasaurus` OpenAPI 2.0** — Keys must match the scrape-API `ScrapeRequest` (unknown keys rejected). Use `scroll: true` (not `scroll_to_bottom`), `window_size: { width:, height: }` (not a two-item array), and `wait_timeout_seconds` in `1..20`. See [Strategy](/ruby-gem/reference/strategy/#botasaurus).
+7. **Botasaurus wire format** — Client expects OpenAPI 2.0 `ScrapeSuccess` / `ScrapeError` envelopes from the scrape API.
+8. **`--limit` default** — Auto discovery default is `25` (`AutoSource::DEFAULT_LIMIT`).
+
+Run `html2rss validate config.yml` after editing Botasaurus options.
 
 ## 0.26.0
 
@@ -19,7 +34,7 @@ Upgrade notes for configs and integrators targeting gem **0.26.0**:
 Upgrade notes for configs and integrators targeting gem **0.25.0**:
 
 1. **Removed `link` selector alias** — Custom selector configurations must use the canonical `url` key. The legacy `link` selector alias and exclusivity checks have been removed.
-2. **`auto` article limit (`--limit N`)** — Discovery now supports a configurable article limit (`--limit N` CLI flag, default `20`) and `Html2rss.auto_source(url, limit: 20)` in Ruby.
+2. **`auto` article limit (`--limit N`)** — Discovery supports a configurable limit (`--limit N` CLI flag). Default was `20` in 0.25.0; **0.27.0** default is `25` (`Html2rss.auto_source(url, limit: 25)`).
 3. **Channel metadata in `auto`** — `auto_source` automatically extracts channel-level `author` and `image` (favicon, touch-icon, or OpenGraph images) from the host page.
 4. **Actionable `NoFeedItemsExtracted` error** — `auto` mode fails loud with diagnostic surface classifications (blocked surface, app-shell, unsupported extraction surface) when zero items are found.
 
@@ -89,12 +104,17 @@ Update any occurrences of `link`, `pubDate`, or `updated` in your `selectors` bl
 
 ## Migration Checklist
 
-When upgrading to modern `html2rss` releases:
+When upgrading to **0.27.0** or later:
 
-1. **Migrate Browserless to Botasaurus**: Update any feeds using `strategy: browserless` or `request.browserless` to `strategy: botasaurus` or `strategy: auto` with `BOTASAURUS_SCRAPER_URL`.
-2. **Rename URL selectors**: Ensure article URL selectors use `url` rather than `link`.
-3. **Rename date selectors**: Ensure date selectors use `published_at` rather than `updated` or `pubDate`.
-4. **Move channel-level transport keys**: Ensure `strategy` and `headers` are defined at the top level of the YAML file.
-5. **Use `enclosure` for RSS media**: Do not rely on `image` becoming an RSS `<enclosure>`; select podcast/media URLs with `enclosure`.
-6. **Prefer `feed_result` for dual-format / cache**: Integrators that need RSS + JSON Feed from one scrape (or Marshal caching) should use `Html2rss.feed_result` and `status.to_h`.
-7. **Validate configurations**: Run `html2rss validate config.yml` to ensure your YAML conforms to the current schema.
+1. **MCP integrators**: Read tool results from the envelope `payload`; configure `BOTASAURUS_SCRAPER_URL` on the MCP process env.
+2. **Align `request.botasaurus` with OpenAPI 2.0**: Use `scroll`, `{ width, height }` for `window_size`, and `wait_timeout_seconds` in `1..20` (see [Strategy](/ruby-gem/reference/strategy/#botasaurus)).
+3. **Validate configurations**: Run `html2rss validate config.yml`.
+
+When upgrading from releases before **0.26.0**:
+
+4. **Migrate Browserless to Botasaurus**: Use `strategy: botasaurus` or `strategy: auto` with `BOTASAURUS_SCRAPER_URL`.
+5. **Rename URL selectors**: Use `url` rather than `link`.
+6. **Rename date selectors**: Use `published_at` rather than `updated` or `pubDate`.
+7. **Move channel-level transport keys**: Put `strategy` and `headers` at the top level of the YAML file.
+8. **Use `enclosure` for RSS media**: Select podcast/media URLs with `enclosure`; `image` does not become RSS `<enclosure>`.
+9. **Prefer `feed_result` for dual-format / cache**: Use `Html2rss.feed_result` / `Html2rss.auto_feed_result` and `status.to_h`.

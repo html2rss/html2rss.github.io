@@ -30,6 +30,8 @@ Under `auto`, `Html2rss.feed_result(...).status` exposes scrape telemetry: `sele
 
 `faraday` is the standard static HTTP transport. When no custom `User-Agent` header is supplied in `headers`, `html2rss` sends `html2rss/<VERSION>` by default.
 
+HTML is accepted when `Content-Type` includes `text/html`, or when the body sniffs as HTML (`<!DOCTYPE html` / `<html`) and the response is not JSON. Gzip, deflate, and brotli bodies are decoded even when `Content-Encoding` is missing; unlabeled brotli is tried for `octet-stream`.
+
 ## `botasaurus`
 
 `botasaurus` delegates page fetching to a Botasaurus scrape API endpoint. It runs as the second tier of `auto`, or when you pin `strategy: botasaurus`.
@@ -43,6 +45,8 @@ html2rss enforces local request policy preflight and timeout budget. When a tota
 
 During the **browser** execution tier, the Botasaurus scrape API always captures JSON XHR/fetch response bodies (`xhr_responses`). html2rss forwards them as `Response#captured_responses` so AutoSource `xhr_articles` can extract articles without extra requests. The HTTP-request tier returns an empty capture list. Caps and filtering live in the scrape API (see its README); article-likeness filtering is a client concern.
 
+The client speaks OpenAPI 2.0 `ScrapeSuccess` / `ScrapeError` envelopes. Success requires an `html` string. Extra `request.botasaurus` keys fail YAML validation.
+
 ### Configuration
 
 <Code
@@ -54,21 +58,20 @@ During the **browser** execution tier, the Botasaurus scrape API always captures
   request:
     botasaurus:
       navigation_mode: auto
-      max_retries: 1
+      max_retries: 2
       headless: false
   `}
   lang="yml"
 />
 
-Supported `request.botasaurus` options:
+Supported `request.botasaurus` options (unknown keys are rejected):
 
-- `execution_mode` (`auto`, `request`, `browser`; default `auto`)
+- `execution_mode` (`auto`, `request`, `browser`; scrape-API default `auto` when omitted)
 - `navigation_mode` (`auto`, `get`, `google_get`, `google_get_bypass`, `organic_get`; default `auto`)
-- `max_retries` (`0..3`; default `1`)
+- `max_retries` (`0..3`; omit to use the scrape-API default of `2`)
 - `wait_for_selector` (string)
-- `wait_timeout_seconds` (integer)
+- `wait_timeout_seconds` (integer `1..20`; omit to use the scrape-API default of `15`)
 - `scroll` (boolean)
-- `scroll_to_bottom` (boolean)
 - `block_images` (boolean)
 - `block_images_and_css` (boolean)
 - `block_trackers` (boolean)
@@ -76,7 +79,7 @@ Supported `request.botasaurus` options:
 - `headless` (boolean, default `false`)
 - `proxy` (string)
 - `user_agent` (string)
-- `window_size` (two-item integer array, for example `[1920, 1080]`)
+- `window_size` (`{ width: 1920, height: 1080 }` — both positive integers, required together)
 - `lang` (string, for example `en-US`)
 - `headers` (hash, forwarded to the Botasaurus scrape API alongside config-level `headers`)
 - `cookies` (hash)
@@ -90,7 +93,7 @@ Example scrape-API payload shape:
   {
     "url": "https://example.com",
     "navigation_mode": "auto",
-    "max_retries": 1,
+    "max_retries": 2,
     "headless": false
   }
   `}
@@ -103,11 +106,10 @@ Example scrape-API payload shape:
   code={`
   BOTASAURUS_SCRAPER_URL="http://localhost:4010" \\
   html2rss auto https://example.com/updates --strategy botasaurus
-
-BOTASAURUS_SCRAPER_URL="http://localhost:4010" \\
-html2rss feed my_config.yml --strategy botasaurus
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" \\
+  html2rss feed my_config.yml --strategy botasaurus
 `}
-lang="bash"
+  lang="bash"
 />
 
 ## `local_file`
