@@ -9,14 +9,13 @@ What this repo owns:
 
 - docs content and navigation under `src/content/docs/`
 - docs-specific components and styling under `src/components/`
-- feed-directory presentation and client behavior
-- generated docs data consumed by the site (`src/data/configs.json`)
+- feed-directory presentation and client behavior (`FeedDirectory.astro`, `feed-directory.js`)
 
 What this repo does not own:
 
 - runtime extractor behavior and CLI semantics (`html2rss/`)
-- web API behavior and OpenAPI generation (`html2rss-web/`)
-- feed YAML catalog definitions (`html2rss-configs/`)
+- catalog metadata, YAML configs, or catalog serialization (`html2rss-configs/` → `Html2rss::Configs::Catalog`)
+- catalog HTTP API (`html2rss-web/` → `GET /api/v1/configs`)
 
 When docs describe behavior from other repos, treat those repos as source-of-truth and update docs to match them.
 
@@ -30,40 +29,41 @@ Before substantial edits, state cross-repo context in your notes:
 
 Common contracts:
 
-- Feed directory data comes from `html2rss-configs` via `bin/data-update`.
+- Feed Directory browse data comes from `{instance}/api/v1/configs` on a running `html2rss-web` instance (see OpenAPI in `html2rss-web`).
+- Instance URL persistence: default public instance, `#!url=` hash deep link from the web app, and browser localStorage (see `feed-directory.js`).
+- Deep link from `html2rss-web`: `https://html2rss.github.io/feed-directory/#!url={encodedInstanceUrl}` must keep working.
+- Catalog metadata in YAML (`directory.title`, `directory.summary`, `directory.topics`) is authored in `html2rss-configs` only.
 - Ruby gem docs should match `html2rss` behavior and CLI output.
 - Web application docs should match `html2rss-web` behavior and published OpenAPI.
 
 If a cross-repo behavior changed but upstream is not updated yet, document the gap clearly instead of inventing new behavior.
 
+## Feed Directory (agent maintenance)
+
+- The browse UI is a **thin client**: fetch catalog JSON from the active instance, render rows client-side, build RSS links from each entry's `path`.
+- Do not reintroduce `bin/data-update`, `src/data/configs.json`, or a `html2rss-configs` gem dependency in this repo.
+- Wire shape v1 is defined in `html2rss-web` request specs and OpenAPI (`catalog_version`, `parameters.schema`, `parameters.defaults`).
+- When the instance is unreachable or returns `404` with `catalog_disabled`, show an error state — no static fallback list.
+
 ## Generated Artifacts
 
-Treat `src/data/configs.json` as generated.
-
-- Do not hand-edit it.
-- Regenerate with repo-native commands:
-  - `make update`
-  - or `bin/data-update` (after dependencies are installed)
-- `bin/data-update` reads packaged configs (from `html2rss-configs`) and writes `src/data/configs.json`.
-
-If a change only affects generated data, include the source change rationale in the PR description.
+This repo has no generated catalog data. Do not add a packaged-config snapshot back into the docs build.
 
 ## Build, Test, and Dev Commands
 
 Run commands from `html2rss.github.io/`:
 
-- `make setup` installs dependencies and refreshes generated data
+- `make setup` installs npm dependencies
 - `make dev` runs Astro locally
 - `make build` builds production output
 - `make lint` checks formatting
 - `make lintfix` applies formatting fixes
-- `make update` refreshes feed-directory data from packaged configs
 
 Preferred verification flow for docs/content changes:
 
 1. Run targeted check(s) first (`make lint` or `make build`).
 2. Run the broader check set before PR (`make lint` and `make build`).
-3. If feed directory or config references changed, run `make update` and verify resulting diffs.
+3. For feed-directory UI changes, spot-check against a running instance with catalog enabled (`GET /api/v1/configs` returns entries).
 
 ## Docs Authoring Rules
 

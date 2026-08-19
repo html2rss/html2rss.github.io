@@ -2,5 +2,4 @@
 
 source 'https://rubygems.org'
 
-gem 'html2rss', '~> 0.26'
-gem 'html2rss-configs', git: 'https://github.com/html2rss/html2rss-configs.git'
+# Ruby dependencies removed — feed directory loads live from html2rss-web API.

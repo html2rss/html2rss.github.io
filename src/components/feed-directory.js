@@ -1,4 +1,17 @@
-// Feed Directory JavaScript functionality
+import {
+  CatalogDisabledError,
+  CatalogInvalidEnvelopeError,
+  CatalogNetworkError,
+  fetchCatalog,
+} from './catalogClient.js';
+import {
+  buildFeedUrl,
+  formatInstanceLabel,
+  getDefaultInstanceUrl,
+  normalizeInstanceUrl,
+  readInitialInstanceUrl,
+  writeInstanceUrl,
+} from './instanceUrl.js';
 
 function debounce(func, wait) {
   let timeout;
@@ -10,78 +23,6 @@ function debounce(func, wait) {
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
   };
-}
-
-function getDefaultInstanceUrl() {
-  return atob('aHR0cHM6Ly8xLmgyci53b3JrZXJzLmRldi8=');
-}
-
-function getStorageKey() {
-  return 'html2rss.feedDirectory.instanceUrl';
-}
-
-function getHashParams() {
-  const hash = window.location.hash || '';
-  if (!hash.startsWith('#!')) return new URLSearchParams();
-  return new URLSearchParams(hash.slice(2));
-}
-
-function normalizeParsedInstanceUrl(parsedUrl) {
-  if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
-    return null;
-  }
-
-  parsedUrl.search = '';
-  parsedUrl.hash = '';
-  return parsedUrl.toString();
-}
-
-function readInstanceUrlFromHash(defaultInstanceUrl) {
-  const candidate = getHashParams().get('url');
-  if (!candidate) return defaultInstanceUrl;
-
-  try {
-    return normalizeParsedInstanceUrl(new URL(candidate)) || defaultInstanceUrl;
-  } catch {
-    return defaultInstanceUrl;
-  }
-}
-
-function readInstanceUrlFromStorage(defaultInstanceUrl) {
-  try {
-    const candidate = window.localStorage.getItem(getStorageKey());
-    if (!candidate) return defaultInstanceUrl;
-    return normalizeInstanceUrl(candidate) || defaultInstanceUrl;
-  } catch {
-    return defaultInstanceUrl;
-  }
-}
-
-function writeInstanceUrl(instanceUrl, defaultInstanceUrl) {
-  try {
-    if (instanceUrl && instanceUrl !== defaultInstanceUrl) {
-      window.localStorage.setItem(getStorageKey(), instanceUrl);
-    } else {
-      window.localStorage.removeItem(getStorageKey());
-    }
-  } catch {
-    // Ignore storage failures and keep the current page usable.
-  }
-
-  if (window.location.hash.startsWith('#!')) {
-    const nextUrl = `${window.location.pathname}${window.location.search}`;
-    window.history.replaceState({}, '', nextUrl);
-  }
-}
-
-function readInitialInstanceUrl(defaultInstanceUrl) {
-  const hashInstanceUrl = readInstanceUrlFromHash(defaultInstanceUrl);
-  if (hashInstanceUrl !== defaultInstanceUrl) {
-    writeInstanceUrl(hashInstanceUrl, defaultInstanceUrl);
-    return hashInstanceUrl;
-  }
-
-  return readInstanceUrlFromStorage(defaultInstanceUrl);
 }
 
 function fuzzyMatch(text, query) {
@@ -97,31 +38,29 @@ function fuzzyMatch(text, query) {
   return queryIndex === lowerQuery.length;
 }
 
-function formatInstanceLabel(instanceUrl) {
-  try {
-    const parsedUrl = new URL(instanceUrl);
-    return parsedUrl.host + parsedUrl.pathname.replace(/\/$/, '');
-  } catch {
-    return instanceUrl;
-  }
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;');
 }
 
-function normalizeInstanceUrl(value) {
-  const trimmed = value.trim();
-  if (!trimmed) return null;
-
-  try {
-    return normalizeParsedInstanceUrl(new URL(trimmed));
-  } catch {
-    return null;
-  }
+function escapeXml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;');
 }
 
-function updateInstanceSummary(instanceUrl) {
-  const host = document.querySelector('[data-instance-host]');
-  if (host) {
-    host.textContent = formatInstanceLabel(instanceUrl);
-  }
+function setCatalogStatus(message, state = 'idle') {
+  const status = document.querySelector('[data-catalog-status]');
+  if (!status) return;
+  status.textContent = message;
+  status.dataset.state = state;
+  status.hidden = !message;
 }
 
 function setInstanceFeedback(message, state) {
@@ -131,32 +70,116 @@ function setInstanceFeedback(message, state) {
   feedback.dataset.state = state;
 }
 
-function createUpdateFeedUrlsFunction() {
-  return function updateFeedUrls(instanceUrl) {
-    document.querySelectorAll('[data-feed-url]').forEach((link) => {
-      const item = link.closest('[data-domain]');
-      if (!item) return;
+function updateInstanceSummary(instanceUrl) {
+  const host = document.querySelector('[data-instance-host]');
+  if (host) {
+    host.textContent = formatInstanceLabel(instanceUrl);
+  }
+}
 
-      const domain = item.dataset.domain;
-      const name = item.dataset.name;
-      if (!domain || !name) return;
+function populateTopicFilters(configs) {
+  const container = document.querySelector('[data-topic-chips]');
+  if (!container) return;
 
-      const params = {};
-      item.querySelectorAll('[data-param-key]').forEach((input) => {
-        if (input.value) params[input.dataset.paramKey] = input.value;
-      });
+  const topics = [...new Set(configs.flatMap((entry) => entry.directory?.topics || []))].sort();
+  container.innerHTML = topics
+    .map(
+      (topic) =>
+        `<button type="button" class="topic-chip" data-topic-filter="${escapeHtml(topic)}" aria-pressed="false">${escapeHtml(topic)}</button>`
+    )
+    .join('');
+}
 
-      let url = instanceUrl.endsWith('/') ? instanceUrl : `${instanceUrl}/`;
-      url += `${domain}/${name}.rss`;
+function populateLanguageFilter(configs) {
+  const select = document.querySelector('[data-language-filter]');
+  if (!select) return;
 
-      const queryParams = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => queryParams.append(key, value));
-      const queryString = queryParams.toString();
-      if (queryString) url += `?${queryString}`;
+  const languages = [...new Set(configs.map((entry) => entry.channel?.language).filter(Boolean))].sort();
+  select.innerHTML =
+    '<option value="">All languages</option>' +
+    languages
+      .map((language) => `<option value="${escapeHtml(language)}">${escapeHtml(language)}</option>`)
+      .join('');
+}
 
-      link.href = url;
+function renderParameterForm(entry, index) {
+  const schema = entry.parameters?.schema || {};
+  const defaults = entry.parameters?.defaults || {};
+  const keys = Object.keys(schema);
+  if (keys.length === 0) return '';
+
+  const fields = keys
+    .map((key) => {
+      const defaultValue = defaults[key] ?? '';
+      return `<div class="form-group">
+        <label for="param-${index}-${escapeHtml(key)}" class="form-label">${escapeHtml(key)}</label>
+        <input type="text" id="param-${index}-${escapeHtml(key)}" name="${escapeHtml(key)}" class="form-input" value="${escapeHtml(defaultValue)}" data-param-key="${escapeHtml(key)}" aria-label="${escapeHtml(key)}" />
+      </div>`;
+    })
+    .join('');
+
+  return `<div class="parameter-form" id="params-${index}" hidden>
+    <form class="form">${fields}
+      <div class="form-actions">
+        <button type="button" class="done-button" data-close-form aria-label="Close customization">Done</button>
+      </div>
+    </form>
+  </div>`;
+}
+
+function renderCatalogRow(entry, index, instanceUrl) {
+  const title = entry.directory?.title || entry.id;
+  const summary = entry.directory?.summary || '';
+  const topics = (entry.directory?.topics || []).join(' ');
+  const language = entry.channel?.language || '';
+  const feedUrl = buildFeedUrl(instanceUrl, entry, entry.parameters?.defaults || {});
+  const sourceUrl = entry.channel?.url || '';
+  const searchable = `${entry.id} ${title} ${summary} ${sourceUrl} ${topics} ${language}`;
+  const hasParameters = Object.keys(entry.parameters?.schema || {}).length > 0;
+  const [domain, ...nameParts] = entry.id.split('/');
+  const name = nameParts.join('/');
+
+  return `<article class="feed-row" data-entry-id="${escapeHtml(entry.id)}" data-domain="${escapeHtml(domain)}" data-name="${escapeHtml(name)}" data-topics="${escapeHtml(topics)}" data-language="${escapeHtml(language)}" data-searchable="${escapeHtml(searchable)}">
+    <div class="feed-info">
+      <div class="feed-mainline">
+        <h2 class="feed-title">${escapeHtml(title)}</h2>
+        <div class="feed-actions">
+          <a href="${escapeHtml(feedUrl)}" target="_blank" rel="noopener noreferrer nofollow" data-feed-url class="action action-primary" aria-label="Open RSS feed" title="Open RSS feed"><span>RSS</span></a>
+        </div>
+      </div>
+      <div class="feed-subline">
+        ${summary ? `<p class="feed-summary">${escapeHtml(summary)}</p>` : '<span aria-hidden="true"></span>'}
+        <details class="feed-advanced">
+          <summary>Advanced</summary>
+          <div class="feed-meta">
+            ${sourceUrl ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer nofollow" class="meta-link" title="${escapeHtml(sourceUrl)}"><span>View source</span></a>` : ''}
+            ${language ? `<span class="meta-tag">${escapeHtml(language)}</span>` : ''}
+            ${hasParameters ? `<button class="meta-link" type="button" aria-expanded="false" aria-controls="params-${index}" data-target="params-${index}"><span>Customize</span></button>` : ''}
+            <button type="button" data-copy-feed class="meta-link" aria-label="Copy RSS link" title="Copy RSS link"><span>Copy link</span></button>
+          </div>
+        </details>
+      </div>
+    </div>
+    ${renderParameterForm(entry, index)}
+  </article>`;
+}
+
+function updateFeedLinks(instanceUrl) {
+  document.querySelectorAll('[data-entry-id]').forEach((item) => {
+    const feedLink = item.querySelector('[data-feed-url]');
+    if (!feedLink) return;
+
+    const params = {};
+    item.querySelectorAll('[data-param-key]').forEach((input) => {
+      if (input.value) params[input.dataset.paramKey] = input.value;
     });
-  };
+
+    const entry = {
+      id: item.dataset.entryId,
+      path: `/${item.dataset.entryId}.rss`,
+    };
+    feedLink.href = buildFeedUrl(instanceUrl, entry, params);
+  });
 }
 
 function updateSearchState(feedItems, query, selectedTopics = [], selectedLanguage = '') {
@@ -181,16 +204,15 @@ function updateSearchState(feedItems, query, selectedTopics = [], selectedLangua
   const feedList = document.querySelector('[data-feed-list]');
   const hasActiveFilters = Boolean(query.trim()) || selectedTopics.length > 0 || Boolean(selectedLanguage);
 
-  if (resultCount) {
-    resultCount.textContent = String(visibleCount);
-  }
-
+  if (resultCount) resultCount.textContent = String(visibleCount);
   if (resultLabel) {
-    if (hasActiveFilters) {
-      resultLabel.textContent = visibleCount === 1 ? 'matching feed' : 'matching feeds';
-    } else {
-      resultLabel.textContent = visibleCount === 1 ? 'ready-to-use feed' : 'ready-to-use feeds';
-    }
+    resultLabel.textContent = hasActiveFilters
+      ? visibleCount === 1
+        ? 'matching feed'
+        : 'matching feeds'
+      : visibleCount === 1
+        ? 'ready-to-use feed'
+        : 'ready-to-use feeds';
   }
 
   if (emptyState && emptyCopy && feedList) {
@@ -226,42 +248,27 @@ function setupFilters(searchInput, feedItems) {
     );
   }, 120);
 
-  if (searchInput) {
-    searchInput.addEventListener('input', applyFilters);
-  }
+  if (searchInput) searchInput.addEventListener('input', applyFilters);
 
-  document.querySelectorAll('[data-topic-filter]').forEach((button) => {
-    button.addEventListener('click', () => {
-      const pressed = button.getAttribute('aria-pressed') === 'true';
-      button.setAttribute('aria-pressed', String(!pressed));
-      applyFilters();
-    });
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-topic-filter]');
+    if (!button) return;
+    const pressed = button.getAttribute('aria-pressed') === 'true';
+    button.setAttribute('aria-pressed', String(!pressed));
+    applyFilters();
   });
 
   const languageFilter = document.querySelector('[data-language-filter]');
-  if (languageFilter) {
-    languageFilter.addEventListener('change', applyFilters);
-  }
+  if (languageFilter) languageFilter.addEventListener('change', applyFilters);
 
   applyFilters();
-}
-
-function escapeXml(value) {
-  return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&apos;');
 }
 
 function buildOpmlDocument(visibleItems) {
   const outlines = visibleItems
     .map((item) => {
       const feedLink = item.querySelector('[data-feed-url]');
-      const title =
-        item.querySelector('.feed-title')?.textContent?.trim() ||
-        `${item.dataset.domain}/${item.dataset.name}`;
+      const title = item.querySelector('.feed-title')?.textContent?.trim() || item.dataset.entryId;
       const xmlUrl = feedLink?.href;
       if (!xmlUrl || xmlUrl === '#' || xmlUrl.endsWith('/#')) return null;
 
@@ -305,15 +312,12 @@ function setupOpmlExport(feedItems) {
   });
 }
 
-function setupSearch(searchInput, feedItems) {
-  setupFilters(searchInput, feedItems);
-}
-
 function setupInstanceEditor(
   defaultInstanceUrl,
   getCurrentInstanceUrl,
   setCurrentInstanceUrl,
-  updateFeedUrls
+  updateFeedUrls,
+  reloadCatalog
 ) {
   const toggle = document.querySelector('[data-toggle-instance]');
   const editor = document.getElementById('instance-editor');
@@ -322,9 +326,7 @@ function setupInstanceEditor(
   if (!toggle || !editor || !input || !apply) return;
 
   const directory = document.querySelector('[data-feed-directory]');
-  if (directory) {
-    directory.dataset.enhanced = 'true';
-  }
+  if (directory) directory.dataset.enhanced = 'true';
 
   const setExpanded = (expanded) => {
     editor.hidden = !expanded;
@@ -343,7 +345,7 @@ function setupInstanceEditor(
     }
   });
 
-  const applyInstance = () => {
+  const applyInstance = async () => {
     const normalized = normalizeInstanceUrl(input.value);
     if (!normalized) {
       setInstanceFeedback('Enter a valid URL.', 'error');
@@ -354,13 +356,12 @@ function setupInstanceEditor(
     input.value = normalized;
     updateInstanceSummary(normalized);
     writeInstanceUrl(normalized, defaultInstanceUrl);
-    updateFeedUrls(normalized);
     setExpanded(false);
     setInstanceFeedback('Using your custom instance.', 'success');
+    await reloadCatalog(normalized);
   };
 
   setExpanded(false);
-
   apply.addEventListener('click', applyInstance);
   input.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
@@ -371,109 +372,141 @@ function setupInstanceEditor(
 }
 
 function setupParameterForms(updateFeedUrls, getCurrentInstanceUrl) {
-  document.querySelectorAll('[data-target]').forEach((button) => {
-    button.addEventListener('click', (event) => {
-      const sourceButton = event.currentTarget;
-      const form = document.getElementById(sourceButton.dataset.target);
-      if (!form) return;
+  document.addEventListener('click', (event) => {
+    const sourceButton = event.target.closest('[data-target]');
+    if (!sourceButton) return;
 
-      const isExpanded = !form.hidden;
-      form.hidden = isExpanded;
-      sourceButton.setAttribute('aria-expanded', String(!isExpanded));
-      const label = sourceButton.querySelector('span');
-      if (label) {
-        label.textContent = isExpanded ? 'Customize' : 'Close';
-      }
+    const form = document.getElementById(sourceButton.dataset.target);
+    if (!form) return;
 
-      if (!isExpanded) {
-        updateFeedUrls(getCurrentInstanceUrl());
-      }
-    });
+    const isExpanded = !form.hidden;
+    form.hidden = isExpanded;
+    sourceButton.setAttribute('aria-expanded', String(!isExpanded));
+    const label = sourceButton.querySelector('span');
+    if (label) label.textContent = isExpanded ? 'Customize' : 'Close';
+
+    if (!isExpanded) updateFeedUrls(getCurrentInstanceUrl());
   });
 }
 
 function setupCloseForms() {
-  document.querySelectorAll('[data-close-form]').forEach((button) => {
-    button.addEventListener('click', (event) => {
-      const form = event.currentTarget.closest('.parameter-form');
-      const toggle = document.querySelector(`[data-target="${form?.id}"]`);
-      if (!form || !toggle) return;
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-close-form]');
+    if (!button) return;
 
-      form.hidden = true;
-      toggle.setAttribute('aria-expanded', 'false');
-      const label = toggle.querySelector('span');
-      if (label) {
-        label.textContent = 'Customize';
-      }
-    });
+    const form = button.closest('.parameter-form');
+    const toggle = document.querySelector(`[data-target="${form?.id}"]`);
+    if (!form || !toggle) return;
+
+    form.hidden = true;
+    toggle.setAttribute('aria-expanded', 'false');
+    const label = toggle.querySelector('span');
+    if (label) label.textContent = 'Customize';
   });
 }
 
 function setupParameterInputs(updateFeedUrls, getCurrentInstanceUrl) {
-  document.querySelectorAll('.form-input').forEach((input) => {
-    input.addEventListener(
-      'input',
-      debounce(() => updateFeedUrls(getCurrentInstanceUrl()), 180)
-    );
-  });
+  document.addEventListener(
+    'input',
+    debounce((event) => {
+      if (!event.target.matches('.form-input')) return;
+      updateFeedUrls(getCurrentInstanceUrl());
+    }, 180)
+  );
 }
 
 function setupCopyButtons() {
-  document.querySelectorAll('[data-copy-feed]').forEach((button) => {
-    button.addEventListener('click', async () => {
-      const feedLink = button.closest('[data-domain]')?.querySelector('[data-feed-url]');
-      if (!feedLink?.href) return;
+  document.addEventListener('click', async (event) => {
+    const button = event.target.closest('[data-copy-feed]');
+    if (!button) return;
 
-      try {
-        await navigator.clipboard.writeText(feedLink.href);
-        const label = button.querySelector('span');
-        button.dataset.copied = 'true';
-        if (label) label.textContent = 'Copied';
-        window.setTimeout(() => {
-          button.dataset.copied = 'false';
-          if (label) label.textContent = 'Copy link';
-        }, 1400);
-      } catch {
-        const label = button.querySelector('span');
-        if (label) label.textContent = 'Copy failed';
-        window.setTimeout(() => {
-          if (label) label.textContent = 'Copy link';
-        }, 1400);
-      }
-    });
+    const feedLink = button.closest('[data-entry-id]')?.querySelector('[data-feed-url]');
+    if (!feedLink?.href) return;
+
+    try {
+      await navigator.clipboard.writeText(feedLink.href);
+      const label = button.querySelector('span');
+      button.dataset.copied = 'true';
+      if (label) label.textContent = 'Copied';
+      window.setTimeout(() => {
+        button.dataset.copied = 'false';
+        if (label) label.textContent = 'Copy link';
+      }, 1400);
+    } catch {
+      const label = button.querySelector('span');
+      if (label) label.textContent = 'Copy failed';
+      window.setTimeout(() => {
+        if (label) label.textContent = 'Copy link';
+      }, 1400);
+    }
   });
+}
+
+async function renderCatalog(instanceUrl) {
+  const root = document.querySelector('[data-feed-list]');
+  const searchInput = document.getElementById('search-input');
+  if (!root) return;
+
+  setCatalogStatus('Loading feeds from the instance catalog…', 'loading');
+  root.innerHTML = '';
+
+  try {
+    const { configs } = await fetchCatalog(instanceUrl);
+    populateTopicFilters(configs);
+    populateLanguageFilter(configs);
+    root.innerHTML = configs.map((entry, index) => renderCatalogRow(entry, index, instanceUrl)).join('');
+
+    const feedItems = Array.from(root.querySelectorAll('[data-entry-id]'));
+    document
+      .querySelector('[data-result-count]')
+      ?.replaceChildren(document.createTextNode(String(feedItems.length)));
+    setCatalogStatus('', 'idle');
+    setupFilters(searchInput, feedItems);
+    setupOpmlExport(feedItems);
+    updateFeedLinks(instanceUrl);
+  } catch (error) {
+    root.innerHTML = '';
+    document.querySelector('[data-empty-state]')?.setAttribute('hidden', '');
+    if (error instanceof CatalogDisabledError) {
+      setCatalogStatus('This instance has the feed catalog disabled.', 'error');
+    } else if (error instanceof CatalogInvalidEnvelopeError) {
+      setCatalogStatus('The instance returned an unexpected catalog response.', 'error');
+    } else if (error instanceof CatalogNetworkError) {
+      setCatalogStatus('Could not load the feed catalog from this instance.', 'error');
+    } else {
+      setCatalogStatus('Could not load the feed catalog.', 'error');
+    }
+  }
 }
 
 function initializeFeedDirectory() {
   const defaultInstanceUrl = getDefaultInstanceUrl();
   let currentInstanceUrl = readInitialInstanceUrl(defaultInstanceUrl);
-  const searchInput = document.getElementById('search-input');
-  const feedItems = Array.from(document.querySelectorAll('[data-domain]'));
   const instanceInput = document.getElementById('instance-url-input');
-  const updateFeedUrls = createUpdateFeedUrlsFunction();
+  const updateFeedUrls = () => updateFeedLinks(currentInstanceUrl);
+  const reloadCatalog = async (nextUrl) => {
+    currentInstanceUrl = nextUrl;
+    await renderCatalog(currentInstanceUrl);
+  };
 
   updateInstanceSummary(currentInstanceUrl);
+  if (instanceInput) instanceInput.value = currentInstanceUrl;
 
-  if (instanceInput) {
-    instanceInput.value = currentInstanceUrl;
-  }
-
-  setupSearch(searchInput, feedItems);
-  setupOpmlExport(feedItems);
   setupInstanceEditor(
     defaultInstanceUrl,
     () => currentInstanceUrl,
     (nextUrl) => {
       currentInstanceUrl = nextUrl;
     },
-    updateFeedUrls
+    updateFeedUrls,
+    reloadCatalog
   );
   setupParameterForms(updateFeedUrls, () => currentInstanceUrl);
   setupCloseForms();
   setupParameterInputs(updateFeedUrls, () => currentInstanceUrl);
   setupCopyButtons();
 
-  updateFeedUrls(currentInstanceUrl);
+  renderCatalog(currentInstanceUrl);
 }
 
 if (document.readyState === 'loading') {

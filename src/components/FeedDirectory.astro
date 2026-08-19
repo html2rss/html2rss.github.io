@@ -1,42 +1,10 @@
 ---
-import { configs } from "../data/loadConfigs";
 import { Icon } from "@astrojs/starlight/components";
-
-const feedCount = configs.length;
-
-function formatDefaultParameters(defaultParameters: Record<string, string> = {}) {
-  return Object.entries(defaultParameters)
-    .filter(([, value]) => value)
-    .map(([key, value]) => `${key}=${value}`)
-    .join(", ");
-}
-
-const availableTopics = [...new Set(configs.flatMap((config) => config.directory?.topics || []))].sort(
-  (a, b) => a.localeCompare(b),
-);
-
-const availableLanguages = [
-  ...new Set(
-    configs
-      .map((config) => config.channel?.language)
-      .filter((language): language is string => Boolean(language)),
-  ),
-].sort((a, b) => a.localeCompare(b));
-
-const staticFeedUrls = configs.map((config) => ({
-  ...config,
-  staticFeedUrl: "#",
-  defaultSummary: formatDefaultParameters(config.default_parameters),
-  sourceSummary: config.channel?.url
-    ?.replace(/^https?:\/\//, "")
-    .replace(/^www\./, "")
-    .replace(/\/$/, ""),
-  topics: config.directory?.topics || [],
-  language: config.channel?.language || "",
-}));
 ---
 
 <section class="feed-directory not-content" data-feed-directory aria-label="Feed directory">
+  <p class="catalog-status" data-catalog-status hidden aria-live="polite"></p>
+
   <div class="directory-controls">
     <div class="search-block">
       <label class="sr-only" for="search-input">Search feeds</label>
@@ -56,7 +24,7 @@ const staticFeedUrls = configs.map((config) => ({
       </div>
       <p class="result-summary">
         <span>Search across </span>
-        <span data-result-count>{feedCount}</span>
+        <span data-result-count>0</span>
         <span data-result-label>ready-to-use feeds</span>
       </p>
     </div>
@@ -64,15 +32,7 @@ const staticFeedUrls = configs.map((config) => ({
     <div class="filter-block">
       <div class="filter-group">
         <p class="filter-label" id="topic-filter-label">Topics</p>
-        <div class="topic-chips" role="group" aria-labelledby="topic-filter-label">
-          {
-            availableTopics.map((topic) => (
-              <button type="button" class="topic-chip" data-topic-filter={topic} aria-pressed="false">
-                {topic}
-              </button>
-            ))
-          }
-        </div>
+        <div class="topic-chips" data-topic-chips role="group" aria-labelledby="topic-filter-label"></div>
       </div>
 
       <div class="filter-actions">
@@ -85,11 +45,10 @@ const staticFeedUrls = configs.map((config) => ({
             aria-label="Filter by language"
           >
             <option value="">All languages</option>
-            {availableLanguages.map((language) => <option value={language}>{language}</option>)}
           </select>
         </div>
 
-        <button type="button" class="export-opml" data-export-opml> Export OPML </button>
+        <button type="button" class="export-opml" data-export-opml>Export OPML</button>
       </div>
     </div>
 
@@ -108,7 +67,7 @@ const staticFeedUrls = configs.map((config) => ({
         </button>
       </div>
 
-      <div class="instance-editor" id="instance-editor">
+      <div class="instance-editor" id="instance-editor" hidden>
         <div class="instance-editor-row">
           <label class="sr-only" for="instance-url-input">Instance URL</label>
           <input
@@ -153,128 +112,10 @@ const staticFeedUrls = configs.map((config) => ({
     </div>
   </div>
 
-  <div class="feed-table" data-feed-list>
-    {
-      staticFeedUrls.map((config, index) => (
-        <article
-          class="feed-row"
-          data-domain={config.domain}
-          data-name={config.name}
-          data-topics={config.topics.join(" ")}
-          data-language={config.language}
-          data-searchable={`${config.domain}/${config.name} ${config.channel?.url || ""} ${config.topics.join(" ")} ${config.language}`}
-        >
-          <div class="feed-info">
-            <div class="feed-mainline">
-              <h2 class="feed-title">{config.sourceSummary || `${config.domain}/${config.name}`}</h2>
-
-              <div class="feed-actions">
-                <a
-                  href={config.staticFeedUrl}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  data-feed-url
-                  class="action action-primary"
-                  aria-label="Open RSS feed"
-                  title="Open RSS feed"
-                >
-                  <span>RSS</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="feed-subline">
-              {config.defaultSummary ? (
-                <p class="defaults-summary">Defaults: {config.defaultSummary}</p>
-              ) : (
-                <span aria-hidden="true" />
-              )}
-
-              <div class="feed-meta">
-                {config.channel?.url && (
-                  <a
-                    href={config.channel.url}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                    class="meta-link"
-                    title={config.channel.url}
-                  >
-                    <span>View source</span>
-                  </a>
-                )}
-
-                {Object.keys(config.url_parameters || {}).length > 0 && (
-                  <button
-                    class="meta-link"
-                    type="button"
-                    aria-expanded="false"
-                    aria-controls={`params-${index}`}
-                    data-target={`params-${index}`}
-                  >
-                    <span>Customize</span>
-                  </button>
-                )}
-
-                <button
-                  type="button"
-                  data-copy-feed
-                  class="meta-link"
-                  aria-label="Copy RSS link"
-                  title="Copy RSS link"
-                >
-                  <span>Copy link</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {Object.keys(config.url_parameters || {}).length > 0 && (
-            <div class="parameter-form" id={`params-${index}`} hidden>
-              <form class="form">
-                {Object.entries(config.url_parameters || {}).map(([key, fallback]) => (
-                  <div class="form-group">
-                    <label for={`${config.domain}-${config.name}-${key}`} class="form-label">
-                      {key}
-                    </label>
-                    <input
-                      type="text"
-                      id={`${config.domain}-${config.name}-${key}`}
-                      name={key}
-                      class="form-input"
-                      value={config.default_parameters?.[key] || ""}
-                      placeholder={String(fallback)}
-                      data-param-key={key}
-                      aria-label={key}
-                    />
-                  </div>
-                ))}
-
-                <div class="form-actions">
-                  <a
-                    href={`https://github.com/html2rss/html2rss-configs/edit/master/lib/html2rss/configs/${encodeURIComponent(config.domain)}/${encodeURIComponent(config.name)}.yml`}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                    class="meta-link meta-link-muted"
-                    aria-label="Edit configuration on GitHub"
-                    title="Edit configuration on GitHub"
-                  >
-                    <span>Edit</span>
-                  </a>
-
-                  <button type="button" class="done-button" data-close-form aria-label="Close customization">
-                    Done
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-        </article>
-      ))
-    }
-  </div>
+  <div class="feed-table" data-feed-list id="catalog-root" aria-live="polite"></div>
 </section>
 
-<script src="./feed-directory.js"></script>
+<script type="module" src="./feed-directory.js"></script>
 
 <style>
   [hidden] {
@@ -304,6 +145,20 @@ const staticFeedUrls = configs.map((config) => ({
     display: grid;
     gap: var(--fd-gap);
     color: var(--sl-color-white);
+  }
+
+  .catalog-status {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--fd-border);
+    border-radius: var(--fd-radius);
+    background: var(--fd-surface);
+    color: var(--fd-muted);
+    font-size: var(--sl-text-sm);
+  }
+
+  .catalog-status[data-state="error"] {
+    color: var(--sl-color-red-high);
   }
 
   .directory-controls,
@@ -454,20 +309,20 @@ const staticFeedUrls = configs.map((config) => ({
   .instance-feedback,
   .empty-title,
   .empty-copy,
-  .defaults-summary,
+  .feed-summary,
   .feed-title {
     margin: 0;
   }
 
   .result-summary,
   .instance-line,
-  .source-link,
-  .defaults-summary,
+  .feed-summary,
   .empty-copy {
     color: var(--fd-muted);
   }
 
-  .result-summary {
+  .result-summary,
+  .feed-summary {
     font-size: var(--sl-text-sm);
   }
 
@@ -570,9 +425,7 @@ const staticFeedUrls = configs.map((config) => ({
 
   .feed-subline {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 1rem;
-    align-items: end;
+    gap: 0.5rem;
   }
 
   .feed-title {
@@ -582,19 +435,23 @@ const staticFeedUrls = configs.map((config) => ({
     font-weight: 600;
   }
 
-  .defaults-summary {
-    min-width: 0;
+  .feed-advanced summary {
+    cursor: pointer;
+    color: var(--sl-color-text-accent);
     font-size: var(--sl-text-xs);
   }
 
   .feed-meta {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-end;
     gap: 0.5rem;
     align-items: center;
-    align-self: end;
     font-size: var(--sl-text-xs);
+    margin-top: 0.5rem;
+  }
+
+  .meta-tag {
+    color: var(--fd-muted);
   }
 
   .meta-link {
@@ -613,10 +470,6 @@ const staticFeedUrls = configs.map((config) => ({
     color: var(--sl-color-white);
     text-decoration: underline;
     outline: none;
-  }
-
-  .meta-link-muted {
-    color: var(--fd-muted);
   }
 
   .feed-actions {
@@ -650,17 +503,14 @@ const staticFeedUrls = configs.map((config) => ({
 
   .instance-toggle {
     color: var(--sl-color-gray-3);
-  }
-
-  .feed-directory:not([data-enhanced="true"]) .instance-toggle {
-    display: none;
-  }
-
-  .instance-toggle {
     padding: 0;
     border: 0;
     border-radius: 0;
     background: transparent;
+  }
+
+  .feed-directory:not([data-enhanced="true"]) .instance-toggle {
+    display: none;
   }
 
   .meta-link[data-copied="true"] {
@@ -748,16 +598,6 @@ const staticFeedUrls = configs.map((config) => ({
     align-items: center;
   }
 
-  @media (min-width: 50rem) {
-    .feed-row {
-      gap: 0;
-    }
-
-    .parameter-form {
-      grid-column: 1 / -1;
-    }
-  }
-
   @media (max-width: 49.99rem) {
     .instance-line {
       display: grid;
@@ -768,18 +608,8 @@ const staticFeedUrls = configs.map((config) => ({
       grid-template-columns: 1fr;
     }
 
-    .feed-mainline,
-    .feed-subline {
+    .feed-mainline {
       gap: 0.375rem;
-    }
-
-    .feed-subline > :first-child:empty,
-    .feed-subline > [aria-hidden="true"] {
-      display: none;
-    }
-
-    .feed-meta {
-      justify-content: flex-start;
     }
 
     .filter-actions {

@@ -8,17 +8,18 @@ website.
 ### Prerequisites
 
 - Node.js (for Astro)
-- Ruby (for data updates)
 
 ### Quick Setup
 
 ```bash
-# Install dependencies and refresh generated feed data
+# Install dependencies
 make setup
 
 # Start the local Astro development server
 make dev
 ```
+
+Feed Directory browse data comes from a running `html2rss-web` instance (`GET /api/v1/configs`). For local feed-directory testing, run an instance (for example from `html2rss-web`) and point the directory UI at it.
 
 ### 💻 Try in Browser
 
@@ -26,17 +27,15 @@ You can develop html2rss directly in your browser using GitHub Codespaces:
 
 [Open in GitHub Codespaces](https://github.com/codespaces/new?repo=html2rss/html2rss.github.io)
 
-The Codespace provides a cloud development environment with Node.js and Ruby pre-installed. Run `make setup` to install dependencies and get started!
+The Codespace provides a cloud development environment with Node.js pre-installed. Run `make setup` to install dependencies and get started!
 
 ### Available Commands
 
-- `make setup` - Install dependencies and refresh generated feed data
+- `make setup` - Install npm dependencies
 - `make dev` - Start Astro development server
 - `make build` - Build for production
 - `make preview` - Preview production build
-- `make build-full` - Update data and build for production
 - `make lintfix` - Fix code formatting
-- `make update` - Update feed data
 
 ## 🌐 Community & Resources
 

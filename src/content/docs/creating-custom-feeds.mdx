@@ -190,7 +190,7 @@ there.
 
 1. Go to [html2rss-configs on GitHub](https://github.com/html2rss/html2rss-configs)
 2. Click "Fork" → "Add file" → Create `domain.com/name.yml` under `lib/html2rss/configs/`
-3. Include top-level `directory.topics` (required for Feed Directory configs) using the controlled vocabulary below
+3. Include top-level `directory.topics`, `directory.title`, and mirror `channel.title` (required for Feed Directory configs). Optional `directory.summary` (max 160 characters).
 4. Paste your config → "Commit new file" → "Open pull request"
 
 Example catalog metadata:
@@ -201,8 +201,11 @@ Example catalog metadata:
     topics:
       - tech
       - research
+    title: Example — News
+    summary: Short description of what this feed covers.
   channel:
     url: https://example.com/blog
+    title: Example — News
     language: en
   selectors:
     items:
@@ -217,6 +220,8 @@ Example catalog metadata:
 />
 
 Allowed `directory.topics` values (prefer 1–2 primary topics): `sports`, `energy`, `tech`, `science`, `news`, `entertainment`, `jobs`, `finance`, `security`, `travel`, `environment`, `consumer`, `civic`, `product`, `research`.
+
+Use `{Organization} — {Feed surface}` for `directory.title` (for example, `Anthropic — News`). The [Feed Directory](/feed-directory/) lists configs from a running `html2rss-web` instance.
 
 **Need help?** See our [contribution guide](/get-involved/contributing/) for detailed instructions.
 
