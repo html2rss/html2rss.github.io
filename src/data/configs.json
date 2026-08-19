@@ -1,5 +1,37 @@
 [
   {
+    "domain": "aalto.fi",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.aalto.fi/en/news",
+      "language": "en",
+      "time_zone": "Europe/Helsinki",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "research"]
+    }
+  },
+  {
+    "domain": "academictransfer.com",
+    "name": "jobs",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.academictransfer.com/en/jobs/",
+      "language": "en",
+      "time_zone": "Europe/Amsterdam",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["jobs"]
+    }
+  },
+  {
     "domain": "adfc.de",
     "name": "pressemitteilungen",
     "valid_channel_url": true,
@@ -16,6 +48,22 @@
     }
   },
   {
+    "domain": "ahram.org.eg",
+    "name": "egypt",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://english.ahram.org.eg/Portal/1/Egypt.aspx",
+      "language": "en",
+      "time_zone": "Africa/Cairo",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["news"]
+    }
+  },
+  {
     "domain": "ai.meta.com",
     "name": "blog",
     "valid_channel_url": true,
@@ -29,6 +77,38 @@
     },
     "directory": {
       "topics": ["tech", "research"]
+    }
+  },
+  {
+    "domain": "akorda.kz",
+    "name": "events",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.akorda.kz/en/events",
+      "language": "en",
+      "time_zone": "Asia/Almaty",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "news"]
+    }
+  },
+  {
+    "domain": "angop.ao",
+    "name": "noticias",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.angop.ao/",
+      "language": "pt",
+      "time_zone": "Africa/Luanda",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["news", "civic"]
     }
   },
   {
@@ -100,6 +180,22 @@
     }
   },
   {
+    "domain": "aps.dz",
+    "name": "national-news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.aps.dz/en",
+      "language": "en",
+      "time_zone": "Africa/Algiers",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["news", "civic"]
+    }
+  },
+  {
     "domain": "asml.com",
     "name": "press-releases",
     "valid_channel_url": true,
@@ -108,7 +204,7 @@
     "channel": {
       "url": "https://www.asml.com/en/news/press-releases",
       "language": "en",
-      "time_zone": "UTC",
+      "time_zone": "Europe/Amsterdam",
       "ttl": 360
     },
     "directory": {
@@ -237,6 +333,22 @@
     }
   },
   {
+    "domain": "caricom.org",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://caricom.org/",
+      "language": "en",
+      "time_zone": "America/Jamaica",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "news"]
+    }
+  },
+  {
     "domain": "carnegieendowment.org",
     "name": "research",
     "valid_channel_url": true,
@@ -250,6 +362,38 @@
     },
     "directory": {
       "topics": ["civic", "research"]
+    }
+  },
+  {
+    "domain": "cepal.org",
+    "name": "press-releases",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.cepal.org/en/list/cepal_pr",
+      "language": "en",
+      "time_zone": "America/Santiago",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "research"]
+    }
+  },
+  {
+    "domain": "chalmers.se",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.chalmers.se/en/current/news/",
+      "language": "en",
+      "time_zone": "Europe/Stockholm",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "research"]
     }
   },
   {
@@ -352,6 +496,22 @@
     },
     "directory": {
       "topics": ["tech"]
+    }
+  },
+  {
+    "domain": "cplp.org",
+    "name": "noticias",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.cplp.org/",
+      "language": "pt",
+      "time_zone": "Europe/Lisbon",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "news"]
     }
   },
   {
@@ -469,6 +629,38 @@
     }
   },
   {
+    "domain": "diis.dk",
+    "name": "research",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.diis.dk/en",
+      "language": "en",
+      "time_zone": "Europe/Copenhagen",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "research"]
+    }
+  },
+  {
+    "domain": "dirco.gov.za",
+    "name": "media-statements",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://dirco.gov.za/media-statements/",
+      "language": "en",
+      "time_zone": "Africa/Johannesburg",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "news"]
+    }
+  },
+  {
     "domain": "dsw-info.de",
     "name": "presse",
     "valid_channel_url": true,
@@ -517,6 +709,22 @@
     }
   },
   {
+    "domain": "equinor.com",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.equinor.com/news",
+      "language": "en",
+      "time_zone": "Europe/Oslo",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["energy"]
+    }
+  },
+  {
     "domain": "espn.com",
     "name": "f1",
     "valid_channel_url": true,
@@ -546,6 +754,22 @@
     },
     "directory": {
       "topics": ["science", "research"]
+    }
+  },
+  {
+    "domain": "eures.europa.eu",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://eures.europa.eu/news_en",
+      "language": "en",
+      "time_zone": "Europe/Brussels",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["jobs"]
     }
   },
   {
@@ -626,6 +850,22 @@
     },
     "directory": {
       "topics": ["sports"]
+    }
+  },
+  {
+    "domain": "forumsec.org",
+    "name": "publications",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://forumsec.org/publications",
+      "language": "en",
+      "time_zone": "Pacific/Fiji",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "news"]
     }
   },
   {
@@ -812,6 +1052,22 @@
     }
   },
   {
+    "domain": "ikea.com",
+    "name": "newsroom",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.ikea.com/global/en/newsroom/",
+      "language": "en",
+      "time_zone": "Europe/Stockholm",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["consumer", "product"]
+    }
+  },
+  {
     "domain": "imdb.com",
     "name": "ratings",
     "valid_channel_url": false,
@@ -896,6 +1152,38 @@
     }
   },
   {
+    "domain": "issafrica.org",
+    "name": "iss-today",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://issafrica.org/iss-today",
+      "language": "en",
+      "time_zone": "Africa/Johannesburg",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "research"]
+    }
+  },
+  {
+    "domain": "issafrica.org",
+    "name": "press-releases",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://issafrica.org/about-us/press-releases",
+      "language": "en",
+      "time_zone": "Africa/Johannesburg",
+      "ttl": 720
+    },
+    "directory": {
+      "topics": ["civic", "research"]
+    }
+  },
+  {
     "domain": "kaist.ac.kr",
     "name": "news",
     "valid_channel_url": true,
@@ -928,6 +1216,38 @@
     }
   },
   {
+    "domain": "kompas.com",
+    "name": "nasional",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://nasional.kompas.com/",
+      "language": "id",
+      "time_zone": "Asia/Jakarta",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["news", "civic"]
+    }
+  },
+  {
+    "domain": "lego.com",
+    "name": "press-releases",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.lego.com/en-gb/aboutus/newsroom/press-releases",
+      "language": "en-GB",
+      "time_zone": "Europe/Copenhagen",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["entertainment", "product"]
+    }
+  },
+  {
     "domain": "machinelearning.apple.com",
     "name": "research",
     "valid_channel_url": true,
@@ -941,6 +1261,22 @@
     },
     "directory": {
       "topics": ["tech", "research"]
+    }
+  },
+  {
+    "domain": "maersk.com",
+    "name": "press-releases",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.maersk.com/news/category/press-releases",
+      "language": "en",
+      "time_zone": "Europe/Copenhagen",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["finance"]
     }
   },
   {
@@ -1008,6 +1344,22 @@
     }
   },
   {
+    "domain": "nbim.no",
+    "name": "press-releases",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.nbim.no/en/news-and-insights/the-press/press-releases/",
+      "language": "en",
+      "time_zone": "Europe/Oslo",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["finance"]
+    }
+  },
+  {
     "domain": "news.cn",
     "name": "latest",
     "valid_channel_url": true,
@@ -1018,6 +1370,22 @@
       "language": "en",
       "time_zone": "Asia/Shanghai",
       "ttl": 360
+    },
+    "directory": {
+      "topics": ["news"]
+    }
+  },
+  {
+    "domain": "news24.com",
+    "name": "top-stories",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.news24.com/",
+      "language": "en",
+      "time_zone": "Africa/Johannesburg",
+      "ttl": 180
     },
     "directory": {
       "topics": ["news"]
@@ -1040,6 +1408,22 @@
     }
   },
   {
+    "domain": "nigerianstat.gov.ng",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://nigerianstat.gov.ng/",
+      "language": "en",
+      "time_zone": "Africa/Lagos",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "research"]
+    }
+  },
+  {
     "domain": "nikkei.com",
     "name": "asia-technology",
     "valid_channel_url": true,
@@ -1053,6 +1437,22 @@
     },
     "directory": {
       "topics": ["news", "tech"]
+    }
+  },
+  {
+    "domain": "nokia.com",
+    "name": "newsroom",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.nokia.com/newsroom/",
+      "language": "en",
+      "time_zone": "Europe/Helsinki",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["tech", "product"]
     }
   },
   {
@@ -1088,6 +1488,22 @@
     }
   },
   {
+    "domain": "novonordisk.com",
+    "name": "latest-news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.novonordisk.com/news-and-media/latest-news.html",
+      "language": "en",
+      "time_zone": "Europe/Copenhagen",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "product"]
+    }
+  },
+  {
     "domain": "ntu.edu.sg",
     "name": "news",
     "valid_channel_url": true,
@@ -1101,6 +1517,22 @@
     },
     "directory": {
       "topics": ["science", "research"]
+    }
+  },
+  {
+    "domain": "nupi.no",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.nupi.no/en",
+      "language": "en",
+      "time_zone": "Europe/Oslo",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "research"]
     }
   },
   {
@@ -1152,6 +1584,22 @@
     }
   },
   {
+    "domain": "panapress.com",
+    "name": "latest",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.panapress.com/",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["news"]
+    }
+  },
+  {
     "domain": "pankow.lebensmittel-kontrollergebnisse.de",
     "name": "search",
     "valid_channel_url": true,
@@ -1168,6 +1616,22 @@
     }
   },
   {
+    "domain": "philstar.com",
+    "name": "nation",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.philstar.com/nation",
+      "language": "en",
+      "time_zone": "Asia/Manila",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["news"]
+    }
+  },
+  {
     "domain": "phys.org",
     "name": "weekly",
     "valid_channel_url": true,
@@ -1181,6 +1645,22 @@
     },
     "directory": {
       "topics": ["science"]
+    }
+  },
+  {
+    "domain": "pib.gov.in",
+    "name": "press-releases",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.pib.gov.in/AllRel.aspx?reg=3&lang=1",
+      "language": "en",
+      "time_zone": "Asia/Kolkata",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "news"]
     }
   },
   {
@@ -1231,6 +1711,38 @@
     },
     "directory": {
       "topics": ["entertainment"]
+    }
+  },
+  {
+    "domain": "sacu.int",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.sacu.int/news/",
+      "language": "en",
+      "time_zone": "Africa/Windhoek",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "news"]
+    }
+  },
+  {
+    "domain": "sadc.int",
+    "name": "latest-news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.sadc.int/latest-news",
+      "language": "en",
+      "time_zone": "UTC",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "news"]
     }
   },
   {
@@ -1448,6 +1960,38 @@
     }
   },
   {
+    "domain": "tap.info.tn",
+    "name": "politics",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.tap.info.tn/en",
+      "language": "en",
+      "time_zone": "Africa/Tunis",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["news", "civic"]
+    }
+  },
+  {
+    "domain": "telenor.com",
+    "name": "newsroom",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.telenor.com/media/newsroom/",
+      "language": "en",
+      "time_zone": "Europe/Oslo",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["tech"]
+    }
+  },
+  {
     "domain": "teneriffa-news.com",
     "name": "news",
     "valid_channel_url": true,
@@ -1464,6 +2008,22 @@
     }
   },
   {
+    "domain": "tennet.eu",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.tennet.eu/news",
+      "language": "en",
+      "time_zone": "Europe/Amsterdam",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["energy"]
+    }
+  },
+  {
     "domain": "test.de",
     "name": "archiv",
     "valid_channel_url": true,
@@ -1477,6 +2037,22 @@
     },
     "directory": {
       "topics": ["consumer"]
+    }
+  },
+  {
+    "domain": "theeastafrican.co.ke",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.theeastafrican.co.ke/tea/news",
+      "language": "en",
+      "time_zone": "Africa/Nairobi",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["news"]
     }
   },
   {
@@ -1529,6 +2105,22 @@
     }
   },
   {
+    "domain": "tno.nl",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.tno.nl/en/newsroom/news/",
+      "language": "en",
+      "time_zone": "Europe/Amsterdam",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["research", "tech"]
+    }
+  },
+  {
     "domain": "tourismusnetzwerk-brandenburg.de",
     "name": "aktuelle_nachrichten",
     "valid_channel_url": true,
@@ -1539,6 +2131,86 @@
       "time_zone": "Europe/Berlin",
       "ttl": 720,
       "language": "de"
+    },
+    "directory": {
+      "topics": ["travel"]
+    }
+  },
+  {
+    "domain": "tralac.org",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.tralac.org/news.html",
+      "language": "en",
+      "time_zone": "Africa/Johannesburg",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["civic", "research"]
+    }
+  },
+  {
+    "domain": "tudelft.nl",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.tudelft.nl/en/about-tu-delft/current",
+      "language": "en",
+      "time_zone": "Europe/Amsterdam",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "research"]
+    }
+  },
+  {
+    "domain": "tue.nl",
+    "name": "news",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.tue.nl/en/news-and-events/news-overview",
+      "language": "en",
+      "time_zone": "Europe/Amsterdam",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["science", "research"]
+    }
+  },
+  {
+    "domain": "vattenfall.com",
+    "name": "newsroom",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://group.vattenfall.com/press-and-media/newsroom",
+      "language": "en",
+      "time_zone": "Europe/Stockholm",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["energy", "environment"]
+    }
+  },
+  {
+    "domain": "visitfinland.com",
+    "name": "press-releases",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://media.visitfinland.com/en/media-press-releases/",
+      "language": "en",
+      "time_zone": "Europe/Helsinki",
+      "ttl": 360
     },
     "directory": {
       "topics": ["travel"]
@@ -1658,6 +2330,22 @@
     },
     "directory": {
       "topics": ["civic"]
+    }
+  },
+  {
+    "domain": "www.gob.mx",
+    "name": "profeco-prensa",
+    "valid_channel_url": true,
+    "url_parameters": {},
+    "default_parameters": {},
+    "channel": {
+      "url": "https://www.gob.mx/profeco/es/archivo/prensa",
+      "language": "es",
+      "time_zone": "America/Mexico_City",
+      "ttl": 360
+    },
+    "directory": {
+      "topics": ["consumer", "civic"]
     }
   }
 ]
