@@ -5,7 +5,7 @@ description: Derive a reusable YAML feed config from a URL with html2rss capture
 
 import { Aside, Code } from "@astrojs/starlight/components";
 
-`html2rss capture` analyzes a page through the auto-source pipeline and prints a reusable YAML draft with an **items selector plus `enhance: true`** — not title/url/description selector soup. `enhance: true` fills missing article fields at feed-build time.
+`html2rss capture` analyzes a page through the auto-source pipeline and prints a reusable YAML draft: an **items selector plus `enhance: true`**. At feed-build time, `enhance: true` fills missing article fields from each matched card.
 
 <Aside type="tip" title="Treat capture as a draft">
   Selector quality depends on page structure. Catalog feeds still need `directory.topics` and explicit channel

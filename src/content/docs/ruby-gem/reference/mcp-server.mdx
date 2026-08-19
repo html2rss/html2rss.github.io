@@ -38,9 +38,9 @@ The MCP server supports two transport mechanisms:
 
 ## Strategy Resolution in MCP
 
-`scrape_url` and `capture_config` with `strategy: "auto"` (the default) run Faraday → Botasaurus AutoFallback. One call is enough; do not retry with explicit `faraday` after `auto`.
+`scrape_url` and `capture_config` with `strategy: "auto"` (the default) run Faraday → Botasaurus AutoFallback in one call.
 
-`inspect_url` is the exception: `auto` stays on Faraday for a cheap diagnostic. Pin `strategy: "botasaurus"` on inspect when you need browser rendering.
+`inspect_url` with `auto` uses Faraday for a cheap diagnostic. Pin `strategy: "botasaurus"` when you need browser rendering for inspect.
 
 Read `html2rss://runtime` for `botasaurus_configured` (boolean only). Set `BOTASAURUS_SCRAPER_URL` on the **MCP process** env (see [AI agent workflows](/ruby-gem/guides/ai-agent-workflows/)).
 
@@ -62,7 +62,7 @@ Every tool returns the same JSON object in both the text content and `structured
   lang="json"
 />
 
-`isError` matches `ok: false`. Hosts that parsed scrape text as a raw JSON array must read `payload.items` instead.
+`isError` matches `ok: false`. Scrape results expose articles in `payload.items`.
 
 `next_step` is one of: `done`, `inspect_url`, `validate_config`, `apply_config`, `scrape_url`, `capture_config`, `read_runtime`.
 
@@ -161,7 +161,7 @@ One `scrape_url` call with `strategy: auto` (AutoFallback already hops). Call `i
 Four-step workflow for a durable feed config:
 
 1. Call `capture_config` — YAML is `payload.yaml`. Check `payload.articles_count` and `has_selectors`. Strive `enhance: true`.
-2. If weak or you need recon, call `inspect_url`. Auto already hops to Botasaurus.
+2. If weak or you need recon, call `inspect_url` (`auto` uses Faraday; pin `botasaurus` for browser rendering).
 3. Call `validate_config` with `yaml` (or `config`) — must not be `isError`.
 4. Call `apply_config` — `isError` if zero items. Confirm `payload.item_count` before shipping.
 

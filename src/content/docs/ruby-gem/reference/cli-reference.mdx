@@ -180,7 +180,7 @@ Available options:
 - `--transport`: MCP transport protocol (`stdio` or `http`). Defaults to `stdio`.
 - `--port`: Port for HTTP transport (default: `8080`). Bound strictly to `127.0.0.1` (loopback only).
 
-HTTP transport requires the `rack`, `rackup`, and `webrick` gems. stdio keeps JSON-RPC on stdout; the daemon logs to stderr and defaults to `LOG_LEVEL=info` unless you set `LOG_LEVEL`. See the [MCP Server Reference](/ruby-gem/reference/mcp-server/) and [AI Agent Workflows Guide](/ruby-gem/guides/ai-agent-workflows/) for full configuration and tool schemas.
+HTTP transport requires the `rack`, `rackup`, and `webrick` gems. MCP daemon logging (stderr, `LOG_LEVEL`) is documented in the [MCP Server Reference](/ruby-gem/reference/mcp-server/). See also the [AI Agent Workflows Guide](/ruby-gem/guides/ai-agent-workflows/) for client setup and tool schemas.
 
 ### Schema
 

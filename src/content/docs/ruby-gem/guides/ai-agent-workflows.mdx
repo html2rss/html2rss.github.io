@@ -84,9 +84,9 @@ Add `html2rss` to your Claude Desktop configuration (`~/Library/Application Supp
 
 When an agent needs articles immediately without saving a feed configuration:
 
-1. Call `scrape_url` with `strategy: "auto"`. Auto already runs Faraday then Botasaurus.
-2. An empty item list is still success for articles-now. Read `payload.items`. Follow `next_step` (including `read_runtime` / `html2rss://runtime` if Botasaurus is unset).
-3. Call `inspect_url` only if the result is weak or you need recon. Do not retry `scrape_url` with explicit `faraday` after auto.
+1. Call `scrape_url` with `strategy: "auto"`. Auto runs Faraday then Botasaurus when `BOTASAURUS_SCRAPER_URL` is set on the MCP process.
+2. An empty item list is still success for articles-now. Read `payload.items`. Follow `next_step` (including `read_runtime` / `html2rss://runtime` when Botasaurus is unset).
+3. Call `inspect_url` when the result is weak or you need recon (`final_url`, `status`, `scheme_downgrade`, native RSS/Atom).
 
 ### Pattern B: Iterative Feed Config Authoring
 

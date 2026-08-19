@@ -101,7 +101,7 @@ Common configuration-related errors:
 - **`BOTASAURUS_SCRAPER_URL is invalid`:** Fix the URL format and retry.
 - **`Configuration must include at least 'selectors' or 'auto_source'`:** You need to specify either manual selectors or enable auto-source.
 - **`stylesheet.type invalid`:** Only `text/css` and `text/xsl` are supported for stylesheets.
-- **`request.botasaurus` validation:** Unknown keys fail (`scroll_to_bottom` is not valid — use `scroll: true`). `window_size` must be `{ width:, height: }`. `wait_timeout_seconds` must be `1..20`.
+- **`request.botasaurus` validation:** Unknown keys are rejected. Valid scroll, window size, and wait-timeout shapes are documented in [Strategy — Botasaurus](/ruby-gem/reference/strategy/#botasaurus).
 
 ### Missing Item Parts
 
