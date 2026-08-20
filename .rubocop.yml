@@ -1,8 +1,0 @@
-AllCops:
-  NewCops: enable
-  TargetRubyVersion: 3.4
-  DisplayCopNames: true
-
-Style/DoubleNegation:
-  Exclude:
-    - bin/data-update

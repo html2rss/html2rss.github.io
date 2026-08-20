@@ -1,9 +1,7 @@
-default: setup clean lintfix dev
+default: setup lint dev
 
 setup:
 	npm ci
-	bundle check || bundle
-	make update
 
 dev:
 	npm run dev
@@ -26,7 +24,3 @@ lintfix:
 clean:
 	find . -type d -empty -delete
 	find . -type f -empty -delete
-
-update:
-	bundle update html2rss-configs
-	bin/data-update
