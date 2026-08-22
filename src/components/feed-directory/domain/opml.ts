@@ -1,5 +1,5 @@
 import { escapeXml } from '../lib/escape';
-import { buildFeedUrl } from './instance';
+import { buildFeedUrl } from './feed-url';
 import type { FeedDirectoryEntry } from './types';
 
 export function buildOpmlDocument(
@@ -25,16 +25,4 @@ ${outlines}
   </body>
 </opml>
 `;
-}
-
-export function downloadOpml(content: string, filename = 'html2rss-feeds.opml'): void {
-  const blob = new Blob([content], { type: 'text/x-opml+xml' });
-  const objectUrl = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-  anchor.href = objectUrl;
-  anchor.download = filename;
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
-  URL.revokeObjectURL(objectUrl);
 }

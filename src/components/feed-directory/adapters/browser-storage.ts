@@ -1,6 +1,5 @@
-import type { FeedDirectoryEntry } from './types';
+export const DEFAULT_INSTANCE_URL = 'https://1.h2r.workers.dev/';
 
-const DEFAULT_INSTANCE = atob('aHR0cHM6Ly8xLmgyci53b3JrZXJzLmRldi8=');
 const STORAGE_KEY = 'html2rss.feedDirectory.instanceUrl';
 
 function hashParams(): URLSearchParams {
@@ -17,7 +16,7 @@ function normalizeParsed(parsed: URL): string | null {
 }
 
 export function getDefaultInstanceUrl(): string {
-  return DEFAULT_INSTANCE;
+  return DEFAULT_INSTANCE_URL;
 }
 
 export function normalizeInstanceUrl(value: string): string | null {
@@ -27,15 +26,6 @@ export function normalizeInstanceUrl(value: string): string | null {
     return normalizeParsed(new URL(trimmed));
   } catch {
     return null;
-  }
-}
-
-export function formatInstanceLabel(instanceUrl: string): string {
-  try {
-    const parsed = new URL(instanceUrl);
-    return parsed.host + parsed.pathname.replace(/\/$/, '');
-  } catch {
-    return instanceUrl;
   }
 }
 
@@ -81,21 +71,4 @@ export function persistInstanceUrl(instanceUrl: string, defaultUrl = getDefaultI
     const next = `${window.location.pathname}${window.location.search}`;
     window.history.replaceState({}, '', next);
   }
-}
-
-export function buildFeedUrl(
-  instanceUrl: string,
-  entry: Pick<FeedDirectoryEntry, 'path'>,
-  parameters: Record<string, string> = {}
-): string {
-  const url = new URL(entry.path, instanceUrl);
-  for (const [key, value] of Object.entries(parameters)) {
-    if (value) url.searchParams.set(key, value);
-  }
-  return url.toString();
-}
-
-export function parseSiteDomain(entryId: string): string {
-  const slash = entryId.indexOf('/');
-  return slash === -1 ? entryId : entryId.slice(0, slash);
 }

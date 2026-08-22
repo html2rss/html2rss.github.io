@@ -8,15 +8,16 @@ import {
   sortEntries,
 } from '../domain/filters';
 import {
-  buildFeedUrl,
   getDefaultInstanceUrl,
   normalizeInstanceUrl,
   persistInstanceUrl,
   readInitialInstanceUrl,
-} from '../domain/instance';
-import { buildOpmlDocument, downloadOpml } from '../domain/opml';
+} from '../adapters/browser-storage';
+import { clearFilters, readFiltersFromUrl, writeFiltersToUrl } from '../adapters/browser-location';
+import { downloadOpml } from '../adapters/browser-download';
+import { buildFeedUrl } from '../domain/feed-url';
+import { buildOpmlDocument } from '../domain/opml';
 import type { CatalogFacets, FeedDirectoryEntry, FilterState, LoadState } from '../domain/types';
-import { clearFilters, readFiltersFromUrl, writeFiltersToUrl } from '../domain/url-state';
 import { normalizeFilterLanguage } from '../domain/language';
 import { debounce } from '../lib/debounce';
 import { renderFeedDirectory, type RenderContext } from '../ui/render';

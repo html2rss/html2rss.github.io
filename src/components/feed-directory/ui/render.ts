@@ -1,5 +1,5 @@
 import { escapeHtml } from '../lib/escape';
-import { buildFeedUrl, formatInstanceLabel } from '../domain/instance';
+import { buildFeedUrl, formatInstanceLabel } from '../domain/feed-url';
 import { hasActiveFilters, PAGE_SIZE } from '../domain/filters';
 import { displayLanguage, normalizeFilterLanguage } from '../domain/language';
 import type {
