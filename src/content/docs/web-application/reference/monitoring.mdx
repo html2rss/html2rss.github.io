@@ -7,11 +7,11 @@ import { Code } from "@astrojs/starlight/components";
 
 ## Health Endpoints
 
-| Endpoint | Auth | Purpose |
-| --- | --- | --- |
-| `GET /api/v1/health/live` | none | Process liveness |
-| `GET /api/v1/health/ready` | none | Config readiness |
-| `GET /api/v1/health` | bearer | Operator and uptime checks |
+| Endpoint                   | Auth   | Purpose                    |
+| -------------------------- | ------ | -------------------------- |
+| `GET /api/v1/health/live`  | none   | Process liveness           |
+| `GET /api/v1/health/ready` | none   | Config readiness           |
+| `GET /api/v1/health`       | bearer | Operator and uptime checks |
 
 Set `HEALTH_CHECK_TOKEN`, then call the authenticated endpoint:
 
@@ -31,9 +31,9 @@ Set `SENTRY_DSN` to enable Issue capture in html2rss-web (Rack middleware and op
 
 Use separate Sentry projects for html2rss-web and botasaurus-scrape-api. Never share a DSN.
 
-| Env var | Service |
-| --- | --- |
-| `SENTRY_DSN` | html2rss-web |
+| Env var                 | Service               |
+| ----------------------- | --------------------- |
+| `SENTRY_DSN`            | html2rss-web          |
 | `BOTASAURUS_SENTRY_DSN` | botasaurus-scrape-api |
 
 In `docker-compose.yml`, the botasaurus service maps `BOTASAURUS_SENTRY_DSN` into its own `SENTRY_DSN`, requires it at startup, and does not fall back to the web project's DSN.
