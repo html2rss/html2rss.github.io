@@ -63,6 +63,8 @@ Configure browser actions under `request.botasaurus`:
   lang="yaml"
 />
 
+`wait_timeout_seconds` applies to selector wait on the scraper **after** the browser is ready. Slow Chrome or Xvfb boot consumes the scrape **total** wall (`SCRAPE_TIMEOUT_SECONDS`, default **45s**), not this work budget (`SCRAPE_WORK_TIMEOUT_SECONDS`, default **30s**).
+
 ### Scroll for Infinite Content
 
 <Code
