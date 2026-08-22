@@ -39,4 +39,7 @@ Do not leave `CHANGE_ME_HEALTH_CHECK_TOKEN` anywhere in production. Once the pro
 
 ## Application Performance Monitoring using Sentry
 
-When you specify `SENTRY_DSN` in your environment variables, the application will be setup to use Sentry.
+When you specify `SENTRY_DSN` in your environment variables, `html2rss-web` is automatically configured to capture errors and structured logs.
+
+The `botasaurus` scrape API service also supports optional Sentry monitoring. In production Docker Compose setups, the `botasaurus` service uses `${BOTASAURUS_SENTRY_DSN:-${SENTRY_DSN:-}}`. This allows both services to share the same `SENTRY_DSN` by default, while enabling you to direct scraper errors to a dedicated project using `BOTASAURUS_SENTRY_DSN` when preferred.
+

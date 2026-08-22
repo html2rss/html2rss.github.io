@@ -56,6 +56,8 @@ const snippets: Record<Props["variant"], string> = {
   botasaurus:
     image: ${botasaurusImage}
     restart: unless-stopped
+    environment:
+      SENTRY_DSN: \${BOTASAURUS_SENTRY_DSN:-\${SENTRY_DSN:-}}
 
 volumes:
   caddy_data:`,
@@ -77,7 +79,10 @@ volumes:
 
   botasaurus:
     image: ${botasaurusImage}
-    restart: unless-stopped`,
+    restart: unless-stopped
+    environment:
+      SENTRY_DSN: \${BOTASAURUS_SENTRY_DSN:-\${SENTRY_DSN:-}}`,
+
   resourceGuardrails: `services:
   html2rss-web:
     image: ${webImage}
