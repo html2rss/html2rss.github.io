@@ -14,8 +14,8 @@ What this repo owns:
 What this repo does not own:
 
 - runtime extractor behavior and CLI semantics (`html2rss/`)
-- catalog metadata, YAML configs, or catalog serialization (`html2rss-configs/` → `Html2rss::Configs::Catalog`)
-- catalog HTTP API (`html2rss-web/` → `GET /api/v1/configs`)
+- feed YAML and signed registry bundle publishing (`html2rss-configs/` → `configs/`, `tool/registry-build`)
+- catalog HTTP API and registry sync (`html2rss-web/` → `GET /api/v1/configs`, `Registry::Sync`)
 
 When docs describe behavior from other repos, treat those repos as source-of-truth and update docs to match them.
 
@@ -30,9 +30,10 @@ Before substantial edits, state cross-repo context in your notes:
 Common contracts:
 
 - Feed Directory browse data comes from `{instance}/api/v1/configs` on a running `html2rss-web` instance (see OpenAPI in `html2rss-web`).
+- Catalog wire rows include `id`, `path`, `directory`, `channel`, `parameters`, plus `source` (`registry` | `local`). Bundle entries also include `registry` (registry id); local rows omit `registry`. The browse UI ignores `source`/`registry` today — wire parsing stays in `adapters/catalog-api.ts`.
 - Instance URL persistence: default public instance, `#!url=` hash deep link from the web app, browser localStorage, and filter state in URL query params (`q`, `topic`, `lang`, `sort`, `page`).
 - Deep link from `html2rss-web`: `https://html2rss.github.io/feed-directory/#!url={encodedInstanceUrl}` must keep working.
-- Catalog metadata in YAML (`directory.title`, `directory.summary`, `directory.topics`) is authored in `html2rss-configs` only.
+- Catalog metadata in YAML (`directory.*`, `registry.id`) is authored in `html2rss-configs` only; instances load verified bundles via registry sync.
 - Ruby gem docs should match `html2rss` behavior and CLI output.
 - Web application docs should match `html2rss-web` behavior and published OpenAPI.
 

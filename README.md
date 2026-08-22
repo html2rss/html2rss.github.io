@@ -50,7 +50,7 @@ The Codespace provides a cloud development environment with Node.js pre-installe
 
 - **New to RSS?** → Start with the [web application](https://html2rss.github.io/web-application)
 - **Ruby Developer?** → Check out the [Ruby gem documentation](https://html2rss.github.io/ruby-gem)
-- **Need a specific feed?** → Browse the [feed directory](https://html2rss.github.io/feed-directory)
+- **Need a specific feed?** → Browse the [Feed Directory](https://html2rss.github.io/feed-directory)
 - **Want to contribute?** → See our [contributing guide](https://html2rss.github.io/get-involved/contributing)
 
 ## Contributing

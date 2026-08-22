@@ -189,14 +189,17 @@ there.
 **Help the community by sharing your config:**
 
 1. Go to [html2rss-configs on GitHub](https://github.com/html2rss/html2rss-configs)
-2. Click "Fork" → "Add file" → Create `domain.com/name.yml` under `lib/html2rss/configs/`
-3. Include top-level `directory.topics`, `directory.title`, and mirror `channel.title` (required for Feed Directory configs). Optional `directory.summary` (max 160 characters).
+2. Click "Fork" → "Add file" → Create `domain.com/name.yml` under `configs/`
+3. Declare `registry.id` (unique feed identity), `directory.topics`, `directory.title`, and mirror `channel.title` (required for Feed Directory configs). Optional `directory.summary` (max 160 characters).
 4. Paste your config → "Commit new file" → "Open pull request"
 
 Example catalog metadata:
 
 <Code
   code={`
+  registry:
+    id: example.com/news
+    aliases: []
   directory:
     topics:
       - tech
@@ -255,7 +258,7 @@ Use `{Organization} — {Feed surface}` for `directory.title` (for example, `Ant
 
 **For Contributors:**
 
-- **[Browse existing configs](https://github.com/html2rss/html2rss-configs/tree/master/lib/html2rss/configs)** - See real examples
+- **[Browse existing configs](https://github.com/html2rss/html2rss-configs/tree/master/configs)** - See real examples
 - **[Join discussions](https://github.com/orgs/html2rss/discussions)** - Connect with other users
 - **[Learn about strategies](/ruby-gem/reference/strategy/)** - Decide when to use static vs JavaScript/browser-based extraction
 - **[Learn advanced features](/ruby-gem/guides/advanced-features/)** - Take your configs to the next level
