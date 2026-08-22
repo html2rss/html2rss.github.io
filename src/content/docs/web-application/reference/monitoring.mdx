@@ -39,4 +39,17 @@ Do not leave `CHANGE_ME_HEALTH_CHECK_TOKEN` anywhere in production. Once the pro
 
 ## Application Performance Monitoring using Sentry
 
-When you specify `SENTRY_DSN` in your environment variables, the application will be setup to use Sentry.
+When you specify `SENTRY_DSN` in your environment variables, html2rss-web initializes Sentry for Issue capture (Rack middleware and operational failure emission). Structured log intake requires an explicit `SENTRY_ENABLE_LOGS=true` — a DSN alone does not forward stdout logs.
+
+### DSN separation (required)
+
+Use **separate Sentry projects** for html2rss-web and botasaurus-scrape-api. Never share a DSN between them.
+
+| Env var | Service | Sentry project |
+| --- | --- | --- |
+| `SENTRY_DSN` | html2rss-web | Project A (web) |
+| `BOTASAURUS_SENTRY_DSN` | botasaurus-scrape-api | Project B (scraper) |
+
+In `docker-compose.yml`, the botasaurus service maps `BOTASAURUS_SENTRY_DSN` into its own `SENTRY_DSN` and does **not** fall back to the web project's DSN.
+
+For on-call triage, alert rules, and dashboard baselines, see the [Sentry runbook in the web repo](https://github.com/html2rss/html2rss-web/blob/main/docs/README.md#sentry-runbook).
