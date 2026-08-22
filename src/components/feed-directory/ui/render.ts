@@ -2,32 +2,8 @@ import { escapeHtml } from '../lib/escape';
 import { buildFeedUrl, formatInstanceLabel } from '../domain/feed-url';
 import { hasActiveFilters, PAGE_SIZE } from '../domain/filters';
 import { displayLanguage, normalizeFilterLanguage } from '../domain/language';
-import type {
-  CatalogFacets,
-  CatalogLoadError,
-  FeedDirectoryEntry,
-  FilterState,
-  LoadState,
-} from '../domain/types';
-
-interface RenderContext {
-  loadState: LoadState;
-  error: CatalogLoadError | null;
-  instanceUrl: string;
-  instanceEditorOpen: boolean;
-  instanceDraft: string;
-  instanceFeedback: { message: string; tone: 'idle' | 'error' | 'success' } | null;
-  filters: FilterState;
-  facets: CatalogFacets;
-  entries: FeedDirectoryEntry[];
-  filteredTotal: number;
-  pageItems: FeedDirectoryEntry[];
-  totalPages: number;
-  catalogTotal: number;
-  expandedEntryId: string | null;
-  parametersById: Record<string, Record<string, string>>;
-  copiedEntryId: string | null;
-}
+import type { CatalogFacets, FeedDirectoryEntry, FilterState } from '../domain/types';
+import type { FeedDirectoryViewModel } from '../app/view-model';
 
 function renderTopicChips(facets: CatalogFacets, selected: string[]): string {
   if (facets.topics.length === 0) {
@@ -71,13 +47,13 @@ function renderParameterFields(entry: FeedDirectoryEntry, values: Record<string,
   return `<div class="fd-params">${fields}</div>`;
 }
 
-function renderFeedRow(entry: FeedDirectoryEntry, ctx: RenderContext): string {
+function renderFeedRow(entry: FeedDirectoryEntry, vm: FeedDirectoryViewModel): string {
   const language = displayLanguage(entry.language);
-  const params = ctx.parametersById[entry.id] ?? {};
-  const feedUrl = buildFeedUrl(ctx.instanceUrl, entry, params);
+  const params = vm.parametersById[entry.id] ?? {};
+  const feedUrl = buildFeedUrl(vm.instanceUrl, entry, params);
   const hasParameters = Object.keys(entry.parameterSchema).length > 0;
-  const expanded = ctx.expandedEntryId === entry.id;
-  const copied = ctx.copiedEntryId === entry.id;
+  const expanded = vm.expandedEntryId === entry.id;
+  const copied = vm.copiedEntryId === entry.id;
 
   const topicBadges =
     entry.topics.length > 0
@@ -123,21 +99,21 @@ function renderFeedRow(entry: FeedDirectoryEntry, ctx: RenderContext): string {
   }`;
 }
 
-function renderPagination(ctx: RenderContext): string {
-  if (ctx.filteredTotal <= PAGE_SIZE) return '';
+function renderPagination(vm: FeedDirectoryViewModel): string {
+  if (vm.filteredTotal <= PAGE_SIZE) return '';
 
-  const prevDisabled = ctx.filters.page <= 1;
-  const nextDisabled = ctx.filters.page >= ctx.totalPages;
+  const prevDisabled = vm.filters.page <= 1;
+  const nextDisabled = vm.filters.page >= vm.totalPages;
 
   return `<nav class="fd-pagination" aria-label="Feed list pages">
     <button type="button" class="fd-btn fd-btn-ghost" data-action="page-prev" ${prevDisabled ? 'disabled' : ''}>Previous</button>
-    <span class="fd-pagination-label">Page ${ctx.filters.page} of ${ctx.totalPages}</span>
+    <span class="fd-pagination-label">Page ${vm.filters.page} of ${vm.totalPages}</span>
     <button type="button" class="fd-btn fd-btn-ghost" data-action="page-next" ${nextDisabled ? 'disabled' : ''}>Next</button>
   </nav>`;
 }
 
-function renderFeedTable(ctx: RenderContext): string {
-  if (ctx.loadState === 'loading') {
+function renderFeedTable(vm: FeedDirectoryViewModel): string {
+  if (vm.loadState === 'loading') {
     return `<div class="fd-loading" aria-live="polite">
       <div class="fd-skeleton fd-skeleton-toolbar"></div>
       <div class="fd-skeleton fd-skeleton-row"></div>
@@ -147,20 +123,20 @@ function renderFeedTable(ctx: RenderContext): string {
     </div>`;
   }
 
-  if (ctx.loadState === 'error' && ctx.error) {
-    return `<div class="fd-banner fd-banner-error" role="alert">${escapeHtml(ctx.error.message)}</div>`;
+  if (vm.loadState === 'error' && vm.error) {
+    return `<div class="fd-banner fd-banner-error" role="alert">${escapeHtml(vm.error.message)}</div>`;
   }
 
-  if (ctx.loadState !== 'ready') return '';
+  if (vm.loadState !== 'ready') return '';
 
-  if (ctx.entries.length === 0) {
+  if (vm.catalogEntryCount === 0) {
     return `<div class="fd-empty">
       <p class="fd-empty-title">No feeds in this catalog</p>
       <p class="fd-muted">Try another instance or contribute a configuration.</p>
     </div>`;
   }
 
-  if (ctx.filteredTotal === 0) {
+  if (vm.filteredTotal === 0) {
     return `<div class="fd-empty">
       <p class="fd-empty-title">No feeds match your filters</p>
       <p class="fd-muted">Try clearing search text, topics, or language filters.</p>
@@ -168,7 +144,7 @@ function renderFeedTable(ctx: RenderContext): string {
     </div>`;
   }
 
-  const rows = ctx.pageItems.map((entry) => renderFeedRow(entry, ctx)).join('');
+  const rows = vm.pageItems.map((entry) => renderFeedRow(entry, vm)).join('');
 
   return `<div class="fd-table-wrap">
     <table class="fd-table">
@@ -185,37 +161,37 @@ function renderFeedTable(ctx: RenderContext): string {
       <tbody>${rows}</tbody>
     </table>
   </div>
-  ${renderPagination(ctx)}`;
+  ${renderPagination(vm)}`;
 }
 
-export function renderFeedDirectory(ctx: RenderContext): string {
-  const activeFilters = hasActiveFilters(ctx.filters);
+export function renderFeedDirectory(vm: FeedDirectoryViewModel): string {
+  const activeFilters = hasActiveFilters(vm.filters);
   const resultLabel = activeFilters
-    ? `${ctx.filteredTotal} matching feed${ctx.filteredTotal === 1 ? '' : 's'}`
-    : `${ctx.catalogTotal} ready-to-use feed${ctx.catalogTotal === 1 ? '' : 's'}`;
+    ? `${vm.filteredTotal} matching feed${vm.filteredTotal === 1 ? '' : 's'}`
+    : `${vm.catalogTotal} ready-to-use feed${vm.catalogTotal === 1 ? '' : 's'}`;
 
-  const feedback = ctx.instanceFeedback;
+  const feedback = vm.instanceFeedback;
   const feedbackClass = feedback?.tone ? ` fd-feedback-${feedback.tone}` : '';
 
   return `<div class="fd-shell">
     <header class="fd-header">
       <div class="fd-header-copy">
         <p class="fd-eyebrow">Feed Directory</p>
-        <p class="fd-lead">${escapeHtml(resultLabel)} from <strong>${escapeHtml(formatInstanceLabel(ctx.instanceUrl))}</strong></p>
+        <p class="fd-lead">${escapeHtml(resultLabel)} from <strong>${escapeHtml(formatInstanceLabel(vm.instanceUrl))}</strong></p>
       </div>
       <div class="fd-header-actions">
-        <button type="button" class="fd-btn fd-btn-ghost" data-action="toggle-instance" aria-expanded="${ctx.instanceEditorOpen}">${ctx.instanceEditorOpen ? 'Close instance' : 'Change instance'}</button>
-        <button type="button" class="fd-btn fd-btn-ghost" data-action="export-opml" ${ctx.filteredTotal === 0 ? 'disabled' : ''}>Export OPML</button>
+        <button type="button" class="fd-btn fd-btn-ghost" data-action="toggle-instance" aria-expanded="${vm.instanceEditorOpen}">${vm.instanceEditorOpen ? 'Close instance' : 'Change instance'}</button>
+        <button type="button" class="fd-btn fd-btn-ghost" data-action="export-opml" ${vm.filteredTotal === 0 ? 'disabled' : ''}>Export OPML</button>
       </div>
     </header>
 
     ${
-      ctx.instanceEditorOpen
+      vm.instanceEditorOpen
         ? `<section class="fd-panel fd-instance-panel" aria-label="Instance settings">
       <label class="fd-field">
         <span class="fd-field-label">Instance URL</span>
         <div class="fd-inline-field">
-          <input class="fd-input" type="url" inputmode="url" spellcheck="false" data-ref="instance-draft" value="${escapeHtml(ctx.instanceDraft)}" placeholder="https://your-instance.example" />
+          <input class="fd-input" type="url" inputmode="url" spellcheck="false" data-ref="instance-draft" value="${escapeHtml(vm.instanceDraft)}" placeholder="https://your-instance.example" />
           <button type="button" class="fd-btn fd-btn-primary" data-action="apply-instance">Apply</button>
         </div>
       </label>
@@ -227,26 +203,26 @@ export function renderFeedDirectory(ctx: RenderContext): string {
     <section class="fd-panel fd-toolbar" aria-label="Search and filters">
       <label class="fd-search">
         <span class="fd-sr-only">Search feeds</span>
-        <input class="fd-input fd-search-input" type="search" data-ref="search" value="${escapeHtml(ctx.filters.query)}" placeholder="Search by feed name, site, or domain" enterkeyhint="search" />
+        <input class="fd-input fd-search-input" type="search" data-ref="search" value="${escapeHtml(vm.filters.query)}" placeholder="Search by feed name, site, or domain" enterkeyhint="search" />
       </label>
 
       <div class="fd-filter-block">
         <div class="fd-filter-group">
           <span class="fd-field-label">Topics</span>
-          <div class="fd-chip-row" role="group" aria-label="Filter by topic">${renderTopicChips(ctx.facets, ctx.filters.topics)}</div>
+          <div class="fd-chip-row" role="group" aria-label="Filter by topic">${renderTopicChips(vm.facets, vm.filters.topics)}</div>
         </div>
 
         <div class="fd-filter-row">
           <label class="fd-field fd-field-inline">
             <span class="fd-field-label">Language</span>
-            <select class="fd-select" data-ref="language">${renderLanguageOptions(ctx.facets, ctx.filters.language)}</select>
+            <select class="fd-select" data-ref="language">${renderLanguageOptions(vm.facets, vm.filters.language)}</select>
           </label>
 
           <label class="fd-field fd-field-inline">
             <span class="fd-field-label">Sort</span>
             <select class="fd-select" data-ref="sort">
-              <option value="title"${ctx.filters.sort === 'title' ? ' selected' : ''}>Title A–Z</option>
-              <option value="site"${ctx.filters.sort === 'site' ? ' selected' : ''}>Site A–Z</option>
+              <option value="title"${vm.filters.sort === 'title' ? ' selected' : ''}>Title A–Z</option>
+              <option value="site"${vm.filters.sort === 'site' ? ' selected' : ''}>Site A–Z</option>
             </select>
           </label>
 
@@ -259,8 +235,8 @@ export function renderFeedDirectory(ctx: RenderContext): string {
       </div>
     </section>
 
-    ${renderFeedTable(ctx)}
+    ${renderFeedTable(vm)}
   </div>`;
 }
 
-export type { RenderContext };
+export type { FeedDirectoryViewModel };
