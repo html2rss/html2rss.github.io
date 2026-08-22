@@ -115,7 +115,9 @@ import { Icon } from "@astrojs/starlight/components";
   <div class="feed-table" data-feed-list id="catalog-root" aria-live="polite"></div>
 </section>
 
-<script type="module" src="./feed-directory.js"></script>
+<script>
+  import "./feed-directory.js";
+</script>
 
 <style>
   [hidden] {
