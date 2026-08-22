@@ -1,6 +1,17 @@
 .fd-app {
-  --fd-radius: 0.75rem;
+  /* Layout */
   --fd-gap: 0.75rem;
+  --fd-gap-sm: 0.5rem;
+  --fd-gap-xs: 0.375rem;
+  --fd-gap-lg: 1rem;
+  --fd-margin-block: 1.5rem 2rem;
+
+  /* Shape */
+  --fd-radius: 0.75rem;
+  --fd-radius-sm: calc(var(--fd-radius) - 0.25rem);
+  --fd-radius-pill: 999px;
+
+  /* Color */
   --fd-border: var(--sl-color-gray-5);
   --fd-surface: var(--sl-color-bg);
   --fd-surface-raised: var(--sl-color-gray-6, var(--sl-color-bg));
@@ -8,8 +19,37 @@
   --fd-muted: var(--sl-color-gray-3);
   --fd-accent: var(--sl-color-accent);
   --fd-accent-soft: var(--sl-color-accent-low);
+  --fd-link: var(--sl-color-text-accent);
+  --fd-danger: var(--sl-color-red-high);
+  --fd-success: var(--sl-color-green-high);
+  --fd-border-muted: color-mix(in srgb, var(--fd-border) 45%, transparent);
+  --fd-row-hover: color-mix(in srgb, var(--fd-accent-soft) 35%, transparent);
+  --fd-shimmer-start: color-mix(in srgb, var(--fd-border) 35%, transparent);
+  --fd-shimmer-mid: color-mix(in srgb, var(--fd-border) 70%, transparent);
+
+  /* Spacing */
+  --fd-pad-panel: 1rem 1.125rem;
+  --fd-pad-message: 1.25rem 1.125rem;
+  --fd-pad-cell: 0.875rem 1rem;
+  --fd-pad-cell-block: 1rem;
+  --fd-pad-control: 0.625rem 0.75rem;
+  --fd-pad-btn: 0.45rem 0.8rem;
+  --fd-pad-btn-compact: 0.3rem 0.55rem;
+  --fd-pad-chip: 0.3rem 0.7rem;
+  --fd-pad-badge: 0.12rem 0.45rem;
+  --fd-pad-lang: 0.1rem 0.35rem;
+
+  /* Layout constants */
+  --fd-actions-col: 11.5rem;
+  --fd-field-inline-min: 10rem;
+  --fd-summary-max: 52rem;
+
+  /* Focus */
+  --fd-focus-ring: 2px solid var(--fd-accent);
+  --fd-focus-offset: 1px;
+
   color: var(--fd-text);
-  margin-block: 1.5rem 2rem;
+  margin-block: var(--fd-margin-block);
 }
 
 .fd-app *,
@@ -49,10 +89,10 @@
 .fd-header {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: var(--fd-gap-lg);
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.125rem;
+  padding: var(--fd-pad-panel);
 }
 
 .fd-header-copy {
@@ -78,26 +118,26 @@
 .fd-inline-field {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--fd-gap-sm);
   align-items: center;
 }
 
 .fd-action-bar {
   display: inline-flex;
   flex-wrap: nowrap;
-  gap: 0.35rem;
+  gap: var(--fd-gap-xs);
   align-items: center;
   justify-content: flex-end;
   max-width: 100%;
 }
 
 .fd-panel {
-  padding: 1rem 1.125rem;
+  padding: var(--fd-pad-panel);
 }
 
 .fd-toolbar {
   display: grid;
-  gap: 1rem;
+  gap: var(--fd-gap-lg);
 }
 
 .fd-search-input {
@@ -111,7 +151,7 @@
 
 .fd-filter-group {
   display: grid;
-  gap: 0.5rem;
+  gap: var(--fd-gap-sm);
 }
 
 .fd-filter-row {
@@ -121,11 +161,11 @@
 .fd-field,
 .fd-field-inline {
   display: grid;
-  gap: 0.375rem;
+  gap: var(--fd-gap-xs);
 }
 
 .fd-field-inline {
-  min-width: 10rem;
+  min-width: var(--fd-field-inline-min);
 }
 
 .fd-field-label {
@@ -135,15 +175,21 @@
 }
 
 .fd-input,
+.fd-select,
+.fd-btn,
+.fd-chip {
+  border: 1px solid var(--fd-border);
+  font: inherit;
+}
+
+.fd-input,
 .fd-select {
   width: 100%;
   min-width: 0;
-  padding: 0.625rem 0.75rem;
-  border: 1px solid var(--fd-border);
-  border-radius: calc(var(--fd-radius) - 0.25rem);
+  padding: var(--fd-pad-control);
+  border-radius: var(--fd-radius-sm);
   background: var(--fd-surface);
   color: var(--fd-text);
-  font: inherit;
   font-size: var(--sl-text-sm);
 }
 
@@ -151,24 +197,22 @@
 .fd-select:focus,
 .fd-btn:focus-visible,
 .fd-chip:focus-visible {
-  outline: 2px solid var(--fd-accent);
-  outline-offset: 1px;
+  outline: var(--fd-focus-ring);
+  outline-offset: var(--fd-focus-offset);
 }
 
 .fd-chip-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.375rem;
+  gap: var(--fd-gap-xs);
 }
 
 .fd-chip {
   appearance: none;
-  padding: 0.3rem 0.7rem;
-  border: 1px solid var(--fd-border);
-  border-radius: 999px;
+  padding: var(--fd-pad-chip);
+  border-radius: var(--fd-radius-pill);
   background: var(--fd-surface);
   color: var(--fd-muted);
-  font: inherit;
   font-size: var(--sl-text-xs);
   cursor: pointer;
 }
@@ -186,12 +230,10 @@
   align-items: center;
   justify-content: center;
   gap: 0.25rem;
-  padding: 0.45rem 0.8rem;
-  border: 1px solid var(--fd-border);
-  border-radius: calc(var(--fd-radius) - 0.25rem);
+  padding: var(--fd-pad-btn);
+  border-radius: var(--fd-radius-sm);
   background: var(--fd-surface);
   color: var(--fd-text);
-  font: inherit;
   font-size: var(--sl-text-sm);
   line-height: 1.2;
   text-decoration: none;
@@ -213,7 +255,7 @@
 }
 
 .fd-btn-compact {
-  padding: 0.3rem 0.55rem;
+  padding: var(--fd-pad-btn-compact);
   font-size: var(--sl-text-xs);
   white-space: nowrap;
 }
@@ -241,26 +283,25 @@
 
 .fd-col-actions,
 .fd-col-actions-heading {
-  width: 11.5rem;
+  width: var(--fd-actions-col);
 }
 
 .fd-table th,
 .fd-table td {
-  padding: 0.875rem 1rem;
+  padding: var(--fd-pad-cell);
   border-bottom: 1px solid var(--fd-border);
   text-align: left;
   vertical-align: middle;
 }
 
-.fd-cell-feed {
+.fd-cell-feed,
+.fd-cell-actions {
   vertical-align: top;
-  padding-block: 1rem;
+  padding-block: var(--fd-pad-cell-block);
 }
 
 .fd-cell-actions {
   text-align: right;
-  vertical-align: top;
-  padding-block: 1rem;
 }
 
 .fd-table th {
@@ -270,7 +311,7 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
   background: var(--fd-surface);
-  padding-block: 0.5rem;
+  padding-block: var(--fd-gap-sm);
 }
 
 .fd-col-actions-heading {
@@ -283,7 +324,7 @@
 }
 
 .fd-row:hover td {
-  background: color-mix(in srgb, var(--fd-accent-soft) 35%, transparent);
+  background: var(--fd-row-hover);
 }
 
 .fd-feed-card {
@@ -304,7 +345,7 @@
   color: var(--fd-muted);
   font-size: var(--sl-text-sm);
   line-height: 1.5;
-  max-width: 52rem;
+  max-width: var(--fd-summary-max);
 }
 
 .fd-feed-meta {
@@ -326,7 +367,7 @@
 }
 
 .fd-domain-link {
-  color: var(--sl-color-text-accent);
+  color: var(--fd-link);
   text-decoration: none;
 }
 
@@ -337,9 +378,9 @@
 .fd-lang {
   display: inline-flex;
   align-items: center;
-  padding: 0.1rem 0.35rem;
-  border-radius: 0.25rem;
-  background: color-mix(in srgb, var(--fd-border) 45%, transparent);
+  padding: var(--fd-pad-lang);
+  border-radius: var(--fd-radius-sm);
+  background: var(--fd-border-muted);
   font-size: var(--sl-text-xs);
   color: var(--fd-muted);
   text-transform: lowercase;
@@ -348,8 +389,8 @@
 .fd-badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.12rem 0.45rem;
-  border-radius: 999px;
+  padding: var(--fd-pad-badge);
+  border-radius: var(--fd-radius-pill);
   background: var(--fd-surface);
   border: 1px solid var(--fd-border);
   color: var(--fd-muted);
@@ -377,10 +418,10 @@
 .fd-pagination {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: var(--fd-gap);
   align-items: center;
   justify-content: center;
-  padding: 0.875rem 1rem;
+  padding: var(--fd-pad-cell);
   border-top: 1px solid var(--fd-border);
 }
 
@@ -392,7 +433,7 @@
 .fd-empty,
 .fd-loading,
 .fd-banner {
-  padding: 1.25rem 1.125rem;
+  padding: var(--fd-pad-message);
 }
 
 .fd-empty-title {
@@ -411,25 +452,20 @@
 
 .fd-feedback-error,
 .fd-banner-error {
-  color: var(--sl-color-red-high);
+  color: var(--fd-danger);
 }
 
 .fd-feedback-success {
-  color: var(--sl-color-green-high);
+  color: var(--fd-success);
 }
 
 .fd-banner-error {
-  padding: 0.875rem 1rem;
+  padding: var(--fd-pad-cell);
 }
 
 .fd-skeleton {
-  border-radius: calc(var(--fd-radius) - 0.25rem);
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--fd-border) 35%, transparent),
-    color-mix(in srgb, var(--fd-border) 70%, transparent),
-    color-mix(in srgb, var(--fd-border) 35%, transparent)
-  );
+  border-radius: var(--fd-radius-sm);
+  background: linear-gradient(90deg, var(--fd-shimmer-start), var(--fd-shimmer-mid), var(--fd-shimmer-start));
   background-size: 200% 100%;
   animation: fd-shimmer 1.2s ease-in-out infinite;
 }
@@ -441,13 +477,14 @@
 
 .fd-skeleton-row {
   height: 3rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--fd-gap-sm);
 }
 
 @keyframes fd-shimmer {
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }
@@ -488,13 +525,13 @@
   }
 
   .fd-table td {
-    padding: 0.5rem 1rem;
+    padding: var(--fd-gap-sm) 1rem;
     border: 0;
   }
 
   .fd-cell-actions {
     padding-top: 0;
-    padding-bottom: 1rem;
+    padding-bottom: var(--fd-pad-cell-block);
   }
 
   .fd-col-actions,

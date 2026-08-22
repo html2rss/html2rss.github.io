@@ -65,7 +65,7 @@ function renderFeedRow(entry: FeedDirectoryEntry, vm: FeedDirectoryViewModel): s
     : `<code class="fd-domain">${escapeHtml(entry.siteKey)}</code>`;
 
   return `<tr class="fd-row" data-entry-id="${escapeHtml(entry.id)}">
-    <td class="fd-cell fd-cell-feed">
+    <td class="fd-cell-feed">
       <article class="fd-feed-card">
         <h3 class="fd-feed-title">${escapeHtml(entry.title)}</h3>
         ${entry.summary ? `<p class="fd-feed-summary">${escapeHtml(entry.summary)}</p>` : ''}
@@ -76,7 +76,7 @@ function renderFeedRow(entry: FeedDirectoryEntry, vm: FeedDirectoryViewModel): s
         </div>
       </article>
     </td>
-    <td class="fd-cell fd-cell-actions">
+    <td class="fd-cell-actions">
       <div class="fd-action-bar">
         <a class="fd-btn fd-btn-primary fd-btn-compact" href="${escapeHtml(feedUrl)}" target="_blank" rel="noopener noreferrer nofollow">RSS</a>
         <button type="button" class="fd-btn fd-btn-ghost fd-btn-compact" data-action="copy-feed" data-entry-id="${escapeHtml(entry.id)}" aria-label="Copy RSS link">${copied ? 'Copied' : 'Copy'}</button>
@@ -187,7 +187,7 @@ export function renderFeedDirectory(vm: FeedDirectoryViewModel): string {
 
     ${
       vm.instanceEditorOpen
-        ? `<section class="fd-panel fd-instance-panel" aria-label="Instance settings">
+        ? `<section class="fd-panel" aria-label="Instance settings">
       <label class="fd-field">
         <span class="fd-field-label">Instance URL</span>
         <div class="fd-inline-field">
@@ -201,7 +201,7 @@ export function renderFeedDirectory(vm: FeedDirectoryViewModel): string {
     }
 
     <section class="fd-panel fd-toolbar" aria-label="Search and filters">
-      <label class="fd-search">
+      <label>
         <span class="fd-sr-only">Search feeds</span>
         <input class="fd-input fd-search-input" type="search" data-ref="search" value="${escapeHtml(vm.filters.query)}" placeholder="Search by feed name, site, or domain" enterkeyhint="search" />
       </label>
