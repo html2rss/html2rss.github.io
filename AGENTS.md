@@ -9,7 +9,7 @@ What this repo owns:
 
 - docs content and navigation under `src/content/docs/`
 - docs-specific components and styling under `src/components/`
-- feed-directory presentation and client behavior (`src/components/feed-directory/`, wrapper `FeedDirectory.astro`)
+- feed-directory presentation and client behavior (`src/components/feed-directory/`)
 
 What this repo does not own:
 
@@ -44,6 +44,20 @@ If a cross-repo behavior changed but upstream is not updated yet, document the g
 - Do not reintroduce `bin/data-update`, `src/data/configs.json`, or a `html2rss-configs` gem dependency in this repo.
 - Wire shape v1 is defined in `html2rss-web` request specs and OpenAPI (`catalog_version`, `parameters.schema`, `parameters.defaults`).
 - When the instance is unreachable or returns `404` with `catalog_disabled`, show an error state — no static fallback list.
+- **Wire parsing only in** `src/components/feed-directory/adapters/catalog-api.ts`. Domain modules must not parse API envelopes or wire rows.
+- See `CONTEXT.md` for glossary (`FeedDirectoryEntry`, catalog seam, instance persistence contract).
+
+### Module layout (`src/components/feed-directory/`)
+
+| Layer    | Path        | Role                                                                                       |
+| -------- | ----------- | ------------------------------------------------------------------------------------------ |
+| adapters | `adapters/` | Catalog API fetch/parse, browser storage, URL filters, OPML download                       |
+| domain   | `domain/`   | Pure behavior — filters, language, feed URLs, OPML build; no `window` / `document`         |
+| app      | `app/`      | State transitions (`directory-state.ts`), view model, event wiring (`FeedDirectoryApp.ts`) |
+| ui       | `ui/`       | HTML rendering from `FeedDirectoryViewModel`                                               |
+| lib      | `lib/`      | Shared utilities (escape, debounce)                                                        |
+
+Entry point: `feed-directory/FeedDirectory.astro` mounts `FeedDirectoryApp` directly.
 
 ## Generated Artifacts
 
@@ -58,11 +72,13 @@ Run commands from `html2rss.github.io/`:
 - `make build` builds production output
 - `make lint` checks formatting
 - `make lintfix` applies formatting fixes
+- `make test` runs Vitest on feed-directory pure modules
+- `make check` runs `lint` and `test`
 
 Preferred verification flow for docs/content changes:
 
-1. Run targeted check(s) first (`make lint` or `make build`).
-2. Run the broader check set before PR (`make lint` and `make build`).
+1. Run targeted check(s) first (`make lint`, `make test`, or `make build`).
+2. Run the broader check set before PR (`make lint`, `make test`, and `make build`).
 3. For feed-directory UI changes, spot-check against a running instance with catalog enabled (`GET /api/v1/configs` returns entries).
 
 ## Docs Authoring Rules
