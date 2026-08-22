@@ -9,7 +9,7 @@ What this repo owns:
 
 - docs content and navigation under `src/content/docs/`
 - docs-specific components and styling under `src/components/`
-- feed-directory presentation and client behavior (`FeedDirectory.astro`, `feed-directory.js`)
+- feed-directory presentation and client behavior (`src/components/feed-directory/`, wrapper `FeedDirectory.astro`)
 
 What this repo does not own:
 
@@ -30,7 +30,7 @@ Before substantial edits, state cross-repo context in your notes:
 Common contracts:
 
 - Feed Directory browse data comes from `{instance}/api/v1/configs` on a running `html2rss-web` instance (see OpenAPI in `html2rss-web`).
-- Instance URL persistence: default public instance, `#!url=` hash deep link from the web app, and browser localStorage (see `feed-directory.js`).
+- Instance URL persistence: default public instance, `#!url=` hash deep link from the web app, browser localStorage, and filter state in URL query params (`q`, `topic`, `lang`, `sort`, `page`).
 - Deep link from `html2rss-web`: `https://html2rss.github.io/feed-directory/#!url={encodedInstanceUrl}` must keep working.
 - Catalog metadata in YAML (`directory.title`, `directory.summary`, `directory.topics`) is authored in `html2rss-configs` only.
 - Ruby gem docs should match `html2rss` behavior and CLI output.
