@@ -27,7 +27,7 @@ Are you missing an RSS feed for a website? You can create your own feed config a
 
 1. Go to [html2rss-configs on GitHub](https://github.com/html2rss/html2rss-configs)
 2. Click "Fork" → "Add file" → Create `domain.com/name.yml` under `configs/`
-3. Declare `registry.id` (unique feed identity) and include top-level `directory.topics` (non-empty) from the controlled vocabulary (`tech`, `news`, `security`, `research`, … — see [Creating Custom Feeds](/creating-custom-feeds/#sharing-your-config))
+3. Declare `registry.id`, `directory.topics` (non-empty), `directory.title`, and mirror `channel.title` (required for Feed Directory configs). Optional `directory.summary` (max 160 characters). See [Creating Custom Feeds](/creating-custom-feeds/#sharing-your-config) for topics and examples.
 4. Prefer setting `channel.language` when the page language is clear
 5. Paste your config → "Commit new file" → "Open pull request"
 
