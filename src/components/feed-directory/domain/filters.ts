@@ -1,5 +1,4 @@
-import type { CatalogEntry, CatalogFacets, FilterState, SortKey } from './types';
-import { parseSiteDomain } from './instance';
+import type { CatalogFacets, FeedDirectoryEntry, FilterState, SortKey } from './types';
 import { baseLanguageCode, languageMatches } from './language';
 
 export const PAGE_SIZE = 25;
@@ -12,19 +11,18 @@ export const DEFAULT_FILTER_STATE: FilterState = {
   page: 1,
 };
 
-export function buildSearchableText(entry: CatalogEntry): string {
-  const topics = (entry.directory?.topics ?? []).join(' ');
-  const language = entry.channel?.language;
-  const languageBase = baseLanguageCode(language);
+export function buildSearchableText(entry: FeedDirectoryEntry): string {
+  const topics = entry.topics.join(' ');
+  const languageBase = baseLanguageCode(entry.language);
   return [
     entry.id,
-    entry.directory?.title,
-    entry.directory?.summary,
-    entry.channel?.url,
-    language,
+    entry.title,
+    entry.summary,
+    entry.channelUrl,
+    entry.language,
     languageBase,
     topics,
-    parseSiteDomain(entry.id),
+    entry.siteKey,
   ]
     .filter(Boolean)
     .join(' ');
@@ -43,16 +41,16 @@ export function fuzzyMatch(text: string, query: string): boolean {
   return queryIndex === lowerQuery.length;
 }
 
-export function extractFacets(entries: CatalogEntry[]): CatalogFacets {
+export function extractFacets(entries: FeedDirectoryEntry[]): CatalogFacets {
   const topics = new Set<string>();
   const languages = new Set<string>();
 
   for (const entry of entries) {
-    for (const topic of entry.directory?.topics ?? []) {
+    for (const topic of entry.topics) {
       topics.add(topic);
     }
-    if (entry.channel?.language) {
-      const base = baseLanguageCode(entry.channel.language);
+    if (entry.language) {
+      const base = baseLanguageCode(entry.language);
       if (base) languages.add(base);
     }
   }
@@ -63,33 +61,30 @@ export function extractFacets(entries: CatalogEntry[]): CatalogFacets {
   };
 }
 
-export function filterEntries(entries: CatalogEntry[], filters: FilterState): CatalogEntry[] {
+export function filterEntries(entries: FeedDirectoryEntry[], filters: FilterState): FeedDirectoryEntry[] {
   const query = filters.query.trim().toLowerCase();
 
   return entries.filter((entry) => {
     const searchable = buildSearchableText(entry).toLowerCase();
     if (query && !fuzzyMatch(searchable, query)) return false;
 
-    const entryTopics = entry.directory?.topics ?? [];
-    if (filters.topics.length > 0 && !filters.topics.some((topic) => entryTopics.includes(topic))) {
+    if (filters.topics.length > 0 && !filters.topics.some((topic) => entry.topics.includes(topic))) {
       return false;
     }
 
-    if (filters.language && !languageMatches(entry.channel?.language, filters.language)) return false;
+    if (filters.language && !languageMatches(entry.language, filters.language)) return false;
 
     return true;
   });
 }
 
-export function sortEntries(entries: CatalogEntry[], sort: SortKey): CatalogEntry[] {
+export function sortEntries(entries: FeedDirectoryEntry[], sort: SortKey): FeedDirectoryEntry[] {
   const sorted = [...entries];
   sorted.sort((a, b) => {
     if (sort === 'site') {
-      return parseSiteDomain(a.id).localeCompare(parseSiteDomain(b.id));
+      return a.siteKey.localeCompare(b.siteKey);
     }
-    const titleA = a.directory?.title ?? a.id;
-    const titleB = b.directory?.title ?? b.id;
-    return titleA.localeCompare(titleB);
+    return a.title.localeCompare(b.title);
   });
   return sorted;
 }

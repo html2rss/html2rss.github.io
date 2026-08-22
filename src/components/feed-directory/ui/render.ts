@@ -1,8 +1,14 @@
 import { escapeHtml } from '../lib/escape';
-import { buildFeedUrl, formatInstanceLabel, parseSiteDomain } from '../domain/instance';
+import { buildFeedUrl, formatInstanceLabel } from '../domain/instance';
 import { hasActiveFilters, PAGE_SIZE } from '../domain/filters';
 import { displayLanguage, normalizeFilterLanguage } from '../domain/language';
-import type { CatalogEntry, CatalogFacets, CatalogLoadError, FilterState, LoadState } from '../domain/types';
+import type {
+  CatalogFacets,
+  CatalogLoadError,
+  FeedDirectoryEntry,
+  FilterState,
+  LoadState,
+} from '../domain/types';
 
 interface RenderContext {
   loadState: LoadState;
@@ -13,9 +19,9 @@ interface RenderContext {
   instanceFeedback: { message: string; tone: 'idle' | 'error' | 'success' } | null;
   filters: FilterState;
   facets: CatalogFacets;
-  entries: CatalogEntry[];
+  entries: FeedDirectoryEntry[];
   filteredTotal: number;
-  pageItems: CatalogEntry[];
+  pageItems: FeedDirectoryEntry[];
   totalPages: number;
   catalogTotal: number;
   expandedEntryId: string | null;
@@ -48,15 +54,13 @@ function renderLanguageOptions(facets: CatalogFacets, selected: string): string 
   return `<option value=""${normalizedSelected ? '' : ' selected'}>All languages</option>${options}`;
 }
 
-function renderParameterFields(entry: CatalogEntry, values: Record<string, string>): string {
-  const schema = entry.parameters?.schema ?? {};
-  const defaults = entry.parameters?.defaults ?? {};
-  const keys = Object.keys(schema);
+function renderParameterFields(entry: FeedDirectoryEntry, values: Record<string, string>): string {
+  const keys = Object.keys(entry.parameterSchema);
   if (keys.length === 0) return '';
 
   const fields = keys
     .map((key) => {
-      const value = values[key] ?? defaults[key] ?? '';
+      const value = values[key] ?? entry.parameterDefaults[key] ?? '';
       return `<label class="fd-field">
         <span class="fd-field-label">${escapeHtml(key)}</span>
         <input class="fd-input" type="text" data-param-key="${escapeHtml(key)}" data-entry-id="${escapeHtml(entry.id)}" value="${escapeHtml(String(value))}" />
@@ -67,33 +71,28 @@ function renderParameterFields(entry: CatalogEntry, values: Record<string, strin
   return `<div class="fd-params">${fields}</div>`;
 }
 
-function renderFeedRow(entry: CatalogEntry, ctx: RenderContext): string {
-  const title = entry.directory?.title ?? entry.id;
-  const summary = entry.directory?.summary ?? '';
-  const domain = parseSiteDomain(entry.id);
-  const language = displayLanguage(entry.channel?.language);
-  const topics = entry.directory?.topics ?? [];
+function renderFeedRow(entry: FeedDirectoryEntry, ctx: RenderContext): string {
+  const language = displayLanguage(entry.language);
   const params = ctx.parametersById[entry.id] ?? {};
   const feedUrl = buildFeedUrl(ctx.instanceUrl, entry, params);
-  const sourceUrl = entry.channel?.url ?? '';
-  const hasParameters = Object.keys(entry.parameters?.schema ?? {}).length > 0;
+  const hasParameters = Object.keys(entry.parameterSchema).length > 0;
   const expanded = ctx.expandedEntryId === entry.id;
   const copied = ctx.copiedEntryId === entry.id;
 
   const topicBadges =
-    topics.length > 0
-      ? topics.map((topic) => `<span class="fd-badge">${escapeHtml(topic)}</span>`).join('')
+    entry.topics.length > 0
+      ? entry.topics.map((topic) => `<span class="fd-badge">${escapeHtml(topic)}</span>`).join('')
       : '';
 
-  const domainMarkup = sourceUrl
-    ? `<a class="fd-domain fd-domain-link" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(domain)}</a>`
-    : `<code class="fd-domain">${escapeHtml(domain)}</code>`;
+  const domainMarkup = entry.channelUrl
+    ? `<a class="fd-domain fd-domain-link" href="${escapeHtml(entry.channelUrl)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(entry.siteKey)}</a>`
+    : `<code class="fd-domain">${escapeHtml(entry.siteKey)}</code>`;
 
   return `<tr class="fd-row" data-entry-id="${escapeHtml(entry.id)}">
     <td class="fd-cell fd-cell-feed">
       <article class="fd-feed-card">
-        <h3 class="fd-feed-title">${escapeHtml(title)}</h3>
-        ${summary ? `<p class="fd-feed-summary">${escapeHtml(summary)}</p>` : ''}
+        <h3 class="fd-feed-title">${escapeHtml(entry.title)}</h3>
+        ${entry.summary ? `<p class="fd-feed-summary">${escapeHtml(entry.summary)}</p>` : ''}
         <div class="fd-feed-meta">
           ${domainMarkup}
           ${language !== '—' ? `<span class="fd-lang">${escapeHtml(language)}</span>` : ''}
@@ -105,7 +104,7 @@ function renderFeedRow(entry: CatalogEntry, ctx: RenderContext): string {
       <div class="fd-action-bar">
         <a class="fd-btn fd-btn-primary fd-btn-compact" href="${escapeHtml(feedUrl)}" target="_blank" rel="noopener noreferrer nofollow">RSS</a>
         <button type="button" class="fd-btn fd-btn-ghost fd-btn-compact" data-action="copy-feed" data-entry-id="${escapeHtml(entry.id)}" aria-label="Copy RSS link">${copied ? 'Copied' : 'Copy'}</button>
-        ${sourceUrl ? `<a class="fd-btn fd-btn-ghost fd-btn-compact" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer nofollow">Source</a>` : ''}
+        ${entry.channelUrl ? `<a class="fd-btn fd-btn-ghost fd-btn-compact" href="${escapeHtml(entry.channelUrl)}" target="_blank" rel="noopener noreferrer nofollow">Source</a>` : ''}
         ${hasParameters ? `<button type="button" class="fd-btn fd-btn-ghost fd-btn-compact" data-action="toggle-params" data-entry-id="${escapeHtml(entry.id)}" aria-expanded="${expanded}">${expanded ? 'Hide' : 'Params'}</button>` : ''}
       </div>
     </td>

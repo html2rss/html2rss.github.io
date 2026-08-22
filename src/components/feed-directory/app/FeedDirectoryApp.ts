@@ -1,4 +1,4 @@
-import { fetchCatalog, mapCatalogError } from '../domain/catalog';
+import { fetchCatalogResponse, mapCatalogError } from '../adapters/catalog-api';
 import {
   DEFAULT_FILTER_STATE,
   extractFacets,
@@ -15,7 +15,7 @@ import {
   readInitialInstanceUrl,
 } from '../domain/instance';
 import { buildOpmlDocument, downloadOpml } from '../domain/opml';
-import type { CatalogEntry, CatalogFacets, FilterState, LoadState } from '../domain/types';
+import type { CatalogFacets, FeedDirectoryEntry, FilterState, LoadState } from '../domain/types';
 import { clearFilters, readFiltersFromUrl, writeFiltersToUrl } from '../domain/url-state';
 import { normalizeFilterLanguage } from '../domain/language';
 import { debounce } from '../lib/debounce';
@@ -24,7 +24,7 @@ import { renderFeedDirectory, type RenderContext } from '../ui/render';
 export class FeedDirectoryApp {
   private readonly root: HTMLElement;
   private loadState: LoadState = 'idle';
-  private entries: CatalogEntry[] = [];
+  private entries: FeedDirectoryEntry[] = [];
   private facets: CatalogFacets = { topics: [], languages: [] };
   private catalogTotal = 0;
   private filters: FilterState = readFiltersFromUrl();
@@ -59,12 +59,12 @@ export class FeedDirectoryApp {
     this.render();
 
     try {
-      const { configs, meta } = await fetchCatalog(nextInstanceUrl);
+      const { entries, meta } = await fetchCatalogResponse(nextInstanceUrl);
       this.instanceUrl = nextInstanceUrl;
       this.instanceDraft = nextInstanceUrl;
-      this.entries = configs;
-      this.catalogTotal = meta.total ?? configs.length;
-      this.facets = extractFacets(configs);
+      this.entries = entries;
+      this.catalogTotal = meta.total;
+      this.facets = extractFacets(entries);
       this.loadState = 'ready';
       this.error = null;
       this.expandedEntryId = null;
@@ -86,7 +86,7 @@ export class FeedDirectoryApp {
     this.render();
   }
 
-  private filteredEntries(): CatalogEntry[] {
+  private filteredEntries(): FeedDirectoryEntry[] {
     return sortEntries(filterEntries(this.entries, this.filters), this.filters.sort);
   }
 

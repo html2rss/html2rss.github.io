@@ -1,19 +1,17 @@
 import { escapeXml } from '../lib/escape';
 import { buildFeedUrl } from './instance';
-import type { CatalogEntry } from './types';
+import type { FeedDirectoryEntry } from './types';
 
 export function buildOpmlDocument(
   instanceUrl: string,
-  entries: CatalogEntry[],
+  entries: FeedDirectoryEntry[],
   parametersById: Record<string, Record<string, string>>
 ): string {
   const outlines = entries
     .map((entry) => {
-      const title = entry.directory?.title ?? entry.id;
       const xmlUrl = buildFeedUrl(instanceUrl, entry, parametersById[entry.id] ?? {});
-      const htmlUrl = entry.channel?.url ?? '';
-      const htmlAttr = htmlUrl ? ` htmlUrl="${escapeXml(htmlUrl)}"` : '';
-      return `    <outline type="rss" text="${escapeXml(title)}" title="${escapeXml(title)}" xmlUrl="${escapeXml(xmlUrl)}"${htmlAttr} />`;
+      const htmlAttr = entry.channelUrl ? ` htmlUrl="${escapeXml(entry.channelUrl)}"` : '';
+      return `    <outline type="rss" text="${escapeXml(entry.title)}" title="${escapeXml(entry.title)}" xmlUrl="${escapeXml(xmlUrl)}"${htmlAttr} />`;
     })
     .join('\n');
 

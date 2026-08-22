@@ -1,4 +1,4 @@
-import type { CatalogEntry } from './types';
+import type { FeedDirectoryEntry } from './types';
 
 const DEFAULT_INSTANCE = atob('aHR0cHM6Ly8xLmgyci53b3JrZXJzLmRldi8=');
 const STORAGE_KEY = 'html2rss.feedDirectory.instanceUrl';
@@ -85,7 +85,7 @@ export function persistInstanceUrl(instanceUrl: string, defaultUrl = getDefaultI
 
 export function buildFeedUrl(
   instanceUrl: string,
-  entry: Pick<CatalogEntry, 'path'>,
+  entry: Pick<FeedDirectoryEntry, 'path'>,
   parameters: Record<string, string> = {}
 ): string {
   const url = new URL(entry.path, instanceUrl);

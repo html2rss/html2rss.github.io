@@ -1,21 +1,14 @@
-export interface CatalogEntry {
+export interface FeedDirectoryEntry {
   id: string;
   path: string;
-  source: string;
-  directory: {
-    title: string;
-    summary: string;
-    topics: string[];
-  };
-  channel: {
-    url: string;
-    language: string;
-    title: string;
-  };
-  parameters: {
-    schema: Record<string, { type: string }>;
-    defaults: Record<string, string | null>;
-  };
+  siteKey: string;
+  title: string;
+  summary: string;
+  topics: readonly string[];
+  channelUrl: string;
+  language: string;
+  parameterSchema: Readonly<Record<string, { type: string }>>;
+  parameterDefaults: Readonly<Record<string, string>>;
 }
 
 export type SortKey = 'title' | 'site';
@@ -35,7 +28,7 @@ export interface CatalogFacets {
 
 export type LoadState = 'idle' | 'loading' | 'ready' | 'error';
 
-export type CatalogErrorKind = 'disabled' | 'network' | 'invalid' | 'unknown';
+export type CatalogErrorKind = 'disabled' | 'network' | 'invalid' | 'unsupported_version' | 'unknown';
 
 export interface CatalogLoadError {
   kind: CatalogErrorKind;
