@@ -7,17 +7,13 @@ import { Code } from "@astrojs/starlight/components";
 
 ## Health Endpoints
 
-`html2rss-web` exposes these health endpoints:
+| Endpoint | Auth | Purpose |
+| --- | --- | --- |
+| `GET /api/v1/health/live` | none | Process liveness |
+| `GET /api/v1/health/ready` | none | Config readiness |
+| `GET /api/v1/health` | bearer | Operator and uptime checks |
 
-- `GET /api/v1/health/live`: liveness probe, no auth
-- `GET /api/v1/health/ready`: readiness probe, no auth
-- `GET /api/v1/health`: authenticated health probe, bearer token required
-
-## Authenticated Health Checks
-
-Use `GET /api/v1/health` when you want an authenticated operator-facing probe.
-
-Set the environment variable `HEALTH_CHECK_TOKEN`, then send it as a bearer token:
+Set `HEALTH_CHECK_TOKEN`, then call the authenticated endpoint:
 
 <Code
   code={`
@@ -27,29 +23,19 @@ Set the environment variable `HEALTH_CHECK_TOKEN`, then send it as a bearer toke
   lang="bash"
 />
 
-The response is JSON and reports the current status, timestamp, environment, uptime, and reserved checks payload.
+The response is JSON with status, timestamp, environment, uptime, and a checks payload. Boot fails in production if `HEALTH_CHECK_TOKEN` is still `CHANGE_ME_HEALTH_CHECK_TOKEN` after the hardening release.
 
-Do not leave `CHANGE_ME_HEALTH_CHECK_TOKEN` anywhere in production. Once the production hardening change is released, boot will fail if any account still uses that placeholder token.
+## Sentry
 
-## Probe Selection
+Set `SENTRY_DSN` to enable Issue capture in html2rss-web (Rack middleware and operational failures). Structured log intake is opt-in: set `SENTRY_ENABLE_LOGS=true` explicitly — a DSN alone does not forward stdout logs.
 
-- Use `/api/v1/health/live` for a simple process-alive signal.
-- Use `/api/v1/health/ready` for the standard config-readiness check without auth.
-- Use `/api/v1/health` for authenticated monitoring from your uptime system or operator tooling.
+Use separate Sentry projects for html2rss-web and botasaurus-scrape-api. Never share a DSN.
 
-## Application Performance Monitoring using Sentry
+| Env var | Service |
+| --- | --- |
+| `SENTRY_DSN` | html2rss-web |
+| `BOTASAURUS_SENTRY_DSN` | botasaurus-scrape-api |
 
-When you specify `SENTRY_DSN` in your environment variables, html2rss-web initializes Sentry for Issue capture (Rack middleware and operational failure emission). Structured log intake requires an explicit `SENTRY_ENABLE_LOGS=true` — a DSN alone does not forward stdout logs.
-
-### DSN separation (required)
-
-Use **separate Sentry projects** for html2rss-web and botasaurus-scrape-api. Never share a DSN between them.
-
-| Env var | Service | Sentry project |
-| --- | --- | --- |
-| `SENTRY_DSN` | html2rss-web | Project A (web) |
-| `BOTASAURUS_SENTRY_DSN` | botasaurus-scrape-api | Project B (scraper) |
-
-In `docker-compose.yml`, the botasaurus service maps `BOTASAURUS_SENTRY_DSN` into its own `SENTRY_DSN` and does **not** fall back to the web project's DSN.
+In `docker-compose.yml`, the botasaurus service maps `BOTASAURUS_SENTRY_DSN` into its own `SENTRY_DSN`, requires it at startup, and does not fall back to the web project's DSN.
 
 For on-call triage, alert rules, and dashboard baselines, see the [Sentry runbook in the web repo](https://github.com/html2rss/html2rss-web/blob/main/docs/README.md#sentry-runbook).
