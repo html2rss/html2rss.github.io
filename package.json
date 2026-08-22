@@ -10,7 +10,8 @@
     "astro": "astro",
     "build:full": "npm run build",
     "lint": "prettier --check .",
-    "lintfix": "prettier --write ."
+    "lintfix": "prettier --write .",
+    "test": "vitest run"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
@@ -20,7 +21,8 @@
   },
   "devDependencies": {
     "prettier": "^3.9.6",
-    "prettier-plugin-astro": "^0.14.0"
+    "prettier-plugin-astro": "^0.14.0",
+    "vitest": "^3.2.4"
   },
   "overrides": {
     "esbuild": "^0.28.1"

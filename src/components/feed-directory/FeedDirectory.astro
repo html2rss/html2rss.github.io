@@ -1,0 +1,15 @@
+---
+import "./feed-directory.css";
+---
+
+<div id="feed-directory-app" class="fd-app not-content"></div>
+
+<script>
+  import { FeedDirectoryApp } from "./app/FeedDirectoryApp";
+
+  const root = document.getElementById("feed-directory-app");
+  if (root) {
+    const app = new FeedDirectoryApp(root);
+    app.start();
+  }
+</script>

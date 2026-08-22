@@ -18,6 +18,11 @@ build-full:
 lint:
 	npm run lint
 
+test:
+	npm run test
+
+check: lint test
+
 lintfix:
 	npm run lintfix
 
