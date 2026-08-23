@@ -165,7 +165,7 @@ Four-step workflow for a durable feed config:
 3. Call `validate_config` with `yaml` (or `config`) — must not be `isError`.
 4. Call `apply_config` — `isError` if zero items. Confirm `payload.item_count` before shipping.
 
-If the destination is html2rss-configs, rewrite the draft for `directory.topics` and explicit channel `title`/`url`.
+If the destination is html2rss-configs, rewrite the draft with `registry.id`, `directory.topics` (non-empty), `directory.title`, and mirror `channel.title` (required for Feed Directory configs). Optional `directory.summary` (max 160 characters). Set explicit channel `url`.
 
 - **Arguments:**
   - `url` _(string, required)_: Target URL to analyze.

@@ -1,0 +1,443 @@
+---
+title: "Publish and Consume a Custom Feed Registry"
+description: "Build, sign with Ed25519, host on GitHub Releases, and consume a custom registry.v1 feed bundle in html2rss-web."
+---
+
+A `registry.v1` bundle is a signed package of curated `html2rss` feed configurations. By publishing your own registry, your organization or community can distribute private or specialized RSS feed definitions that any `html2rss-web` instance can subscribe to, cryptographically verify, and serve.
+
+---
+
+## Architecture & Trust Model
+
+A `registry.v1` feed registry uses an offline-first cryptographic trust model:
+
+```text
+Publisher Repo                      GitHub Releases                   html2rss-web Instance
++-------------------------+         +--------------------------+      +-------------------------+
+| configs/**/*.yml        |         | registry-bundle.tar.gz   |      | config/registries.yml   |
+| manifest.json (SHA-256) | --CI--> | - manifest.json          | ---> | - Pinned Public Key     |
+| manifest.sig (Ed25519)  |         | - manifest.sig           |      | - Sync & Catalog Policy |
++-------------------------+         | - configs/               |      +-------------------------+
+                                    +--------------------------+                   |
+                                                                                   v
+                                                                      Serves /<registry_id>.rss
+```
+
+### Bundle Contents
+
+Each release is packaged as a `registry-bundle.tar.gz` tarball containing:
+
+- **`configs/`**: Directory containing standard `html2rss` feed YAML configuration files.
+- **`manifest.json`**: Index mapping every relative configuration path to its SHA-256 hex digest, along with metadata (`format: registry.v1`, `registry_id`, `version`, and `public_key_id`).
+- **`manifest.sig`**: Strict Base64-encoded **Ed25519** digital signature computed over the canonical JSON representation of `manifest.json`.
+
+### Cryptographic Guarantees
+
+- **Integrity**: Every individual YAML file's SHA-256 hash is validated before loading.
+- **Authenticity & Non-Repudiation**: The publisher signs the manifest using an Ed25519 private key. `html2rss-web` instances verify this signature against the publisher's pinned public key before activating feeds.
+- **Atomic Rollback**: If a download, signature check, or YAML validation fails, `html2rss-web` keeps the previous active bundle running without downtime.
+
+---
+
+## Prerequisites
+
+Before starting, ensure you have:
+
+- **OpenSSL 3.0+** (or 1.1.1+) installed locally for key generation.
+- **Git** and a **GitHub repository** for hosting feed configs and automated releases.
+- **Docker** or a running **`html2rss-web`** instance to consume the feeds.
+- Zero Ruby knowledge required: the publisher CI uses standard POSIX shell and Python 3.
+
+---
+
+## Step 1: Generate an Ed25519 Keypair
+
+Generate an Ed25519 private signing key and extract its public key in standard PEM format.
+
+### 1. Generate Private and Public Keys
+
+Run the following commands in your terminal:
+
+```bash
+# 1. Generate an Ed25519 private key in PEM format
+openssl genpkey -algorithm ED25519 -out registry-signing.pem
+
+# 2. Extract the public key in PEM format
+openssl pkey -in registry-signing.pem -pubout -out registry-signing.pub
+
+# 3. Secure file permissions
+chmod 600 registry-signing.pem
+```
+
+### 2. Configure Key Storage
+
+- **Private Key (`registry-signing.pem`)**: Store this secret securely. In your GitHub repository, go to **Settings** &rarr; **Secrets and variables** &rarr; **Actions** and add a secret named `REGISTRY_SIGNING_KEY` containing the entire contents of `registry-signing.pem`.
+- **Public Key (`registry-signing.pub`)**: This key is public. You will share this PEM text with `html2rss-web` operators subscribing to your registry.
+
+---
+
+## Step 2: Repository Structure & Feed Configuration
+
+Create a dedicated Git repository for your custom feeds with the following directory structure:
+
+```text
+my-feed-registry/
+├── .github/
+│   └── workflows/
+│       └── release.yml
+└── configs/
+    └── example.com/
+        └── engineering.yml
+```
+
+### Feed Configuration Requirements
+
+Every YAML file placed inside `configs/` must include explicit `registry` and `directory` blocks:
+
+```yaml
+registry:
+  id: example.com/engineering
+  aliases: []
+
+directory:
+  title: Example Corp — Engineering Blog
+  summary: Updates and technical deep dives from the Example engineering team.
+  topics:
+    - tech
+    - engineering
+
+channel:
+  title: Example Corp — Engineering Blog
+  url: https://example.com/blog
+  language: en
+
+selectors:
+  items:
+    selector: "article.post"
+  title:
+    selector: "h2.entry-title a"
+  url:
+    selector: "h2.entry-title a"
+    extractor: "href"
+  description:
+    selector: "p.summary"
+```
+
+### Key Configuration Rules
+
+- **`registry.id`**: Unique identifier slug for this feed (`[a-z0-9._/-]`). Consumers access the feed at `/<registry.id>.rss` (for example, `/example.com/engineering.rss`).
+- **`registry.aliases`**: Optional list of previous IDs if a feed is renamed, ensuring existing subscribers continue to receive updates.
+- **`directory.title`**: Human-readable name used when listing feeds in the catalog. Mirror this in `channel.title`.
+- **`directory.topics`**: Array containing 1–2 topics from the controlled vocabulary: `sports`, `energy`, `tech`, `science`, `news`, `entertainment`, `jobs`, `finance`, `security`, `travel`, `environment`, `consumer`, `civic`, `product`, `research`.
+
+---
+
+## Step 3: CI Release Workflow
+
+Automate the bundle compilation, canonical manifest generation, Ed25519 signing, and GitHub Release publication using GitHub Actions.
+
+Create `.github/workflows/release.yml` in your repository:
+
+```yaml
+name: Release Feed Registry Bundle
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Build manifest and canonical bytes
+        env:
+          REGISTRY_ID: custom
+          REGISTRY_PUBLIC_KEY_ID: custom:key:2026
+          TAG_VERSION: ${{ github.ref_name }}
+        run: |
+          python3 - << 'EOF'
+          import hashlib, json, os, sys
+
+          registry_id = os.environ.get("REGISTRY_ID", "custom")
+          version = os.environ.get("TAG_VERSION", "1.0.0").lstrip("v")
+          public_key_id = os.environ.get("REGISTRY_PUBLIC_KEY_ID", "custom:key:2026")
+
+          files = {}
+          configs_dir = "configs"
+
+          if not os.path.isdir(configs_dir):
+              sys.exit("Error: configs/ directory not found.")
+
+          for root, _, filenames in os.walk(configs_dir):
+              for filename in sorted(filenames):
+                  if filename.endswith((".yml", ".yaml")):
+                      full_path = os.path.join(root, filename)
+                      rel_path = os.path.relpath(full_path).replace("\\", "/")
+                      with open(full_path, "rb") as f:
+                          digest = hashlib.sha256(f.read()).hexdigest()
+                      files[rel_path] = digest
+
+          if not files:
+              sys.exit("Error: No config files found in configs/.")
+
+          manifest = {
+              "format": "registry.v1",
+              "registry_id": registry_id,
+              "version": version,
+              "public_key_id": public_key_id,
+              "files": dict(sorted(files.items()))
+          }
+
+          def deep_sort(obj):
+              if isinstance(obj, dict):
+                  return {k: deep_sort(v) for k, v in sorted(obj.items())}
+              if isinstance(obj, list):
+                  return [deep_sort(x) for x in obj]
+              return obj
+
+          # 1. Pretty manifest.json for human inspection
+          with open("manifest.json", "w", encoding="utf-8") as f:
+              json.dump(manifest, f, indent=2)
+              f.write("\n")
+
+          # 2. Deterministic canonical bytes for Ed25519 signing
+          with open("canonical_manifest.json", "wb") as f:
+              canonical_bytes = json.dumps(deep_sort(manifest), separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+              f.write(canonical_bytes)
+
+          print(f"Manifest created with {len(files)} configs.")
+          EOF
+
+      - name: Sign manifest with Ed25519
+        env:
+          SIGNING_KEY: ${{ secrets.REGISTRY_SIGNING_KEY }}
+        run: |
+          # Write private key securely to a temporary file
+          echo "$SIGNING_KEY" > signing_key.pem
+          chmod 600 signing_key.pem
+
+          # Compute Ed25519 signature over canonical JSON bytes
+          openssl pkeyutl -sign \
+            -inkey signing_key.pem \
+            -rawin \
+            -in canonical_manifest.json \
+            -out signature.raw
+
+          # Encode signature to strict single-line Base64
+          openssl base64 -A -in signature.raw -out manifest.sig
+
+          # Clean up private key and raw signatures
+          rm -f signing_key.pem signature.raw canonical_manifest.json
+
+      - name: Package registry bundle
+        run: |
+          mkdir -p dist
+          tar -czf dist/registry-bundle.tar.gz manifest.json manifest.sig configs
+          ls -lh dist/registry-bundle.tar.gz
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/registry-bundle.tar.gz
+          generate_release_notes: true
+```
+
+### Triggering a Release
+
+Commit your files, tag the commit with a version, and push the tag to GitHub:
+
+```bash
+git add .
+git commit -m "Add initial custom feed configs"
+git tag v2026.08.23
+git push origin v2026.08.23
+```
+
+The workflow executes, attaches `registry-bundle.tar.gz` to the GitHub Release, and makes it available for download.
+
+---
+
+## Step 4: Consuming in `html2rss-web`
+
+To consume your new custom registry, configure your `html2rss-web` instance using `config/registries.yml`.
+
+### 1. Update `config/registries.yml`
+
+Create or edit `config/registries.yml` alongside your `html2rss-web` deployment:
+
+```yaml
+# Feed lookup precedence (first match wins)
+precedence:
+  - custom
+  - official
+
+registries:
+  custom:
+    sync:
+      # Direct HTTPS download URL for the release asset
+      url: https://github.com/my-org/my-feed-registry/releases/latest/download/registry-bundle.tar.gz
+      # Optional: pin to a specific release tag
+      # pin_version: v2026.08.23
+      # Optional: cap maximum version to prevent unexpected upgrades
+      # max_version: v2026.08.23
+    auto_promote: true # Automatically activate new bundles on sync
+    catalog: true # Include feeds in GET /api/v1/configs and Web Directory
+    public_key_id: custom:key:2026 # Must match public_key_id in manifest.json
+    public_key: |
+      -----BEGIN PUBLIC KEY-----
+      MCowBQYDK2VwAyEAG... (your registry-signing.pub contents here) ...=
+      -----END PUBLIC KEY-----
+    allowed_channel_domains: # Optional: security whitelist for scraped domains
+      - example.com
+      - my-org.com
+
+  official:
+    sync:
+      channel: html2rss-official
+    catalog: true
+    public_key_id: html2rss:registry:2026
+    public_key: |
+      -----BEGIN PUBLIC KEY-----
+      MCowBQYDK2VwAyEAiMbg/04MyC5azBdM/aeY0mNuA8JbP5/jOiNRwJ2KJHE=
+      -----END PUBLIC KEY-----
+```
+
+### Configuration Options Reference
+
+| Option                    | Type    | Default        | Description                                                                                                                                  |
+| ------------------------- | ------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `precedence`              | Array   | `["official"]` | Evaluation order when looking up feeds by ID.                                                                                                |
+| `sync.url`                | String  | —              | HTTPS download URL for the `registry-bundle.tar.gz` archive.                                                                                 |
+| `sync.pin_version`        | String  | —              | Optional tag to lock sync to an exact release version.                                                                                       |
+| `sync.max_version`        | String  | —              | Maximum version cap; rejects any bundle with a higher version.                                                                               |
+| `auto_promote`            | Boolean | `false`        | When `true`, automatically swaps the active bundle upon verified sync. When `false`, stages to `.staging/` for manual approval.              |
+| `catalog`                 | Boolean | `true`         | When `true`, feeds appear in `GET /api/v1/configs` and the web directory. When `false`, feeds are private and only accessible by direct URL. |
+| `public_key_id`           | String  | —              | Identifier of the key that must match `manifest.json`.                                                                                       |
+| `public_key`              | String  | —              | Full PEM text of the publisher's Ed25519 public key.                                                                                         |
+| `allowed_channel_domains` | Array   | `[]`           | Optional domain whitelist. Rejects any config whose `channel.url` targets a host outside this list.                                          |
+
+### 2. Mount in Docker Compose
+
+Mount your custom `config/registries.yml` into your `html2rss-web` container and set allowed download hostnames if hosting outside GitHub:
+
+```yaml
+services:
+  html2rss-web:
+    image: html2rss/web:1
+    restart: unless-stopped
+    ports:
+      - "4000:3000"
+    environment:
+      - HTML2RSS_SECRET_KEY=replace_with_openssl_rand_hex_32
+      - REGISTRY_SYNC_ON_BOOT=true
+      - REGISTRY_SYNC_INTERVAL_HOURS=24
+      # Optional: add custom CDN/host if not using github.com
+      # - REGISTRY_SYNC_ALLOWED_HOSTS=registry.example.com,cdn.example.com
+    volumes:
+      - ./config/registries.yml:/app/config/registries.yml:ro
+      - registry-data:/app/data/registries
+
+volumes:
+  registry-data:
+```
+
+---
+
+## Step 5: Verify and Manage Runtime Sync
+
+`html2rss-web` includes built-in CLI commands to check status, trigger syncs, and promote staged bundles.
+
+### 1. Check Registry Status
+
+Inspect the state of all configured registries:
+
+```bash
+# Inside container or via docker exec
+docker compose exec html2rss-web bin/registry-sync --status
+```
+
+Example output:
+
+```text
+registry    mode    version       staged_version    updated_at                  sync_url                                                                             last_error
+custom      sync    2026.08.23    -                 2026-08-23 12:00:00 UTC     https://github.com/my-org/my-feed-registry/releases/latest/download/...              -
+official    sync    2026.08.22    -                 2026-08-23 11:30:00 UTC     https://github.com/html2rss/html2rss-configs/releases/latest/download/...           -
+```
+
+### 2. Manual Sync & Staging Promotion
+
+If you have `auto_promote: false`, bundles are verified and placed in staging. Promote them when ready:
+
+```bash
+# 1. Test sync without modifying active feeds (dry run)
+docker compose exec html2rss-web bin/registry-sync --registry custom --dry-run
+
+# 2. Fetch and verify the latest bundle (stages when auto_promote is false)
+docker compose exec html2rss-web bin/registry-sync --registry custom
+
+# 3. Promote staged bundle to become active
+docker compose exec html2rss-web bin/registry-sync --promote --registry custom
+```
+
+### 3. Verify Live Feeds & API Catalog
+
+- **Fetch the RSS feed**:
+
+  ```bash
+  curl -i http://localhost:4000/example.com/engineering.rss
+  ```
+
+  Expect HTTP `200 OK` and valid RSS 2.0 XML.
+
+- **Check the Config Catalog**:
+  ```bash
+  curl -s http://localhost:4000/api/v1/configs | jq '.data.configs[] | select(.registry == "custom")'
+  ```
+
+---
+
+## Step 6: Key Rotation & Incident Response
+
+### Key Rotation Workflow
+
+When rotating signing keys:
+
+1. **Generate a new keypair** with a new identifier (for example, `custom:key:2027`).
+2. **Update consumer `config/registries.yml`** files with the new `public_key` and `public_key_id`.
+3. **Publish the new release** in your registry repository signed with the new private key.
+4. Existing bundles signed with older keys continue to function until the next sync replaces them.
+
+### Incident Response Freeze
+
+If a downstream release is compromised or introduces unintended feed errors:
+
+1. **Cap the version**: Add `sync.max_version: <last_known_good_version>` to `config/registries.yml`.
+2. **Disable automatic sync**: Set `REGISTRY_SYNC_INTERVAL_HOURS=0` in the environment to prevent periodic refreshes while investigating.
+3. Because `html2rss-web` uses atomic swaps, any sync that fails signature checks or YAML validation automatically leaves the active, known-good bundle in place.
+
+---
+
+## Step 7: Air-Gapped / Offline Deployment (`path` Mode)
+
+For secure environments without outbound Internet access, deploy pre-verified bundles via directory bind-mounts:
+
+```yaml
+registries:
+  custom:
+    path: /app/mounted_registries/custom
+    catalog: true
+```
+
+Mount the folder containing `manifest.json` and `configs/` into `/app/mounted_registries/custom`. In `path` mode, `html2rss-web` validates file digests using `:integrity_only` mode without requiring network access.

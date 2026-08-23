@@ -94,7 +94,7 @@ When an agent is tasked with creating a durable YAML feed configuration:
 
 1. **Capture:** Call `capture_config`. YAML is `payload.yaml` (`items` + `enhance: true`). Check `payload.articles_count` and `has_selectors`.
 2. **Recon (optional):** Call `inspect_url` for `final_url`, `status`, `scheme_downgrade`, and `alternate_feeds` if the draft is weak.
-3. **Rewrite:** If the destination is html2rss-configs, add `directory.topics` and explicit channel `title`/`url`. Strive to keep `enhance: true` (set `false` only when chrome leaks into items).
+3. **Rewrite:** If the destination is html2rss-configs, declare `registry.id`, `directory.topics` (non-empty), `directory.title`, and mirror `channel.title` (required for Feed Directory configs). Optional `directory.summary` (max 160 characters). Set explicit channel `url`. Strive to keep `enhance: true` (set `false` only when chrome leaks into items).
 4. **Validate:** Pass `yaml` (or `config`) to `validate_config`. Exactly one of those arguments.
 5. **Apply:** Call `apply_config`. `isError` plus `payload.item_count: 0` means the config is not shippable — channel title in the XML is not success.
 
