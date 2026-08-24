@@ -41,7 +41,7 @@ Requirements:
 - `BOTASAURUS_SCRAPER_URL` set to your Botasaurus scrape API base URL (for example `http://localhost:4010`)
 - pin `strategy: botasaurus` when you want to skip Faraday and force this transport directly
 
-html2rss enforces local request policy preflight and timeout budget. When a total request timeout remains, Botasaurus `max_retries` and `wait_timeout_seconds` are clamped so upstream work fits the remaining budget.
+html2rss enforces local request policy preflight and a feed-build timeout budget. The Botasaurus scrape API splits **total** scrape time (queue, boot, navigate, wait) from **work** time (navigate, selector wait, and scroll after the browser is ready). Feed YAML `wait_timeout_seconds` is validated against the work cap (`1..30` by default); the gem forwards `request.botasaurus` options to the scrape API without shrinking retries or waits to fit a remaining feed budget. Faraday transport timeout for POST `/scrape` is the lesser of the remaining feed-build budget and `BOTASAURUS_SCRAPE_TIMEOUT_SECONDS` plus a small buffer (default **45s** scrape total, **47s** transport cap).
 
 During the **browser** execution tier, the Botasaurus scrape API always captures JSON XHR/fetch response bodies (`xhr_responses`). html2rss forwards them as `Response#captured_responses` so AutoSource `xhr_articles` can extract articles without extra requests. The HTTP-request tier returns an empty capture list. Caps and filtering live in the scrape API (see its README); article-likeness filtering is a client concern.
 
@@ -70,7 +70,7 @@ Supported `request.botasaurus` options (unknown keys are rejected):
 - `navigation_mode` (`auto`, `get`, `google_get`, `google_get_bypass`, `organic_get`; default `auto`)
 - `max_retries` (`0..3`; omit to use the scrape-API default of `2`)
 - `wait_for_selector` (string)
-- `wait_timeout_seconds` (integer `1..20`; omit to use the scrape-API default of `15`)
+- `wait_timeout_seconds` (integer `1..30`; omit to use the scrape-API default of `15`; counts against post-boot **work** budget on the scraper, not browser boot)
 - `scroll` (boolean)
 - `block_images` (boolean)
 - `block_images_and_css` (boolean)

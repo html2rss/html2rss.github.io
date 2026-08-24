@@ -16,7 +16,7 @@ Upgrade notes for configs and integrators targeting gem **0.27.0** (current `mas
 3. **Capture output** — `html2rss capture` and MCP `capture_config` emit an items selector plus `enhance: true` only (no per-field title/url/description selector soup). Capture stamps `strategy:` when AutoFallback selects a concrete transport.
 4. **CLI `--explain`** — `html2rss auto --explain` and `html2rss capture --explain` print telemetry JSON on stderr; stdout stays the feed or YAML. Status includes `admission_drops` when Cleanup dropped items.
 5. **`Html2rss.auto_feed_result`** — URL-only auto discovery returns `FeedResult` with the same `status` telemetry as config builds.
-6. **`request.botasaurus` OpenAPI 2.0** — Keys must match the scrape-API `ScrapeRequest` (unknown keys rejected). Use `scroll: true` (not `scroll_to_bottom`), `window_size: { width:, height: }` (not a two-item array), and `wait_timeout_seconds` in `1..20`. See [Strategy](/ruby-gem/reference/strategy/#botasaurus).
+6. **`request.botasaurus` OpenAPI 2.0** — Keys must match the scrape-API `ScrapeRequest` (unknown keys rejected). Use `scroll: true` (not `scroll_to_bottom`), `window_size: { width:, height: }` (not a two-item array), and `wait_timeout_seconds` in `1..30`. See [Strategy](/ruby-gem/reference/strategy/#botasaurus).
 7. **Botasaurus wire format** — Client expects OpenAPI 2.0 `ScrapeSuccess` / `ScrapeError` envelopes from the scrape API.
 8. **`--limit` default** — Auto discovery default is `25` (`AutoSource::DEFAULT_LIMIT`).
 
@@ -107,7 +107,7 @@ Update any occurrences of `link`, `pubDate`, or `updated` in your `selectors` bl
 When upgrading to **0.27.0** or later:
 
 1. **MCP integrators**: Read tool results from the envelope `payload`; configure `BOTASAURUS_SCRAPER_URL` on the MCP process env.
-2. **Align `request.botasaurus` with OpenAPI 2.0**: Use `scroll`, `{ width, height }` for `window_size`, and `wait_timeout_seconds` in `1..20` (see [Strategy](/ruby-gem/reference/strategy/#botasaurus)).
+2. **Align `request.botasaurus` with OpenAPI 2.0**: Use `scroll`, `{ width, height }` for `window_size`, and `wait_timeout_seconds` in `1..30` (see [Strategy](/ruby-gem/reference/strategy/#botasaurus)).
 3. **Validate configurations**: Run `html2rss validate config.yml`.
 
 When upgrading from releases before **0.26.0**:
