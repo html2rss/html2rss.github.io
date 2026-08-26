@@ -16,13 +16,13 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
     "@astrojs/starlight": "^0.41.7",
-    "astro": "^7.2.2",
+    "astro": "^7.2.4",
     "sharp": "^0.35.3"
   },
   "devDependencies": {
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.0",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.11"
   },
   "overrides": {
     "esbuild": "^0.28.1"
