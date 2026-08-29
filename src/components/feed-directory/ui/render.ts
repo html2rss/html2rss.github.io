@@ -6,7 +6,7 @@ import { isFailingLastResult } from '../domain/last-result';
 import type { CatalogFacets, FeedDirectoryEntry, LastResult } from '../domain/types';
 import type { FeedDirectoryViewModel } from '../app/view-model';
 
-function renderLastResultIndicator(lastResult: LastResult): string {
+export function renderLastResultIndicator(lastResult: LastResult): string {
   switch (lastResult.state) {
     case 'ok':
       return `<span class="fd-result fd-result-ok" title="Last known scrape on this instance succeeded">Last scrape ok</span>`;
@@ -185,7 +185,7 @@ export function renderFeedDirectory(vm: FeedDirectoryViewModel): string {
   const activeFilters = hasActiveFilters(vm.filters);
   const resultLabel = activeFilters
     ? `${vm.filteredTotal} matching feed${vm.filteredTotal === 1 ? '' : 's'}`
-    : `${vm.catalogTotal} ready-to-use feed${vm.catalogTotal === 1 ? '' : 's'}`;
+    : `${vm.catalogTotal} feed${vm.catalogTotal === 1 ? '' : 's'}`;
 
   const feedback = vm.instanceFeedback;
   const feedbackClass = feedback?.tone ? ` fd-feedback-${feedback.tone}` : '';

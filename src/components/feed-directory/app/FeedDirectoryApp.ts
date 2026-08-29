@@ -266,6 +266,18 @@ export class FeedDirectoryApp {
   private exportOpml(): void {
     const { filteredEntries } = selectPagedEntries(this.state);
     if (filteredEntries.length === 0) return;
+
+    const failingCount = filteredEntries.filter((entry) => isFailingLastResult(entry.lastResult)).length;
+    if (failingCount > 0) {
+      const detail =
+        failingCount === 1
+          ? '1 feed in this export had an empty or failed last scrape on this instance.'
+          : `${failingCount} feeds in this export had an empty or failed last scrape on this instance.`;
+      if (!window.confirm(`${detail} Feeds that recently failed often fail again. Export anyway?`)) {
+        return;
+      }
+    }
+
     const opml = buildOpmlDocument(this.state.instanceUrl, filteredEntries, this.state.parametersById);
     downloadOpml(opml);
   }

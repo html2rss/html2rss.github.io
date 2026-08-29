@@ -35,6 +35,14 @@ const validEnvelope = {
         parameters: { schema: {}, defaults: {} },
         last_result: { state: 'error', code: 'EXTRACTION_EMPTY', at: '2026-08-29T09:00:00Z' },
       },
+      {
+        id: 'example.com/empty-scrape',
+        path: '/example.com/empty-scrape.rss',
+        channel: { url: 'https://example.com/empty', language: 'en' },
+        directory: { title: 'Empty', summary: '', topics: [] },
+        parameters: { schema: {}, defaults: {} },
+        last_result: { state: 'empty', code: 'EXTRACTION_EMPTY', at: '2026-08-29T09:30:00Z' },
+      },
       { id: 'broken' },
       {
         id: 'missing.last/result',
@@ -54,7 +62,7 @@ const validEnvelope = {
     ],
   },
   meta: {
-    total: 3,
+    total: 4,
     catalog_version: 2,
     starters: ['anthropic.com/news', 'bbc.co.uk/available_episodes'],
   },
@@ -74,7 +82,7 @@ describe('fetchCatalogResponse', () => {
 
     const { entries, meta } = await fetchCatalogResponse('https://example.test/', fetchImpl);
 
-    expect(entries).toHaveLength(3);
+    expect(entries).toHaveLength(4);
     expect(entries[0]).toMatchObject({
       id: 'anthropic.com/news',
       siteKey: 'anthropic.com',
@@ -90,8 +98,13 @@ describe('fetchCatalogResponse', () => {
       code: 'EXTRACTION_EMPTY',
       at: '2026-08-29T09:00:00Z',
     });
+    expect(entries[3]?.lastResult).toEqual({
+      state: 'empty',
+      code: 'EXTRACTION_EMPTY',
+      at: '2026-08-29T09:30:00Z',
+    });
     expect(meta).toEqual({
-      total: 3,
+      total: 4,
       catalogVersion: 2,
       starters: ['anthropic.com/news', 'bbc.co.uk/available_episodes'],
     });
