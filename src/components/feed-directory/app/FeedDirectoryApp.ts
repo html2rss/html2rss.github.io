@@ -8,9 +8,11 @@ import {
 } from '../adapters/browser-storage';
 import { downloadOpml } from '../adapters/browser-download';
 import { buildFeedUrl } from '../domain/feed-url';
+import { isFailingLastResult } from '../domain/last-result';
 import { buildOpmlDocument } from '../domain/opml';
 import { normalizeFilterLanguage } from '../domain/language';
 import { debounce } from '../lib/debounce';
+import type { FeedDirectoryEntry } from '../domain/types';
 import { renderFeedDirectory } from '../ui/render';
 import {
   applyFilterPatch,
@@ -182,6 +184,15 @@ export class FeedDirectoryApp {
         this.render();
         break;
       }
+      case 'open-feed': {
+        const entryId = actionEl.dataset.entryId;
+        const entry = this.findEntry(entryId);
+        if (!entry) return;
+        if (isFailingLastResult(entry.lastResult) && !this.confirmFailingSubscribe(entry)) {
+          event.preventDefault();
+        }
+        break;
+      }
       case 'copy-feed':
         void this.copyFeed(actionEl.dataset.entryId);
         break;
@@ -191,6 +202,19 @@ export class FeedDirectoryApp {
       default:
         break;
     }
+  }
+
+  private findEntry(entryId: string | undefined): FeedDirectoryEntry | undefined {
+    if (!entryId) return undefined;
+    return this.state.entries.find((item) => item.id === entryId);
+  }
+
+  private confirmFailingSubscribe(entry: FeedDirectoryEntry): boolean {
+    const detail =
+      entry.lastResult.state === 'empty'
+        ? 'The last known scrape on this instance returned no items.'
+        : 'The last known scrape on this instance failed.';
+    return window.confirm(`${detail} Feeds that recently failed often fail again. Subscribe anyway?`);
   }
 
   private async applyInstance(): Promise<void> {
@@ -217,9 +241,9 @@ export class FeedDirectoryApp {
   }
 
   private async copyFeed(entryId: string | undefined): Promise<void> {
-    if (!entryId) return;
-    const entry = this.state.entries.find((item) => item.id === entryId);
-    if (!entry) return;
+    const entry = this.findEntry(entryId);
+    if (!entry || !entryId) return;
+    if (isFailingLastResult(entry.lastResult) && !this.confirmFailingSubscribe(entry)) return;
 
     const url = buildFeedUrl(this.state.instanceUrl, entry, this.state.parametersById[entryId] ?? {});
     try {
@@ -242,6 +266,18 @@ export class FeedDirectoryApp {
   private exportOpml(): void {
     const { filteredEntries } = selectPagedEntries(this.state);
     if (filteredEntries.length === 0) return;
+
+    const failingCount = filteredEntries.filter((entry) => isFailingLastResult(entry.lastResult)).length;
+    if (failingCount > 0) {
+      const detail =
+        failingCount === 1
+          ? '1 feed in this export had an empty or failed last scrape on this instance.'
+          : `${failingCount} feeds in this export had an empty or failed last scrape on this instance.`;
+      if (!window.confirm(`${detail} Feeds that recently failed often fail again. Export anyway?`)) {
+        return;
+      }
+    }
+
     const opml = buildOpmlDocument(this.state.instanceUrl, filteredEntries, this.state.parametersById);
     downloadOpml(opml);
   }

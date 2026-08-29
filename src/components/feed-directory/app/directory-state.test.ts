@@ -14,6 +14,7 @@ const entry = (id: string, title: string): FeedDirectoryEntry => ({
   language: '',
   parameterSchema: {},
   parameterDefaults: {},
+  lastResult: { state: 'unknown', code: null, at: null },
 });
 
 describe('applyFilterPatch', () => {

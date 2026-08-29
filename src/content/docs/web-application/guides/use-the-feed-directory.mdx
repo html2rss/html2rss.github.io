@@ -29,6 +29,10 @@ If you see a config file named `phys.org/weekly.yml`, you can access it at:
 
 Just replace `localhost:4000` with your own `html2rss-web` address.
 
+## Last-known scrape signal
+
+The Feed Directory may show a small last-scrape hint on each feed. That signal is the **last known** directory-defaults scrape outcome on the **selected instance** (process-local), not a live health check and not `/health`. A cold instance (feeds never scraped yet) shows **no** badge — that is normal. Empty or failed last scrapes are still listed; they sort lower and ask for confirmation before you subscribe.
+
 ## When to Move On
 
 Use a custom config when:

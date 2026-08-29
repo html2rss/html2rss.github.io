@@ -18,16 +18,30 @@ Normalized domain type for one catalog row after wire parsing. Required fields o
 | `title`, `summary`, `topics`           | Directory metadata from YAML                         |
 | `channelUrl`, `language`               | Channel metadata                                     |
 | `parameterSchema`, `parameterDefaults` | Dynamic feed parameters                              |
+| `lastResult`                           | Instance last-known scrape outcome (see below)       |
+
+## LastResult
+
+Required ambient signal from catalog_version **2**. Closed set of `state` values only — do not invent green/yellow/red domain enums; map state to UI chrome in `ui/`.
+
+| `state`   | Meaning                                                      | Browse UX                                    |
+| --------- | ------------------------------------------------------------ | -------------------------------------------- |
+| `ok`      | Last directory-defaults scrape succeeded                     | Ambient “Last scrape ok” indicator           |
+| `empty`   | Last scrape returned no items                                | Demote in sort; warn before subscribe; badge |
+| `error`   | Last scrape failed                                           | Demote in sort; warn before subscribe; badge |
+| `unknown` | Never scraped with directory defaults on this process (cold) | Neutral — no badge; sorts with non-failing   |
+
+Wire fields: `code` (string \| null), `at` (ISO timestamp \| null). Missing or invalid `last_result` on a row fails closed (row dropped).
 
 ## Catalog seam
 
 The boundary between the instance API and domain logic:
 
-- **Wire:** `GET /api/v1/configs` envelope (`success`, `data.configs`, `meta.catalog_version`)
-- **Adapter:** `adapters/catalog-api.ts` — fetch, envelope validation, row validation, version gate (supported: `[1]`)
+- **Wire:** `GET /api/v1/configs` envelope (`success`, `data.configs`, `meta.catalog_version`, `meta.starters`)
+- **Adapter:** `adapters/catalog-api.ts` — fetch, envelope validation, row validation, version gate (supported: **`[2]` only**; v1 fail closed)
 - **Domain:** `FeedDirectoryEntry[]` consumed by filters, OPML build, and render
 
-Wire parsing must stay in `adapters/catalog-api.ts` only.
+Wire parsing must stay in `adapters/catalog-api.ts` only. `meta.starters` is parsed for forward compatibility; browse does not render a featured strip today.
 
 ## Instance persistence contract
 

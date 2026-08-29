@@ -1,3 +1,12 @@
+/** Closed set from catalog wire `last_result.state` (catalog_version 2). */
+export type LastResultState = 'ok' | 'empty' | 'error' | 'unknown';
+
+export interface LastResult {
+  state: LastResultState;
+  code: string | null;
+  at: string | null;
+}
+
 export interface FeedDirectoryEntry {
   id: string;
   path: string;
@@ -9,6 +18,7 @@ export interface FeedDirectoryEntry {
   language: string;
   parameterSchema: Readonly<Record<string, { type: string }>>;
   parameterDefaults: Readonly<Record<string, string>>;
+  lastResult: LastResult;
 }
 
 export type SortKey = 'title' | 'site';

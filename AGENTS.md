@@ -43,7 +43,7 @@ If a cross-repo behavior changed but upstream is not updated yet, document the g
 
 - The browse UI is a **thin client**: fetch catalog JSON from the active instance, render rows client-side, build RSS links from each entry's `path`.
 - Do not reintroduce `bin/data-update`, `src/data/configs.json`, or a `html2rss-configs` gem dependency in this repo.
-- Wire shape v1 is defined in `html2rss-web` request specs and OpenAPI (`catalog_version`, `parameters.schema`, `parameters.defaults`).
+- Wire shape v2 is defined in `html2rss-web` request specs and OpenAPI (`catalog_version: 2`, required `last_result`, `meta.starters`). The browse client supports **`[2]` only** and fails closed on v1.
 - When the instance is unreachable or returns `404` with `catalog_disabled`, show an error state — no static fallback list.
 - **Wire parsing only in** `src/components/feed-directory/adapters/catalog-api.ts`. Domain modules must not parse API envelopes or wire rows.
 - See `CONTEXT.md` for glossary (`FeedDirectoryEntry`, catalog seam, instance persistence contract).

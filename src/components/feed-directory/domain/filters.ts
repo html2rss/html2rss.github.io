@@ -1,5 +1,6 @@
 import type { CatalogFacets, FeedDirectoryEntry, FilterState, SortKey } from './types';
 import { baseLanguageCode, languageMatches } from './language';
+import { lastResultSortRank } from './last-result';
 
 export const PAGE_SIZE = 25;
 
@@ -81,6 +82,8 @@ export function filterEntries(entries: FeedDirectoryEntry[], filters: FilterStat
 export function sortEntries(entries: FeedDirectoryEntry[], sort: SortKey): FeedDirectoryEntry[] {
   const sorted = [...entries];
   sorted.sort((a, b) => {
+    const byResult = lastResultSortRank(a.lastResult.state) - lastResultSortRank(b.lastResult.state);
+    if (byResult !== 0) return byResult;
     if (sort === 'site') {
       return a.siteKey.localeCompare(b.siteKey);
     }
