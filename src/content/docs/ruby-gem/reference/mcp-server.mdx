@@ -38,9 +38,9 @@ The MCP server supports two transport mechanisms:
 
 ## Strategy Resolution in MCP
 
-`scrape_url` and `capture_config` with `strategy: "auto"` (the default) run Faraday → Botasaurus AutoFallback in one call.
+`scrape_url` and `capture_config` with `strategy: "auto"` (the default) run Faraday → Botasaurus AutoFallback in one call. That path also promotes native RSS/Atom when present and may run entry URL resolution on weak homepage/hub extracts (see [Auto Source](/ruby-gem/reference/auto-source/) and [Strategy](/ruby-gem/reference/strategy/#auto-default)).
 
-`inspect_url` with `auto` uses Faraday for a cheap diagnostic. Pin `strategy: "botasaurus"` when you need browser rendering for inspect.
+`inspect_url` with `auto` uses Faraday for a cheap diagnostic. Pin `strategy: "botasaurus"` when you need browser rendering for inspect. Inspect reports head `rel=alternate` feeds only — it does not path-guess `/feed`.
 
 Read `html2rss://runtime` for `botasaurus_configured` (boolean only). Set `BOTASAURUS_SCRAPER_URL` on the **MCP process** env (see [AI agent workflows](/ruby-gem/guides/ai-agent-workflows/)).
 
@@ -94,11 +94,13 @@ Diagnostic page analysis plus recon from the same fetch. `auto` uses Faraday; pi
   - `status`: HTTP status when the strategy reports one.
   - `scheme_downgrade`: `true` when the fetch went https → http.
   - `alternate_feeds`: `rel=alternate` RSS/Atom links from the document head (no `/feed` path guessing).
-  - `content_type` / `html_response` / `scraper_eligibility` / `sst_stats` / `sst.segment_stats`.
+  - `surface_category`: page surface class (for example listing vs weak/blocked surfaces).
+  - `content_type` / `html_response`.
+  - `sst`: nested `{ node_count, degraded, segment_stats }` when SST ran; `segment_stats` is also emitted at the top level when present.
   - `articles_count` and `admission_drops` when the response is HTML (Cleanup drop-reason counts).
   - `blocked_surface` when an interstitial signature is detected.
   - `xhr_capture` when the inspect strategy is `botasaurus` (`count`, redacted `sample_endpoints`, `candidate_articles`).
-- **next_step:** `done` when native alternate feeds exist, `capture_config` when articles were found, otherwise `scrape_url`.
+- **next_step:** `scrape_url` when head alternate feeds exist (runtime scrape consumes native alternates) or when no articles were found; `capture_config` when articles were found without alternates.
 
 ### `capture_config`
 
