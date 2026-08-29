@@ -22,6 +22,7 @@ To enable it, add `auto_source: {}` to your configuration:
 
 One fetch, then scrapers run in **tiers**. Within a tier, results merge. The pipeline stops when Cleanup has admitted enough articles (`limit`, default `25`).
 
+0. **Native syndication (tier 0):** `native_feed` — discovers same-origin RSS/Atom (`rel=alternate` plus common feed paths) and parses them before HTML heuristics. Direct feed entry URLs (Content-Type or body sniff) skip HTML AutoSource and parse immediately.
 1. **In-page structured:** `schema`, `microdata`, `microformats2`, `json_state`, `xhr_articles`
 2. **Follow-up IO:** `wordpress_api`, `sitemap`, `meta_oembed`
 3. **Heuristic:** `semantic_html`
@@ -29,6 +30,7 @@ One fetch, then scrapers run in **tiers**. Within a tier, results merge. The pip
 
 What each scraper does:
 
+- **`native_feed`:** Promotes native RSS/Atom when present so syndication wins before structured HTML scrapers. Tallies appear as `AutoSource::NativeFeed` under `--explain`.
 - **`schema`:** Parses `<script type="json/ld">` tags containing structured data (e.g., [Schema.org](https://schema.org/)), extracting authors and publishers.
 - **`microdata`:** Extracts HTML Microdata annotations (`itemscope itemtype`).
 - **`microformats2`:** Parses Microformats2 `h-entry` markup, extracting `p-name`, `e-content`, `u-url`, `dt-published`, `p-author`, `p-category`, and `u-photo` / `u-featured` media.
@@ -47,6 +49,20 @@ Drop reasons (counts) land on `Html2rss::Status#admission_drops`. Print them wit
 `auto_source` also prepends kicker/teaser labels to titles when present, and discovers channel-level `author` and `image` (favicon, touch-icon, or OpenGraph images) from the host page.
 
 Ruby `limit:` and CLI `--limit` cap kept articles (default `25`).
+
+### Entry URL resolution
+
+Under `strategy: auto` with `auto_source` (no custom `selectors`), a weak homepage or hub extract can trigger an **entry URL tournament** before Botasaurus escalation. The pipeline probes same-origin listing and feed candidates, then sticky-rewrites the effective scrape URL only when a retry extract yields items.
+
+Resolution runs when enabled and the page is not a blocked surface, and any of:
+
+- fewer than 3 admitted articles, or
+- a weak surface (`high_entropy_surface`, `app_shell`, `unsupported_surface`), or
+- at least half of the articles came from `native_feed`
+
+Telemetry lands on `Html2rss::Status` as `entry_url` (pasted URL), `scrape_url` (effective fetch URL), and `entry_resolution` (`applied`, `probe_count`, `reason`, optional `winner_score`). `applied: true` means a tournament winner was picked; the sticky rewrite still requires a successful retry extract.
+
+Defaults: `entry_resolution.enabled: true`, `entry_resolution.max_probes: 5`. Disable with `enabled: false` when you want the pasted URL only.
 
 **`json_state` / `xhr_articles` Limitations:** both scrapers require discoverable arrays of hashes containing clear `title` and `url` fields. Minified or
 obfuscated payloads, heavily encoded values, or blobs that require executing embedded functions are ignored. `xhr_articles` only sees JSON bodies captured during the current Botasaurus browser scrape (capped by the scrape API).
@@ -67,6 +83,8 @@ Enable or disable specific scrapers and adjust their settings:
     url: https://example.com
   auto_source:
     scraper:
+      native_feed:
+        enabled: true # default: true; tier 0 RSS/Atom promotion
       wordpress_api:
         enabled: false # default: true
       sitemap:
@@ -93,6 +111,22 @@ Enable or disable specific scrapers and adjust their settings:
         minimum_selector_frequency: 3 # default: 2
         use_top_selectors: 3 # default: 5
         fallback_anchorless: true # default: true
+  `}
+  lang="yaml"
+/>
+
+### Entry Resolution Options
+
+Tune or disable the weak-entry tournament:
+
+<Code
+  code={`
+  channel:
+    url: https://example.com
+  auto_source:
+    entry_resolution:
+      enabled: true # default: true
+      max_probes: 5 # default: 5; exclusiveMinimum: 0
   `}
   lang="yaml"
 />
