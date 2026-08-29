@@ -22,13 +22,15 @@ To enable it, add `auto_source: {}` to your configuration:
 
 One fetch, then scrapers run in **tiers**. Within a tier, results merge. The pipeline stops when Cleanup has admitted enough articles (`limit`, default `25`).
 
-1. **In-page structured:** `schema`, `microdata`, `microformats2`, `json_state`, `xhr_articles`
-2. **Follow-up IO:** `wordpress_api`, `sitemap`, `meta_oembed`
-3. **Heuristic:** `semantic_html`
-4. **Heuristic:** `html` — skipped when an earlier tier already admitted at least one clean article
+1. **Native syndication:** `native_feed` — discovers same-origin RSS/Atom (`rel=alternate` plus common feed paths) and parses them before HTML heuristics. Direct feed entry URLs (Content-Type or body sniff) skip HTML AutoSource and parse immediately.
+2. **In-page structured:** `schema`, `microdata`, `microformats2`, `json_state`, `xhr_articles`
+3. **Follow-up IO:** `wordpress_api`, `sitemap`, `meta_oembed`
+4. **Heuristic:** `semantic_html`
+5. **Heuristic:** `html` — skipped when an earlier tier already admitted at least one clean article
 
 What each scraper does:
 
+- **`native_feed`:** Prefer native RSS/Atom when present. Tallies appear as `AutoSource::NativeFeed` under `--explain`.
 - **`schema`:** Parses `<script type="json/ld">` tags containing structured data (e.g., [Schema.org](https://schema.org/)), extracting authors and publishers.
 - **`microdata`:** Extracts HTML Microdata annotations (`itemscope itemtype`).
 - **`microformats2`:** Parses Microformats2 `h-entry` markup, extracting `p-name`, `e-content`, `u-url`, `dt-published`, `p-author`, `p-category`, and `u-photo` / `u-featured` media.
@@ -48,18 +50,35 @@ Drop reasons (counts) land on `Html2rss::Status#admission_drops`. Print them wit
 
 Ruby `limit:` and CLI `--limit` cap kept articles (default `25`).
 
-**`json_state` / `xhr_articles` Limitations:** both scrapers require discoverable arrays of hashes containing clear `title` and `url` fields. Minified or
-obfuscated payloads, heavily encoded values, or blobs that require executing embedded functions are ignored. `xhr_articles` only sees JSON bodies captured during the current Botasaurus browser scrape (capped by the scrape API).
+**`json_state` / `xhr_articles`:** both need discoverable arrays of hashes with clear `title` and `url` fields. Minified or obfuscated payloads, heavily encoded values, or blobs that require executing embedded functions are ignored. `xhr_articles` only sees JSON bodies captured during the current Botasaurus browser scrape (capped by the scrape API).
 
-**`wordpress_api` Limitations:** this scraper depends on the page exposing a public WordPress REST API root. The current implementation fetches post records directly, but it does not yet resolve category names or featured media metadata.
+**`wordpress_api`:** depends on a public WordPress REST API root. The scraper fetches post records directly; it does not resolve category names or featured media metadata.
+
+## Entry URL resolution
+
+Under `strategy: auto` with `auto_source` and no custom `selectors`, a weak homepage or hub extract can trigger **entry URL resolution** before Botasaurus escalation. The pipeline probes same-origin listing and feed candidates, then sticky-rewrites the effective scrape URL only when a retry extract yields items.
+
+Resolution runs when enabled, the page is not a blocked surface, and any of:
+
+- fewer than 3 admitted articles
+- a weak surface (`high_entropy_surface`, `app_shell`, `unsupported_surface`)
+- at least half of the articles came from `native_feed`
+
+Inspect results with `html2rss auto URL --explain` or `Html2rss::Status#to_h`:
+
+| Field              | Meaning                                                         |
+| ------------------ | --------------------------------------------------------------- |
+| `entry_url`        | Pasted / channel URL                                            |
+| `scrape_url`       | Effective fetch URL after resolution                            |
+| `entry_resolution` | `{ applied, probe_count, reason }` plus optional `winner_score` |
+
+`entry_resolution.applied: true` means a winner was selected. The sticky rewrite still requires a successful retry extract.
+
+Defaults: `enabled: true`, `max_probes: 5`. Set `enabled: false` to keep the pasted URL only.
 
 ## Fine-Tuning
 
-You can customize `auto_source` to improve its accuracy.
-
 ### Scraper Options
-
-Enable or disable specific scrapers and adjust their settings:
 
 <Code
   code={`
@@ -67,6 +86,8 @@ Enable or disable specific scrapers and adjust their settings:
     url: https://example.com
   auto_source:
     scraper:
+      native_feed:
+        enabled: true # default: true
       wordpress_api:
         enabled: false # default: true
       sitemap:
@@ -97,9 +118,21 @@ Enable or disable specific scrapers and adjust their settings:
   lang="yaml"
 />
 
-### Cleanup Options
+### Entry Resolution Options
 
-Remove unwanted items from the results:
+<Code
+  code={`
+  channel:
+    url: https://example.com
+  auto_source:
+    entry_resolution:
+      enabled: true # default: true
+      max_probes: 5 # default: 5; must be > 0
+  `}
+  lang="yaml"
+/>
+
+### Cleanup Options
 
 <Code
   code={`

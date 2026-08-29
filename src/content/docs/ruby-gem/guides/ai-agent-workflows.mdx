@@ -84,16 +84,16 @@ Add `html2rss` to your Claude Desktop configuration (`~/Library/Application Supp
 
 When an agent needs articles immediately without saving a feed configuration:
 
-1. Call `scrape_url` with `strategy: "auto"`. Auto runs Faraday then Botasaurus when `BOTASAURUS_SCRAPER_URL` is set on the MCP process.
+1. Call `scrape_url` with `strategy: "auto"`. Auto runs Faraday then Botasaurus when `BOTASAURUS_SCRAPER_URL` is set on the MCP process, prefers native RSS/Atom when present, and may rewrite a weak homepage URL via entry resolution.
 2. An empty item list is still success for articles-now. Read `payload.items`. Follow `next_step` (including `read_runtime` / `html2rss://runtime` when Botasaurus is unset).
-3. Call `inspect_url` when the result is weak or you need recon (`final_url`, `status`, `scheme_downgrade`, native RSS/Atom).
+3. Call `inspect_url` when the result is weak or you need recon (`final_url`, `status`, `scheme_downgrade`, `alternate_feeds`, `surface_category`). Follow `next_step` — often `scrape_url` when `alternate_feeds` is present.
 
 ### Pattern B: Iterative Feed Config Authoring
 
 When an agent is tasked with creating a durable YAML feed configuration:
 
 1. **Capture:** Call `capture_config`. YAML is `payload.yaml` (`items` + `enhance: true`). Check `payload.articles_count` and `has_selectors`.
-2. **Recon (optional):** Call `inspect_url` for `final_url`, `status`, `scheme_downgrade`, and `alternate_feeds` if the draft is weak.
+2. **Recon (optional):** Call `inspect_url` for `final_url`, `status`, `scheme_downgrade`, `alternate_feeds`, and `surface_category` if the draft is weak. Follow `next_step` (often `scrape_url` when alternates are present).
 3. **Rewrite:** If the destination is html2rss-configs, add `directory.topics` and explicit channel `title`/`url`. Strive to keep `enhance: true` (set `false` only when chrome leaks into items).
 4. **Validate:** Pass `yaml` (or `config`) to `validate_config`. Exactly one of those arguments.
 5. **Apply:** Call `apply_config`. `isError` plus `payload.item_count: 0` means the config is not shippable — channel title in the XML is not success.

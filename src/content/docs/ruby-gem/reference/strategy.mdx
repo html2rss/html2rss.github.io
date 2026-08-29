@@ -22,9 +22,16 @@ The default strategy chain is:
 
 `faraday` -> `botasaurus`
 
-Auto fallback shares one request budget across all strategy attempts. For pagination-heavy or dynamic pages, increase `request.max_requests` (or `--max-requests`) when retries exhaust the budget.
+When the config uses `auto_source` (no custom `selectors`), each strategy attempt:
 
-Under `auto`, `Html2rss.feed_result(...).status` exposes scrape telemetry: `selected_strategy`, `attempt_count`, and `strategy_attempts` (see [Managing Feed Configs](/ruby-gem/guides/managing-feed-configs/#ruby-api-feedresult)). Auto fallback decisions are also visible at `LOG_LEVEL=info` (hidden at the default `LOG_LEVEL=warn`).
+1. Runs AutoSource scrapers, starting with `native_feed` for same-origin RSS/Atom (direct feed URLs parse without HTML AutoSource).
+2. May run **entry URL resolution** on a weak homepage/hub extract — probe same-origin listing/feed candidates and sticky-rewrite the scrape URL only when the retry yields items — **before** escalating to the next strategy.
+
+Gates, defaults, and Status fields: [Auto Source — Entry URL resolution](/ruby-gem/reference/auto-source/#entry-url-resolution).
+
+Auto fallback shares one request budget across all strategy attempts. The baseline reserves a NativeFeed follow-up slot and, when entry resolution is enabled, `max_probes` probe slots plus one retry GET. Raise `request.max_requests` (or `--max-requests`) when builds exhaust the budget.
+
+Under `auto`, `Html2rss.feed_result(...).status` exposes scrape telemetry: `selected_strategy`, `attempt_count`, `strategy_attempts`, and when resolution ran `entry_url`, `scrape_url`, and `entry_resolution` (see [Managing Feed Configs](/ruby-gem/guides/managing-feed-configs/#ruby-api-feedresult)). Auto fallback decisions are also visible at `LOG_LEVEL=info` (hidden at the default `LOG_LEVEL=warn`).
 
 ## `faraday`
 
@@ -42,6 +49,8 @@ Requirements:
 - pin `strategy: botasaurus` when you want to skip Faraday and force this transport directly
 
 html2rss enforces local request policy preflight and a feed-build timeout budget. The Botasaurus scrape API splits **total** scrape time (queue, boot, navigate, wait) from **work** time (navigate, selector wait, and scroll after the browser is ready). Feed YAML `wait_timeout_seconds` is validated against the work cap (`1..30` by default); the gem forwards `request.botasaurus` options to the scrape API without shrinking retries or waits to fit a remaining feed budget. Faraday transport timeout for POST `/scrape` is the lesser of the remaining feed-build budget and `BOTASAURUS_SCRAPE_TIMEOUT_SECONDS` plus a small buffer (default **45s** scrape total, **47s** transport cap).
+
+When the scrape API reports a timed-out stage, `Html2rss::RequestService::RequestTimedOut` may include `timeout_phase` (`queue`, `boot`, or `work`) and the same value in the exception message (`timeout_phase=<stage>`). Transport-hop timeouts leave `timeout_phase` unset.
 
 During the **browser** execution tier, the Botasaurus scrape API always captures JSON XHR/fetch response bodies (`xhr_responses`). html2rss forwards them as `Response#captured_responses` so AutoSource `xhr_articles` can extract articles without extra requests. The HTTP-request tier returns an empty capture list. Caps and filtering live in the scrape API (see its README); article-likeness filtering is a client concern.
 
