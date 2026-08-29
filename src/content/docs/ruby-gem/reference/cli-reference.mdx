@@ -44,7 +44,7 @@ Available options:
 - `--max-redirects`: Maximum redirects to follow per request.
 - `--max-requests`: Maximum requests to allow for this feed build (defaults to `4` for auto discovery).
 - `--input`: Local HTML file path to read input from without making network requests. When provided without a `URL`, `html2rss` attempts to detect the base URL from `<link rel="canonical">` or OpenGraph metadata in the HTML.
-- `--explain`: Print `Html2rss::Status` JSON to stderr (`version`, `dedup_dropped`, and when present `scraper_tallies`, `selected_strategy`, `attempt_count`, `strategy_attempts`, `admission_drops`). Stdout stays the RSS or JSON Feed.
+- `--explain`: Print `Html2rss::Status` JSON to stderr (`version`, `dedup_dropped`, and when present `scraper_tallies`, `selected_strategy`, `attempt_count`, `strategy_attempts`, `admission_drops`, `entry_url`, `scrape_url`, `entry_resolution`). Stdout stays the RSS or JSON Feed.
 
 #### URL Surface Guidance For `auto`
 

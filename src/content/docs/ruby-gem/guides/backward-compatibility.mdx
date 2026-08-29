@@ -7,9 +7,22 @@ import { Code } from "@astrojs/starlight/components";
 
 This page outlines breaking changes, purged legacy aliases, and migration steps when upgrading the gem.
 
+## 0.28.0
+
+Upgrade notes for configs and integrators targeting gem **0.28.0** (current `master` after `0.27.2`):
+
+1. **`auto_source.scraper.native_feed`** — New tier-0 scraper (default `enabled: true`) promotes same-origin RSS/Atom before HTML heuristics. Direct feed URLs parse without HTML AutoSource. Disable with `enabled: false`.
+2. **`auto_source.entry_resolution`** — Weak homepage/hub extracts under `strategy: auto` may probe same-origin listing/feed candidates (defaults `enabled: true`, `max_probes: 5`) and sticky-rewrite the scrape URL only when the retry yields items. See [Auto Source](/ruby-gem/reference/auto-source/#entry-url-resolution).
+3. **`Status` / CLI `--explain`** — Optional `entry_url`, `scrape_url`, and `entry_resolution` (`applied`, `probe_count`, `reason`, optional `winner_score`). `applied: true` is a tournament win, not a guarantee the wire URL changed.
+4. **Request budget** — Default baseline reserves NativeFeed and entry-resolution slots (about +7 requests). Raise `request.max_requests` if builds hit the budget.
+5. **MCP `inspect_url`** — When `alternate_feeds` is present, `next_step` is `scrape_url` (was `done`). Payload adds `surface_category` and nests SST under `sst` (`node_count`, `degraded`, `segment_stats`); top-level `sst_stats` is gone.
+6. **`RequestTimedOut#timeout_phase`** — Optional `queue` / `boot` / `work` from Botasaurus scrape-API diagnostics (message may include `timeout_phase=<stage>`).
+
+Run `html2rss validate config.yml` after editing `auto_source` options.
+
 ## 0.27.0
 
-Upgrade notes for configs and integrators targeting gem **0.27.0** (current `master` after `0.26.0`):
+Upgrade notes for configs and integrators targeting gem **0.27.0** (after `0.26.0`):
 
 1. **MCP result envelope** — Every MCP tool returns `{ ok, next_step, guidance, payload }` in text and `structuredContent`. Read `payload.items`, `payload.yaml`, and `payload.rss`; scrape text is not a raw item array.
 2. **MCP AutoFallback** — `scrape_url` and `capture_config` with `strategy: "auto"` run Faraday → Botasaurus in one call. `inspect_url` with `auto` stays on Faraday (pin `botasaurus` when you need browser rendering for inspect).
