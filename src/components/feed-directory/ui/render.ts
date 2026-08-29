@@ -2,8 +2,22 @@ import { escapeHtml } from '../lib/escape';
 import { buildFeedUrl, formatInstanceLabel } from '../domain/feed-url';
 import { hasActiveFilters, PAGE_SIZE } from '../domain/filters';
 import { displayLanguage, normalizeFilterLanguage } from '../domain/language';
-import type { CatalogFacets, FeedDirectoryEntry, FilterState } from '../domain/types';
+import { isFailingLastResult } from '../domain/last-result';
+import type { CatalogFacets, FeedDirectoryEntry, LastResult } from '../domain/types';
 import type { FeedDirectoryViewModel } from '../app/view-model';
+
+function renderLastResultIndicator(lastResult: LastResult): string {
+  switch (lastResult.state) {
+    case 'ok':
+      return `<span class="fd-result fd-result-ok" title="Last known scrape on this instance succeeded">Last scrape ok</span>`;
+    case 'empty':
+      return `<span class="fd-result fd-result-empty" title="Last known scrape on this instance returned no items">Last scrape empty</span>`;
+    case 'error':
+      return `<span class="fd-result fd-result-error" title="Last known scrape on this instance failed">Last scrape failed</span>`;
+    case 'unknown':
+      return '';
+  }
+}
 
 function renderTopicChips(facets: CatalogFacets, selected: string[]): string {
   if (facets.topics.length === 0) {
@@ -54,6 +68,8 @@ function renderFeedRow(entry: FeedDirectoryEntry, vm: FeedDirectoryViewModel): s
   const hasParameters = Object.keys(entry.parameterSchema).length > 0;
   const expanded = vm.expandedEntryId === entry.id;
   const copied = vm.copiedEntryId === entry.id;
+  const failing = isFailingLastResult(entry.lastResult);
+  const resultIndicator = renderLastResultIndicator(entry.lastResult);
 
   const topicBadges =
     entry.topics.length > 0
@@ -64,7 +80,7 @@ function renderFeedRow(entry: FeedDirectoryEntry, vm: FeedDirectoryViewModel): s
     ? `<a class="fd-domain fd-domain-link" href="${escapeHtml(entry.channelUrl)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(entry.siteKey)}</a>`
     : `<code class="fd-domain">${escapeHtml(entry.siteKey)}</code>`;
 
-  return `<tr class="fd-row" data-entry-id="${escapeHtml(entry.id)}">
+  return `<tr class="fd-row${failing ? ' fd-row-failing' : ''}" data-entry-id="${escapeHtml(entry.id)}">
     <td class="fd-cell-feed">
       <article class="fd-feed-card">
         <h3 class="fd-feed-title">${escapeHtml(entry.title)}</h3>
@@ -73,12 +89,13 @@ function renderFeedRow(entry: FeedDirectoryEntry, vm: FeedDirectoryViewModel): s
           ${domainMarkup}
           ${language !== '—' ? `<span class="fd-lang">${escapeHtml(language)}</span>` : ''}
           ${topicBadges}
+          ${resultIndicator}
         </div>
       </article>
     </td>
     <td class="fd-cell-actions">
       <div class="fd-action-bar">
-        <a class="fd-btn fd-btn-primary fd-btn-compact" href="${escapeHtml(feedUrl)}" target="_blank" rel="noopener noreferrer nofollow">RSS</a>
+        <a class="fd-btn fd-btn-primary fd-btn-compact" href="${escapeHtml(feedUrl)}" target="_blank" rel="noopener noreferrer nofollow" data-action="open-feed" data-entry-id="${escapeHtml(entry.id)}">RSS</a>
         <button type="button" class="fd-btn fd-btn-ghost fd-btn-compact" data-action="copy-feed" data-entry-id="${escapeHtml(entry.id)}" aria-label="Copy RSS link">${copied ? 'Copied' : 'Copy'}</button>
         ${entry.channelUrl ? `<a class="fd-btn fd-btn-ghost fd-btn-compact" href="${escapeHtml(entry.channelUrl)}" target="_blank" rel="noopener noreferrer nofollow">Source</a>` : ''}
         ${hasParameters ? `<button type="button" class="fd-btn fd-btn-ghost fd-btn-compact" data-action="toggle-params" data-entry-id="${escapeHtml(entry.id)}" aria-expanded="${expanded}">${expanded ? 'Hide' : 'Params'}</button>` : ''}

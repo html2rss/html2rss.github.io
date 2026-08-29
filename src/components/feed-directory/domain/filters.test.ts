@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_FILTER_STATE, extractFacets, filterEntries, fuzzyMatch, sortEntries } from './filters';
-import type { FeedDirectoryEntry } from './types';
+import type { FeedDirectoryEntry, LastResult } from './types';
+
+const unknownResult: LastResult = { state: 'unknown', code: null, at: null };
 
 const baseEntry = (
   overrides: Partial<FeedDirectoryEntry> & Pick<FeedDirectoryEntry, 'id'>
@@ -14,6 +16,7 @@ const baseEntry = (
   language: overrides.language ?? '',
   parameterSchema: overrides.parameterSchema ?? {},
   parameterDefaults: overrides.parameterDefaults ?? {},
+  lastResult: overrides.lastResult ?? unknownResult,
   ...overrides,
 });
 
@@ -61,6 +64,36 @@ describe('sortEntries', () => {
     expect(sortEntries([a, b], 'site').map((entry) => entry.id)).toEqual([
       'a.example/feed',
       'z.example/feed',
+    ]);
+  });
+
+  it('demotes empty and error below ok and unknown', () => {
+    const error = baseEntry({
+      id: 'a.example/error',
+      title: 'Alpha error',
+      lastResult: { state: 'error', code: 'X', at: null },
+    });
+    const empty = baseEntry({
+      id: 'b.example/empty',
+      title: 'Beta empty',
+      lastResult: { state: 'empty', code: null, at: null },
+    });
+    const unknown = baseEntry({
+      id: 'c.example/unknown',
+      title: 'Charlie unknown',
+      lastResult: { state: 'unknown', code: null, at: null },
+    });
+    const ok = baseEntry({
+      id: 'd.example/ok',
+      title: 'Delta ok',
+      lastResult: { state: 'ok', code: null, at: '2026-08-29T08:00:00Z' },
+    });
+
+    expect(sortEntries([error, empty, unknown, ok], 'title').map((entry) => entry.id)).toEqual([
+      'd.example/ok',
+      'c.example/unknown',
+      'b.example/empty',
+      'a.example/error',
     ]);
   });
 });

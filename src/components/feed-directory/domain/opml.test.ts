@@ -13,6 +13,7 @@ const entry: FeedDirectoryEntry = {
   language: 'en',
   parameterSchema: {},
   parameterDefaults: {},
+  lastResult: { state: 'unknown', code: null, at: null },
 };
 
 describe('buildOpmlDocument', () => {

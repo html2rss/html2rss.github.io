@@ -1,7 +1,8 @@
 import { siteKeyFromId } from '../domain/entry';
-import type { CatalogLoadError, FeedDirectoryEntry } from '../domain/types';
+import { isLastResultState } from '../domain/last-result';
+import type { CatalogLoadError, FeedDirectoryEntry, LastResult } from '../domain/types';
 
-const SUPPORTED_CATALOG_VERSIONS = [1] as const;
+const SUPPORTED_CATALOG_VERSIONS = [2] as const;
 
 interface CatalogWireEntry {
   id?: unknown;
@@ -9,12 +10,13 @@ interface CatalogWireEntry {
   channel?: { url?: unknown; language?: unknown };
   directory?: { title?: unknown; summary?: unknown; topics?: unknown };
   parameters?: { schema?: unknown; defaults?: unknown };
+  last_result?: unknown;
 }
 
 interface CatalogEnvelope {
   success?: unknown;
   data?: { configs?: unknown };
-  meta?: { total?: unknown; catalog_version?: unknown };
+  meta?: { total?: unknown; catalog_version?: unknown; starters?: unknown };
 }
 
 export class CatalogDisabledError extends Error {
@@ -80,6 +82,24 @@ function parseParameterDefaults(value: unknown): Readonly<Record<string, string>
   return defaults;
 }
 
+/** Fail closed: missing or invalid last_result rejects the row. */
+function parseLastResult(value: unknown): LastResult | null {
+  if (!isRecord(value)) return null;
+  if (!isLastResultState(value.state)) return null;
+
+  const code = value.code;
+  if (!(code === null || typeof code === 'string')) return null;
+
+  const at = value.at;
+  if (!(at === null || typeof at === 'string')) return null;
+
+  return {
+    state: value.state,
+    code: code === null || code.trim() === '' ? null : code,
+    at: at === null || at.trim() === '' ? null : at,
+  };
+}
+
 function parseCatalogEntries(configs: unknown): FeedDirectoryEntry[] {
   if (!Array.isArray(configs)) return [];
 
@@ -90,7 +110,8 @@ function parseCatalogEntries(configs: unknown): FeedDirectoryEntry[] {
     const id = asString(wire.id);
     const path = asString(wire.path);
     const channelUrl = asString(wire.channel?.url);
-    if (!id || !path || !channelUrl) continue;
+    const lastResult = parseLastResult(wire.last_result);
+    if (!id || !path || !channelUrl || !lastResult) continue;
 
     entries.push({
       id,
@@ -103,6 +124,7 @@ function parseCatalogEntries(configs: unknown): FeedDirectoryEntry[] {
       language: asString(wire.channel?.language) ?? '',
       parameterSchema: parseParameterSchema(wire.parameters?.schema),
       parameterDefaults: parseParameterDefaults(wire.parameters?.defaults),
+      lastResult,
     });
   }
 
@@ -120,9 +142,15 @@ function parseCatalogVersion(meta: CatalogEnvelope['meta']): number {
   return version;
 }
 
+export interface CatalogMeta {
+  total: number;
+  catalogVersion: number;
+  starters: readonly string[];
+}
+
 function parseCatalogEnvelope(payload: unknown): {
   entries: FeedDirectoryEntry[];
-  meta: { total: number; catalogVersion: number };
+  meta: CatalogMeta;
 } {
   if (!isRecord(payload)) {
     throw new CatalogInvalidEnvelopeError();
@@ -137,17 +165,18 @@ function parseCatalogEnvelope(payload: unknown): {
   const catalogVersion = parseCatalogVersion(envelope.meta);
   const totalRaw = envelope.meta?.total;
   const total = typeof totalRaw === 'number' && Number.isFinite(totalRaw) ? totalRaw : entries.length;
+  const starters = parseStringArray(envelope.meta?.starters);
 
   return {
     entries,
-    meta: { total, catalogVersion },
+    meta: { total, catalogVersion, starters },
   };
 }
 
 export async function fetchCatalogResponse(
   instanceUrl: string,
   fetchImpl: typeof fetch = fetch
-): Promise<{ entries: FeedDirectoryEntry[]; meta: { total: number; catalogVersion: number } }> {
+): Promise<{ entries: FeedDirectoryEntry[]; meta: CatalogMeta }> {
   const catalogUrl = new URL('/api/v1/configs', instanceUrl).toString();
 
   let response: Response;
