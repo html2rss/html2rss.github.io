@@ -44,7 +44,7 @@ What each scraper does:
 
 After scrapers, **Cleanup** is the admission gate: merge, dedupe, hard-exclude non-article destinations, drop junk titles, trim to `limit`. Scoring ranks and demotes; it does not refill `limit` after Cleanup.
 
-Drop reasons (counts) land on `Html2rss::Status#admission_drops`. Print them with `html2rss auto URL --explain` (JSON on stderr; the feed stays on stdout). Prefer `Html2rss.auto_feed_result` in Ruby when you need that status object.
+Drop reasons (counts) land on `Html2rss::Status#admission_drops`. Print them with `html2rss scrape URL --explain` (JSON on stderr; the feed stays on stdout). Prefer `Html2rss.auto_feed_result` in Ruby when you need that status object.
 
 `auto_source` also prepends kicker/teaser labels to titles when present, and discovers channel-level `author` and `image` (favicon, touch-icon, or OpenGraph images) from the host page.
 
@@ -64,12 +64,12 @@ Resolution runs when enabled, the page is not a blocked surface, and any of:
 - a weak surface (`high_entropy_surface`, `app_shell`, `unsupported_surface`)
 - at least half of the articles came from `native_feed`
 
-Inspect results with `html2rss auto URL --explain` or `Html2rss::Status#to_h`:
+Inspect results with `html2rss scrape URL --explain` or `Html2rss::Status#to_h`:
 
 | Field              | Meaning                                                         |
 | ------------------ | --------------------------------------------------------------- |
 | `entry_url`        | Pasted / channel URL                                            |
-| `scrape_url`       | Effective fetch URL after resolution                            |
+| `scrape`           | Effective fetch URL after resolution                            |
 | `entry_resolution` | `{ applied, probe_count, reason }` plus optional `winner_score` |
 
 `entry_resolution.applied: true` means a winner was selected. The sticky rewrite still requires a successful retry extract.

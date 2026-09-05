@@ -12,9 +12,9 @@ This page outlines breaking changes, purged legacy aliases, and migration steps 
 Upgrade notes for configs and integrators targeting gem **0.27.0** (current `master` after `0.26.0`):
 
 1. **MCP result envelope** — Every MCP tool returns `{ ok, next_step, guidance, payload }` in text and `structuredContent`. Read `payload.items`, `payload.yaml`, and `payload.rss`; scrape text is not a raw item array.
-2. **MCP AutoFallback** — `scrape_url` and `capture_config` with `strategy: "auto"` run Faraday → Botasaurus in one call. `inspect_url` with `auto` stays on Faraday (pin `botasaurus` when you need browser rendering for inspect).
-3. **Capture output** — `html2rss capture` and MCP `capture_config` emit an items selector plus `enhance: true` only (no per-field title/url/description selector soup). Capture stamps `strategy:` when AutoFallback selects a concrete transport.
-4. **CLI `--explain`** — `html2rss auto --explain` and `html2rss capture --explain` print telemetry JSON on stderr; stdout stays the feed or YAML. Status includes `admission_drops` when Cleanup dropped items.
+2. **MCP AutoFallback** — `scrape` and `capture` with `strategy: "auto"` run Faraday → Botasaurus in one call. `inspect` with `auto` stays on Faraday (pin `botasaurus` when you need browser rendering for inspect).
+3. **Capture output** — `html2rss capture` and MCP `capture` emit an items selector plus `enhance: true` only (no per-field title/url/description selector soup). Capture stamps `strategy:` when AutoFallback selects a concrete transport.
+4. **CLI `--explain`** — `html2rss scrape --explain` and `html2rss capture --explain` print telemetry JSON on stderr; stdout stays the feed or YAML. Status includes `admission_drops` when Cleanup dropped items.
 5. **`Html2rss.auto_feed_result`** — URL-only auto discovery returns `FeedResult` with the same `status` telemetry as config builds.
 6. **`request.botasaurus` OpenAPI 2.0** — Keys must match the scrape-API `ScrapeRequest` (unknown keys rejected). Use `scroll: true` (not `scroll_to_bottom`), `window_size: { width:, height: }` (not a two-item array), and `wait_timeout_seconds` in `1..30`. See [Strategy](/ruby-gem/reference/strategy/#botasaurus).
 7. **Botasaurus wire format** — Client expects OpenAPI 2.0 `ScrapeSuccess` / `ScrapeError` envelopes from the scrape API.

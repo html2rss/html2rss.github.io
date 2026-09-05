@@ -13,9 +13,10 @@ const snippets: Record<Props["variant"], string> = {
   html2rss-web:
     image: ${webImage}
     ports:
-      - "127.0.0.1:4000:4000"
+      - "4000:4000"
     environment:
       RACK_ENV: development
+      AUTO_SOURCE_ENABLED: "true"
       HTML2RSS_ACCESS_TOKEN: CHANGE_ME_ADMIN_TOKEN
       BOTASAURUS_SCRAPER_URL: http://botasaurus:4010
 

@@ -15,25 +15,25 @@ For detailed documentation on the Ruby API, please refer to the official YARD do
 
 The `html2rss` executable is the primary way to interact with the gem from your terminal.
 
-### Auto
+### Scrape
 
-Automatically discovers items from a page and prints the generated RSS or JSONFeed to stdout.
+Automatically discovers items from a page and prints the generated RSS or JSON Feed to stdout. (`html2rss auto` is a Thor alias.)
 
 <Code
   code={`
-  html2rss auto https://example.com/articles ; \\
-  html2rss auto https://example.com/articles --format jsonfeed ; \\
-  html2rss auto https://example.com/articles --limit 10 ; \\
-  BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss auto https://example.com/protected --strategy botasaurus ; \\
-  html2rss auto https://example.com/articles --items_selector ".post-card" ; \\
-  html2rss auto https://example.com/articles --explain ; \\
-  html2rss auto --input sample.html ; \\
-  html2rss auto https://example.com/articles --input sample.html
+  html2rss scrape https://example.com/articles ; \\
+  html2rss scrape https://example.com/articles --format jsonfeed ; \\
+  html2rss scrape https://example.com/articles --limit 10 ; \\
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss scrape https://example.com/protected --strategy botasaurus ; \\
+  html2rss scrape https://example.com/articles --items_selector ".post-card" ; \\
+  html2rss scrape https://example.com/articles --explain ; \\
+  html2rss scrape --input sample.html ; \\
+  html2rss scrape https://example.com/articles --input sample.html
 `}
   lang="bash"
 />
 
-Command: `html2rss auto [URL]`
+Command: `html2rss scrape [URL]`
 
 Available options:
 
@@ -46,9 +46,9 @@ Available options:
 - `--input`: Local HTML file path to read input from without making network requests. When provided without a `URL`, `html2rss` attempts to detect the base URL from `<link rel="canonical">` or OpenGraph metadata in the HTML.
 - `--explain`: Print `Html2rss::Status` JSON to stderr (`version`, `dedup_dropped`, and when present `scraper_tallies`, `selected_strategy`, `attempt_count`, `strategy_attempts`, `admission_drops`, `entry_url`, `scrape_url`, `entry_resolution`). Stdout stays the RSS or JSON Feed.
 
-#### URL Surface Guidance For `auto`
+#### URL surface guidance for `scrape`
 
-`auto` works best when the input URL already exposes a server-rendered list of entries.
+`scrape` works best when the input URL already exposes a server-rendered list of entries.
 
 - High-success surfaces:
   - newsroom or press listing pages
@@ -62,9 +62,9 @@ Available options:
 
 When possible, pass a direct listing/update URL instead of a top-level homepage or app entrypoint.
 
-#### Failure Outcomes You Should Expect
+#### Failure outcomes
 
-When no extractable items are found, `auto` classifies likely causes instead of only returning a generic message:
+When no extractable items are found, `scrape` classifies likely causes instead of only returning a generic message:
 
 - `blocked surface likely (anti-bot or interstitial)`:
   - try a more specific public listing URL or configure `BOTASAURUS_SCRAPER_URL`
@@ -91,7 +91,7 @@ Start by changing the input URL to a direct listing/update page, then move to ex
 <Code
   code={`
   BOTASAURUS_SCRAPER_URL="http://localhost:4010" \\
-  html2rss auto https://example.com/updates --strategy botasaurus
+  html2rss scrape https://example.com/updates --strategy botasaurus
 `}
   lang="bash"
 />
@@ -102,24 +102,24 @@ If you see a Botasaurus configuration error, check:
 - `BOTASAURUS_SCRAPER_URL` is a valid URL
 - the Botasaurus scrape API is reachable from the shell environment running `html2rss`
 
-### Feed
+### Apply
 
-Loads a YAML config, builds the feed, and prints the RSS XML to stdout.
+Loads a YAML config, builds the feed, and prints the RSS XML to stdout. (`html2rss feed` is a Thor alias.)
 
 <Code
   code={`
-  html2rss feed single.yml ; \\
-  html2rss feed feeds.yml my-first-feed ; \\
-  html2rss feed single.yml --strategy auto ; \\
-  BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss feed single.yml --strategy botasaurus ; \\
-  html2rss feed single.yml --max-redirects 5 --max-requests 6 ; \\
-  html2rss feed single.yml --params id:42 foo:bar ; \\
-  html2rss feed single.yml --input sample.html
+  html2rss apply single.yml ; \\
+  html2rss apply feeds.yml my-first-feed ; \\
+  html2rss apply single.yml --strategy auto ; \\
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss apply single.yml --strategy botasaurus ; \\
+  html2rss apply single.yml --max-redirects 5 --max-requests 6 ; \\
+  html2rss apply single.yml --params id:42 foo:bar ; \\
+  html2rss apply single.yml --input sample.html
 `}
   lang="bash"
 />
 
-Command: `html2rss feed YAML_FILE [feed_name]`
+Command: `html2rss apply YAML_FILE [feed_name]`
 
 Available options:
 
@@ -158,7 +158,7 @@ Available options:
 - `--input`: Local HTML file path to read input from without making network requests.
 - `--explain`: Print capture quality JSON to stderr (`articles_count`, `channel_title`, `has_selectors`, `segment_strategy`, `selected_strategy`, `admission_drops`). Stdout stays YAML.
 
-When AutoFallback (or a pinned strategy) selects a concrete transport, the printed YAML includes a top-level `strategy:` so later `html2rss feed` uses the same hop.
+When AutoFallback (or a pinned strategy) selects a concrete transport, the printed YAML includes a top-level `strategy:` so later `html2rss apply` uses the same hop.
 
 ### MCP
 

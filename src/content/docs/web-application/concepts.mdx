@@ -1,0 +1,48 @@
+---
+title: "How It Works"
+description: "Auto-source, Botasaurus, access tokens, and how html2rss-web relates to the gem and Feed Directory."
+sidebar:
+  order: 2
+---
+
+## Auto-source (URL to RSS)
+
+With `AUTO_SOURCE_ENABLED=true`, the web UI accepts a page URL and builds a feed without a hand-written YAML config. The engine prefers listing-like pages (newsrooms, changelogs, releases, category archives). Homepages and search pages are weaker inputs.
+
+Production Docker Compose defaults `AUTO_SOURCE_ENABLED` to `true`. Non-compose hosts still follow the Ruby flag: enabled in development/test unless overridden, off in production unless you set the env var.
+
+## Botasaurus companion
+
+`html2rss-web` talks to `botasaurus-scrape-api` at `BOTASAURUS_SCRAPER_URL` (Compose sets `http://botasaurus:4010`). That service renders JavaScript-heavy pages when Faraday alone is not enough. Auto-source uses Faraday first, then Botasaurus when configured.
+
+## Three tokens (plain English)
+
+| Variable                | Role                                                                                            |
+| ----------------------- | ----------------------------------------------------------------------------------------------- |
+| `HTML2RSS_SECRET_KEY`   | Encrypts session cookies and signed state (≥ 32 characters). Required in production.            |
+| `HTML2RSS_ACCESS_TOKEN` | What users paste into the UI to create feeds (≥ 16 characters). Required by production Compose. |
+| `HEALTH_CHECK_TOKEN`    | Optional. Gates authenticated `GET /api/v1/health` when you want a private probe.               |
+
+Generate secrets with `openssl rand -hex 32`. Demo quickstart hard-codes `CHANGE_ME_ADMIN_TOKEN` as the access token — replace it before any shared or public host.
+
+Optional: `SENTRY_DSN` (web) and `BOTASAURUS_SENTRY_DSN` (scraper) for error reporting. They are separate projects; leave both unset until you want monitoring.
+
+## HTTP vs HTTPS
+
+Plain HTTP works on localhost and LAN. The app sets HSTS and CSP `upgrade-insecure-requests` only when the request is HTTPS (including when a reverse proxy sends `X-Forwarded-Proto: https`). Put Caddy, Nginx, or Traefik in front for public TLS.
+
+## Ecosystem map
+
+| Piece                | Job                                                                                |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| **html2rss-web**     | Web UI, API, feed URLs, Feed Directory catalog API                                 |
+| **html2rss** (gem)   | Extraction engine, CLI (`scrape` / `apply`), MCP server                            |
+| **html2rss-configs** | Curated YAML under `lib/html2rss/configs/`; signed registry bundles                |
+| **Feed Directory**   | Browse UI on the docs site; loads entries from your instance `GET /api/v1/configs` |
+
+## Where next
+
+- [Getting Started](/getting-started/) — first feed
+- [Deployment](/web-application/deployment/) — production
+- [MCP Server](/ruby-gem/reference/mcp-server/) — agent tools
+- [Advanced Feeds](/creating-custom-feeds/) — custom YAML
