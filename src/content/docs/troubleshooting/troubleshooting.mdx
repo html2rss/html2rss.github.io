@@ -30,7 +30,7 @@ The `auto` flow is URL-surface sensitive.
   - search result pages
   - client-rendered app-shell entrypoints
 
-If extraction quality is poor, switch to a more specific listing/update URL before tuning selectors. `html2rss auto URL --explain` prints admission drop counts on stderr so you can see why items were dropped (junk titles, non-article destinations) without mixing JSON into the feed.
+If extraction quality is poor, switch to a more specific listing/update URL before tuning selectors. `html2rss scrape URL --explain` prints admission drop counts on stderr so you can see why items were dropped (junk titles, non-article destinations) without mixing JSON into the feed.
 
 ### Empty Feeds
 
@@ -86,7 +86,7 @@ Then run with:
 <Code
   code={`
   BOTASAURUS_SCRAPER_URL="http://localhost:4010" \\
-  html2rss auto https://example.com/updates --strategy botasaurus
+  html2rss scrape https://example.com/updates --strategy botasaurus
 `}
   lang="bash"
 />

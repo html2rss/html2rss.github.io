@@ -86,18 +86,18 @@ Preferred verification flow for docs/content changes:
 
 ### User Journey Funnel
 
-Maintain a directed "funnel" for documentation to maximize user success and conversion:
+Keep docs pointed along one success path:
 
-1.  **Phase 1: Quickstart (Local Demo)** — The primary entry point. Run `html2rss-web` with Docker and generate a feed from a page URL in minutes.
-2.  **Phase 2: Production (Deployment)** — The goal for invested users. Move to a stable, production-ready instance.
-3.  **Phase 3: Refinement (Custom Configs)** — Secondary optimization. Author custom YAML configs only when automatic generation needs precise control.
+1. **Getting Started** — Run `html2rss-web` with Docker; paste a page URL; open the generated feed.
+2. **Deployment** — Production compose, tokens, LAN HTTP vs HTTPS reverse proxy.
+3. **Advanced Feeds** — Custom YAML only when auto-source needs precise control (escape hatch).
 
-**Rules for Funnel Maintenance:**
+**Rules:**
 
-- Avoid branching paths in introductory pages; always point toward the next phase in the funnel.
-- Define "html2rss-web" as the primary interface and "page-to-RSS" as the primary workflow.
-- Use "Feed Directory" consistently to refer to the pre-built feed catalog; avoid terms like "catalog", "included feeds", or "packaged configs" in user-facing docs.
-- Do not introduce new terminology (e.g., "toolkit") or unrelated infrastructure concepts (e.g., "custom domains") unless they are essential to a specific guide.
+- Introductory pages hand off to the next step; do not fork the reader into parallel “primary” paths.
+- `html2rss-web` is the primary interface; page-URL auto-source is the primary workflow.
+- Say **Feed Directory** for the curated feed list; avoid “catalog”, “included feeds”, or “packaged configs” in user-facing copy.
+- Do not invent product terms or infrastructure side quests unless a specific operator guide needs them.
 
 ### Code Snippets
 

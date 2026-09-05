@@ -1,48 +1,32 @@
 ---
 title: "Web Application"
-description: "html2rss-web is the self-hosted web interface and feed server for page-URL generation, fallback feeds, and custom configs."
+description: "html2rss-web is the self-hosted UI and feed server for URL-to-RSS, Feed Directory, and custom configs."
 sidebar:
   label: "Overview"
   order: 1
 ---
 
-`html2rss-web` is the recommended way to get started. Run the quickstart demo first, create one generated feed, then move to the real deployment setup when you want stable URLs of generated feeds, production secrets, explicit tokens, or monitoring.
+`html2rss-web` is the recommended product surface. Run the [Getting Started](/getting-started/) demo, create one feed from a page URL, then move to [Deployment](/web-application/deployment/) for production secrets and stable hosting.
 
-## Get Started
+## What you get
 
-Start with **[Getting Started](/web-application/getting-started/)** to:
+- Web UI for page-URL auto-source
+- Access-controlled create API (`HTML2RSS_ACCESS_TOKEN`)
+- Feed Directory catalog from your instance (`GET /api/v1/configs`)
+- Optional custom YAML via `feeds.yml` mount
+- OpenAPI at `/openapi.yaml`
 
-- run your own local instance
-- use the demo token
-- open a generated feed from your own instance
+The extraction engine is the [`html2rss`](https://github.com/html2rss/html2rss) gem.
 
-## What The Web App Gives You
+## Flow
 
-- **Web interface:** direct feed creation from page URLs
-- **Access-controlled generation:** `POST /api/v1/feeds` expects the token configured on your instance
-- **Included Feed Directory:** packaged fallback feeds you can use immediately from your own deployment
-- **Config-based extension path:** move to custom feeds when you need reviewable rules
-- **Caching and HTTP handling:** shipped as part of the deployment
-- **Generated API contract:** OpenAPI is published at `/openapi.yaml`
+1. [Getting Started](/getting-started/) — local Docker
+2. [Deployment](/web-application/deployment/) — production
+3. [Advanced Feeds](/creating-custom-feeds/) — YAML escape hatch
 
-The scraping and feed-building engine is provided by the Ruby gem [`html2rss`](https://github.com/html2rss/html2rss).
+## Guides
 
-## Recommended Flow
-
-1.  **[Getting Started](/web-application/getting-started/)**: run the app locally in 10 minutes
-2.  **[Deployment & Production](/web-application/deployment/)**: move to a stable, production-ready setup
-3.  **[Create Custom Feeds](/creating-custom-feeds/)**: build stable extraction rules when needed
-
-## Feature Guides
-
-Once your instance is running, learn how to use its core features:
-
-- **[Use automatic feed generation](/web-application/guides/use-automatic-feed-generation/)**: create feeds from page URLs
-- **[Use the Feed Directory](/web-application/guides/use-the-feed-directory/)**: use the built-in Feed Directory as a fallback
-- **[Monitoring](/web-application/reference/monitoring/)**: keep your instance healthy
-
-## For Integrations
-
-- **OpenAPI:** `/openapi.yaml` on your instance, or [`public/openapi.yaml`](https://github.com/html2rss/html2rss-web/blob/main/public/openapi.yaml) in the repo
-- **API metadata:** `/api/v1`
-- **Config schema for the core gem:** [`html2rss-config.schema.json`](https://github.com/html2rss/html2rss/blob/master/schema/html2rss-config.schema.json)
+- [Use automatic feed generation](/web-application/guides/use-automatic-feed-generation/)
+- [Use the Feed Directory](/web-application/guides/use-the-feed-directory/)
+- [How It Works](/web-application/concepts/)
+- [Monitoring](/web-application/reference/monitoring/)

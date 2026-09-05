@@ -1,40 +1,27 @@
 ---
 title: AI Agent Workflows with MCP
-description: Guide to integrating html2rss with AI agents, Claude Desktop, and Cursor using the Model Context Protocol (MCP).
+description: Wire Cursor or Claude Desktop to html2rss MCP; use bare verbs and the html2rss-config skill.
 ---
 
 import { Code } from "@astrojs/starlight/components";
 
-`html2rss` includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server. This allows AI assistants in tools like Cursor, Claude Desktop, and GitHub Copilot to scrape pages, capture feed configurations, and generate RSS feeds autonomously.
+`html2rss` includes a native [MCP](https://modelcontextprotocol.io/) server so agents can scrape pages, capture YAML, test, and ship RSS without parsing CLI stdout.
 
-## Why Use MCP?
+## Why MCP
 
-Without MCP, agents must invoke shell commands, manage output buffers, and parse unstructured text. With MCP:
+- Tools and schemas are discovered by the client.
+- Every result is an envelope: `ok`, `next_step`, `guidance`, `payload`.
+- `html2rss://runtime` reports whether Botasaurus is configured on **this** MCP process (`botasaurus_configured` only).
 
-- The agent automatically discovers available tools, arguments, and return types.
-- Responses are structured envelopes (`ok`, `next_step`, `guidance`, `payload`) — articles in `payload.items`, YAML in `payload.yaml`, RSS in `payload.rss`.
-- Agents can inspect, capture, validate, and verify feeds iteratively in a closed feedback loop.
-- `html2rss://runtime` reports whether Botasaurus is configured in this MCP process (boolean only).
+Full tool schemas: [MCP Server Reference](/ruby-gem/reference/mcp-server/).
 
-## Client Setup
+## Client setup
 
-### 1. Version Manager Shims (mise, asdf, rbenv, chruby)
+Invoke through your version manager so Ruby and gem bins resolve correctly.
 
-Because version managers manage Ruby runtimes and gem paths through environment shims, configure your MCP client to invoke the version manager executable rather than a bare `html2rss` command.
+### Cursor
 
-<Code
-  code={`
-  # Install the gem in your global environment
-  mise exec -- gem install html2rss
-  # Or add it to your project Gemfile
-  mise exec -- bundle add html2rss
-`}
-  lang="bash"
-/>
-
-### 2. Cursor Configuration
-
-Add `html2rss` to your Cursor MCP settings (`~/.cursor/mcp.json` or `.cursor/mcp.json`):
+`~/.cursor/mcp.json` or `.cursor/mcp.json`:
 
 <Code
   code={`
@@ -53,64 +40,55 @@ Add `html2rss` to your Cursor MCP settings (`~/.cursor/mcp.json` or `.cursor/mcp
   lang="json"
 />
 
-_(If using `asdf`, replace `"command": "mise"` with `"asdf"` and `"args": ["exec", "html2rss", "mcp"]`.)_
+For `asdf`, use `"command": "asdf"` and `"args": ["exec", "html2rss", "mcp"]`.
 
-### 3. Claude Desktop Configuration
+### Claude Desktop
 
-Add `html2rss` to your Claude Desktop configuration (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS or `%APPDATA%\\Claude\\claude_desktop_config.json` on Windows):
+Same server block in Claude’s desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS).
 
-<Code
-  code={`
-  {
-    "mcpServers": {
-      "html2rss": {
-        "command": "mise",
-        "args": ["exec", "--", "html2rss", "mcp"],
-        "env": {
-          "BOTASAURUS_SCRAPER_URL": "http://127.0.0.1:4010"
-        }
-      }
-    }
-  }
-`}
-  lang="json"
-/>
+Put `BOTASAURUS_SCRAPER_URL` in the MCP `env` block — a shell export does not reach the MCP process. Confirm with `html2rss://runtime`.
 
-## Autonomous Workflow Patterns
+## Golden loops
 
-**Budget:** `scrape_url` is one call. Durable config is `capture_config` → `validate_config` → `apply_config`. Call `inspect_url` only when the result is weak or you need recon (final URL, status, https→http, native RSS/Atom).
+**Articles now:** `scrape` (or `batch_scrape`). `strategy: "auto"` already falls back to Botasaurus when configured — do not retry with explicit `faraday` after `auto`. Empty items can still be success; follow `next_step`.
 
-### Pattern A: One-Shot Content Scraping
+**Durable YAML:** optional `inspect` → `recon` → `capture` → `test` → `apply`.
 
-When an agent needs articles immediately without saving a feed configuration:
+- `capture` returns draft YAML in `payload.yaml`.
+- For html2rss-configs destinations, add `directory.topics` and explicit channel `title` / `url`.
+- `test` asserts live extraction; then `apply` ships RSS (`isError` on zero items).
 
-1. Call `scrape_url` with `strategy: "auto"`. Auto runs Faraday then Botasaurus when `BOTASAURUS_SCRAPER_URL` is set on the MCP process, prefers native RSS/Atom when present, and may rewrite a weak homepage URL via entry resolution.
-2. An empty item list is still success for articles-now. Read `payload.items`. Follow `next_step` (including `read_runtime` / `html2rss://runtime` when Botasaurus is unset).
-3. Call `inspect_url` when the result is weak or you need recon (`final_url`, `status`, `scheme_downgrade`, `alternate_feeds`, `surface_category`). Follow `next_step` — often `scrape_url` when `alternate_feeds` is present.
+**Config already in hand:** `validate` → `test` → `apply`.
 
-### Pattern B: Iterative Feed Config Authoring
+Weak scrape/capture → `inspect`. When alternates warrant it, follow `next_step` to `recon`.
 
-When an agent is tasked with creating a durable YAML feed configuration:
+## html2rss-config skill
 
-1. **Capture:** Call `capture_config`. YAML is `payload.yaml` (`items` + `enhance: true`). Check `payload.articles_count` and `has_selectors`.
-2. **Recon (optional):** Call `inspect_url` for `final_url`, `status`, `scheme_downgrade`, `alternate_feeds`, and `surface_category` if the draft is weak. Follow `next_step` (often `scrape_url` when alternates are present).
-3. **Rewrite:** If the destination is html2rss-configs, add `directory.topics` and explicit channel `title`/`url`. Strive to keep `enhance: true` (set `false` only when chrome leaks into items).
-4. **Validate:** Pass `yaml` (or `config`) to `validate_config`. Exactly one of those arguments.
-5. **Apply:** Call `apply_config`. `isError` plus `payload.item_count: 0` means the config is not shippable — channel title in the XML is not success.
+For curated configs in the [html2rss-configs](https://github.com/html2rss/html2rss-configs) repo, use the repo skill at `.agents/skills/html2rss-config/SKILL.md`. It routes `new` / `repair` / `expand` modes and points at:
 
-## JavaScript-Rendered Sites (Botasaurus)
+| Helper                 | Role                             |
+| ---------------------- | -------------------------------- |
+| `scripts/add_config`   | Create from a URL or file        |
+| `scripts/batch_recon`  | Parallel BUILD/DEFER/DROP ledger |
+| `scripts/check_config` | CLI `validate` + `test`          |
+| `scripts/probe_rss`    | Native RSS via `recon`           |
 
-For dynamic JavaScript single-page applications or sites protected by anti-bot measures, launch the Botasaurus scrape service:
+YAML lives under `lib/html2rss/configs/<domain>/`. Quality gates stay in that repo’s `AGENTS.md`.
+
+## Botasaurus for agents
+
+Start the companion scraper (from `html2rss` or your web Compose stack), then point the MCP `env` at it:
 
 <Code
   code={`
+  # From the html2rss gem repo:
   docker compose -f docker-compose.botasaurus.yml up -d
 `}
   lang="bash"
 />
 
-Put `BOTASAURUS_SCRAPER_URL` (typically `http://127.0.0.1:4010`) in the MCP server `env` block above — a shell export does not reach the Cursor/Claude MCP process. Confirm with `html2rss://runtime` (`botasaurus_configured: true`). AutoFallback then hops without a second tool call.
+Typical URL: `http://127.0.0.1:4010`.
 
-## Daemon logs (stderr)
+## Daemon logs
 
-`html2rss mcp` uses stdout for JSON-RPC, so the daemon logs to **stderr**. Unless you set `LOG_LEVEL`, the MCP process uses `info` (the gem library default stays `warn`). A foreground watcher sees the start banner, each tool call, and pipeline fallbacks. Use `LOG_LEVEL=debug` for more detail or `LOG_LEVEL=warn` to quiet it.
+`html2rss mcp` uses stdout for JSON-RPC and logs to stderr. Set `LOG_LEVEL=debug` for more detail or `LOG_LEVEL=warn` to quiet.

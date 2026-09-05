@@ -1,46 +1,31 @@
 ---
-title: "Turn Any Website Into an RSS Feed"
-description: "Run html2rss-web with Docker, paste your own page URL, enter one token, and open the generated feed."
+title: "Turn any website into an RSS feed"
+description: "Paste a page URL into html2rss-web, get RSS or JSON Feed. Auto-source, Feed Directory, and MCP for agents."
 ---
 
-`html2rss` turns any website into a stable RSS feed. Run the 10-minute quickstart to see it in action, then move to a production setup when you are ready to stay updated.
+`html2rss` turns websites into stable RSS and JSON feeds. The recommended path is **html2rss-web**: paste a page URL, enter an access token, and subscribe to the generated feed. Auto-source (with the Botasaurus companion for JavaScript-heavy sites) handles extraction without hand-written selectors.
 
-## Start Here
+## Start here
 
-**Quickstart:** [Run html2rss-web with Docker](/web-application/getting-started/)
+**[Getting Started](/getting-started/)** — Docker quickstart in about two minutes.
 
-The canonical path to your first feed:
+Then:
 
-1.  **Phase 1: Local Demo** — Run the stack and generate a feed from any page URL in minutes.
-2.  **Phase 2: Production** — Move to [Deployment](/web-application/deployment/) for a stable, production-ready instance.
-3.  **Phase 3: Refinement** — Create [Custom Feeds](/creating-custom-feeds/) only when you need absolute control over extraction.
+1. **[Deployment](/web-application/deployment/)** — production tokens and hosting.
+2. **[Feed Directory](/feed-directory/)** — curated feeds from your instance.
+3. **[Advanced Feeds](/creating-custom-feeds/)** — YAML escape hatch when you need exact selectors.
 
-## Deep Dives
+## Also useful
 
-### Features & Operations
+- **[How It Works](/web-application/concepts/)** — auto-source, tokens, Botasaurus, ecosystem map.
+- **[AI Agent Workflows & MCP](/ruby-gem/guides/ai-agent-workflows/)** — native MCP tools and the `html2rss-config` curation skill.
+- **[Monitoring](/web-application/reference/monitoring/)** — health checks and Sentry.
 
-- **[Use the Feed Directory](/web-application/guides/use-the-feed-directory/)**: Use the Feed Directory for popular sites.
-- **[Monitoring](/web-application/reference/monitoring/)**: Keep your instance healthy with probes and Sentry.
-- **[Reference](/web-application/reference/)**: Environment variables and versioning strategy.
+## Typical uses
 
-### Engine & Customization
+- Follow blogs and news without social algorithms.
+- Track product changelogs and release notes.
+- Monitor job boards and community forums.
+- Subscribe when a site does not publish its own feed.
 
-- **[Creating Custom Feeds](/creating-custom-feeds/)**: Write and test your own scraping rules.
-- **[Selectors Reference](/ruby-gem/reference/selectors/)**: Learn the CSS/XPath matching rules.
-- **[Strategy Reference](/ruby-gem/reference/strategy/)**: Handle static vs. JavaScript-heavy pages.
-- **[Ruby Gem Reference](/ruby-gem/)**: Full engine API documentation and CLI usage.
-
-## What People Use It For
-
-- Follow blogs and news sites without social media algorithms.
-- Track product updates, changelogs, and release notes.
-- Monitor job postings and community forums.
-- Subscribe to any site that does not publish its own feed.
-
-## Practical Notes
-
-- **Start with Docker**: It is the recommended way to run `html2rss-web`.
-- **Start with a Page URL**: Automatic generation is the primary workflow.
-- **Feed Directory**: Check the [Feed Directory](/feed-directory/) first; the site you want might already be covered.
-
-**Need help?** Continue to the [troubleshooting guide](/troubleshooting/troubleshooting/) or join [GitHub Discussions](https://github.com/orgs/html2rss/discussions).
+**Need help?** [Troubleshooting](/troubleshooting/troubleshooting/) or [GitHub Discussions](https://github.com/orgs/html2rss/discussions).

@@ -114,9 +114,9 @@ Example scrape-API payload shape:
 <Code
   code={`
   BOTASAURUS_SCRAPER_URL="http://localhost:4010" \\
-  html2rss auto https://example.com/updates --strategy botasaurus
+  html2rss scrape https://example.com/updates --strategy botasaurus
   BOTASAURUS_SCRAPER_URL="http://localhost:4010" \\
-  html2rss feed my_config.yml --strategy botasaurus
+  html2rss apply my_config.yml --strategy botasaurus
 `}
   lang="bash"
 />

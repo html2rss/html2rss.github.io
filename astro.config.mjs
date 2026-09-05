@@ -13,6 +13,7 @@ export default defineConfig({
     "/components/html2rss": "/ruby-gem/",
     "/components/html2rss-configs": "/creating-custom-feeds/",
     "/components": "/",
+    "/web-application/getting-started/": "/getting-started/",
     "/web-application/how-to/deployment": "/web-application/deployment/",
     "/web-application/how-to/automatic-updates": "/web-application/deployment/",
     "/web-application/how-to/use-automatic-feed-generation":
@@ -267,15 +268,10 @@ export default defineConfig({
           link: "/feed-directory/",
         },
         {
-          label: "Create Custom Feeds",
-          link: "/creating-custom-feeds/",
-        },
-        {
-          label: "Web Application",
-          collapsed: true,
+          label: "Self-Hosting & Deployment",
+          collapsed: false,
           items: [
             "web-application",
-            "web-application/getting-started",
             "web-application/deployment",
             {
               label: "Guides",
@@ -288,7 +284,20 @@ export default defineConfig({
           ],
         },
         {
-          label: "Ruby Gem",
+          label: "How It Works",
+          link: "/web-application/concepts/",
+        },
+        {
+          label: "AI Agent Workflows & MCP",
+          collapsed: false,
+          items: ["ruby-gem/guides/ai-agent-workflows", "ruby-gem/reference/mcp-server"],
+        },
+        {
+          label: "Advanced Feeds",
+          link: "/creating-custom-feeds/",
+        },
+        {
+          label: "Ruby Gem & CLI",
           collapsed: true,
           items: [
             "ruby-gem",

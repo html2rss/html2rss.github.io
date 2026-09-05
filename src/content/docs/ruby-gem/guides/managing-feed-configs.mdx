@@ -1,6 +1,6 @@
 ---
 title: Managing Feed Configs
-description: "Learn how to manage feed configurations with YAML files. Organize, version control, and maintain your html2rss feed configurations effectively."
+description: "Learn how to manage feed configurations with YAML files. Organize, version control, and maintain your html2rss apply configurations effectively."
 ---
 
 import { Code } from "@astrojs/starlight/components";
@@ -80,10 +80,10 @@ Prefer `Html2rss.feed_result` when one scrape must render as both RSS and JSON F
 
 - `scraper_tallies`, `selected_strategy`, `attempt_count`, `strategy_attempts` (auto-fallback attempts; empty outside `strategy: auto`)
 - `admission_drops` (Cleanup reason → count)
-- `entry_url` / `scrape_url` (pasted vs effective URL after entry resolution)
+- `entry_url` / `scrape` (pasted vs effective URL after entry resolution)
 - `entry_resolution` (`applied`, `probe_count`, `reason`, optional `winner_score`)
 
-For URL-only auto discovery, `Html2rss.auto_feed_result(url)` returns the same `FeedResult` (CLI `html2rss auto --explain` prints `status.to_h` on stderr).
+For URL-only auto discovery, `Html2rss.auto_feed_result(url)` returns the same `FeedResult` (CLI `html2rss scrape --explain` prints `status.to_h` on stderr).
 
 <Code
   code={`
@@ -104,8 +104,8 @@ Depth and method contracts: [YARD for `html2rss`](https://www.rubydoc.info/gems/
 
 <Code
   code={`
-  html2rss feed feeds.yml my-first-feed ; \
-  html2rss feed single.yml
+  html2rss apply feeds.yml my-first-feed ; \
+  html2rss apply single.yml
 `}
   lang="sh"
 />

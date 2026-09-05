@@ -1,44 +1,63 @@
 ---
 title: "Getting Started"
-description: "Start html2rss-web locally, paste your own URL, enter one token, and open the generated feed."
+description: "Run html2rss-web with Docker, paste a page URL, enter the demo token, and open your generated RSS feed."
 sidebar:
   order: 1
 ---
 
 import { Code } from "@astrojs/starlight/components";
 
-This page points to the main onboarding flow.
+import MinimalDockerCompose from "../../components/docs/MinimalDockerCompose.astro";
 
-## Start Here
+Run `html2rss-web` locally with Docker, create one feed from a page URL, then move to production setup when you want stable hosting.
 
-If you want the recommended path, go to [Run html2rss-web with Docker](/web-application/getting-started/).
+## What you need
 
-That guide is the canonical setup flow for:
+- Docker
+- About two minutes for first success
 
-- running `html2rss-web` locally
-- creating a feed from your own page URL
-- using the demo token first
-- moving to production setup only after first success
-- choosing fallback or custom-config paths only when needed
+## Step 1: Folder and compose file
 
-## Quick Shortcuts
+<Code
+  code={`
+  mkdir html2rss-web && \\
+  cd html2rss-web
+`}
+  lang="bash"
+/>
 
-- **[Run html2rss-web with Docker](/web-application/getting-started/)**: recommended first step
-- **[Use automatic feed generation](/web-application/guides/use-automatic-feed-generation/)**: understand the normal direct page-URL workflow
-- **[Use the Feed Directory](/web-application/guides/use-the-feed-directory/)**: fallback when the Feed Directory already covers your site
-- **[Create Custom Feeds](/creating-custom-feeds/)**: write configs when you need more control
-- **[Troubleshooting Guide](/troubleshooting/troubleshooting/)**: fix startup or extraction problems
+Use the quickstart stack from [`docker-compose.quickstart.yml`](https://github.com/html2rss/html2rss-web/blob/main/docker-compose.quickstart.yml). Save it as `docker-compose.yml`:
 
-## Using the Ruby CLI
+<MinimalDockerCompose />
 
-If you are working directly with the gem instead of `html2rss-web`, start with:
+That stack runs:
 
-<Code code={`html2rss auto https://example.com/blog`} lang="bash" />
+- `html2rss-web` on port `4000`
+- companion `botasaurus` for JavaScript-rendered pages
+- `AUTO_SOURCE_ENABLED=true` so URL-to-RSS works without YAML
+- demo access token `CHANGE_ME_ADMIN_TOKEN`
 
-For strategy behavior and manual overrides, see the [Strategy reference](/ruby-gem/reference/strategy/).
+## Step 2: Start
 
-If the target site is unusually redirect-heavy or needs extra follow-up requests, the CLI also supports:
+<Code code={`docker compose up -d`} lang="bash" />
 
-<Code code={`html2rss auto https://example.com/blog --max-redirects 10 --max-requests 5`} lang="bash" />
+## Step 3: Create a feed
 
-For config-driven runs, the same flags are available on `html2rss feed`.
+1. Open `http://localhost:4000` (or `http://<LAN_IP>:4000/` on your network).
+2. Paste a **listing** URL — newsroom, changelog, releases, category, or archive page (not a bare homepage).
+3. When prompted, enter `CHANGE_ME_ADMIN_TOKEN`.
+4. Open the generated feed URL (`.rss` or `.json`).
+
+## Next
+
+1. **[Deployment](/web-application/deployment/)** — production compose, real tokens, LAN HTTP vs HTTPS proxy.
+2. **[Feed Directory](/web-application/guides/use-the-feed-directory/)** — subscribe when a curated feed already covers the site.
+3. **[Advanced Feeds](/creating-custom-feeds/)** — custom YAML only when auto-source needs tighter selectors.
+
+## Ruby CLI (optional)
+
+Without the web UI, one-shot auto-source from the gem:
+
+<Code code={`html2rss scrape https://example.com/blog`} lang="bash" />
+
+`html2rss auto` is a Thor alias for `scrape`. Strategy details: [Strategy reference](/ruby-gem/reference/strategy/).

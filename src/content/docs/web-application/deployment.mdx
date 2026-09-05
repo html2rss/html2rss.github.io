@@ -1,6 +1,6 @@
 ---
 title: "Deployment & Production"
-description: "Deploy html2rss-web with Docker, keep first success small, then add production pieces after the local token-gated flow works."
+description: "Deploy html2rss-web with Docker Compose, real tokens, LAN HTTP or HTTPS reverse proxy."
 sidebar:
   order: 3
 ---
@@ -9,104 +9,101 @@ import { Code } from "@astrojs/starlight/components";
 
 import DockerComposeSnippet from "../../../components/docs/DockerComposeSnippet.astro";
 
-html2rss-web ships on Docker Hub. Start with the [Getting Started guide](/web-application/getting-started/), which uses [`docker-compose.quickstart.yml`](https://github.com/html2rss/html2rss-web/blob/main/docker-compose.quickstart.yml). Make sure the one-file demo works first, then add the production pieces below.
+Start from a working [Getting Started](/getting-started/) demo, then switch to production Compose with your own secrets.
 
-The examples use `html2rss/web:1`, the recommended major-version tag. Pin an exact release if your deployment process requires it.
+Use image tag `html2rss/web:1` (or pin an exact release). Production Compose lives in [`html2rss-web/docker-compose.yml`](https://github.com/html2rss/html2rss-web/blob/main/docker-compose.yml) with [`.env.example`](https://github.com/html2rss/html2rss-web/blob/main/.env.example).
 
-## Choose Your Production Scope First
+## Production compose (recommended)
 
-There are two materially different deployment modes:
+1. Download and copy env:
 
-- **Automatic generation enabled:** primary self-hosted workflow, requires `AUTO_SOURCE_ENABLED=true` and `HTML2RSS_ACCESS_TOKEN`
-- **Included feeds fallback only:** lower-maintenance path when the Feed Directory already covers your needs
+<Code
+  code={`
+  curl -O https://raw.githubusercontent.com/html2rss/html2rss-web/main/docker-compose.yml
+  curl -O https://raw.githubusercontent.com/html2rss/html2rss-web/main/.env.example
+  cp .env.example .env
+`}
+  lang="bash"
+/>
 
-If you do not need page-URL generation yet, keep `AUTO_SOURCE_ENABLED` off and ship the fallback mode only.
+2. Set secrets in `.env`:
 
-## Prepare for Production
+<Code
+  code={`
+  openssl rand -hex 32  # HTML2RSS_SECRET_KEY
+  openssl rand -hex 32  # HTML2RSS_ACCESS_TOKEN
+`}
+  lang="bash"
+/>
 
-Before exposing html2rss-web, ensure:
+| Variable                               | Required       | Notes                                              |
+| -------------------------------------- | -------------- | -------------------------------------------------- |
+| `HTML2RSS_SECRET_KEY`                  | Yes            | ≥ 32 characters                                    |
+| `HTML2RSS_ACCESS_TOKEN`                | Yes            | ≥ 16 characters; paste into the UI                 |
+| `AUTO_SOURCE_ENABLED`                  | Default `true` | Keep `true` for URL-to-RSS                         |
+| `HEALTH_CHECK_TOKEN`                   | No             | Only if you use authenticated `GET /api/v1/health` |
+| `SENTRY_DSN` / `BOTASAURUS_SENTRY_DSN` | No             | Separate web vs scraper Sentry projects            |
 
-- Your domain (for example `yourdomain.com`) resolves to the host running Docker
-- Inbound TCP ports 80 and 443 reach the host (check firewalls and cloud security groups)
-- You are ready to watch the first deployment logs for certificate issuance
-- You have a value ready for `HTML2RSS_SECRET_KEY`
-- You have a value ready for `HTML2RSS_ACCESS_TOKEN`
+3. Start:
 
-If you plan to enable automatic feed generation, also prepare:
+<Code code={`docker compose up -d`} lang="bash" />
 
-- a clear way to give users the same `HTML2RSS_ACCESS_TOKEN` your instance expects
-- optional advanced-rendering infrastructure only if harder sites later prove they need it
+Web listens on host port **4000** (`4000:4000`). Botasaurus stays on `127.0.0.1:4010` inside the published mapping from Compose. Open `http://localhost:4000/` or `http://<LAN_IP>:4000/` and paste `HTML2RSS_ACCESS_TOKEN`.
 
-### Why a Reverse Proxy?
+Port `4000` on all interfaces is intentional for LAN access. Protect the instance with a strong access token; do not expose an unauthenticated demo token on a shared network.
 
-A reverse proxy terminates public HTTPS traffic and forwards requests to html2rss-web on your private Docker network.
+## LAN / Tailscale (plain HTTP)
 
-### Option A: Caddy (Automatic HTTPS)
+No reverse proxy required. The app does **not** force HTTPS upgrades on plain HTTP, so LAN IPs keep working. HSTS and CSP `upgrade-insecure-requests` apply only on HTTPS requests.
 
-Caddy handles certificates and redirects.
+## Public HTTPS (Caddy example)
+
+Terminate TLS in front of the app and forward to port 4000:
 
 <DockerComposeSnippet variant="productionCaddy" />
 
-Create a `.env` file beside your compose file:
+Example `.env` beside Compose:
 
 <Code
   code={`
   CADDY_HOST=yourdomain.com
   HTML2RSS_SECRET_KEY=<openssl rand -hex 32>
-  HTML2RSS_ACCESS_TOKEN=<strong access token>
-  # Optional only if you want authenticated GET /api/v1/health
-  # HEALTH_CHECK_TOKEN=<strong health token>
+  HTML2RSS_ACCESS_TOKEN=<openssl rand -hex 32>
+  # Optional:
+  # HEALTH_CHECK_TOKEN=
+  # SENTRY_DSN=
+  # BOTASAURUS_SENTRY_DSN=
 `}
   lang="dotenv"
 />
 
-Before starting the stack:
+After `docker compose up -d`, check `docker compose logs caddy --tail 20` for certificate issuance.
 
-- Set `CADDY_HOST` for your domain.
-- Generate `HTML2RSS_SECRET_KEY` with `openssl rand -hex 32`.
-- Set a strong `HTML2RSS_ACCESS_TOKEN`. This is the token users paste into the web UI.
-- Leave `HEALTH_CHECK_TOKEN` unset unless you intentionally use authenticated `GET /api/v1/health`.
-- Leave `BUILD_TAG` and `GIT_SHA` unset unless you intentionally override image metadata in logs.
-- Adjust optional knobs such as `AUTO_SOURCE_ENABLED` and `SENTRY_DSN` as needed; refer to the [environment reference](/web-application/reference/env-variables/) for details.
+## Custom feeds mount
 
-After `docker compose up -d`, run `docker compose logs caddy --tail 20`; look for `certificate obtained`.
+Auto-source is the default. To add curated YAML feeds, bind-mount `feeds.yml` (see [Advanced Feeds](/creating-custom-feeds/)):
 
-Re-test after DNS changes with [SSL Labs](https://www.ssllabs.com/ssltest/).
+<Code
+  code={`
+  volumes:
+    - type: bind
+      source: ./config/feeds.yml
+      target: /app/config/feeds.yml
+      read_only: true
+`}
+  lang="yaml"
+/>
 
-## Secure Your Instance
+## Operate
 
-Harden the application before inviting other users:
+- `GET /api/v1/health/ready` for readiness
+- Authenticated `GET /api/v1/health` only when `HEALTH_CHECK_TOKEN` is set
+- OpenAPI at `/openapi.yaml` on the running instance
+- [Monitoring reference](/web-application/reference/monitoring/) for Sentry and probes
+- [Environment variables](/web-application/reference/env-variables/) for the full table
 
-- Set a strong `HTML2RSS_ACCESS_TOKEN` and rotate it when needed
-- Prefer environment files (`.env`) stored outside version control for secrets
-- Keep token sharing/distribution outside public docs and outside version control
-- Give trusted users the same current `HTML2RSS_ACCESS_TOKEN` through your normal operator channel
-- If you use authenticated `GET /api/v1/health`, set a strong `HEALTH_CHECK_TOKEN`; do not leave `CHANGE_ME_HEALTH_CHECK_TOKEN` anywhere in production
+## Next
 
-<DockerComposeSnippet variant="secure" />
-
-Store these variables in a `.env` file and reference it with `env_file:` as demonstrated in the Caddy example.
-
-## Operate & Monitor
-
-Keep the instance healthy once it is in production:
-
-- Review `docker compose logs` regularly for feed errors or certificate renewals
-- Pull newer images for the Docker tag you selected on your update cadence
-- Right-size CPU and memory to avoid starvation when parsing large feeds
-- Use `GET /api/v1/health/ready` for standard readiness checks
-- Add authenticated `GET /api/v1/health` only when your operator tooling needs it
-
-### Resource Guardrails
-
-<DockerComposeSnippet variant="resourceGuardrails" />
-
-Adjust limits to match host capacity. Increase memory for large feeds.
-
-## Share & Support
-
-- Test different feed sources before inviting external users
-- Publish `/openapi.yaml` from the running instance if you expect agents or integrations to call the API directly
-- Add your instance to the [community wiki](https://github.com/html2rss/html2rss-web/wiki/Instances) if you want it listed publicly
-- Visit the [troubleshooting guide](/troubleshooting/troubleshooting/) or join the [community discussions](https://github.com/orgs/html2rss/discussions) when you need help
-- Ready to contribute fixes or docs? See the [contributing guide](/get-involved/contributing/)
+- [Feed Directory](/web-application/guides/use-the-feed-directory/)
+- [How It Works](/web-application/concepts/)
+- [Troubleshooting](/troubleshooting/troubleshooting/)

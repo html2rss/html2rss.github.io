@@ -1,60 +1,48 @@
 ---
 title: MCP Server Reference
-description: Complete protocol reference for the html2rss Model Context Protocol (MCP) server, tools, resources, prompts, and transports.
+description: Model Context Protocol tools, resources, prompts, and transports for the html2rss gem.
 ---
 
 import { Code } from "@astrojs/starlight/components";
 
-`html2rss` includes a built-in [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that exposes gem capabilities directly to AI agents, clients, and IDEs (such as Cursor, Claude Desktop, and GitHub Copilot).
+`html2rss` ships a built-in [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI agents and IDEs (Cursor, Claude Desktop, Copilot).
 
-## Overview
-
-The MCP server allows AI agents to inspect pages, capture reusable feed configurations, validate configs, and generate feeds without executing ad-hoc shell scripts or parsing CLI output.
+## Start
 
 <Code
   code={`
-  # Start with standard I/O transport (default for AI desktop clients)
+  # stdio (default for desktop clients)
   html2rss mcp
-  # Start with local HTTP transport (loopback only)
+  # HTTP on loopback only
   html2rss mcp --transport http --port 8080
 `}
   lang="bash"
 />
 
-## Transports & Security
+| Transport | Command                                     | Notes                                                        |
+| --------- | ------------------------------------------- | ------------------------------------------------------------ |
+| `stdio`   | `html2rss mcp`                              | Recommended for Cursor / Claude Desktop                      |
+| `http`    | `html2rss mcp --transport http --port 8080` | Bound to `127.0.0.1` only; needs `rack`, `rackup`, `webrick` |
 
-The MCP server supports two transport mechanisms:
+Daemon logs go to **stderr** (stdout is JSON-RPC). Default `LOG_LEVEL` for the MCP process is `info` unless you set it.
 
-| Transport   | Command                                     | Default Port | Description                                                                     |
-| :---------- | :------------------------------------------ | :----------- | :------------------------------------------------------------------------------ |
-| **`stdio`** | `html2rss mcp --transport stdio`            | N/A          | Standard input/output communication. Recommended for Cursor and Claude Desktop. |
-| **`http`**  | `html2rss mcp --transport http --port 8080` | `8080`       | Streamable HTTP transport bound strictly to `127.0.0.1` (loopback only).        |
+## Strategy
 
-### Security & Dependencies for HTTP
+`scrape` and `capture` with `strategy: "auto"` run Faraday → Botasaurus AutoFallback in one call. Prefer native RSS/Atom when present; weak homepage URLs may be rewritten via entry resolution.
 
-- **Loopback binding:** The HTTP transport only binds to `127.0.0.1`. Never expose it to public interfaces without authentication and reverse proxy origin controls.
-- **Dependencies:** The HTTP transport requires the `rack`, `rackup`, and `webrick` gems. If they are not present, starting the server raises a descriptive `LoadError`.
-- **Logging:** stdio JSON-RPC uses stdout. The daemon logs to stderr and defaults to `LOG_LEVEL=info` unless `LOG_LEVEL` is set (`debug` for more, `warn` to quiet).
+`inspect` with `auto` stays on Faraday. Pin `strategy: "botasaurus"` when inspect needs browser rendering.
 
-## Strategy Resolution in MCP
-
-`scrape_url` and `capture_config` with `strategy: "auto"` (the default) run Faraday → Botasaurus AutoFallback in one call. That path prefers native RSS/Atom when present and may run entry URL resolution on weak homepage/hub extracts — see [Auto Source](/ruby-gem/reference/auto-source/) and [Strategy](/ruby-gem/reference/strategy/#auto-default).
-
-`inspect_url` with `auto` uses Faraday for a cheap diagnostic. Pin `strategy: "botasaurus"` when you need browser rendering for inspect. Inspect reports head `rel=alternate` feeds only (no `/feed` path guessing).
-
-Read `html2rss://runtime` for `botasaurus_configured` (boolean only). Set `BOTASAURUS_SCRAPER_URL` on the **MCP process** env (see [AI agent workflows](/ruby-gem/guides/ai-agent-workflows/)).
-
-**Tool-call budget:** `scrape_url` = 1 call. Durable config = `capture_config` → `validate_config` → `apply_config`. Call `inspect_url` only when scrape/capture is weak or you need recon. Follow envelope `next_step` / `guidance`.
+Read `html2rss://runtime` for `botasaurus_configured` (boolean only). Set `BOTASAURUS_SCRAPER_URL` on the **MCP process** env.
 
 ## Result envelope
 
-Every tool returns the same JSON object in both the text content and `structuredContent`:
+Every tool returns one JSON object in text content and `structuredContent`:
 
 <Code
   code={`
   {
     "ok": true,
-    "next_step": "validate_config",
+    "next_step": "test",
     "guidance": "...",
     "payload": {}
   }
@@ -62,112 +50,88 @@ Every tool returns the same JSON object in both the text content and `structured
   lang="json"
 />
 
-`isError` matches `ok: false`. Scrape results expose articles in `payload.items`.
+`isError` matches `ok: false`. Articles live in `payload.items`; YAML in `payload.yaml`; RSS in `payload.rss`.
 
-`next_step` is one of: `done`, `inspect_url`, `validate_config`, `apply_config`, `scrape_url`, `capture_config`, `read_runtime`.
+`next_step` is one of: `done`, `inspect`, `recon`, `validate`, `apply`, `scrape`, `capture`, `read_runtime`, `test`.
 
-## Tools Reference
+## Tools (7 bare verbs + batch trio)
 
-The server registers 5 primary tools for AI agent orchestration.
+Golden path for durable YAML: `inspect` (optional) → `recon` → `capture` → `test` → `apply`. One-shot articles: `scrape`. Schema-only side door: `validate`.
 
-### `scrape_url`
+### `scrape`
 
-One-shot article extraction as JSON Feed items. Use when you need articles immediately without authoring or saving a YAML feed config.
+One-shot article extraction as JSON Feed items (no saved config).
 
-- **Parameters:**
-  - `url` _(string, required)_: Source page URL to scrape.
-  - `strategy` _(string, optional)_: Request strategy (`auto`, `faraday`, `botasaurus`). Default: `auto`.
-  - `limit` _(integer, optional)_: Maximum articles to keep. Default: `25`.
-  - `items_selector` _(string, optional)_: CSS selector hint for items.
-- **Return value:** Envelope with `payload.items` (JSON Feed article objects: `title`, `url`, `description`, `published_at`, `author`, `image`, `categories`). Also `payload.total`, `requested_strategy`, `channel_title`, and `admission_drops` when present.
-- **Error handling:** Unhandled exceptions return `isError: true` with `payload.class` / `payload.message`. An empty item list is still success (`ok: true`; follow `next_step`, which may be `inspect_url` or `read_runtime`).
+- **Parameters:** `url` (required); `strategy` (`auto` / `faraday` / `botasaurus`, default `auto`); `limit` (default `25`); optional `items_selector`
+- **Payload:** `items`, plus totals / strategy fields when present
+- Empty items can still be `ok: true` — follow `next_step` / `guidance`
 
-### `inspect_url`
+### `inspect`
 
-Diagnostic page analysis plus recon from the same fetch. `auto` uses Faraday; pin `botasaurus` when you need browser rendering.
+Diagnostics: final URL, status, scheme downgrade, `rel=alternate` feeds, surface category, admission drops.
 
-- **Parameters:**
-  - `url` _(string, required)_: Source page URL.
-  - `strategy` _(string, optional)_: Request strategy (`auto`, `faraday`, `botasaurus`). Default: `auto`.
-- **Return value:** Envelope whose `payload` is the diagnostic object:
-  - `requested_url` / `final_url`: requested URL vs `Response#url` after redirects.
-  - `status`: HTTP status when the strategy reports one.
-  - `scheme_downgrade`: `true` when the fetch went https → http.
-  - `alternate_feeds`: `rel=alternate` RSS/Atom links from the document head (no `/feed` path guessing).
-  - `surface_category`: page surface class (listing, weak, blocked, and related).
-  - `content_type` / `html_response` / `scraper_eligibility`.
-  - `sst`: `{ node_count, degraded, segment_stats }` when SST ran; `segment_stats` is also emitted at the top level when present.
-  - `articles_count` and `admission_drops` when the response is HTML (Cleanup drop-reason counts).
-  - `blocked_surface` when an interstitial signature is detected.
-  - `xhr_capture` when the inspect strategy is `botasaurus` (`count`, redacted `sample_endpoints`, `candidate_articles`).
-- **next_step:** Follow the envelope. Typical values: `scrape_url` when `alternate_feeds` is present or when no articles were found; `capture_config` when articles were found and there are no alternates.
+- **Parameters:** `url` (required); `strategy` (default `auto`)
+- Follow `next_step` — often `recon` when alternates warrant it, or `scrape` / `capture`
 
-### `capture_config`
+### `recon`
 
-Analyzes a target URL and derives a reusable YAML draft (`items` selector + `enhance: true`). Same serializer as CLI `html2rss capture`. Full schema options live in resource `html2rss://schema`.
+Curation verdict and `native_feed` preference (`BUILD` / `DEFER` / `DROP`).
 
-- **Parameters:**
-  - `url` _(string, required)_: Source page URL.
-  - `strategy` _(string, optional)_: Request strategy (`auto`, `faraday`, `botasaurus`). Default: `auto`.
-  - `items_selector` _(string, optional)_: Optional CSS selector hint for items.
-- **Return value:** Envelope with `payload.yaml` (string keys; same serializer as CLI `html2rss capture`). Treat as a draft: catalog feeds still need `directory.topics` and explicit channel `title`/`url`. Strive to keep `enhance: true`.
-- **payload:** Also `articles_count`, `channel_title`, `has_selectors`, `requested_strategy`, and when present `segment_strategy`, `selected_strategy`, `admission_drops`. Follow `next_step` (`validate_config` or `inspect_url`).
+- **Parameters:** `url` (required); `strategy` (default `auto`)
 
-### `validate_config`
+### `capture`
 
-Validates a feed configuration against the official `html2rss` JSON schema (`html2rss://schema`) and runtime constraints.
+Derive a reusable YAML draft (`payload.yaml`). Same serializer as CLI `html2rss capture`. Catalog feeds still need `directory.topics` and explicit channel `title` / `url`.
 
-- **Parameters** (exactly one of `config` or `yaml`):
-  - `config` _(object, optional)_: Feed configuration object.
-  - `yaml` _(string, optional)_: Feed configuration YAML (same form as CLI capture / catalog files).
-- **Return value:** Envelope with empty `payload` on success (`next_step`: `apply_config`).
-- **Error handling:** Returns `isError: true` with `payload.errors` if schema validation fails, or `next_step: validate_config` if both/neither argument is provided.
+- **Parameters:** `url` (required); `strategy`; optional `items_selector`
+- Typical `next_step`: `test` or `inspect`
 
-### `apply_config`
+### `validate`
 
-Executes a validated feed configuration against a page and returns RSS 2.0 XML. This is the ship gate: `isError` when the feed has zero items.
+Schema-only check against `html2rss://schema`. Exactly one of `config` or `yaml`.
 
-- **Parameters:**
-  - `url` _(string, required)_: Source page URL (populates `channel.url` if omitted from config).
-  - `config` _(object, optional)_: Feed configuration object (XOR `yaml`).
-  - `yaml` _(string, optional)_: Feed configuration YAML (XOR `config`).
-- **Return value:** Envelope with `payload.rss` (RSS 2.0 XML) and `payload.item_count` from the rendered RSS `items` (not a regex over the XML).
-- **Error handling:** `isError: true` when the scrape produced no items (`payload.item_count: 0`, `next_step: inspect_url`), or on unhandled exceptions.
+- Success `next_step` is usually `test`
 
-## Resources Reference
+### `test`
 
-The MCP server exposes reference data under the `html2rss://` URI scheme:
+Schema validation plus live extraction (`min_items`, optional `strict_quality`, `compare_enhance`).
 
-| URI                         | MIME Type          | Description                                                                                                              |
-| :-------------------------- | :----------------- | :----------------------------------------------------------------------------------------------------------------------- |
-| **`html2rss://schema`**     | `application/json` | The complete JSON Schema for `html2rss` feed configurations, including selector rules, extractors, and request controls. |
-| **`html2rss://extractors`** | `application/json` | Alphabetical list of all registered extractor names (`attribute`, `html`, `href`, `text`, `static`, etc.).               |
-| **`html2rss://strategies`** | `application/json` | Published MCP request strategies (`auto`, `faraday`, `botasaurus`). Does not list `local_file`.                          |
-| **`html2rss://runtime`**    | `application/json` | Boolean `botasaurus_configured` from process env. Never includes the scraper URL.                                        |
+- Success `next_step` is `apply`
+- Payload includes sample items, timing, and `quality_report` when present
 
-`validate_config` / `apply_config` reject `strategy: local_file` and `request.local_file_path`. Use CLI `--input` for fixtures.
+### `apply`
 
-## Prompts Reference
+Ship gate: build RSS from a config. Required `url` plus exactly one of `config` or `yaml`.
 
-The server publishes guided prompt workflows for AI assistants:
+- **Payload:** `rss`, `item_count`
+- `isError` when zero items
 
-### `scrape-webpage`
+### Batch trio
 
-One `scrape_url` call with `strategy: auto` (AutoFallback already hops). Call `inspect_url` only if the result is weak or you need recon.
+| Tool            | Job                                    |
+| --------------- | -------------------------------------- |
+| `batch_scrape`  | Parallel scrape with per-URL isolation |
+| `batch_inspect` | Parallel inspect                       |
+| `batch_recon`   | Parallel recon                         |
 
-- **Arguments:**
-  - `url` _(string, required)_: Target URL to scrape.
+## Resources
 
-### `capture-feed-config`
+| URI                     | Description                                                                                                        |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `html2rss://schema`     | Feed config JSON Schema                                                                                            |
+| `html2rss://extractors` | Extractor names                                                                                                    |
+| `html2rss://strategies` | `auto`, `faraday`, `botasaurus` (not `local_file`)                                                                 |
+| `html2rss://runtime`    | `version`, `mcp_contract_version`, `catalog_fingerprint`, `tools`, `botasaurus_configured` — never the scraper URL |
 
-Four-step workflow for a durable feed config:
+`validate` / `apply` reject `strategy: local_file` and `request.local_file_path`. Use CLI `--input` for fixtures.
 
-1. Call `capture_config` — YAML is `payload.yaml`. Check `payload.articles_count` and `has_selectors`. Strive `enhance: true`.
-2. If weak or you need recon, call `inspect_url` (`auto` uses Faraday; pin `botasaurus` for browser rendering).
-3. Call `validate_config` with `yaml` (or `config`) — must not be `isError`.
-4. Call `apply_config` — `isError` if zero items. Confirm `payload.item_count` before shipping.
+## Prompts
 
-If the destination is html2rss-configs, rewrite the draft for `directory.topics` and explicit channel `title`/`url`.
+| Name                  | Flow                                                                           |
+| --------------------- | ------------------------------------------------------------------------------ |
+| `scrape-webpage`      | One `scrape` call; `inspect` only if weak                                      |
+| `capture-feed-config` | `capture` → `test` → `apply` (catalog rewrite when targeting html2rss-configs) |
 
-- **Arguments:**
-  - `url` _(string, required)_: Target URL to analyze.
+## Client setup
+
+See [AI Agent Workflows](/ruby-gem/guides/ai-agent-workflows/) for Cursor / Claude Desktop `mcp.json` examples and the `html2rss-config` skill.
