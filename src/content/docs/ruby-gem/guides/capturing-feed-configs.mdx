@@ -29,9 +29,6 @@ Print YAML to stdout:
 <Code
   code={`
   html2rss capture https://example.com/articles
-  # Pin Botasaurus for JS-rendered listings
-  BOTASAURUS_SCRAPER_URL="http://localhost:4010" \\
-  html2rss capture https://example.com/articles --strategy botasaurus
   # Hint the item card when auto detection is weak
   html2rss capture https://example.com/articles --items_selector ".post-card"
   # Analyze a local HTML fixture
@@ -46,7 +43,7 @@ Print YAML to stdout:
 
 Common options:
 
-- `--strategy` — `auto`, `faraday`, `botasaurus`, or `local_file` (default `auto`)
+- `--strategy` — request strategy override; defaults to `auto` (see [Strategy](/ruby-gem/reference/strategy/))
 - `--items_selector` — CSS selector hint for item cards
 - `--limit` — maximum articles kept while deriving selectors (default `25`)
 - `--max-redirects` / `--max-requests` — request budget overrides
@@ -62,10 +59,9 @@ See the [CLI reference](/ruby-gem/reference/cli-reference/#capture) for the full
   require 'html2rss'
   # Derive a config hash (channel + items selector with enhance: true)
   config = Html2rss.capture('https://example.com/articles')
-  # Pin strategy or provide an items hint
+  # Provide an item-card hint when automatic detection is weak
   config = Html2rss.capture(
-    'https://spa-site.com',
-    strategy: :botasaurus,
+    'https://example.com/articles',
     items_selector: '.article-card'
   )
   File.write('my-feed.yml', Html2rss::Config.to_yaml(config))
@@ -76,11 +72,11 @@ See the [CLI reference](/ruby-gem/reference/cli-reference/#capture) for the full
 
 ## How It Works
 
-1. **Request** — `FeedPipeline` (AutoFallback when `:auto`)
+1. **Request** — fetch the page using the configured strategy (`auto` by default)
 2. **Discover** — AutoSource extracts admitted articles
 3. **Segment** — SST Segmenter strategies `:list` → `:cluster` → `:semantic`
 4. **Gate** — emit an items selector only when enough articles match
-5. **Assemble** — `{ items: { selector:, enhance: true } }` plus channel. When AutoFallback selects a concrete transport (or you pin one), Capture **stamps** `strategy:` into the YAML so later `html2rss apply` / `Html2rss.feed` replay the same transport.
+5. **Assemble** — `{ items: { selector:, enhance: true } }` plus channel. Capture records the concrete strategy that produced the draft so `html2rss apply` / `Html2rss.feed` can reproduce that fetch path.
 
 When the quality gate fails, selectors are omitted (`has_selectors: false`) rather than inventing attribute selectors. Hint with `--items_selector` or refine by hand.
 
@@ -99,7 +95,7 @@ MCP `capture` returns that YAML in `payload.yaml`. `validate` / `apply` accept t
 
 1. Validate: `html2rss validate my-feed.yml`
 2. Render: `html2rss apply my-feed.yml`
-3. Tighten the items selector, strategy, or `request.botasaurus` options if needed
+3. Tighten the items selector if needed; keep `auto` unless diagnosis proves a fixed fetch mode is required
 4. For Feed Directory contributions, add `directory.topics` and keep `enhance: true` unless chrome leaks (see [Creating Custom Feeds](/creating-custom-feeds/#sharing-your-config))
 
 ## Related

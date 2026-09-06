@@ -13,7 +13,7 @@ Production Docker Compose defaults `AUTO_SOURCE_ENABLED` to `true`. Non-compose 
 
 ## Botasaurus companion
 
-`html2rss-web` talks to `botasaurus-scrape-api` at `BOTASAURUS_SCRAPER_URL` (Compose sets `http://botasaurus:4010`). That service renders JavaScript-heavy pages when Faraday alone is not enough. Auto-source uses Faraday first, then Botasaurus when configured.
+`html2rss-web` talks to the companion scraper at `BOTASAURUS_SCRAPER_URL` (Compose sets `http://botasaurus:4010`). With that service configured, auto-source can choose browser rendering for JavaScript-heavy pages when the scrape result requires it.
 
 ## Three tokens (plain English)
 
@@ -29,7 +29,7 @@ Optional: `SENTRY_DSN` (web) and `BOTASAURUS_SENTRY_DSN` (scraper) for error rep
 
 ## HTTP vs HTTPS
 
-Plain HTTP works on localhost and LAN. The app sets HSTS and CSP `upgrade-insecure-requests` only when the request is HTTPS (including when a reverse proxy sends `X-Forwarded-Proto: https`). Put Caddy, Nginx, or Traefik in front for public TLS.
+Plain HTTP works on localhost and LAN. The app sets HSTS and CSP `upgrade-insecure-requests` only when the request is HTTPS (including when a reverse proxy sends `X-Forwarded-Proto: https`). For public TLS, put Caddy, Nginx, or Traefik in front.
 
 ## Ecosystem map
 

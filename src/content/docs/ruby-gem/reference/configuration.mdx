@@ -16,7 +16,6 @@ Global configuration is thread-safe and implements an RCU (Read-Copy-Update) mec
 Html2rss.configure do |config|
 config.log_level = :info
 config.min_ttl = 60
-config.default_strategy = :faraday
 config.headers = { 'User-Agent' => 'MyCustomUserAgent/1.0' }
 end
 `}
@@ -76,15 +75,15 @@ Defines HTTP headers that are globally appended/prepended to all requests. You c
 
 ### `default_strategy`
 
-Sets the default scraper strategy name used when a feed configuration doesn't specify a `strategy`. The strategy name must correspond to a registered strategy.
+Overrides the strategy used when a feed configuration does not specify one. Keep the gem default (`auto`) unless every feed in the process requires a fixed fetch mode.
 
 - **Type**: `Symbol`, `String`, or `nil`
-- **Default**: `nil` (falls back to the gem default strategy, usually `auto`)
+- **Default**: `nil` (uses `auto`)
 
 <Code
   code={`
   Html2rss.configure do |config|
-    config.default_strategy = :faraday
+    config.default_strategy = :auto
   end
   `}
   lang="ruby"
