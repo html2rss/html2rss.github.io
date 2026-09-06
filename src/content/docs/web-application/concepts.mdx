@@ -13,7 +13,7 @@ Production Docker Compose defaults `AUTO_SOURCE_ENABLED` to `true`. Non-compose 
 
 ## Botasaurus companion
 
-`html2rss-web` talks to `botasaurus-scrape-api` at `BOTASAURUS_SCRAPER_URL` (Compose sets `http://botasaurus:4010`). That service renders JavaScript-heavy pages when Faraday alone is not enough. Auto-source uses Faraday first, then Botasaurus when configured.
+`html2rss-web` talks to `botasaurus-scrape-api` at `BOTASAURUS_SCRAPER_URL` (Compose sets `http://botasaurus:4010`). That service renders JavaScript-heavy pages when default HTTP fetching alone is not enough. Auto-source uses the default HTTP strategy (HTTPX) first, then Botasaurus when configured.
 
 ## Three tokens (plain English)
 
@@ -27,9 +27,13 @@ Generate secrets with `openssl rand -hex 32`. Demo quickstart hard-codes `CHANGE
 
 Optional: `SENTRY_DSN` (web) and `BOTASAURUS_SENTRY_DSN` (scraper) for error reporting. They are separate projects; leave both unset until you want monitoring.
 
+## Server & async reactor
+
+`html2rss-web` runs on the Falcon application server, an asynchronous fiber-based server supporting HTTP/1.1 and HTTP/2. Falcon cooperates with HTTPX for non-blocking upstream I/O and coalesces concurrent feed requests in memory to prevent cache stampedes.
+
 ## HTTP vs HTTPS
 
-Plain HTTP works on localhost and LAN. The app sets HSTS and CSP `upgrade-insecure-requests` only when the request is HTTPS (including when a reverse proxy sends `X-Forwarded-Proto: https`). Put Caddy, Nginx, or Traefik in front for public TLS.
+Plain HTTP works on localhost and LAN. The app sets HSTS and CSP `upgrade-insecure-requests` only when the request is HTTPS (including when a reverse proxy sends `X-Forwarded-Proto: https`). For public TLS, put Caddy, Nginx, or Traefik in front, or configure direct in-process TLS with Falcon.
 
 ## Ecosystem map
 
