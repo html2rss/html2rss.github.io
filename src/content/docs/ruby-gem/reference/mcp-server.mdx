@@ -28,9 +28,9 @@ Daemon logs go to **stderr** (stdout is JSON-RPC). Default `LOG_LEVEL` for the M
 
 ## Strategy
 
-`scrape` and `capture` with `strategy: "auto"` run Faraday → Botasaurus AutoFallback in one call. Prefer native RSS/Atom when present; weak homepage URLs may be rewritten via entry resolution.
+`scrape` and `capture` with `strategy: "auto"` run default (HTTPX) → Botasaurus AutoFallback in one call. Prefer native RSS/Atom when present; weak homepage URLs may be rewritten via entry resolution.
 
-`inspect` with `auto` stays on Faraday. Pin `strategy: "botasaurus"` when inspect needs browser rendering.
+`inspect` with `auto` stays on the default HTTP strategy. Pin `strategy: "botasaurus"` when inspect needs browser rendering.
 
 Read `html2rss://runtime` for `botasaurus_configured` (boolean only). Set `BOTASAURUS_SCRAPER_URL` on the **MCP process** env.
 
@@ -62,7 +62,7 @@ Golden path for durable YAML: `inspect` (optional) → `recon` → `capture` →
 
 One-shot article extraction as JSON Feed items (no saved config).
 
-- **Parameters:** `url` (required); `strategy` (`auto` / `faraday` / `botasaurus`, default `auto`); `limit` (default `25`); optional `items_selector`
+- **Parameters:** `url` (required); `strategy` (`auto` / `default` / `botasaurus`, default `auto`); `limit` (default `25`); optional `items_selector`
 - **Payload:** `items`, plus totals / strategy fields when present
 - Empty items can still be `ok: true` — follow `next_step` / `guidance`
 
@@ -120,7 +120,7 @@ Ship gate: build RSS from a config. Required `url` plus exactly one of `config` 
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | `html2rss://schema`     | Feed config JSON Schema                                                                                            |
 | `html2rss://extractors` | Extractor names                                                                                                    |
-| `html2rss://strategies` | `auto`, `faraday`, `botasaurus` (not `local_file`)                                                                 |
+| `html2rss://strategies` | `auto`, `default`, `botasaurus` (not `local_file`)                                                                 |
 | `html2rss://runtime`    | `version`, `mcp_contract_version`, `catalog_fingerprint`, `tools`, `botasaurus_configured` — never the scraper URL |
 
 `validate` / `apply` reject `strategy: local_file` and `request.local_file_path`. Use CLI `--input` for fixtures.

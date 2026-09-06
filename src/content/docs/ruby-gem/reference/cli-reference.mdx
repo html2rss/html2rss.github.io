@@ -37,7 +37,7 @@ Command: `html2rss scrape [URL]`
 
 Available options:
 
-- `--strategy`: Optional request strategy (`auto`, `faraday`, `botasaurus`, `local_file`). Defaults to `auto`, which tries `faraday` -> `botasaurus`.
+- `--strategy`: Optional request strategy (`auto`, `default`, `botasaurus`, `local_file`). Defaults to `auto`, which tries `default` -> `botasaurus`. Legacy names `faraday` and `httpx` are accepted as aliases with a deprecation warning.
 - `--format`: Output format for the auto-sourced feed (`rss` or `jsonfeed`). Defaults to `rss`.
 - `--limit`: Maximum number of articles to extract during discovery (defaults to `25`).
 - `--items_selector`: Optional CSS selector hint for item extraction.
@@ -123,7 +123,7 @@ Command: `html2rss apply YAML_FILE [feed_name]`
 
 Available options:
 
-- `--strategy`: Request strategy override (`auto`, `faraday`, `botasaurus`, `local_file`).
+- `--strategy`: Request strategy override (`auto`, `default`, `botasaurus`, `local_file`).
 - `--params`: Dynamic parameters passed as key-value pairs (e.g. `--params id:42 section:news`).
 - `--max-redirects`: Maximum redirects to follow per request.
 - `--max-requests`: Total request budget allowed for this feed build.
@@ -150,7 +150,7 @@ Command: `html2rss capture [URL]`
 
 Available options:
 
-- `--strategy`: Optional request strategy (`auto`, `faraday`, `botasaurus`, `local_file`). Defaults to `auto`.
+- `--strategy`: Optional request strategy (`auto`, `default`, `botasaurus`, `local_file`). Defaults to `auto`.
 - `--items_selector`: Optional CSS selector hint for item extraction.
 - `--limit`: Maximum number of articles to keep (defaults to `25`).
 - `--max-redirects`: Maximum redirects to follow per request.
