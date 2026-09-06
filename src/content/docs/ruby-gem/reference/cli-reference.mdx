@@ -158,7 +158,7 @@ Available options:
 - `--input`: Local HTML file path to read input from without making network requests.
 - `--explain`: Print capture quality JSON to stderr (`articles_count`, `channel_title`, `has_selectors`, `segment_strategy`, `selected_strategy`, `admission_drops`). Stdout stays YAML.
 
-When capture needs a fixed fetch mode to reproduce its result, the printed YAML includes a top-level `strategy:` so later `html2rss apply` uses the same mode.
+Capture records the concrete strategy that produced the draft as a top-level `strategy:` so later `html2rss apply` can reproduce that fetch path.
 
 ### MCP
 

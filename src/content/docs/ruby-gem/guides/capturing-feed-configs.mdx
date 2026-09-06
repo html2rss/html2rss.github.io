@@ -76,7 +76,7 @@ See the [CLI reference](/ruby-gem/reference/cli-reference/#capture) for the full
 2. **Discover** — AutoSource extracts admitted articles
 3. **Segment** — SST Segmenter strategies `:list` → `:cluster` → `:semantic`
 4. **Gate** — emit an items selector only when enough articles match
-5. **Assemble** — `{ items: { selector:, enhance: true } }` plus channel. Capture records the selected strategy when the draft needs to reproduce that fetch behavior during `html2rss apply` / `Html2rss.feed`.
+5. **Assemble** — `{ items: { selector:, enhance: true } }` plus channel. Capture records the concrete strategy that produced the draft so `html2rss apply` / `Html2rss.feed` can reproduce that fetch path.
 
 When the quality gate fails, selectors are omitted (`has_selectors: false`) rather than inventing attribute selectors. Hint with `--items_selector` or refine by hand.
 

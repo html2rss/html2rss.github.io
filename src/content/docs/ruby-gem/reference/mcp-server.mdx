@@ -120,7 +120,7 @@ Ship gate: build RSS from a config. Required `url` plus exactly one of `config` 
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | `html2rss://schema`     | Feed config JSON Schema                                                                                            |
 | `html2rss://extractors` | Extractor names                                                                                                    |
-| `html2rss://strategies` | `auto`, `default`, `botasaurus` (not `local_file`)                                                                 |
+| `html2rss://strategies` | Runtime strategy names for client discovery; prefer `auto`, `default`, or `botasaurus`                             |
 | `html2rss://runtime`    | `version`, `mcp_contract_version`, `catalog_fingerprint`, `tools`, `botasaurus_configured` — never the scraper URL |
 
 `validate` / `apply` reject `strategy: local_file` and `request.local_file_path`. Use CLI `--input` for fixtures.
