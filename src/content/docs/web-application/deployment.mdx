@@ -79,6 +79,18 @@ Example `.env` beside Compose:
 
 After `docker compose up -d`, check `docker compose logs caddy --tail 20` for certificate issuance.
 
+### Direct TLS termination (Falcon)
+
+Falcon also supports in-process TLS termination and HTTP/2 negotiation by pointing to your certificate and private key:
+
+<Code
+  code={`
+  TLS_CERTIFICATE_PATH=/path/to/fullchain.pem
+  TLS_KEY_PATH=/path/to/privkey.pem
+`}
+  lang="dotenv"
+/>
+
 ## Custom feeds mount
 
 Auto-source is the default. To add curated YAML feeds, bind-mount `feeds.yml` (see [Advanced Feeds](/creating-custom-feeds/)):

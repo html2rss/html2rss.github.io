@@ -7,6 +7,12 @@ import { Code } from "@astrojs/starlight/components";
 
 This page outlines breaking changes, purged legacy aliases, and migration steps when upgrading the gem.
 
+## 0.30.0 (Unreleased)
+
+1. **Default HTTP strategy (`:default`)** — Migrated from Faraday to HTTPX. The canonical strategy name across configs, CLI, Ruby API, and MCP is `:default`.
+2. **Deprecated strategy aliases** — `:faraday` and `:httpx` remain accepted as aliases for `:default` with deprecation warnings. Update configurations and scripts to `strategy: default` (or `strategy: auto`).
+3. **HTTP/2 & SSRF protection** — The default transport provides native HTTP/2 multiplexing via ALPN and enforced private-network IP filtering.
+
 ## 0.27.0
 
 Upgrade notes for configs and integrators targeting gem **0.27.0** (current `master` after `0.26.0`):

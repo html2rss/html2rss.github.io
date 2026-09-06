@@ -9,7 +9,7 @@ Some websites load their content dynamically using JavaScript. Static fetch path
 
 ## Solution
 
-Default `strategy: auto` automatically tries `faraday` first, then falls back to `botasaurus` when `BOTASAURUS_SCRAPER_URL` is configured. This handles many JS-rendered listing pages without needing custom configuration.
+Default `strategy: auto` automatically tries `default` first, then falls back to `botasaurus` when `BOTASAURUS_SCRAPER_URL` is configured. This handles many JS-rendered listing pages without needing custom configuration.
 
 When a site requires browser rendering or anti-bot bypass by default, you can explicitly set `strategy: botasaurus` and configure request controls under `request.botasaurus`:
 
@@ -102,7 +102,7 @@ Browser-based extraction uses more resources than static HTTP fetching because i
 - Executes JavaScript and handles DOM events
 - Manages browser pools and network emulation
 
-Use static HTTP fetching (`faraday`) for static content, and lean on `auto` or explicit `botasaurus` strategies when browser rendering is required. See the [Strategy Reference](/ruby-gem/reference/strategy/) for details.
+Use static HTTP fetching (`default`) for static content, and lean on `auto` or explicit `botasaurus` strategies when browser rendering is required. See the [Strategy Reference](/ruby-gem/reference/strategy/) for details.
 
 ## Related Topics
 
