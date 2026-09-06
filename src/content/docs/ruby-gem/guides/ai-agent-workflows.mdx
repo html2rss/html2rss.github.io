@@ -50,7 +50,7 @@ Put `BOTASAURUS_SCRAPER_URL` in the MCP `env` block — a shell export does not 
 
 ## Golden loops
 
-**Articles now:** `scrape` (or `batch_scrape`). `strategy: "auto"` already falls back to Botasaurus when configured — do not retry with explicit `default` after `auto`. Empty items can still be success; follow `next_step`.
+**Articles now:** `scrape` (or `batch_scrape`). Keep `strategy: "auto"` so html2rss can choose the available fetch path. Empty items can still be success; follow `next_step` instead of retrying with another strategy.
 
 **Durable YAML:** optional `inspect` → `recon` → `capture` → `test` → `apply`.
 

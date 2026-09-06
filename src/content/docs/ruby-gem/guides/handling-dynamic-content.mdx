@@ -9,9 +9,9 @@ Some websites load their content dynamically using JavaScript. Static fetch path
 
 ## Solution
 
-Default `strategy: auto` automatically tries `default` first, then falls back to `botasaurus` when `BOTASAURUS_SCRAPER_URL` is configured. This handles many JS-rendered listing pages without needing custom configuration.
+Keep the default `strategy: auto` and configure `BOTASAURUS_SCRAPER_URL`. html2rss can then choose an available fetch path based on the scrape result, which handles many JavaScript-rendered listing pages without per-feed strategy configuration.
 
-When a site requires browser rendering or anti-bot bypass by default, you can explicitly set `strategy: botasaurus` and configure request controls under `request.botasaurus`:
+If a site still needs browser-specific navigation, waits, or scrolling, pin `strategy: botasaurus` and configure those advanced controls under `request.botasaurus`:
 
 <Code
   code={`
@@ -92,7 +92,7 @@ Configure browser actions under `request.botasaurus`:
 
 ### JSON Loaded Over XHR
 
-When Botasaurus uses the browser tier, captured JSON XHR/fetch bodies feed AutoSource `xhr_articles` automatically (enabled by default). Prefer `strategy: botasaurus` (or `auto` with `BOTASAURUS_SCRAPER_URL`) for SPA listing pages that hydrate article lists over the network rather than embedding them in HTML. See [Auto Source](/ruby-gem/reference/auto-source/) and [Strategy](/ruby-gem/reference/strategy/#botasaurus).
+Browser-rendered fetches can pass captured JSON XHR/fetch bodies to AutoSource `xhr_articles` automatically (enabled by default). With the companion scraper configured, keep `auto` for SPA listing pages that hydrate article lists over the network; pin `botasaurus` only when you need its browser-specific controls. See [Auto Source](/ruby-gem/reference/auto-source/) and [Strategy](/ruby-gem/reference/strategy/#botasaurus).
 
 ## Performance Considerations
 
@@ -102,7 +102,7 @@ Browser-based extraction uses more resources than static HTTP fetching because i
 - Executes JavaScript and handles DOM events
 - Manages browser pools and network emulation
 
-Use static HTTP fetching (`default`) for static content, and lean on `auto` or explicit `botasaurus` strategies when browser rendering is required. See the [Strategy Reference](/ruby-gem/reference/strategy/) for details.
+Keep `auto` for normal use. Pin a concrete strategy only when diagnosing a site or configuring browser-specific behavior. See the [Strategy Reference](/ruby-gem/reference/strategy/) for details.
 
 ## Related Topics
 

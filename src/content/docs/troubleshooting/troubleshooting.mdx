@@ -56,9 +56,9 @@ If your feed is empty, check the following:
 
 Known anti-bot interstitial patterns (for example Cloudflare or DataDome challenge pages) are surfaced as blocked-surface errors instead of silent empty extraction results.
 
-When all auto fallback tiers complete but still extract zero items, html2rss raises `No RSS feed items extracted after auto fallback ...`.
+When `auto` exhausts the available fetch paths without items, html2rss raises `No RSS feed items extracted after auto fallback ...`.
 
-If failures continue after URL/surface fixes, configure `BOTASAURUS_SCRAPER_URL` or use `--strategy botasaurus` for browser rendering.
+If failures continue after URL/surface fixes, configure `BOTASAURUS_SCRAPER_URL` so `auto` can use the companion scraper. Pin `--strategy botasaurus` only for browser-specific diagnosis or controls.
 
 ### DataDome And Similar Challenges
 
@@ -95,8 +95,8 @@ Then run with:
 
 Common configuration-related errors:
 
-- **`UnsupportedResponseContentType`:** The website returned content that html2rss can't parse (not HTML or JSON). The default HTTP strategy still treats bodies that sniff as HTML (`<!DOCTYPE html` / `<html`) as HTML, and decodes gzip/brotli even when `Content-Encoding` is missing.
-- **`UnsupportedStrategy`:** The specified strategy is not available. Use `auto`, `default`, `botasaurus`, or `local_file` (`faraday` and `httpx` are accepted as legacy aliases).
+- **`UnsupportedResponseContentType`:** The website returned content that html2rss cannot parse (not HTML or JSON). Supported compressed HTML and bodies that clearly identify themselves as HTML are accepted even when response headers are incomplete.
+- **`UnsupportedStrategy`:** The specified strategy is not available. Use `auto`, `default`, `botasaurus`, or `local_file`. Prefer `auto` unless you need a fixed mode.
 - **`BOTASAURUS_SCRAPER_URL is required for strategy=botasaurus.`:** Set `BOTASAURUS_SCRAPER_URL` to your Botasaurus scrape API base URL when using `--strategy botasaurus`.
 - **`BOTASAURUS_SCRAPER_URL is invalid`:** Fix the URL format and retry.
 - **`Configuration must include at least 'selectors' or 'auto_source'`:** You need to specify either manual selectors or enable auto-source.
@@ -109,7 +109,7 @@ If parts of your items (e.g., title, link) are missing, check the following:
 
 - **Selector:** Ensure the selector for the missing part is correct and relative to the `items.selector`.
 - **Extractor:** Verify that you are using the correct `extractor` (e.g., `text`, `href`, `attribute`).
-- **Dynamic Content:** `default` does not render JavaScript. If content loads dynamically, configure `BOTASAURUS_SCRAPER_URL` or run with `--strategy botasaurus` so the page can be rendered before extraction.
+- **Dynamic Content:** Configure `BOTASAURUS_SCRAPER_URL` and keep `auto` so html2rss can render the page when needed. Pin `--strategy botasaurus` only for browser-specific diagnosis or controls.
 
 ### Date/Time Parsing Errors
 

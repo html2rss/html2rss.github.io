@@ -28,9 +28,9 @@ Daemon logs go to **stderr** (stdout is JSON-RPC). Default `LOG_LEVEL` for the M
 
 ## Strategy
 
-`scrape` and `capture` with `strategy: "auto"` run default (HTTPX) → Botasaurus AutoFallback in one call. Prefer native RSS/Atom when present; weak homepage URLs may be rewritten via entry resolution.
+`scrape` and `capture` use `strategy: "auto"` by default so html2rss can choose an available fetch path from the scrape result. Prefer native RSS/Atom when present; weak homepage URLs may be rewritten via entry resolution.
 
-`inspect` with `auto` stays on the default HTTP strategy. Pin `strategy: "botasaurus"` when inspect needs browser rendering.
+Keep `auto` for normal use. Pin `strategy: "botasaurus"` only when a diagnostic requires browser rendering or browser-specific controls.
 
 Read `html2rss://runtime` for `botasaurus_configured` (boolean only). Set `BOTASAURUS_SCRAPER_URL` on the **MCP process** env.
 

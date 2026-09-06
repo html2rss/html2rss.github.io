@@ -35,7 +35,7 @@ What each scraper does:
 - **`microdata`:** Extracts HTML Microdata annotations (`itemscope itemtype`).
 - **`microformats2`:** Parses Microformats2 `h-entry` markup, extracting `p-name`, `e-content`, `u-url`, `dt-published`, `p-author`, `p-category`, and `u-photo` / `u-featured` media.
 - **`json_state`:** Walks in-page JSON (`<script type="application/json">`, `window.__NEXT_DATA__`, `window.__NUXT__`, `window.STATE`) for arrays with `title`/`url` pairs.
-- **`xhr_articles`:** Reuses JSON XHR/fetch bodies captured during a Botasaurus **browser** scrape (no extra HTTP). Empty for default HTTP and Botasaurus HTTP-request tiers.
+- **`xhr_articles`:** Reuses JSON XHR/fetch bodies captured during browser execution (no extra request). It is empty when the selected fetch path does not capture browser responses.
 - **`wordpress_api`:** Detects `<link rel="https://api.w.org/">` and pulls posts from the REST API. See [WordPress API](/ruby-gem/reference/wordpress-api/).
 - **`sitemap`:** Locates XML sitemaps (`<link rel="sitemap">`, `/sitemap.xml`, or `/robots.txt`), filtering by priority and recency, with Google News tags (`<news:news>`).
 - **`meta_oembed`:** OpenGraph/Twitter meta tags plus JSON oEmbed (`<link rel="alternate" type="application/json+oembed">`).
