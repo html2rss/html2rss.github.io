@@ -15,14 +15,14 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
-    "@astrojs/starlight": "^0.42.0",
-    "astro": "^7.3.2",
+    "@astrojs/starlight": "^0.42.2",
+    "astro": "^7.3.3",
     "sharp": "^0.35.3"
   },
   "devDependencies": {
-    "prettier": "^3.9.6",
-    "prettier-plugin-astro": "^1.0.0",
-    "vitest": "^5.0.0"
+    "prettier": "^3.9.8",
+    "prettier-plugin-astro": "^1.0.1",
+    "vitest": "^5.0.1"
   },
   "overrides": {
     "esbuild": "^0.28.1"
