@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /feed-directory/
+
+Sitemap: https://html2rss.github.io/sitemap.xml
