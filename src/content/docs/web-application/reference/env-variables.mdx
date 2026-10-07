@@ -5,31 +5,32 @@ description: "Configuration reference for html2rss-web environment variables."
 
 ## Supported ENV variables
 
-| Name                                     | Description                                                                                                                                                  |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `HTML2RSS_SECRET_KEY`                    | required in production; development/test gets a temporary default                                                                                            |
-| `HTML2RSS_ACCESS_TOKEN`                  | token for the main feed-creation flow; paste the same value into the web UI when prompted                                                                    |
-| `HEALTH_CHECK_TOKEN`                     | optional bearer token for authenticated `GET /api/v1/health`; not part of the first-run quickstart; use `/api/v1/health/ready` for standard readiness checks |
-| `BUILD_TAG`                              | release metadata used in logs; published Docker images set this to the release version                                                                       |
-| `GIT_SHA`                                | deployed commit metadata used in logs; published Docker images set this to the released commit                                                               |
-| `SENTRY_DSN`                             | optional; enables Sentry errors/logs when set                                                                                                                |
-| `BOTASAURUS_SCRAPER_URL`                 | optional; Botasaurus scrape API base URL (e.g. `http://botasaurus:4010`) for browser rendering and anti-bot bypass                                           |
-| `AUTO_SOURCE_ENABLED`                    | `true` by default in development/test, `false` otherwise                                                                                                     |
-| `ASYNC_FEED_REFRESH_ENABLED`             | optional boolean; default `false`                                                                                                                            |
-| `ASYNC_FEED_REFRESH_STALE_FACTOR`        | optional integer `>= 1`; default `3`                                                                                                                         |
-| `FEEDS_CACHE_MAX_SIZE`                   | optional integer `>= 1`; default `500`; maximum number of feeds to cache in memory before eviction                                                           |
-| `RATE_LIMIT_ENABLED`                     | optional boolean; default `true` (except `false` in `test`); enables or disables client IP rate limiting                                                     |
-| `RATE_LIMIT_MAX_REQUESTS`                | optional integer `>= 1`; default `60`; maximum requests allowed per IP per window                                                                            |
-| `RATE_LIMIT_WINDOW_SECONDS`              | optional integer `>= 1`; default `60`; rate limiter sliding window duration in seconds                                                                       |
-| `RETRY_AFTER_TIMEOUT_SECONDS`            | optional integer `>= 1`; default `300`; Retry-After header backoff duration returned on timeouts                                                             |
-| `PORT`                                   | app listen port; compose uses `4000`                                                                                                                         |
-| `RACK_ENV`                               | Rack environment; quickstart uses `development`, production examples use `production`                                                                        |
-| `REQUEST_TIMEOUT_SECONDS`                | optional; total web-request timeout in seconds; default `55`                                                                                                 |
-| `WEB_CONCURRENCY`                        | optional integer `>= 1`; default `2` in production (`1` in development); number of web worker processes                                                      |
-| `BOTASAURUS_SCRAPE_TIMEOUT_SECONDS`      | optional; HTTP client cap for POST `/scrape` in seconds; default `45`; mirrors `SCRAPE_TIMEOUT_SECONDS` on botasaurus-scrape-api                             |
-| `BOTASAURUS_SCRAPE_WORK_TIMEOUT_SECONDS` | optional; maximum `wait_timeout_seconds` in feed YAML; default `30`; mirrors `SCRAPE_WORK_TIMEOUT_SECONDS` on botasaurus-scrape-api                          |
-| `SCRAPE_WORK_TIMEOUT_SECONDS`            | optional on botasaurus-scrape-api; post-boot navigate, selector wait, and scroll budget in seconds; default `30`; set on the scraper service in compose      |
-| `HTML2RSS_TOTAL_TIMEOUT_SECONDS`         | optional; internal gem feed-build timeout in seconds; default `50`                                                                                           |
+| Name                                     | Description                                                                                                                                                              |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `HTML2RSS_SECRET_KEY`                    | required in production; development/test gets a temporary default                                                                                                        |
+| `HTML2RSS_ACCESS_TOKEN`                  | token for the main feed-creation flow; paste the same value into the web UI when prompted                                                                                |
+| `HEALTH_CHECK_TOKEN`                     | optional bearer token for authenticated `GET /api/v1/health`; not part of the first-run quickstart; use `/api/v1/health/ready` for standard readiness checks             |
+| `BUILD_TAG`                              | release metadata used in logs; published Docker images set this to the release version                                                                                   |
+| `GIT_SHA`                                | deployed commit metadata used in logs; published Docker images set this to the released commit                                                                           |
+| `SENTRY_DSN`                             | optional; enables Sentry errors/logs when set                                                                                                                            |
+| `BOTASAURUS_SCRAPER_URL`                 | optional; Botasaurus scrape API base URL (e.g. `http://botasaurus:4010`) for browser rendering and anti-bot bypass                                                       |
+| `AUTO_SOURCE_ENABLED`                    | `true` by default in development/test, `false` otherwise                                                                                                                 |
+| `STUDIO_ENABLED`                         | `true` by default in development/test, `false` otherwise; enables token-holder selector refinement; live preview and suggestions also require `AUTO_SOURCE_ENABLED=true` |
+| `ASYNC_FEED_REFRESH_ENABLED`             | optional boolean; default `false`                                                                                                                                        |
+| `ASYNC_FEED_REFRESH_STALE_FACTOR`        | optional integer `>= 1`; default `3`                                                                                                                                     |
+| `FEEDS_CACHE_MAX_SIZE`                   | optional integer `>= 1`; default `500`; maximum number of feeds to cache in memory before eviction                                                                       |
+| `RATE_LIMIT_ENABLED`                     | optional boolean; default `true` (except `false` in `test`); enables or disables client IP rate limiting                                                                 |
+| `RATE_LIMIT_MAX_REQUESTS`                | optional integer `>= 1`; default `60`; maximum requests allowed per IP per window                                                                                        |
+| `RATE_LIMIT_WINDOW_SECONDS`              | optional integer `>= 1`; default `60`; rate limiter sliding window duration in seconds                                                                                   |
+| `RETRY_AFTER_TIMEOUT_SECONDS`            | optional integer `>= 1`; default `300`; Retry-After header backoff duration returned on timeouts                                                                         |
+| `PORT`                                   | app listen port; compose uses `4000`                                                                                                                                     |
+| `RACK_ENV`                               | Rack environment; quickstart uses `development`, production examples use `production`                                                                                    |
+| `REQUEST_TIMEOUT_SECONDS`                | optional; total web-request timeout in seconds; default `55`                                                                                                             |
+| `WEB_CONCURRENCY`                        | optional integer `>= 1`; default `2` in production (`1` in development); number of web worker processes                                                                  |
+| `BOTASAURUS_SCRAPE_TIMEOUT_SECONDS`      | optional; HTTP client cap for POST `/scrape` in seconds; default `45`; mirrors `SCRAPE_TIMEOUT_SECONDS` on botasaurus-scrape-api                                         |
+| `BOTASAURUS_SCRAPE_WORK_TIMEOUT_SECONDS` | optional; maximum `wait_timeout_seconds` in feed YAML; default `30`; mirrors `SCRAPE_WORK_TIMEOUT_SECONDS` on botasaurus-scrape-api                                      |
+| `SCRAPE_WORK_TIMEOUT_SECONDS`            | optional on botasaurus-scrape-api; post-boot navigate, selector wait, and scroll budget in seconds; default `30`; set on the scraper service in compose                  |
+| `HTML2RSS_TOTAL_TIMEOUT_SECONDS`         | optional; internal gem feed-build timeout in seconds; default `50`                                                                                                       |
 
 ## Timeout Chain
 
