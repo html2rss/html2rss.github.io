@@ -1,6 +1,6 @@
 ---
 title: "Advanced Feeds (Escape Hatch)"
-description: "Write YAML configs when auto-source is not enough; mount feeds.yml; contribute to html2rss-configs."
+description: "Write YAML configs when auto-source is not enough; add them with registry add; contribute to html2rss-configs."
 sidebar:
   order: 2
 ---
@@ -12,7 +12,7 @@ Prefer [Getting Started](/getting-started/) (URL paste) and the [Feed Directory]
 <Aside type="tip" title="Escape hatch">
   Agents can draft configs via MCP (`capture` → `test` → `apply`) or the
   [`html2rss-config`](https://github.com/html2rss/html2rss-configs/tree/master/.agents/skills/html2rss-config)
-  skill. You still mount or publish the YAML yourself.
+  skill. You still add the YAML with `registry add` or publish it yourself.
 </Aside>
 
 ## Recommended workflow
@@ -21,15 +21,19 @@ Prefer [Getting Started](/getting-started/) (URL paste) and the [Feed Directory]
 2. Optionally draft: `html2rss capture https://example.com/articles > your-config.yml`
 3. Validate: `html2rss validate your-config.yml`
 4. Live-check: `html2rss test your-config.yml`, then ship with `html2rss apply your-config.yml`
-5. Mount into `html2rss-web` or contribute to html2rss-configs
+5. Add into `html2rss-web` with `registry add`, or contribute to html2rss-configs
 6. Keep `strategy: auto`; if results are incomplete, confirm the companion scraper is configured before adding site-specific controls
 
 `html2rss feed` is a Thor alias for `apply`. `html2rss auto` aliases `scrape` (one-shot, no YAML).
 
 ## Minimal config
 
+One YAML file is one feed. Include `registry.id` when you will add the file to `html2rss-web`:
+
 <Code
   code={`
+  registry:
+    id: example.com/blog
   channel:
     url: https://example.com/blog
     title: My Blog
@@ -60,22 +64,28 @@ Details: [Selectors](/ruby-gem/reference/selectors/), [Strategy](/ruby-gem/refer
 
 Raise `--max-redirects` / `--max-requests` only when the site needs more budget.
 
-## Mount on html2rss-web
+## Add to html2rss-web
 
-Bind-mount a feeds file (see production Compose comments):
+Add the YAML into the built-in `local` registry bundle (not a bind-mounted multi-feed file):
 
 <Code
   code={`
-  volumes:
-    - type: bind
-      source: ./config/feeds.yml
-      target: /app/config/feeds.yml
-      read_only: true
+  html2rss-web registry add path/to/your-config.yml
 `}
-  lang="yaml"
+  lang="bash"
 />
 
-Feeds are served as `.rss` / `.json` paths on your instance (for example `/example.com/blog.rss`).
+On Docker Compose, copy the file into the container first, then add:
+
+<Code
+  code={`
+  docker compose cp path/to/your-config.yml html2rss-web:/tmp/your-config.yml
+  docker compose exec html2rss-web html2rss-web registry add /tmp/your-config.yml
+`}
+  lang="bash"
+/>
+
+The feed is served as `/{registry.id}.rss` / `.json` on your instance (for example `/example.com/blog.rss`).
 
 ## Contribute to the Feed Directory
 
