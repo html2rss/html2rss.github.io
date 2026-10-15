@@ -5,46 +5,34 @@ description: "Learn how to manage feed configurations with YAML files. Organize,
 
 import { Code } from "@astrojs/starlight/components";
 
-For easier management, especially when using the CLI or `html2rss-web`, you can store your feed configurations in a YAML file.
+For easier management, especially when using the CLI or `html2rss-web`, store each feed configuration in its own YAML file.
 
-## Global and Feed-Specific Configurations
+## One file, one feed
 
-You can define global settings that apply to all feeds, and then define individual feed configurations under the `feeds` key.
+Each YAML file is a single feed. Put channel settings, headers, selectors, and other options in that file — there is no multi-feed map.
 
 <Code
-  code={
-    "# Global settings\n" +
-    "headers:\n" +
-    '  "User-Agent": "Mozilla/5.0 (compatible; html2rss/1.0; Mobile)"\n' +
-    '  "Accept": "text/html"\n' +
-    "\n" +
-    "# Feed-specific settings\n" +
-    "feeds:\n" +
-    "  my-first-feed:\n" +
-    "    channel:\n" +
-    '      url: "https://example.com/blog"\n' +
-    "    selectors:\n" +
-    "      items:\n" +
-    '        selector: ".post"\n' +
-    "      title:\n" +
-    '        selector: "h2"\n' +
-    "      url:\n" +
-    '        selector: "a"\n' +
-    '        extractor: "href"\n' +
-    "  my-second-feed:\n" +
-    "    channel:\n" +
-    '      url: "https://example.com/news"\n' +
-    "    selectors:\n" +
-    "      items:\n" +
-    '        selector: ".news-item"\n' +
-    "      title:\n" +
-    '        selector: "h2"\n' +
-    "      url:\n" +
-    '        selector: "a"\n' +
-    '        extractor: "href"'
-  }
+  code={`
+  # Optional request headers for this feed
+  headers:
+    "User-Agent": "Mozilla/5.0 (compatible; html2rss/1.0; Mobile)"
+    "Accept": "text/html"
+  # Feed definition
+  channel:
+    url: "https://example.com/blog"
+  selectors:
+    items:
+      selector: ".post"
+    title:
+      selector: "h2"
+    url:
+      selector: "a"
+      extractor: "href"
+`}
   lang="yml"
 />
+
+Include a `registry.id` when you will add the file to `html2rss-web` with `registry add`. See [Advanced Feeds](/creating-custom-feeds/).
 
 ## Building Feeds from a YAML File
 
@@ -53,13 +41,9 @@ You can define global settings that apply to all feeds, and then define individu
 <Code
   code={`
   require 'html2rss'
-  # Build a specific feed from the YAML file
-  my_feed_config = Html2rss.config_from_yaml_file('feeds.yml', 'my-first-feed')
+  # One YAML file is one feed
+  my_feed_config = Html2rss.config_from_yaml_file('my-first-feed.yml')
   rss = Html2rss.feed(my_feed_config)
-  puts rss
-  # If the YAML file contains only one feed, you can omit the feed name
-  single_feed_config = Html2rss.config_from_yaml_file('single.yml')
-  rss = Html2rss.feed(single_feed_config)
   puts rss
 `}
   lang="ruby"
@@ -88,7 +72,7 @@ For URL-only auto discovery, `Html2rss.auto_feed_result(url)` returns the same `
 <Code
   code={`
   require 'html2rss'
-  config = Html2rss.config_from_yaml_file('feeds.yml', 'my-first-feed')
+  config = Html2rss.config_from_yaml_file('my-first-feed.yml')
   result = Html2rss.feed_result(config)
   result.to_rss
   result.to_json_feed(feed_url: 'https://example.com/feeds/my-first-feed.json')
@@ -104,8 +88,7 @@ Depth and method contracts: [YARD for `html2rss`](https://www.rubydoc.info/gems/
 
 <Code
   code={`
-  html2rss apply feeds.yml my-first-feed ; \
-  html2rss apply single.yml
+  html2rss apply my-first-feed.yml
 `}
   lang="sh"
 />
