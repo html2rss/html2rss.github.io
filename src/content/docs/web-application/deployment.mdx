@@ -79,20 +79,19 @@ Example `.env` beside Compose:
 
 After `docker compose up -d`, check `docker compose logs caddy --tail 20` for certificate issuance.
 
-## Custom feeds mount
+## Custom feeds
 
-Auto-source is the default. To add curated YAML feeds, bind-mount `feeds.yml` (see [Advanced Feeds](/creating-custom-feeds/)):
+Auto-source is the default. To add curated YAML feeds, use `html2rss-web registry add` into the built-in `local` registry (see [Advanced Feeds](/creating-custom-feeds/)):
 
 <Code
   code={`
-  volumes:
-    - type: bind
-      source: ./config/feeds.yml
-      target: /app/config/feeds.yml
-      read_only: true
+  docker compose cp path/to/your-config.yml html2rss-web:/tmp/your-config.yml
+  docker compose exec html2rss-web html2rss-web registry add /tmp/your-config.yml
 `}
-  lang="yaml"
+  lang="bash"
 />
+
+Each YAML file is one feed and must include `registry.id`. Feeds are served at `/{registry.id}.rss` on your instance.
 
 ## Operate
 

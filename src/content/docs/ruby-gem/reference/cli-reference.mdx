@@ -109,7 +109,6 @@ Loads a YAML config, builds the feed, and prints the RSS XML to stdout. (`html2r
 <Code
   code={`
   html2rss apply single.yml ; \\
-  html2rss apply feeds.yml my-first-feed ; \\
   html2rss apply single.yml --strategy auto ; \\
   BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss apply single.yml --strategy botasaurus ; \\
   html2rss apply single.yml --max-redirects 5 --max-requests 6 ; \\
@@ -119,7 +118,7 @@ Loads a YAML config, builds the feed, and prints the RSS XML to stdout. (`html2r
   lang="bash"
 />
 
-Command: `html2rss apply YAML_FILE [feed_name]`
+Command: `html2rss apply YAML_FILE`
 
 Available options:
 
@@ -209,13 +208,12 @@ Validates a config with the runtime validator without generating a feed.
 <Code
   code={`
   html2rss validate single.yml ; \\
-  html2rss validate feeds.yml my-first-feed ; \\
   html2rss validate single.yml --params id:42
 `}
   lang="bash"
 />
 
-Command: `html2rss validate YAML_FILE [feed_name]`
+Command: `html2rss validate YAML_FILE`
 
 Available options:
 
