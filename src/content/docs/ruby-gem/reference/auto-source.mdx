@@ -39,7 +39,8 @@ What each scraper does:
 - **`wordpress_api`:** Detects `<link rel="https://api.w.org/">` and pulls posts from the REST API. See [WordPress API](/ruby-gem/reference/wordpress-api/).
 - **`sitemap`:** Locates XML sitemaps (`<link rel="sitemap">`, `/sitemap.xml`, or `/robots.txt`), filtering by priority and recency, with Google News tags (`<news:news>`).
 - **`meta_oembed`:** OpenGraph/Twitter meta tags plus JSON oEmbed (`<link rel="alternate" type="application/json+oembed">`).
-- **`semantic_html`:** Semantic HTML5 (`<article>`, `<main>`, `<section>`), with fallback clustering for anchorless lists.
+- **`semantic_html`:** Semantic HTML5 (`<article>`, `<main>`, `<section>`).
+- **`json_document`:** When the response itself is JSON, runs alone (no HTML tiers): maps JSON Feed documents directly, otherwise walks the JSON for `title`/`url` arrays.
 - **`html`:** Repeated item structure (list / cluster / semantic segmenter). Last resort only.
 
 After scrapers, **Cleanup** is the admission gate: merge, dedupe, hard-exclude non-article destinations, drop junk titles, trim to `limit`. Scoring ranks and demotes; it does not refill `limit` after Cleanup.
@@ -104,19 +105,21 @@ Defaults: `enabled: true`, `max_probes: 5`. Set `enabled: false` to keep the pas
         enabled: true # default: true
       semantic_html:
         enabled: true # default: true
-        fallback_anchorless: true # default: true
       json_state:
         enabled: false # default: true
+      json_document:
+        enabled: true # default: true; JSON response bodies only
       xhr_articles:
         enabled: true # default: true; uses Botasaurus-captured XHR JSON only
       html:
-        enabled: true
+        enabled: true # default: true
         minimum_selector_frequency: 3 # default: 2
         use_top_selectors: 3 # default: 5
-        fallback_anchorless: true # default: true
   `}
   lang="yaml"
 />
+
+Unknown scraper names or options fail validation with an error naming the key, so a typo or a removed option (such as `fallback_anchorless`) is reported instead of silently ignored.
 
 ### Entry Resolution Options
 
@@ -140,8 +143,8 @@ Defaults: `enabled: true`, `max_probes: 5`. Set `enabled: false` to keep the pas
     url: https://example.com
   auto_source:
     cleanup:
-      keep_different_domain: false # default: true
-      min_words_title: 4 # default: 3
+      keep_different_domain: true # default: false
+      keep_sponsored: true # default: false
   `}
   lang="yaml"
 />
