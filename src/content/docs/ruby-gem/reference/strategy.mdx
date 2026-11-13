@@ -20,7 +20,7 @@ The `strategy` key defines how `html2rss` fetches a website's content.
 
 When the config uses `auto_source` (no custom `selectors`), each strategy attempt:
 
-1. Runs AutoSource scrapers, starting with `native_feed` for same-origin RSS/Atom (direct feed URLs parse without HTML AutoSource).
+1. Runs AutoSource scrapers, starting with `native_feed` for the site's own RSS/Atom, or a feed the page advertises on another host (direct feed URLs parse without HTML AutoSource).
 2. May run **entry URL resolution** on a weak homepage/hub extract — probe same-origin listing/feed candidates and sticky-rewrite the scrape URL only when the retry yields items — **before** escalating to the next strategy.
 
 Gates, defaults, and Status fields: [Auto Source — Entry URL resolution](/ruby-gem/reference/auto-source/#entry-url-resolution).

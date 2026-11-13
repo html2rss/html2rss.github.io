@@ -46,7 +46,7 @@ This example is a complete feed config so you can see the `channel` block in con
 ## Notes
 
 - `language` is runtime-validated. Use a valid language code such as `en`, not an arbitrary string.
-- `author` should follow the RSS-style `email (Name)` format when you set it explicitly.
+- `author` should follow the RSS-style `email (Name)` format when you set it explicitly. The RSS `managingEditor` element is written only when `author` is an email address (`editor@example.com` or `editor@example.com (Name)`); a plain name is omitted from `managingEditor`.
 - `time_zone` must be a known TZ database identifier such as `UTC` or `Europe/Berlin`.
 
 ---

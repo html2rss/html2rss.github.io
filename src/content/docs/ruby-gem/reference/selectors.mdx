@@ -32,6 +32,10 @@ With `enhance: true` (the default), `html2rss` fills **missing** fields on each 
 
 Description leftover text drops listing chrome (CTA lines such as “read more”, date-shaped chips, type chips, title echoes, section names). When the `items` selector is a heading or wrapping link with no date or description, extraction can climb to the parent card — it aborts if that parent looks like a listing (multiple headings or article links).
 
+Every item needs a URL. `enhance` never invents a link: `url` comes from the card's own anchor `href` (fragment stripped) or from an explicit `url` selector. An item without a resolvable URL (no anchor, or an empty `href`) is not emitted, the same as in `auto`. To fix it, add a `url` selector with the `href` extractor, or a static URL (a relative one resolves against the page URL). `html2rss test` reports such items as `items_without_url`.
+
+Backslashes in the path of an `http(s)` link count as `/`, like browsers do: `files\a.pdf` resolves to `files/a.pdf`.
+
 Capture emits `items` + `enhance: true` only. Keep `enhance: true` unless page chrome leaks into items.
 
 <Code
@@ -293,7 +297,13 @@ To create a custom GUID for an item, provide a list of selector names to the `gu
 
 Use the `enclosure` selector to attach media (audio, video, or other non-image files) to an item. The selector is wired into each article and rendered into the feed.
 
-RSS `<enclosure>` uses the first **non-image** enclosure. Images stay on the item description (and on JSON Feed `image` / attachments) — they are not promoted into RSS `<enclosure>`. For podcast/media RSS, select a non-image resource with `enclosure`.
+RSS `<enclosure>` uses the first audio or video file, else the first downloadable file (such as a PDF or ZIP). Images are never the RSS `<enclosure>`; if the item has no `image`, the first image enclosure becomes the item image.
+
+- Only absolute `http(s)` URLs are kept.
+- An untyped URL with no file extension (and no declared length) is not the RSS enclosure; it stays a JSON Feed attachment. Set `content_type` or point at a URL with a file extension.
+- An `<iframe>` is never an enclosure, and watch/player pages and stream playlists are skipped.
+- JSON Feed lists enclosures as attachments, with `size_in_bytes` only when positive.
+- A feed whose items mostly (more than half) carry audio or video also gets podcast tags; see [Podcast tags](/ruby-gem/reference/auto-source/#podcast-tags).
 
 <Code
   code={`
