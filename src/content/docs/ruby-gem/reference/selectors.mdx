@@ -293,7 +293,13 @@ To create a custom GUID for an item, provide a list of selector names to the `gu
 
 Use the `enclosure` selector to attach media (audio, video, or other non-image files) to an item. The selector is wired into each article and rendered into the feed.
 
-RSS `<enclosure>` uses the first **non-image** enclosure. Images stay on the item description (and on JSON Feed `image` / attachments) — they are not promoted into RSS `<enclosure>`. For podcast/media RSS, select a non-image resource with `enclosure`.
+RSS `<enclosure>` uses the first audio or video file, else the first downloadable file (such as a PDF or ZIP). Images are never the RSS `<enclosure>`; if the item has no `image`, the first image enclosure becomes the item image.
+
+- Only absolute `http(s)` URLs are kept.
+- An untyped URL with no file extension (and no declared length) is not the RSS enclosure; it stays a JSON Feed attachment. Set `content_type` or point at a URL with a file extension.
+- An `<iframe>` is never an enclosure, and watch/player pages and stream playlists are skipped.
+- JSON Feed lists enclosures as attachments, with `size_in_bytes` only when positive.
+- A feed whose items mostly (more than half) carry audio or video also gets podcast tags; see [Podcast tags](/ruby-gem/reference/auto-source/#podcast-tags).
 
 <Code
   code={`

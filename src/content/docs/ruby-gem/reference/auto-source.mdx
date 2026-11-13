@@ -22,7 +22,7 @@ To enable it, add `auto_source: {}` to your configuration:
 
 One fetch, then scrapers run in **tiers**. Within a tier, results merge. The pipeline stops when Cleanup has admitted enough articles (`limit`, default `25`).
 
-1. **Native syndication:** `native_feed` — discovers same-origin RSS/Atom (`rel=alternate` plus common feed paths) and parses them before HTML heuristics. Direct feed entry URLs (Content-Type or body sniff) skip HTML AutoSource and parse immediately.
+1. **Native syndication:** `native_feed` — discovers the site's own RSS/Atom (`rel=alternate` plus common feed paths), or a feed the page advertises on another host, and parses it before HTML heuristics (see [Native feeds](#native-feeds)). Direct feed entry URLs (Content-Type or body sniff) skip HTML AutoSource and parse immediately.
 2. **In-page structured:** `schema`, `microdata`, `microformats2`, `json_state`, `xhr_articles`
 3. **Follow-up IO:** `wordpress_api`, `sitemap`, `meta_oembed`
 4. **Heuristic:** `semantic_html`
@@ -30,7 +30,7 @@ One fetch, then scrapers run in **tiers**. Within a tier, results merge. The pip
 
 What each scraper does:
 
-- **`native_feed`:** Prefer native RSS/Atom when present. Tallies appear as `AutoSource::NativeFeed` under `--explain`.
+- **`native_feed`:** Prefer native RSS/Atom when present, including enclosures, durations and channel facts the feed states. Tallies appear as `AutoSource::NativeFeed` under `--explain`.
 - **`schema`:** Parses `<script type="json/ld">` tags containing structured data (e.g., [Schema.org](https://schema.org/)), extracting authors and publishers.
 - **`microdata`:** Extracts HTML Microdata annotations (`itemscope itemtype`).
 - **`microformats2`:** Parses Microformats2 `h-entry` markup, extracting `p-name`, `e-content`, `u-url`, `dt-published`, `p-author`, `p-category`, and `u-photo` / `u-featured` media.
@@ -54,6 +54,51 @@ Ruby `limit:` and CLI `--limit` cap kept articles (default `25`).
 **`json_state` / `xhr_articles`:** both need discoverable arrays of hashes with clear `title` and `url` fields. Minified or obfuscated payloads, heavily encoded values, or blobs that require executing embedded functions are ignored. `xhr_articles` only sees JSON bodies captured during the current Botasaurus browser scrape (capped by the scrape API).
 
 **`wordpress_api`:** depends on a public WordPress REST API root. The scraper fetches post records directly; it does not resolve category names or featured media metadata.
+
+## Native feeds
+
+The site's own feed comes first. `native_feed` reads `<link rel="alternate">` in the page head, then probes common feed paths on the same host.
+
+A feed on **another host** (for example a podcast platform) is followed only when the page itself advertises it with `<link rel="alternate">`. Such a request still goes through the network guard and the request budget. An advertised `http` feed is fetched as `https`, and skipped if that fails. Common-path guesses never leave the page's host.
+
+**Which feed wins.** On a podcast page, audio-looking feeds are tried first. A page counts as a podcast page when `podcast`, `episode` or `audio` appears in its host, path or `<title>`, its `og:type` is `music.*` or `video.*`, or its JSON-LD names a `PodcastSeries`, `PodcastEpisode` or `AudioObject`. On any other page, audio feeds rank after the common-path guesses, so a news page that advertises only its podcast keeps its news feed or its page items.
+
+**Which items are kept.**
+
+- Items of a followed feed may link to the feed's own domain as well as the page's (a platform's episode pages).
+- An item without a link uses its `http(s)` `guid`, else its audio/video file URL. An item with none of these is skipped.
+- An item whose URL is its own audio/video file is kept even when the file is hosted on a separate media host.
+- Atom entries with no `alternate` link (or a link without `rel`) are dropped.
+- When the page repeats a feed item, the feed's enclosure and image win.
+
+A followed feed also supplies the channel's author, `itunes:category` and explicit flag. Precedence: your `channel` config, then the feed, then the page's `<meta name="author">`.
+
+## Media enclosures
+
+`auto_source` attaches playable audio and video to items so podcast and video apps can use the feed. It reads these sources:
+
+- **Schema.org:** `AudioObject`, `VideoObject`, `PodcastEpisode` and `Clip` items (standalone, in `@graph`, or nested as `associatedMedia`, `audio` or `video` of an article). The file is `contentUrl`; `encodingFormat`, `contentSize` and `duration` supply type, length and duration. `embedUrl` is a player only: never an enclosure and never the item link. A media object with a player but no file is still an item, without an enclosure.
+- **HTML:** `<audio>` and `<video>` (`src` or `<source>`) and links to audio/video files (also `.pdf`, `.zip`, `.tar.gz`, `.tgz`) inside an item's card. Links in page chrome such as navigation are ignored. A `<video poster>` becomes the item image when the card has no other image.
+- **Feeds:** RSS `<enclosure>`, `media:content` (also in `media:group`), Atom `rel="enclosure"` links and `itunes:duration`.
+
+Only absolute `http(s)` URLs count; `data:`, `blob:`, `javascript:`, `ftp:` and `mailto:` references are dropped.
+
+**What becomes the RSS enclosure:** the item's first audio or video file, else its first downloadable file (such as a PDF or ZIP). Watch pages, embed or player pages, stream playlists (HLS, DASH), Flash players and `<iframe>` embeds are never enclosures. html2rss does not fetch an embed page, so a card with only an embedded player stays an item without an enclosure.
+
+**Length and duration** come only from what the source states (Schema.org `contentSize` and `duration`, a feed's `length`, `fileSize`, `duration` or `itunes:duration`). An unknown length is `0`; html2rss sends no HEAD requests. Duration is kept on audio and video only.
+
+**JSON Feed** lists every downloadable file as an attachment, with `duration_in_seconds` when known and `size_in_bytes` only when positive.
+
+### Podcast tags
+
+An RSS feed gets `itunes:` tags only when **more than half** of its items have an audio or video enclosure.
+
+- Channel: `itunes:image`, `itunes:author`, and `itunes:category` and `itunes:explicit` when known.
+- Items: `itunes:duration` and `itunes:image`, when known.
+
+Category and explicit are taken from a followed native feed only; they are never invented.
+
+Each item description shows at most one media element: the audio/video enclosure as a player, else the item image. Nothing is added when the description already contains that file. A PDF is never rendered into the description.
 
 ## Entry URL resolution
 
