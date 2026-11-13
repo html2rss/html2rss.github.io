@@ -14,8 +14,8 @@ What this repo owns:
 What this repo does not own:
 
 - runtime extractor behavior and CLI semantics (`html2rss/`)
-- feed YAML and signed registry bundle publishing (`html2rss-configs/` → `configs/`, `tool/registry-build`)
-- catalog HTTP API and registry sync (`html2rss-web/` → `GET /api/v1/configs`, `Registry::Sync`)
+- feed YAML and catalog entries (`html2rss-configs/` → `lib/html2rss/configs/`, `Html2rss::Configs::Catalog`)
+- catalog HTTP API (`html2rss-web/` → `GET /api/v1/configs`)
 
 When docs describe behavior from other repos, treat those repos as source-of-truth and update docs to match them.
 
@@ -30,10 +30,10 @@ Before substantial edits, state cross-repo context in your notes:
 Common contracts:
 
 - Feed Directory browse data comes from `{instance}/api/v1/configs` on a running `html2rss-web` instance (see OpenAPI in `html2rss-web`).
-- Catalog wire rows include `id`, `path`, `directory`, `channel`, `parameters`, plus `source` (`registry` | `local`) and `registry` (registry id for bundle entries). The browse UI ignores `source`/`registry` today — wire parsing stays in `adapters/catalog-api.ts`.
+- Served catalog rows are `html2rss-web`'s `Catalog::Entry#to_h`: `id`, `path`, `source`, `directory`, `channel`, `parameters`, plus required `last_result`. `source` is `embedded` for packaged configs. Wire parsing stays in `adapters/catalog-api.ts`.
 - Instance URL persistence: default public instance, `#!url=` hash deep link from the web app, browser localStorage, and filter state in URL query params (`q`, `topic`, `lang`, `sort`, `page`).
 - Deep link from `html2rss-web`: `https://html2rss.github.io/feed-directory/#!url={encodedInstanceUrl}` must keep working.
-- Catalog metadata in YAML (`directory.*`, `registry.id`) is authored in `html2rss-configs` only; instances load verified bundles via registry sync.
+- Catalog metadata in YAML (`directory.*`) is authored in `html2rss-configs` only; `html2rss-web` serves it through the `html2rss-configs` gem.
 - Ruby gem docs should match `html2rss` behavior and CLI output.
 - Web application docs should match `html2rss-web` behavior and published OpenAPI.
 
