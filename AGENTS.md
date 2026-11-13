@@ -30,7 +30,7 @@ Before substantial edits, state cross-repo context in your notes:
 Common contracts:
 
 - Feed Directory browse data comes from `{instance}/api/v1/configs` on a running `html2rss-web` instance (see OpenAPI in `html2rss-web`).
-- Catalog wire rows include `id`, `path`, `source`, `directory`, `channel`, `parameters` (shape owned by `Html2rss::Configs::CatalogEntry#to_h`; `source` is `embedded` for packaged configs). Wire parsing stays in `adapters/catalog-api.ts`.
+- Served catalog rows are `html2rss-web`'s `Catalog::Entry#to_h`: `id`, `path`, `source`, `directory`, `channel`, `parameters`, plus required `last_result`. `source` is `embedded` for packaged configs. Wire parsing stays in `adapters/catalog-api.ts`.
 - Instance URL persistence: default public instance, `#!url=` hash deep link from the web app, browser localStorage, and filter state in URL query params (`q`, `topic`, `lang`, `sort`, `page`).
 - Deep link from `html2rss-web`: `https://html2rss.github.io/feed-directory/#!url={encodedInstanceUrl}` must keep working.
 - Catalog metadata in YAML (`directory.*`) is authored in `html2rss-configs` only; `html2rss-web` serves it through the `html2rss-configs` gem.
