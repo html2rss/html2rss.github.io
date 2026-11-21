@@ -2,7 +2,7 @@ import type { FilterState, SortKey } from '../domain/types';
 import { DEFAULT_FILTER_STATE } from '../domain/filters';
 import { normalizeFilterLanguage } from '../domain/language';
 
-const SORT_KEYS: SortKey[] = ['title', 'site'];
+const SORT_KEYS: SortKey[] = ['relevance', 'title', 'site'];
 
 function parseSort(value: string | null): SortKey {
   return SORT_KEYS.includes(value as SortKey) ? (value as SortKey) : DEFAULT_FILTER_STATE.sort;

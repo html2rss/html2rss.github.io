@@ -68,7 +68,11 @@ export function applyFilterPatch(state: DirectoryState, patch: Partial<FilterSta
 }
 
 export function selectPagedEntries(state: DirectoryState): PagedSelection {
-  const filteredEntries = sortEntries(filterEntries(state.entries, state.filters), state.filters.sort);
+  const filteredEntries = sortEntries(
+    filterEntries(state.entries, state.filters),
+    state.filters.sort,
+    state.filters.query
+  );
   const { items, totalPages, total } = paginateEntries(filteredEntries, state.filters.page);
 
   return {
