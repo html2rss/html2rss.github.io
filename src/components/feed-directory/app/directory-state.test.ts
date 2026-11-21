@@ -46,6 +46,29 @@ describe('selectPagedEntries', () => {
   });
 });
 
+describe('selectPagedEntries before the catalog is ready', () => {
+  it.each(['idle', 'loading', 'error'] as const)('keeps the requested page while %s', (loadState) => {
+    const state = {
+      ...applyFilterPatch(initialState(DEFAULT_FILTER_STATE, 'https://example.test/'), { page: 3 }),
+      loadState,
+    };
+    expect(selectPagedEntries(state).filters.page).toBe(3);
+  });
+
+  it('clamps once the catalog is ready and the page really exceeds the page count', () => {
+    const entries = Array.from({ length: PAGE_SIZE * 3 }, (_, index) =>
+      entry(`s.example/f-${index}`, `F ${index}`)
+    );
+    const ready = {
+      ...initialState(DEFAULT_FILTER_STATE, 'https://example.test/'),
+      loadState: 'ready' as const,
+      entries,
+    };
+    expect(selectPagedEntries(applyFilterPatch(ready, { page: 3 })).filters.page).toBe(3);
+    expect(selectPagedEntries(applyFilterPatch(ready, { page: 4 })).filters.page).toBe(3);
+  });
+});
+
 describe('selectPagedEntries search ordering', () => {
   const state = (patch: Partial<typeof DEFAULT_FILTER_STATE>) =>
     applyFilterPatch(

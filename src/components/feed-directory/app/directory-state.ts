@@ -74,13 +74,16 @@ export function selectPagedEntries(state: DirectoryState): PagedSelection {
     state.filters.query
   );
   const { items, totalPages, total } = paginateEntries(filteredEntries, state.filters.page);
+  // Until the catalog is ready there are no entries, so the page count says nothing about the URL's page.
+  const page =
+    state.loadState === 'ready' ? Math.min(Math.max(state.filters.page, 1), totalPages) : state.filters.page;
 
   return {
     filteredEntries,
     pageItems: items,
     filteredTotal: total,
     totalPages,
-    filters: { ...state.filters, page: Math.min(Math.max(state.filters.page, 1), totalPages) },
+    filters: { ...state.filters, page },
   };
 }
 
