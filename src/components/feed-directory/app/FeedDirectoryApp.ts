@@ -104,7 +104,9 @@ export class FeedDirectoryApp {
   private setRegion(name: FeedDirectoryRegion, html: string): void {
     const host = this.region(name);
     if (!host) return;
-    patchRegion(host, html, this.lastHtml[name]);
+    patchRegion(host, html, this.lastHtml[name], () =>
+      this.root.querySelector<HTMLElement>('[data-action="toggle-instance"]')
+    );
     this.lastHtml[name] = html;
   }
 
