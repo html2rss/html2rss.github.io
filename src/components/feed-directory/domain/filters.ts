@@ -23,14 +23,38 @@ export function queryWords(query: string): string[] {
   return query.toLowerCase().split(/\s+/).filter(Boolean);
 }
 
+const SCORE_EXACT_QUERY = 1000;
+
+function normalizedHost(channelUrl: string): string {
+  try {
+    return new URL(channelUrl).hostname.toLowerCase().replace(/^www\./, '');
+  } catch {
+    return '';
+  }
+}
+
+/** Host labels without the TLD, so `com` and `uk` never match as site words. */
+function hostLabels(host: string): string[] {
+  return host.split('.').filter(Boolean).slice(0, -1);
+}
+
+function siteMatches(entry: FeedDirectoryEntry, word: string): boolean {
+  const host = normalizedHost(entry.channelUrl);
+  const id = entry.id.toLowerCase();
+  const siteKey = entry.siteKey.toLowerCase();
+  if (word.includes('.') || word.includes('/')) {
+    return [host, id, siteKey].some((field) => field.includes(word));
+  }
+  const prefixes = [...hostLabels(host), ...hostLabels(siteKey), ...id.split('/')];
+  return prefixes.some((part) => part.startsWith(word));
+}
+
 function wordScore(entry: FeedDirectoryEntry, word: string): number {
   const title = entry.title.toLowerCase();
   if (title === word) return SCORE_TITLE_EXACT;
   if (title.split(/[^\p{L}\p{N}]+/u).some((part) => part.startsWith(word))) return SCORE_TITLE_PREFIX;
   if (title.includes(word)) return SCORE_TITLE_SUBSTRING;
-  if ([entry.siteKey, entry.id, entry.channelUrl].some((field) => field.toLowerCase().includes(word))) {
-    return SCORE_SITE;
-  }
+  if (siteMatches(entry, word)) return SCORE_SITE;
   if (entry.topics.some((topic) => topic.toLowerCase().includes(word))) return SCORE_TOPIC;
   if (entry.summary.toLowerCase().includes(word)) return SCORE_SUMMARY;
   return 0;
@@ -43,6 +67,9 @@ export function searchScore(entry: FeedDirectoryEntry, words: string[]): number 
     const score = wordScore(entry, word);
     if (score === 0) return null;
     total += score;
+  }
+  if (words.length > 1 && entry.title.toLowerCase().trim().split(/\s+/).join(' ') === words.join(' ')) {
+    total += SCORE_EXACT_QUERY;
   }
   return total;
 }

@@ -127,6 +127,40 @@ describe('search matching', () => {
     expect(ids(search([both, onlyOne], '  RUST  '))).toEqual(['a.example/one', 'b.example/two']);
   });
 
+  it('ignores URL boilerplate in site fields', () => {
+    const bbc = baseEntry({
+      id: 'bbc.co.uk/news',
+      siteKey: 'bbc.co.uk',
+      channelUrl: 'https://www.bbc.co.uk/news',
+      title: 'Headlines',
+    });
+    for (const word of ['https', 'www', 'com', 'bc', 'uk']) expect(search([bbc], word)).toEqual([]);
+    for (const word of ['bbc', 'news', 'bbc.co.uk', 'bbc.co.uk/news']) {
+      expect(ids(search([bbc], word))).toEqual([bbc.id]);
+    }
+    const example = baseEntry({ id: 'example.com/news', siteKey: 'example.com', title: 'Headlines' });
+    expect(ids(search([example], 'example.com/news'))).toEqual([example.id]);
+  });
+
+  it('tolerates template and invalid channel URLs', () => {
+    const template = baseEntry({ id: 'a.example/t', channelUrl: 'https://%<host>s/%<id>s', title: 'T' });
+    const invalid = baseEntry({ id: 'b.example/i', channelUrl: 'not a url', title: 'I' });
+    expect(ids(search([template, invalid], '.example'))).toEqual(['a.example/t', 'b.example/i']);
+  });
+
+  it('ranks a multi-word exact title above longer titles, even when failing', () => {
+    const longer = baseEntry({ id: 'a.example/l', title: 'BBC News Mundo' });
+    const exact = baseEntry({
+      id: 'b.example/e',
+      title: 'BBC News',
+      lastResult: { state: 'error', code: 'X', at: null },
+    });
+    expect(ids(sortEntries([longer, exact], 'relevance', ' bbc  NEWS '))).toEqual([
+      'b.example/e',
+      'a.example/l',
+    ]);
+  });
+
   it('does not search language', () => {
     expect(search([baseEntry({ id: 'a.example/one', language: 'es' })], 'es')).toEqual([]);
   });
