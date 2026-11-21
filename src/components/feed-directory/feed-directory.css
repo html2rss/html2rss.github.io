@@ -339,14 +339,20 @@
   background: var(--fd-row-hover);
 }
 
+.fd-cell-feed {
+  min-width: 0;
+}
+
 .fd-feed-card {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.2rem;
   min-width: 0;
 }
 
 .fd-feed-title {
   margin: 0;
+  overflow-wrap: anywhere;
   font-size: var(--sl-text-base);
   font-weight: 600;
   line-height: 1.35;
@@ -358,6 +364,7 @@
   font-size: var(--sl-text-sm);
   line-height: 1.4;
   max-width: var(--fd-summary-max);
+  overflow-wrap: anywhere;
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -501,11 +508,8 @@
 }
 
 .fd-more {
-  display: inline-block;
-}
-
-.fd-more[open] {
-  flex-basis: 100%;
+  /* Summary and menu become items of the action bar: More stays on the RSS/Copy line. */
+  display: contents;
 }
 
 .fd-more > summary {
@@ -522,6 +526,7 @@
 }
 
 .fd-more-menu {
+  flex-basis: 100%;
   display: flex;
   flex-wrap: wrap;
   gap: var(--fd-gap-xs);
