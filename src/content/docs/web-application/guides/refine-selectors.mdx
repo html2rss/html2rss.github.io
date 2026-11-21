@@ -1,0 +1,29 @@
+---
+title: "Refine a generated feed"
+description: "Recover a generated feed when it finds the wrong list, misses fields, or starts from the wrong page."
+---
+
+Use **Refine selectors** after automatic feed generation when the result is empty, follows the wrong list of links, or misses the title, link, or published date. Refinement is a recovery step for one generated feed, not a YAML authoring workflow.
+
+## Before You Start
+
+Your `html2rss-web` instance must have `STUDIO_ENABLED=true`, and you must have entered a valid access token. Live suggestions and previews also require `AUTO_SOURCE_ENABLED=true`.
+
+If refinement is unavailable, the result page does not show the action. Opening an old refinement link on an instance where the studio is disabled returns you to feed creation.
+
+## Refine the Result
+
+1. Generate a feed from a listing page and open **Refine selectors** from the result.
+2. Check the page URL at the top. If you started from the wrong listing, edit it first; the studio requests a new suggestion for that page.
+3. Check **Items selector**. It should identify the repeated article or entry container, such as `article` or `.post`.
+4. Use the suggested selector when it identifies the correct list. Enable enhanced extraction only when the page needs additional semantic field detection.
+5. Open a missing field to set a selector for its title, link, or published date.
+6. Check the sample items, then choose **Save and generate**.
+
+The result is successful when the sample contains the intended entries and the generated feed preserves their useful title and link.
+
+## Keep the Recovery Focused
+
+Prefer changing the listing URL before adding more selectors. A category, newsroom, changelog, or archive page usually gives better results than a generic homepage.
+
+**View as YAML** shows the current selectors fragment for inspection. It is not a complete custom-feed config and does not publish a Feed Directory entry. For a reviewable, version-controlled scraping rule, use [Creating Custom Feeds](/creating-custom-feeds/).
