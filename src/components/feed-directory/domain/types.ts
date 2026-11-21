@@ -21,7 +21,7 @@ export interface FeedDirectoryEntry {
   lastResult: LastResult;
 }
 
-export type SortKey = 'title' | 'site';
+export type SortKey = 'relevance' | 'title' | 'site';
 
 export interface FilterState {
   query: string;

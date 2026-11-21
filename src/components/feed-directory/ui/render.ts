@@ -250,6 +250,7 @@ export function renderFilters(vm: FeedDirectoryViewModel): string {
         <label class="fd-field fd-field-inline">
           <span class="fd-field-label">Sort</span>
           <select class="fd-select" data-ref="sort">
+            <option value="relevance"${vm.filters.sort === 'relevance' ? ' selected' : ''}>Best match</option>
             <option value="title"${vm.filters.sort === 'title' ? ' selected' : ''}>Title A–Z</option>
             <option value="site"${vm.filters.sort === 'site' ? ' selected' : ''}>Site A–Z</option>
           </select>

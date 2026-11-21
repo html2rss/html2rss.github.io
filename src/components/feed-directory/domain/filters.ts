@@ -8,38 +8,43 @@ export const DEFAULT_FILTER_STATE: FilterState = {
   query: '',
   topics: [],
   language: '',
-  sort: 'title',
+  sort: 'relevance',
   page: 1,
 };
 
-export function buildSearchableText(entry: FeedDirectoryEntry): string {
-  const topics = entry.topics.join(' ');
-  const languageBase = baseLanguageCode(entry.language);
-  return [
-    entry.id,
-    entry.title,
-    entry.summary,
-    entry.channelUrl,
-    entry.language,
-    languageBase,
-    topics,
-    entry.siteKey,
-  ]
-    .filter(Boolean)
-    .join(' ');
+const SCORE_TITLE_EXACT = 70;
+const SCORE_TITLE_PREFIX = 60;
+const SCORE_TITLE_SUBSTRING = 50;
+const SCORE_SITE = 40;
+const SCORE_TOPIC = 30;
+const SCORE_SUMMARY = 20;
+
+export function queryWords(query: string): string[] {
+  return query.toLowerCase().split(/\s+/).filter(Boolean);
 }
 
-export function fuzzyMatch(text: string, query: string): boolean {
-  if (!query) return true;
-  const lowerText = text.toLowerCase();
-  const lowerQuery = query.toLowerCase();
-  let textIndex = 0;
-  let queryIndex = 0;
-  while (queryIndex < lowerQuery.length && textIndex < lowerText.length) {
-    if (lowerQuery[queryIndex] === lowerText[textIndex]) queryIndex += 1;
-    textIndex += 1;
+function wordScore(entry: FeedDirectoryEntry, word: string): number {
+  const title = entry.title.toLowerCase();
+  if (title === word) return SCORE_TITLE_EXACT;
+  if (title.split(/[^\p{L}\p{N}]+/u).some((part) => part.startsWith(word))) return SCORE_TITLE_PREFIX;
+  if (title.includes(word)) return SCORE_TITLE_SUBSTRING;
+  if ([entry.siteKey, entry.id, entry.channelUrl].some((field) => field.toLowerCase().includes(word))) {
+    return SCORE_SITE;
   }
-  return queryIndex === lowerQuery.length;
+  if (entry.topics.some((topic) => topic.toLowerCase().includes(word))) return SCORE_TOPIC;
+  if (entry.summary.toLowerCase().includes(word)) return SCORE_SUMMARY;
+  return 0;
+}
+
+/** Sum of each word's best field score; `null` unless every word matches a field literally. */
+export function searchScore(entry: FeedDirectoryEntry, words: string[]): number | null {
+  let total = 0;
+  for (const word of words) {
+    const score = wordScore(entry, word);
+    if (score === 0) return null;
+    total += score;
+  }
+  return total;
 }
 
 export function extractFacets(entries: FeedDirectoryEntry[]): CatalogFacets {
@@ -63,11 +68,10 @@ export function extractFacets(entries: FeedDirectoryEntry[]): CatalogFacets {
 }
 
 export function filterEntries(entries: FeedDirectoryEntry[], filters: FilterState): FeedDirectoryEntry[] {
-  const query = filters.query.trim().toLowerCase();
+  const words = queryWords(filters.query);
 
   return entries.filter((entry) => {
-    const searchable = buildSearchableText(entry).toLowerCase();
-    if (query && !fuzzyMatch(searchable, query)) return false;
+    if (searchScore(entry, words) === null) return false;
 
     if (filters.topics.length > 0 && !filters.topics.some((topic) => entry.topics.includes(topic))) {
       return false;
@@ -79,9 +83,15 @@ export function filterEntries(entries: FeedDirectoryEntry[], filters: FilterStat
   });
 }
 
-export function sortEntries(entries: FeedDirectoryEntry[], sort: SortKey): FeedDirectoryEntry[] {
+export function sortEntries(entries: FeedDirectoryEntry[], sort: SortKey, query = ''): FeedDirectoryEntry[] {
+  const words = sort === 'relevance' ? queryWords(query) : [];
+  const scores = new Map(entries.map((entry) => [entry, searchScore(entry, words) ?? 0]));
   const sorted = [...entries];
   sorted.sort((a, b) => {
+    if (words.length > 0) {
+      const byScore = (scores.get(b) ?? 0) - (scores.get(a) ?? 0);
+      if (byScore !== 0) return byScore;
+    }
     const byResult = lastResultSortRank(a.lastResult.state) - lastResultSortRank(b.lastResult.state);
     if (byResult !== 0) return byResult;
     if (sort === 'site') {
