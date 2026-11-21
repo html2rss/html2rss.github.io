@@ -19,6 +19,16 @@ describe('findEquivalent', () => {
     expect(findEquivalent({ action: 'toggle-topic', topic }, candidates)).toBe(1);
   });
 
+  it('matches a page control by its page number', () => {
+    const candidates = [
+      { action: 'page-prev' },
+      { action: 'page-goto', page: '2' },
+      { action: 'page-goto', page: '3' },
+    ];
+    expect(findEquivalent({ action: 'page-goto', page: '3' }, candidates)).toBe(2);
+    expect(findEquivalent({ action: 'page-goto', page: '9' }, candidates)).toBe(-1);
+  });
+
   it('does not match a different key set or an empty identity', () => {
     expect(findEquivalent({ action: 'toggle-topic', topic: 'a' }, [{ topic: 'a' }])).toBe(-1);
     expect(findEquivalent({}, [{}])).toBe(-1);

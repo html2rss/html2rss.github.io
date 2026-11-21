@@ -1,5 +1,5 @@
-const FOCUS_KEYS = ['ref', 'action', 'topic', 'entryId', 'paramKey'] as const;
-const CONTROLS = 'button, input, select, textarea, a[href]';
+const FOCUS_KEYS = ['ref', 'action', 'topic', 'page', 'entryId', 'paramKey'] as const;
+const CONTROLS = 'button, input, select, textarea, a[href], summary';
 
 type Dataset = Record<string, string | undefined>;
 
@@ -19,7 +19,9 @@ export function clampIndex(oldIndex: number, count: number): number {
 }
 
 function enabledControls(host: HTMLElement): HTMLElement[] {
-  return [...host.querySelectorAll<HTMLElement>(CONTROLS)].filter((el) => !el.matches(':disabled'));
+  return [...host.querySelectorAll<HTMLElement>(CONTROLS)].filter(
+    (el) => !el.matches(':disabled') && (el.matches('summary') || !el.closest('details:not([open])'))
+  );
 }
 
 /**

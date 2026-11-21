@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_FILTER_STATE, extractFacets, filterEntries, sortEntries } from './filters';
+import {
+  DEFAULT_FILTER_STATE,
+  extractFacets,
+  facetCounts,
+  filterEntries,
+  hasActiveFilters,
+  paginateEntries,
+  paginationItems,
+  PAGE_SIZE,
+  sortEntries,
+} from './filters';
 import type { FeedDirectoryEntry, LastResult } from './types';
 
 const unknownResult: LastResult = { state: 'unknown', code: null, at: null };
@@ -104,8 +114,120 @@ describe('extractFacets', () => {
       baseEntry({ id: 'a.example/one', topics: ['news'], language: 'en-US' }),
       baseEntry({ id: 'b.example/two', topics: ['media', 'news'], language: 'de-DE' }),
     ]);
-    expect(facets.topics).toEqual(['media', 'news']);
+    expect(facets.topics).toEqual(['news', 'media']);
     expect(facets.languages).toEqual(['de', 'en']);
+  });
+
+  it('orders topics by catalog size descending, then name, independent of filters', () => {
+    const entries = [
+      baseEntry({ id: 'a.example/1', topics: ['zeta', 'beta'] }),
+      baseEntry({ id: 'a.example/2', topics: ['alpha', 'beta'] }),
+      baseEntry({ id: 'a.example/3', topics: ['beta', 'zeta', 'alpha'] }),
+      baseEntry({ id: 'a.example/4', topics: ['gamma'] }),
+    ];
+    expect(extractFacets(entries).topics).toEqual(['beta', 'alpha', 'zeta', 'gamma']);
+  });
+});
+
+describe('page size', () => {
+  it('shows 50 feeds per page', () => {
+    expect(PAGE_SIZE).toBe(50);
+    const items = Array.from({ length: 120 }, (_, index) => index);
+    const page3 = paginateEntries(items, 3);
+    expect(page3.items).toHaveLength(20);
+    expect(page3.totalPages).toBe(3);
+    expect(paginateEntries(items, 1).items).toHaveLength(50);
+  });
+});
+
+describe('paginationItems', () => {
+  const label = (page: number, total: number) =>
+    paginationItems(page, total).map((item) =>
+      item.kind === 'ellipsis' ? '…' : item.current ? `[${item.page}]` : String(item.page)
+    );
+
+  it('lists every page up to seven', () => {
+    expect(label(1, 1)).toEqual(['[1]']);
+    expect(label(3, 7)).toEqual(['1', '2', '[3]', '4', '5', '6', '7']);
+  });
+
+  it('shows first, last, current ±1 and ellipses beyond seven', () => {
+    expect(label(1, 20)).toEqual(['[1]', '2', '…', '20']);
+    expect(label(2, 20)).toEqual(['1', '[2]', '3', '…', '20']);
+    expect(label(10, 20)).toEqual(['1', '…', '9', '[10]', '11', '…', '20']);
+    expect(label(19, 20)).toEqual(['1', '…', '18', '[19]', '20']);
+    expect(label(20, 20)).toEqual(['1', '…', '19', '[20]']);
+  });
+
+  it('shows a page instead of an ellipsis that would hide only one', () => {
+    expect(label(4, 8)).toEqual(['1', '2', '3', '[4]', '5', '…', '8']);
+    expect(label(5, 9)).toEqual(['1', '…', '4', '[5]', '6', '…', '9']);
+    expect(label(6, 9)).toEqual(['1', '…', '5', '[6]', '7', '8', '9']);
+  });
+
+  it('marks exactly one current page and clamps out-of-range input', () => {
+    expect(paginationItems(4, 8).filter((item) => item.kind === 'page' && item.current)).toHaveLength(1);
+    expect(label(99, 8)).toEqual(['1', '…', '7', '[8]']);
+  });
+});
+
+describe('facetCounts', () => {
+  const entries = [
+    baseEntry({ id: 'a.example/1', title: 'Alpha news', topics: ['news', 'tech'], language: 'en-US' }),
+    baseEntry({ id: 'b.example/2', title: 'Beta news', topics: ['news'], language: 'de-DE' }),
+    baseEntry({ id: 'c.example/3', title: 'Gamma tech', topics: ['tech'], language: 'de' }),
+    baseEntry({ id: 'd.example/4', title: 'Delta other', topics: ['misc'], language: 'fr' }),
+  ];
+
+  it('counts every entry with no filters', () => {
+    const { topics, languages } = facetCounts(entries, DEFAULT_FILTER_STATE);
+    expect([...topics]).toEqual([
+      ['news', 2],
+      ['tech', 2],
+      ['misc', 1],
+    ]);
+    expect(Object.fromEntries(languages)).toEqual({ en: 1, de: 2, fr: 1 });
+  });
+
+  it('applies the query to both facets', () => {
+    const { topics, languages } = facetCounts(entries, { ...DEFAULT_FILTER_STATE, query: 'news' });
+    expect(Object.fromEntries(topics)).toEqual({ news: 2, tech: 1 });
+    expect(Object.fromEntries(languages)).toEqual({ en: 1, de: 1 });
+  });
+
+  it('counts topics under the language, ignoring selected topics', () => {
+    const { topics } = facetCounts(entries, { ...DEFAULT_FILTER_STATE, language: 'de', topics: ['misc'] });
+    expect(Object.fromEntries(topics)).toEqual({ news: 1, tech: 1 });
+    expect(topics.get('misc')).toBeUndefined();
+  });
+
+  it('counts languages under the topics (any of), ignoring the selected language', () => {
+    const { languages } = facetCounts(entries, {
+      ...DEFAULT_FILTER_STATE,
+      topics: ['news', 'misc'],
+      language: 'de',
+    });
+    expect(Object.fromEntries(languages)).toEqual({ en: 1, de: 1, fr: 1 });
+  });
+
+  it('reports zero for options the filters exclude', () => {
+    const { topics, languages } = facetCounts(entries, { ...DEFAULT_FILTER_STATE, query: 'delta' });
+    expect(topics.get('news') ?? 0).toBe(0);
+    expect(languages.get('de') ?? 0).toBe(0);
+    expect(topics.get('misc')).toBe(1);
+  });
+});
+
+describe('hasActiveFilters', () => {
+  it('ignores the page alone', () => {
+    expect(hasActiveFilters({ ...DEFAULT_FILTER_STATE, page: 2 })).toBe(false);
+  });
+
+  it('detects query, topic and language', () => {
+    expect(hasActiveFilters({ ...DEFAULT_FILTER_STATE, query: ' x ' })).toBe(true);
+    expect(hasActiveFilters({ ...DEFAULT_FILTER_STATE, topics: ['a'] })).toBe(true);
+    expect(hasActiveFilters({ ...DEFAULT_FILTER_STATE, language: 'de' })).toBe(true);
+    expect(hasActiveFilters({ ...DEFAULT_FILTER_STATE, query: '  ' })).toBe(false);
   });
 });
 

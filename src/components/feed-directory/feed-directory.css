@@ -30,8 +30,8 @@
   /* Spacing */
   --fd-pad-panel: 1rem 1.125rem;
   --fd-pad-message: 1.25rem 1.125rem;
-  --fd-pad-cell: 0.875rem 1rem;
-  --fd-pad-cell-block: 1rem;
+  --fd-pad-cell: 0.625rem 1rem;
+  --fd-pad-cell-block: 0.625rem;
   --fd-pad-control: 0.625rem 0.75rem;
   --fd-pad-btn: 0.45rem 0.8rem;
   --fd-pad-btn-compact: 0.3rem 0.55rem;
@@ -40,7 +40,7 @@
   --fd-pad-lang: 0.1rem 0.35rem;
 
   /* Layout constants */
-  --fd-actions-col: 11.5rem;
+  --fd-actions-col: 12.5rem;
   --fd-field-inline-min: 10rem;
   --fd-summary-max: 52rem;
 
@@ -124,9 +124,9 @@
 
 .fd-action-bar {
   display: inline-flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: var(--fd-gap-xs);
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-end;
   max-width: 100%;
 }
@@ -217,6 +217,17 @@
   cursor: pointer;
 }
 
+.fd-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fd-chip-count {
+  margin-inline-start: 0.2rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+
 .fd-chip.is-active,
 .fd-chip[aria-pressed="true"] {
   border-color: var(--fd-accent);
@@ -262,12 +273,13 @@
 
 .fd-btn-primary:hover:not(:disabled),
 .fd-btn-ghost:hover:not(:disabled),
-.fd-chip:hover {
+.fd-chip:hover:not(:disabled) {
   border-color: var(--fd-accent);
 }
 
 .fd-table-wrap {
   overflow-x: auto;
+  scroll-margin-top: calc(var(--sl-nav-height, 3.5rem) + var(--fd-gap));
 }
 
 .fd-table {
@@ -327,14 +339,20 @@
   background: var(--fd-row-hover);
 }
 
+.fd-cell-feed {
+  min-width: 0;
+}
+
 .fd-feed-card {
   display: grid;
-  gap: 0.45rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.2rem;
   min-width: 0;
 }
 
 .fd-feed-title {
   margin: 0;
+  overflow-wrap: anywhere;
   font-size: var(--sl-text-base);
   font-weight: 600;
   line-height: 1.35;
@@ -344,8 +362,14 @@
   margin: 0;
   color: var(--fd-muted);
   font-size: var(--sl-text-sm);
-  line-height: 1.5;
+  line-height: 1.4;
   max-width: var(--fd-summary-max);
+  overflow-wrap: anywhere;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
 }
 
 .fd-feed-meta {
@@ -353,7 +377,6 @@
   flex-wrap: wrap;
   gap: 0.4rem 0.55rem;
   align-items: center;
-  margin-top: 0.15rem;
 }
 
 .fd-domain {
@@ -452,9 +475,66 @@
   border-top: 1px solid var(--fd-border);
 }
 
-.fd-pagination-label {
+.fd-page-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fd-gap-xs);
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fd-page-list li {
+  margin: 0;
+}
+
+.fd-page {
+  min-width: 2.25rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.fd-page.is-current,
+.fd-page[aria-current="page"] {
+  border-color: var(--fd-accent);
+  background: var(--fd-accent-soft);
+  font-weight: 600;
+}
+
+.fd-page-gap {
   color: var(--fd-muted);
-  font-size: var(--sl-text-sm);
+  padding-inline: 0.25rem;
+}
+
+.fd-more {
+  /* A real box in the action bar: More stays on the RSS/Copy line, the open menu grows the row. */
+  display: block;
+  flex: none;
+}
+
+.fd-more > summary {
+  display: flex;
+  width: fit-content;
+  margin-inline-start: auto;
+  list-style: none;
+}
+
+.fd-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.fd-more > summary:focus-visible {
+  outline: var(--fd-focus-ring);
+  outline-offset: var(--fd-focus-offset);
+}
+
+.fd-more-menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fd-gap-xs);
+  align-items: flex-end;
+  margin-top: var(--fd-gap-xs);
 }
 
 .fd-empty,
@@ -526,8 +606,15 @@
   }
 
   .fd-action-bar {
-    flex-wrap: wrap;
     justify-content: flex-start;
+  }
+
+  .fd-more > summary {
+    margin-inline-start: 0;
+  }
+
+  .fd-more-menu {
+    align-items: flex-start;
   }
 
   .fd-cell-actions {

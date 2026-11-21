@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { applyFilterPatch, initialState, selectPagedEntries } from './directory-state';
+import { applyFilterPatch, initialState, resetFilters, selectPagedEntries } from './directory-state';
 import { DEFAULT_FILTER_STATE, PAGE_SIZE } from '../domain/filters';
 import { readFiltersFromUrl, writeFiltersToUrl } from '../adapters/browser-location';
 import type { FeedDirectoryEntry } from '../domain/types';
@@ -28,6 +28,19 @@ describe('applyFilterPatch', () => {
   });
 });
 
+describe('openMoreEntryId', () => {
+  const open = {
+    ...initialState(DEFAULT_FILTER_STATE, 'https://example.test/'),
+    openMoreEntryId: 'a.example/one',
+  };
+
+  it('is cleared when filters or the page change', () => {
+    expect(applyFilterPatch(open, { page: 2 }).openMoreEntryId).toBeNull();
+    expect(applyFilterPatch(open, { query: 'x', page: 1 }).openMoreEntryId).toBeNull();
+    expect(resetFilters(open, DEFAULT_FILTER_STATE).openMoreEntryId).toBeNull();
+  });
+});
+
 describe('selectPagedEntries', () => {
   it('clamps page without mutating source state', () => {
     const entries = Array.from({ length: PAGE_SIZE + 1 }, (_, index) =>
@@ -43,6 +56,29 @@ describe('selectPagedEntries', () => {
     expect(paged.pageItems).toHaveLength(1);
     expect(paged.filters.page).toBe(2);
     expect(state.filters.page).toBe(1);
+  });
+});
+
+describe('selectPagedEntries before the catalog is ready', () => {
+  it.each(['idle', 'loading', 'error'] as const)('keeps the requested page while %s', (loadState) => {
+    const state = {
+      ...applyFilterPatch(initialState(DEFAULT_FILTER_STATE, 'https://example.test/'), { page: 3 }),
+      loadState,
+    };
+    expect(selectPagedEntries(state).filters.page).toBe(3);
+  });
+
+  it('clamps once the catalog is ready and the page really exceeds the page count', () => {
+    const entries = Array.from({ length: PAGE_SIZE * 3 }, (_, index) =>
+      entry(`s.example/f-${index}`, `F ${index}`)
+    );
+    const ready = {
+      ...initialState(DEFAULT_FILTER_STATE, 'https://example.test/'),
+      loadState: 'ready' as const,
+      entries,
+    };
+    expect(selectPagedEntries(applyFilterPatch(ready, { page: 3 })).filters.page).toBe(3);
+    expect(selectPagedEntries(applyFilterPatch(ready, { page: 4 })).filters.page).toBe(3);
   });
 });
 

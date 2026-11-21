@@ -36,6 +36,13 @@ export interface CatalogFacets {
   languages: string[];
 }
 
+export interface FacetCounts {
+  topics: ReadonlyMap<string, number>;
+  languages: ReadonlyMap<string, number>;
+}
+
+export type PaginationItem = { kind: 'page'; page: number; current: boolean } | { kind: 'ellipsis' };
+
 export type LoadState = 'idle' | 'loading' | 'ready' | 'error';
 
 export type CatalogErrorKind = 'disabled' | 'network' | 'invalid' | 'unsupported_version' | 'unknown';

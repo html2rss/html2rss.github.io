@@ -1,6 +1,7 @@
 import {
   DEFAULT_FILTER_STATE,
   extractFacets,
+  facetCounts,
   filterEntries,
   paginateEntries,
   sortEntries,
@@ -8,6 +9,7 @@ import {
 import type {
   CatalogFacets,
   CatalogLoadError,
+  FacetCounts,
   FeedDirectoryEntry,
   FilterState,
   LoadState,
@@ -29,6 +31,7 @@ export interface DirectoryState {
   instanceEditorOpen: boolean;
   instanceFeedback: InstanceFeedback | null;
   expandedEntryId: string | null;
+  openMoreEntryId: string | null;
   parametersById: Record<string, Record<string, string>>;
   copiedEntryId: string | null;
   error: CatalogLoadError | null;
@@ -39,6 +42,7 @@ export interface PagedSelection {
   pageItems: FeedDirectoryEntry[];
   filteredTotal: number;
   totalPages: number;
+  facetCounts: FacetCounts;
   filters: FilterState;
 }
 
@@ -54,6 +58,7 @@ export function initialState(filters: FilterState, instanceUrl: string): Directo
     instanceEditorOpen: false,
     instanceFeedback: null,
     expandedEntryId: null,
+    openMoreEntryId: null,
     parametersById: {},
     copiedEntryId: null,
     error: null,
@@ -63,6 +68,7 @@ export function initialState(filters: FilterState, instanceUrl: string): Directo
 export function applyFilterPatch(state: DirectoryState, patch: Partial<FilterState>): DirectoryState {
   return {
     ...state,
+    openMoreEntryId: null,
     filters: { ...state.filters, ...patch },
   };
 }
@@ -74,13 +80,17 @@ export function selectPagedEntries(state: DirectoryState): PagedSelection {
     state.filters.query
   );
   const { items, totalPages, total } = paginateEntries(filteredEntries, state.filters.page);
+  // Until the catalog is ready there are no entries, so the page count says nothing about the URL's page.
+  const page =
+    state.loadState === 'ready' ? Math.min(Math.max(state.filters.page, 1), totalPages) : state.filters.page;
 
   return {
     filteredEntries,
     pageItems: items,
     filteredTotal: total,
     totalPages,
-    filters: { ...state.filters, page: Math.min(Math.max(state.filters.page, 1), totalPages) },
+    facetCounts: facetCounts(state.entries, state.filters),
+    filters: { ...state.filters, page },
   };
 }
 
@@ -88,6 +98,7 @@ export function resetCatalogState(state: DirectoryState): DirectoryState {
   return {
     ...state,
     expandedEntryId: null,
+    openMoreEntryId: null,
     parametersById: {},
   };
 }
@@ -121,6 +132,7 @@ export function catalogErrorState(state: DirectoryState, error: CatalogLoadError
 export function resetFilters(state: DirectoryState, filters: FilterState): DirectoryState {
   return {
     ...state,
+    openMoreEntryId: null,
     filters: { ...DEFAULT_FILTER_STATE, ...filters },
   };
 }
