@@ -13,7 +13,15 @@ import { buildOpmlDocument } from '../domain/opml';
 import { normalizeFilterLanguage } from '../domain/language';
 import { debounce } from '../lib/debounce';
 import type { FeedDirectoryEntry } from '../domain/types';
-import { renderFeedDirectory } from '../ui/render';
+import {
+  renderFilters,
+  renderHeader,
+  renderInstancePanel,
+  renderResults,
+  renderShell,
+  type FeedDirectoryRegion,
+} from '../ui/render';
+import { patchRegion } from './region-patch';
 import {
   applyFilterPatch,
   catalogErrorState,
@@ -28,6 +36,7 @@ import { buildViewModel } from './view-model';
 export class FeedDirectoryApp {
   private readonly root: HTMLElement;
   private state: DirectoryState;
+  private readonly lastHtml: Partial<Record<FeedDirectoryRegion, string>> = {};
 
   private readonly debouncedSearch = debounce((value: string) => {
     this.patchFilters({ query: value, page: 1 });
@@ -39,6 +48,7 @@ export class FeedDirectoryApp {
   }
 
   start(): void {
+    this.root.innerHTML = renderShell(this.state.filters.query);
     this.root.addEventListener('click', (event) => this.onClick(event));
     this.root.addEventListener('input', (event) => this.onInput(event));
     this.root.addEventListener('change', (event) => this.onChange(event));
@@ -83,17 +93,66 @@ export class FeedDirectoryApp {
     return selectPagedEntries(this.state);
   }
 
-  private render(): void {
-    const paged = this.currentPagedSelection();
-    this.root.innerHTML = renderFeedDirectory(buildViewModel(this.state, paged));
-    this.syncRefs();
+  private viewModel() {
+    return buildViewModel(this.state, this.currentPagedSelection());
   }
 
-  private syncRefs(): void {
+  private region(name: FeedDirectoryRegion): HTMLElement | null {
+    return this.root.querySelector<HTMLElement>(`[data-region="${name}"]`);
+  }
+
+  private setRegion(name: FeedDirectoryRegion, html: string): void {
+    const host = this.region(name);
+    if (!host) return;
+    patchRegion(host, html, this.lastHtml[name], () =>
+      this.root.querySelector<HTMLElement>('[data-action="toggle-instance"]')
+    );
+    this.lastHtml[name] = html;
+  }
+
+  /** The shell (and search input) is mounted once; only changed regions are replaced. */
+  private render(): void {
+    const vm = this.viewModel();
+    this.setRegion('header', renderHeader(vm));
+    this.setRegion('instance', renderInstancePanel(vm));
+    this.setRegion('filters', renderFilters(vm));
+    this.setRegion('results', renderResults(vm));
+    this.syncSearch();
+  }
+
+  /** Never overwrite the search box while the user is typing in it. */
+  private syncSearch(): void {
     const search = this.root.querySelector<HTMLInputElement>('[data-ref="search"]');
-    if (search && search.value !== this.state.filters.query) {
+    if (search && search !== document.activeElement && search.value !== this.state.filters.query) {
       search.value = this.state.filters.query;
     }
+  }
+
+  /** Patch the live DOM, then record the markup it now matches so the next render is a no-op. */
+  private patchResultsInPlace(patch: (host: HTMLElement) => void): void {
+    const host = this.region('results');
+    if (!host) return;
+    patch(host);
+    this.lastHtml.results = renderResults(this.viewModel());
+  }
+
+  private updateFeedLink(entryId: string): void {
+    const entry = this.findEntry(entryId);
+    if (!entry) return;
+    const url = buildFeedUrl(this.state.instanceUrl, entry, this.state.parametersById[entryId] ?? {});
+    this.patchResultsInPlace((host) => {
+      host.querySelectorAll<HTMLAnchorElement>('[data-action="open-feed"]').forEach((link) => {
+        if (link.dataset.entryId === entryId) link.href = url;
+      });
+    });
+  }
+
+  private updateCopyButtons(): void {
+    this.patchResultsInPlace((host) => {
+      host.querySelectorAll<HTMLElement>('[data-action="copy-feed"]').forEach((button) => {
+        button.textContent = button.dataset.entryId === this.state.copiedEntryId ? 'Copied' : 'Copy';
+      });
+    });
   }
 
   private onInput(event: Event): void {
@@ -113,7 +172,7 @@ export class FeedDirectoryApp {
         ...this.state,
         parametersById: { ...this.state.parametersById, [entryId]: next },
       };
-      this.render();
+      this.updateFeedLink(entryId);
     }
 
     if (target.dataset.ref === 'instance-draft') {
@@ -249,10 +308,10 @@ export class FeedDirectoryApp {
     try {
       await navigator.clipboard.writeText(url);
       this.state = { ...this.state, copiedEntryId: entryId };
-      this.render();
+      this.updateCopyButtons();
       window.setTimeout(() => {
         this.state = { ...this.state, copiedEntryId: null };
-        this.render();
+        this.updateCopyButtons();
       }, 1400);
     } catch {
       this.state = {

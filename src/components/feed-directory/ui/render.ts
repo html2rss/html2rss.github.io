@@ -129,7 +129,7 @@ function renderPagination(vm: FeedDirectoryViewModel): string {
   </nav>`;
 }
 
-function renderFeedTable(vm: FeedDirectoryViewModel): string {
+export function renderResults(vm: FeedDirectoryViewModel): string {
   if (vm.loadState === 'loading') {
     return `<div class="fd-loading" aria-live="polite">
       <div class="fd-skeleton fd-skeleton-toolbar"></div>
@@ -181,30 +181,49 @@ function renderFeedTable(vm: FeedDirectoryViewModel): string {
   ${renderPagination(vm)}`;
 }
 
-export function renderFeedDirectory(vm: FeedDirectoryViewModel): string {
-  const activeFilters = hasActiveFilters(vm.filters);
-  const resultLabel = activeFilters
+export type FeedDirectoryRegion = 'header' | 'instance' | 'filters' | 'results';
+
+/**
+ * Mounted once. The search input lives here and is never re-rendered; every
+ * other region is a host element that is filled by its own render function.
+ */
+export function renderShell(initialQuery: string): string {
+  return `<div class="fd-shell">
+    <header class="fd-header" data-region="header"></header>
+    <div style="display: contents" data-region="instance"></div>
+    <section class="fd-panel fd-toolbar" aria-label="Search and filters">
+      <label>
+        <span class="fd-sr-only">Search feeds</span>
+        <input class="fd-input fd-search-input" type="search" data-ref="search" value="${escapeHtml(initialQuery)}" placeholder="Search by feed name, site, or domain" enterkeyhint="search" />
+      </label>
+      <div class="fd-filter-block" data-region="filters"></div>
+    </section>
+    <div style="display: contents" data-region="results"></div>
+  </div>`;
+}
+
+export function renderHeader(vm: FeedDirectoryViewModel): string {
+  const resultLabel = hasActiveFilters(vm.filters)
     ? `${vm.filteredTotal} matching feed${vm.filteredTotal === 1 ? '' : 's'}`
     : `${vm.catalogTotal} feed${vm.catalogTotal === 1 ? '' : 's'}`;
+
+  return `<div class="fd-header-copy">
+      <p class="fd-eyebrow">Feed Directory</p>
+      <p class="fd-lead">${escapeHtml(resultLabel)} from <strong>${escapeHtml(formatInstanceLabel(vm.instanceUrl))}</strong></p>
+    </div>
+    <div class="fd-header-actions">
+      <button type="button" class="fd-btn fd-btn-ghost" data-action="toggle-instance" aria-expanded="${vm.instanceEditorOpen}">${vm.instanceEditorOpen ? 'Close instance' : 'Change instance'}</button>
+      <button type="button" class="fd-btn fd-btn-ghost" data-action="export-opml" ${vm.filteredTotal === 0 ? 'disabled' : ''}>Export OPML</button>
+    </div>`;
+}
+
+export function renderInstancePanel(vm: FeedDirectoryViewModel): string {
+  if (!vm.instanceEditorOpen) return '';
 
   const feedback = vm.instanceFeedback;
   const feedbackClass = feedback?.tone ? ` fd-feedback-${feedback.tone}` : '';
 
-  return `<div class="fd-shell">
-    <header class="fd-header">
-      <div class="fd-header-copy">
-        <p class="fd-eyebrow">Feed Directory</p>
-        <p class="fd-lead">${escapeHtml(resultLabel)} from <strong>${escapeHtml(formatInstanceLabel(vm.instanceUrl))}</strong></p>
-      </div>
-      <div class="fd-header-actions">
-        <button type="button" class="fd-btn fd-btn-ghost" data-action="toggle-instance" aria-expanded="${vm.instanceEditorOpen}">${vm.instanceEditorOpen ? 'Close instance' : 'Change instance'}</button>
-        <button type="button" class="fd-btn fd-btn-ghost" data-action="export-opml" ${vm.filteredTotal === 0 ? 'disabled' : ''}>Export OPML</button>
-      </div>
-    </header>
-
-    ${
-      vm.instanceEditorOpen
-        ? `<section class="fd-panel" aria-label="Instance settings">
+  return `<section class="fd-panel" aria-label="Instance settings">
       <label class="fd-field">
         <span class="fd-field-label">Instance URL</span>
         <div class="fd-inline-field">
@@ -213,47 +232,35 @@ export function renderFeedDirectory(vm: FeedDirectoryViewModel): string {
         </div>
       </label>
       <p class="fd-feedback${feedbackClass}">${escapeHtml(feedback?.message ?? 'Feed links update when you apply a valid instance URL.')}</p>
-    </section>`
-        : ''
-    }
+    </section>`;
+}
 
-    <section class="fd-panel fd-toolbar" aria-label="Search and filters">
-      <label>
-        <span class="fd-sr-only">Search feeds</span>
-        <input class="fd-input fd-search-input" type="search" data-ref="search" value="${escapeHtml(vm.filters.query)}" placeholder="Search by feed name, site, or domain" enterkeyhint="search" />
-      </label>
-
-      <div class="fd-filter-block">
-        <div class="fd-filter-group">
-          <span class="fd-field-label">Topics</span>
-          <div class="fd-chip-row" role="group" aria-label="Filter by topic">${renderTopicChips(vm.facets, vm.filters.topics)}</div>
-        </div>
-
-        <div class="fd-filter-row">
-          <label class="fd-field fd-field-inline">
-            <span class="fd-field-label">Language</span>
-            <select class="fd-select" data-ref="language">${renderLanguageOptions(vm.facets, vm.filters.language)}</select>
-          </label>
-
-          <label class="fd-field fd-field-inline">
-            <span class="fd-field-label">Sort</span>
-            <select class="fd-select" data-ref="sort">
-              <option value="title"${vm.filters.sort === 'title' ? ' selected' : ''}>Title A–Z</option>
-              <option value="site"${vm.filters.sort === 'site' ? ' selected' : ''}>Site A–Z</option>
-            </select>
-          </label>
-
-          ${
-            activeFilters
-              ? `<button type="button" class="fd-btn fd-btn-ghost" data-action="clear-filters">Clear filters</button>`
-              : ''
-          }
-        </div>
+export function renderFilters(vm: FeedDirectoryViewModel): string {
+  return `<div class="fd-filter-group">
+        <span class="fd-field-label">Topics</span>
+        <div class="fd-chip-row" role="group" aria-label="Filter by topic">${renderTopicChips(vm.facets, vm.filters.topics)}</div>
       </div>
-    </section>
 
-    ${renderFeedTable(vm)}
-  </div>`;
+      <div class="fd-filter-row">
+        <label class="fd-field fd-field-inline">
+          <span class="fd-field-label">Language</span>
+          <select class="fd-select" data-ref="language">${renderLanguageOptions(vm.facets, vm.filters.language)}</select>
+        </label>
+
+        <label class="fd-field fd-field-inline">
+          <span class="fd-field-label">Sort</span>
+          <select class="fd-select" data-ref="sort">
+            <option value="title"${vm.filters.sort === 'title' ? ' selected' : ''}>Title A–Z</option>
+            <option value="site"${vm.filters.sort === 'site' ? ' selected' : ''}>Site A–Z</option>
+          </select>
+        </label>
+
+        ${
+          hasActiveFilters(vm.filters)
+            ? `<button type="button" class="fd-btn fd-btn-ghost" data-action="clear-filters">Clear filters</button>`
+            : ''
+        }
+      </div>`;
 }
 
 export type { FeedDirectoryViewModel };
