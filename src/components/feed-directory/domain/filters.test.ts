@@ -159,6 +159,12 @@ describe('paginationItems', () => {
     expect(label(20, 20)).toEqual(['1', '…', '19', '[20]']);
   });
 
+  it('shows a page instead of an ellipsis that would hide only one', () => {
+    expect(label(4, 8)).toEqual(['1', '2', '3', '[4]', '5', '…', '8']);
+    expect(label(5, 9)).toEqual(['1', '…', '4', '[5]', '6', '…', '9']);
+    expect(label(6, 9)).toEqual(['1', '…', '5', '[6]', '7', '8', '9']);
+  });
+
   it('marks exactly one current page and clamps out-of-range input', () => {
     expect(paginationItems(4, 8).filter((item) => item.kind === 'page' && item.current)).toHaveLength(1);
     expect(label(99, 8)).toEqual(['1', '…', '7', '[8]']);

@@ -3,6 +3,7 @@ import {
   baseLanguageCode,
   displayLanguage,
   languageAutonym,
+  languageOptions,
   languageMatches,
   normalizeFilterLanguage,
 } from './language';
@@ -47,5 +48,24 @@ describe('languageAutonym', () => {
     expect(languageAutonym('zz')).toBe('zz');
     expect(languageAutonym('x')).toBe('x');
     expect(languageAutonym('123')).toBe('123');
+  });
+});
+
+describe('languageOptions', () => {
+  it('sorts by displayed autonym, not by code, keeping codes as values', () => {
+    expect(languageOptions(['fr', 'en', 'es', 'de'], '').map((option) => option.code)).toEqual([
+      'de',
+      'en',
+      'es',
+      'fr',
+    ]);
+    // 日本語 (ja) sorts after Latin names, although its code sorts before pt
+    expect(languageOptions(['ja', 'pt', 'de'], '').map((option) => option.code)).toEqual(['de', 'pt', 'ja']);
+  });
+
+  it('keeps a selected language the catalog lacks, labelled by its code', () => {
+    const options = languageOptions(['de'], 'xx');
+    expect(options).toContainEqual({ code: 'xx', label: 'xx' });
+    expect(languageOptions(['de'], 'de')).toHaveLength(1);
   });
 });

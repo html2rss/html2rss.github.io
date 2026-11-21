@@ -1,7 +1,7 @@
 import { escapeHtml } from '../lib/escape';
 import { buildFeedUrl, formatInstanceLabel } from '../domain/feed-url';
 import { hasActiveFilters, PAGE_SIZE, paginationItems } from '../domain/filters';
-import { displayLanguage, languageAutonym, normalizeFilterLanguage } from '../domain/language';
+import { displayLanguage, languageOptions, normalizeFilterLanguage } from '../domain/language';
 import { isFailingLastResult } from '../domain/last-result';
 import type { CatalogFacets, FacetCounts, FeedDirectoryEntry, LastResult } from '../domain/types';
 import type { FeedDirectoryViewModel } from '../app/view-model';
@@ -24,7 +24,9 @@ function renderTopicChips(facets: CatalogFacets, counts: FacetCounts, selected: 
     return `<p class="fd-muted fd-empty-hint">Topics appear after the catalog loads.</p>`;
   }
 
-  return facets.topics
+  const topics = [...facets.topics, ...new Set(selected.filter((topic) => !facets.topics.includes(topic)))];
+
+  return topics
     .map((topic) => {
       const active = selected.includes(topic);
       const count = counts.topics.get(topic) ?? 0;
@@ -36,12 +38,12 @@ function renderTopicChips(facets: CatalogFacets, counts: FacetCounts, selected: 
 
 function renderLanguageOptions(facets: CatalogFacets, counts: FacetCounts, selected: string): string {
   const normalizedSelected = normalizeFilterLanguage(selected);
-  const options = facets.languages
-    .map((language) => {
-      const active = language === normalizedSelected;
-      const count = counts.languages.get(language) ?? 0;
+  const options = languageOptions(facets.languages, normalizedSelected)
+    .map(({ code, label }) => {
+      const active = code === normalizedSelected;
+      const count = counts.languages.get(code) ?? 0;
       const disabled = count === 0 && !active;
-      return `<option value="${escapeHtml(language)}"${active ? ' selected' : ''}${disabled ? ' disabled' : ''}>${escapeHtml(languageAutonym(language))} (${count})</option>`;
+      return `<option value="${escapeHtml(code)}"${active ? ' selected' : ''}${disabled ? ' disabled' : ''}>${escapeHtml(label)} (${count})</option>`;
     })
     .join('');
 
@@ -94,7 +96,7 @@ function renderFeedRow(entry: FeedDirectoryEntry, vm: FeedDirectoryViewModel): s
       ? `<a class="fd-btn fd-btn-ghost fd-btn-compact" href="${escapeHtml(entry.channelUrl)}" target="_blank" rel="noopener noreferrer nofollow">Source</a>`
       : '') +
     (hasParameters
-      ? `<button type="button" class="fd-btn fd-btn-ghost fd-btn-compact" data-action="toggle-params" data-entry-id="${escapeHtml(entry.id)}" aria-expanded="${expanded}">${expanded ? 'Hide params' : 'Params'}</button>`
+      ? `<button type="button" class="fd-btn fd-btn-ghost fd-btn-compact" data-action="toggle-params" data-entry-id="${escapeHtml(entry.id)}" aria-expanded="${expanded}">${expanded ? 'Hide' : 'Params'}</button>`
       : '');
 
   const moreMenu = moreActions

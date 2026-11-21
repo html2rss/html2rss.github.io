@@ -180,7 +180,7 @@ export function paginateEntries<T>(
 
 const PAGINATION_FULL_LIMIT = 7;
 
-/** Page controls: every page up to 7, else first, last, current ±1 and an ellipsis for each gap. */
+/** Page controls: every page up to 7, else first, last, current ±1; a gap of 2+ pages is an ellipsis, a single page is shown. */
 export function paginationItems(page: number, totalPages: number): PaginationItem[] {
   const current = Math.min(Math.max(page, 1), Math.max(totalPages, 1));
   const shown =
@@ -192,7 +192,9 @@ export function paginationItems(page: number, totalPages: number): PaginationIte
 
   const items: PaginationItem[] = [];
   shown.forEach((value, index) => {
-    if (index > 0 && value - (shown[index - 1] ?? 0) > 1) items.push({ kind: 'ellipsis' });
+    const hidden = index > 0 ? value - (shown[index - 1] ?? 0) - 1 : 0;
+    if (hidden === 1) items.push({ kind: 'page', page: value - 1, current: false });
+    else if (hidden > 1) items.push({ kind: 'ellipsis' });
     items.push({ kind: 'page', page: value, current: value === current });
   });
   return items;

@@ -108,6 +108,30 @@ describe('scannable results', () => {
     expect(html).toMatch(/<option value="xx" disabled>[^<]*\(0\)<\/option>/);
   });
 
+  it('keeps a selected language and topic that the catalog lacks visible, enabled and clearable', () => {
+    const html = renderFilters({
+      ...base,
+      filters: { ...base.filters, topics: ['absent'], language: 'qq' },
+    });
+    expect(html).toMatch(
+      /<button[^>]*class="fd-chip is-active"[^>]*data-topic="absent" aria-pressed="true">absent <span class="fd-chip-count">0<\/span>/
+    );
+    expect(html).not.toMatch(/data-topic="absent"[^>]*disabled/);
+    expect(html).toMatch(/<option value="qq" selected>qq \(0\)<\/option>/);
+  });
+
+  it('orders language options by autonym', () => {
+    const html = renderFilters({
+      ...base,
+      filters: { ...base.filters, language: '' },
+      facets: { ...base.facets, languages: ['ja', 'pt', 'de'] },
+    });
+    const codes = [...html.matchAll(/<option value="([a-z]+)"/g)]
+      .map((match) => match[1])
+      .filter((code) => !['relevance', 'title', 'site'].includes(code ?? ''));
+    expect(codes).toEqual(['de', 'pt', 'ja']);
+  });
+
   it('renders numbered pages with one aria-current and ellipses', () => {
     const html = renderResults(base);
     expect(html.match(/aria-current="page"/g)).toHaveLength(1);

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { applyFilterPatch, initialState, selectPagedEntries } from './directory-state';
+import { applyFilterPatch, initialState, resetFilters, selectPagedEntries } from './directory-state';
 import { DEFAULT_FILTER_STATE, PAGE_SIZE } from '../domain/filters';
 import { readFiltersFromUrl, writeFiltersToUrl } from '../adapters/browser-location';
 import type { FeedDirectoryEntry } from '../domain/types';
@@ -25,6 +25,19 @@ describe('applyFilterPatch', () => {
     expect(next.filters.query).toBe('news');
     expect(next.filters.page).toBe(2);
     expect(state.filters.query).toBe('');
+  });
+});
+
+describe('openMoreEntryId', () => {
+  const open = {
+    ...initialState(DEFAULT_FILTER_STATE, 'https://example.test/'),
+    openMoreEntryId: 'a.example/one',
+  };
+
+  it('is cleared when filters or the page change', () => {
+    expect(applyFilterPatch(open, { page: 2 }).openMoreEntryId).toBeNull();
+    expect(applyFilterPatch(open, { query: 'x', page: 1 }).openMoreEntryId).toBeNull();
+    expect(resetFilters(open, DEFAULT_FILTER_STATE).openMoreEntryId).toBeNull();
   });
 });
 

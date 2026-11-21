@@ -40,7 +40,7 @@
   --fd-pad-lang: 0.1rem 0.35rem;
 
   /* Layout constants */
-  --fd-actions-col: 12rem;
+  --fd-actions-col: 12.5rem;
   --fd-field-inline-min: 10rem;
   --fd-summary-max: 52rem;
 
@@ -126,7 +126,7 @@
   display: inline-flex;
   flex-wrap: wrap;
   gap: var(--fd-gap-xs);
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-end;
   max-width: 100%;
 }
@@ -508,11 +508,15 @@
 }
 
 .fd-more {
-  /* Summary and menu become items of the action bar: More stays on the RSS/Copy line. */
-  display: contents;
+  /* A real box in the action bar: More stays on the RSS/Copy line, the open menu grows the row. */
+  display: block;
+  flex: none;
 }
 
 .fd-more > summary {
+  display: flex;
+  width: fit-content;
+  margin-inline-start: auto;
   list-style: none;
 }
 
@@ -526,11 +530,10 @@
 }
 
 .fd-more-menu {
-  flex-basis: 100%;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: var(--fd-gap-xs);
-  justify-content: flex-end;
+  align-items: flex-end;
   margin-top: var(--fd-gap-xs);
 }
 
@@ -602,9 +605,16 @@
     align-items: stretch;
   }
 
-  .fd-action-bar,
-  .fd-more-menu {
+  .fd-action-bar {
     justify-content: flex-start;
+  }
+
+  .fd-more > summary {
+    margin-inline-start: 0;
+  }
+
+  .fd-more-menu {
+    align-items: flex-start;
   }
 
   .fd-cell-actions {

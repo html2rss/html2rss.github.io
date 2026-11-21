@@ -68,6 +68,7 @@ export function initialState(filters: FilterState, instanceUrl: string): Directo
 export function applyFilterPatch(state: DirectoryState, patch: Partial<FilterState>): DirectoryState {
   return {
     ...state,
+    openMoreEntryId: null,
     filters: { ...state.filters, ...patch },
   };
 }
@@ -131,6 +132,7 @@ export function catalogErrorState(state: DirectoryState, error: CatalogLoadError
 export function resetFilters(state: DirectoryState, filters: FilterState): DirectoryState {
   return {
     ...state,
+    openMoreEntryId: null,
     filters: { ...DEFAULT_FILTER_STATE, ...filters },
   };
 }

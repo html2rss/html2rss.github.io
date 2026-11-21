@@ -49,3 +49,16 @@ export function languageAutonym(code: string): string {
     return code;
   }
 }
+
+export interface LanguageOption {
+  code: string;
+  label: string;
+}
+
+/** Catalog languages plus the selected one if the catalog lacks it, sorted by autonym. */
+export function languageOptions(codes: readonly string[], selected: string): LanguageOption[] {
+  const all = selected && !codes.includes(selected) ? [...codes, selected] : [...codes];
+  return all
+    .map((code) => ({ code, label: languageAutonym(code) }))
+    .sort((a, b) => a.label.localeCompare(b.label) || a.code.localeCompare(b.code));
+}
