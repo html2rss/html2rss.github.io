@@ -2,6 +2,7 @@ import type { PagedSelection, DirectoryState } from './directory-state';
 import type {
   CatalogFacets,
   CatalogLoadError,
+  FacetCounts,
   FeedDirectoryEntry,
   FilterState,
   LoadState,
@@ -17,12 +18,14 @@ export interface FeedDirectoryViewModel {
   instanceFeedback: InstanceFeedback | null;
   filters: FilterState;
   facets: CatalogFacets;
+  facetCounts: FacetCounts;
   catalogTotal: number;
   catalogEntryCount: number;
   filteredTotal: number;
   pageItems: FeedDirectoryEntry[];
   totalPages: number;
   expandedEntryId: string | null;
+  openMoreEntryId: string | null;
   parametersById: Record<string, Record<string, string>>;
   copiedEntryId: string | null;
 }
@@ -37,12 +40,14 @@ export function buildViewModel(state: DirectoryState, paged: PagedSelection): Fe
     instanceFeedback: state.instanceFeedback,
     filters: paged.filters,
     facets: state.facets,
+    facetCounts: paged.facetCounts,
     catalogTotal: state.catalogTotal,
     catalogEntryCount: state.entries.length,
     filteredTotal: paged.filteredTotal,
     pageItems: paged.pageItems,
     totalPages: paged.totalPages,
     expandedEntryId: state.expandedEntryId,
+    openMoreEntryId: state.openMoreEntryId,
     parametersById: state.parametersById,
     copiedEntryId: state.copiedEntryId,
   };

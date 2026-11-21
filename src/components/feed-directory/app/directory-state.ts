@@ -1,6 +1,7 @@
 import {
   DEFAULT_FILTER_STATE,
   extractFacets,
+  facetCounts,
   filterEntries,
   paginateEntries,
   sortEntries,
@@ -8,6 +9,7 @@ import {
 import type {
   CatalogFacets,
   CatalogLoadError,
+  FacetCounts,
   FeedDirectoryEntry,
   FilterState,
   LoadState,
@@ -29,6 +31,7 @@ export interface DirectoryState {
   instanceEditorOpen: boolean;
   instanceFeedback: InstanceFeedback | null;
   expandedEntryId: string | null;
+  openMoreEntryId: string | null;
   parametersById: Record<string, Record<string, string>>;
   copiedEntryId: string | null;
   error: CatalogLoadError | null;
@@ -39,6 +42,7 @@ export interface PagedSelection {
   pageItems: FeedDirectoryEntry[];
   filteredTotal: number;
   totalPages: number;
+  facetCounts: FacetCounts;
   filters: FilterState;
 }
 
@@ -54,6 +58,7 @@ export function initialState(filters: FilterState, instanceUrl: string): Directo
     instanceEditorOpen: false,
     instanceFeedback: null,
     expandedEntryId: null,
+    openMoreEntryId: null,
     parametersById: {},
     copiedEntryId: null,
     error: null,
@@ -83,6 +88,7 @@ export function selectPagedEntries(state: DirectoryState): PagedSelection {
     pageItems: items,
     filteredTotal: total,
     totalPages,
+    facetCounts: facetCounts(state.entries, state.filters),
     filters: { ...state.filters, page },
   };
 }
@@ -91,6 +97,7 @@ export function resetCatalogState(state: DirectoryState): DirectoryState {
   return {
     ...state,
     expandedEntryId: null,
+    openMoreEntryId: null,
     parametersById: {},
   };
 }

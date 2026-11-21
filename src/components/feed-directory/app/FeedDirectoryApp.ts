@@ -52,6 +52,8 @@ export class FeedDirectoryApp {
     this.root.addEventListener('click', (event) => this.onClick(event));
     this.root.addEventListener('input', (event) => this.onInput(event));
     this.root.addEventListener('change', (event) => this.onChange(event));
+    // `toggle` does not bubble.
+    this.root.addEventListener('toggle', (event) => this.onToggle(event), true);
     this.render();
     void this.loadCatalog();
   }
@@ -194,6 +196,47 @@ export class FeedDirectoryApp {
     }
   }
 
+  /** Keeps one More menu open in state so a results re-render does not close it under the user. */
+  private onToggle(event: Event): void {
+    const target = event.target;
+    if (!(target instanceof HTMLDetailsElement)) return;
+    const entryId = target.dataset.entryId;
+    if (!entryId) return;
+
+    const open = this.state.openMoreEntryId;
+    if (target.open && open !== entryId) {
+      this.state = { ...this.state, openMoreEntryId: entryId };
+    } else if (!target.open && open === entryId) {
+      this.state = { ...this.state, openMoreEntryId: null };
+    } else {
+      return;
+    }
+    this.render();
+  }
+
+  /** Scrolls the top of the results into view and keeps focus on the page control just used. */
+  private goToPage(requested: number, control: HTMLElement): void {
+    const page = Math.min(Math.max(requested, 1), this.currentPagedSelection().totalPages);
+    if (!Number.isFinite(page) || page === this.state.filters.page) return;
+
+    this.patchFilters({ page });
+
+    const host = this.region('results');
+    // The host is `display: contents`, so scroll its first box instead.
+    host?.firstElementChild?.scrollIntoView({ block: 'start' });
+    const buttons = [...(host?.querySelectorAll<HTMLButtonElement>('.fd-pagination button') ?? [])];
+    const activated = buttons.find(
+      (button) =>
+        !button.disabled &&
+        button.dataset.action === control.dataset.action &&
+        button.dataset.page === control.dataset.page
+    );
+    // Previous/Next disable themselves on the first/last page; the current page is the live fallback.
+    (activated ?? buttons.find((button) => button.getAttribute('aria-current') === 'page'))?.focus({
+      preventScroll: true,
+    });
+  }
+
   private onClick(event: Event): void {
     const target = event.target;
     if (!(target instanceof Element)) return;
@@ -217,10 +260,13 @@ export class FeedDirectoryApp {
         this.patchFilters(clearFilters(this.state.filters));
         break;
       case 'page-prev':
-        if (this.state.filters.page > 1) this.patchFilters({ page: this.state.filters.page - 1 });
+        this.goToPage(this.state.filters.page - 1, actionEl);
         break;
       case 'page-next':
-        this.patchFilters({ page: this.state.filters.page + 1 });
+        this.goToPage(this.state.filters.page + 1, actionEl);
+        break;
+      case 'page-goto':
+        this.goToPage(Number.parseInt(actionEl.dataset.page ?? '', 10), actionEl);
         break;
       case 'toggle-instance':
         this.state = {

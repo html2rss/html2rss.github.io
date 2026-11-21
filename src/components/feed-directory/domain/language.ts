@@ -27,3 +27,25 @@ export function normalizeFilterLanguage(filterLanguage: string): string {
 export function displayLanguage(language: string | null | undefined): string {
   return baseLanguageCode(language) ?? '—';
 }
+
+const autonyms = new Map<string, Intl.DisplayNames | null>();
+
+function autonymNames(code: string): Intl.DisplayNames | null {
+  if (!autonyms.has(code)) {
+    try {
+      autonyms.set(code, new Intl.DisplayNames([code], { type: 'language', fallback: 'code' }));
+    } catch {
+      autonyms.set(code, null);
+    }
+  }
+  return autonyms.get(code) ?? null;
+}
+
+/** The language's name in that language (`de` → `Deutsch`); the code itself when Intl cannot name it. */
+export function languageAutonym(code: string): string {
+  try {
+    return autonymNames(code)?.of(code) || code;
+  } catch {
+    return code;
+  }
+}

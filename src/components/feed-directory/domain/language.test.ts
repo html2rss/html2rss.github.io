@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { baseLanguageCode, displayLanguage, languageMatches, normalizeFilterLanguage } from './language';
+import {
+  baseLanguageCode,
+  displayLanguage,
+  languageAutonym,
+  languageMatches,
+  normalizeFilterLanguage,
+} from './language';
 
 describe('baseLanguageCode', () => {
   it('collapses BCP 47 tags to base language codes', () => {
@@ -28,5 +34,18 @@ describe('displayLanguage', () => {
   it('shows base code or em dash placeholder', () => {
     expect(displayLanguage('fr-CA')).toBe('fr');
     expect(displayLanguage(undefined)).toBe('—');
+  });
+});
+
+describe('languageAutonym', () => {
+  it('names a language in itself', () => {
+    expect(languageAutonym('de')).toBe('Deutsch');
+    expect(languageAutonym('fr')).toBe('français');
+  });
+
+  it('falls back to the code when Intl cannot name it', () => {
+    expect(languageAutonym('zz')).toBe('zz');
+    expect(languageAutonym('x')).toBe('x');
+    expect(languageAutonym('123')).toBe('123');
   });
 });

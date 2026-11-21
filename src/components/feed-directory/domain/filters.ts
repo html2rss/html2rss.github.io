@@ -1,8 +1,15 @@
-import type { CatalogFacets, FeedDirectoryEntry, FilterState, SortKey } from './types';
+import type {
+  CatalogFacets,
+  FacetCounts,
+  FeedDirectoryEntry,
+  FilterState,
+  PaginationItem,
+  SortKey,
+} from './types';
 import { baseLanguageCode, languageMatches } from './language';
 import { lastResultSortRank } from './last-result';
 
-export const PAGE_SIZE = 25;
+export const PAGE_SIZE = 50;
 
 export const DEFAULT_FILTER_STATE: FilterState = {
   query: '',
@@ -74,13 +81,14 @@ export function searchScore(entry: FeedDirectoryEntry, words: string[]): number 
   return total;
 }
 
+/** Topics by total catalog size, then name: computed from the whole catalog so chips never move while filtering. */
 export function extractFacets(entries: FeedDirectoryEntry[]): CatalogFacets {
-  const topics = new Set<string>();
+  const topicSizes = new Map<string, number>();
   const languages = new Set<string>();
 
   for (const entry of entries) {
-    for (const topic of entry.topics) {
-      topics.add(topic);
+    for (const topic of new Set(entry.topics)) {
+      topicSizes.set(topic, (topicSizes.get(topic) ?? 0) + 1);
     }
     if (entry.language) {
       const base = baseLanguageCode(entry.language);
@@ -89,7 +97,9 @@ export function extractFacets(entries: FeedDirectoryEntry[]): CatalogFacets {
   }
 
   return {
-    topics: [...topics].sort((a, b) => a.localeCompare(b)),
+    topics: [...topicSizes.keys()].sort(
+      (a, b) => (topicSizes.get(b) ?? 0) - (topicSizes.get(a) ?? 0) || a.localeCompare(b)
+    ),
     languages: [...languages].sort((a, b) => a.localeCompare(b)),
   };
 }
@@ -108,6 +118,29 @@ export function filterEntries(entries: FeedDirectoryEntry[], filters: FilterStat
 
     return true;
   });
+}
+
+function increment(counts: Map<string, number>, key: string): void {
+  counts.set(key, (counts.get(key) ?? 0) + 1);
+}
+
+/**
+ * Live facet counts. Each facet ignores its own selection, so a chip or option shows what
+ * choosing it would match under the current query and the other facet.
+ */
+export function facetCounts(entries: FeedDirectoryEntry[], filters: FilterState): FacetCounts {
+  const topics = new Map<string, number>();
+  for (const entry of filterEntries(entries, { ...filters, topics: [] })) {
+    for (const topic of new Set(entry.topics)) increment(topics, topic);
+  }
+
+  const languages = new Map<string, number>();
+  for (const entry of filterEntries(entries, { ...filters, language: '' })) {
+    const base = baseLanguageCode(entry.language);
+    if (base) increment(languages, base);
+  }
+
+  return { topics, languages };
 }
 
 export function sortEntries(entries: FeedDirectoryEntry[], sort: SortKey, query = ''): FeedDirectoryEntry[] {
@@ -145,11 +178,26 @@ export function paginateEntries<T>(
   };
 }
 
+const PAGINATION_FULL_LIMIT = 7;
+
+/** Page controls: every page up to 7, else first, last, current ±1 and an ellipsis for each gap. */
+export function paginationItems(page: number, totalPages: number): PaginationItem[] {
+  const current = Math.min(Math.max(page, 1), Math.max(totalPages, 1));
+  const shown =
+    totalPages <= PAGINATION_FULL_LIMIT
+      ? Array.from({ length: totalPages }, (_, index) => index + 1)
+      : [...new Set([1, current - 1, current, current + 1, totalPages])]
+          .filter((candidate) => candidate >= 1 && candidate <= totalPages)
+          .sort((a, b) => a - b);
+
+  const items: PaginationItem[] = [];
+  shown.forEach((value, index) => {
+    if (index > 0 && value - (shown[index - 1] ?? 0) > 1) items.push({ kind: 'ellipsis' });
+    items.push({ kind: 'page', page: value, current: value === current });
+  });
+  return items;
+}
+
 export function hasActiveFilters(filters: FilterState): boolean {
-  return (
-    Boolean(filters.query.trim()) ||
-    filters.topics.length > 0 ||
-    Boolean(filters.language) ||
-    filters.page > 1
-  );
+  return Boolean(filters.query.trim()) || filters.topics.length > 0 || Boolean(filters.language);
 }

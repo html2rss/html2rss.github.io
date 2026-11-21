@@ -31,12 +31,14 @@ describe('mounted shell', () => {
     instanceFeedback: null,
     filters: { query: 'abc', topics: [], language: '', sort: 'title', page: 1 },
     facets: { topics: ['news'], languages: ['en'] },
+    facetCounts: { topics: new Map([['news', 1]]), languages: new Map([['en', 1]]) },
     catalogTotal: 0,
     catalogEntryCount: 0,
     filteredTotal: 0,
     pageItems: [],
     totalPages: 1,
     expandedEntryId: null,
+    openMoreEntryId: null,
     parametersById: {},
     copiedEntryId: null,
   } satisfies FeedDirectoryViewModel;
@@ -53,5 +55,78 @@ describe('mounted shell', () => {
     for (const region of ['header', 'instance', 'filters', 'results']) {
       expect(shell).toContain(`data-region="${region}"`);
     }
+  });
+});
+
+describe('scannable results', () => {
+  const entry = (id: string, patch: Partial<FeedDirectoryViewModel['pageItems'][number]> = {}) => ({
+    id,
+    path: `/${id}.rss`,
+    siteKey: 'a.example',
+    title: id,
+    summary: 'A long summary',
+    topics: ['one', 'two', 'three', 'four'],
+    channelUrl: 'https://a.example',
+    language: 'de',
+    parameterSchema: {},
+    parameterDefaults: {},
+    lastResult: { state: 'unknown' as const, code: null, at: null },
+    ...patch,
+  });
+  const base: FeedDirectoryViewModel = {
+    loadState: 'ready',
+    error: null,
+    instanceUrl: 'https://example.test',
+    instanceEditorOpen: false,
+    instanceDraft: '',
+    instanceFeedback: null,
+    filters: { query: '', topics: ['gone'], language: 'fr', sort: 'title', page: 3 },
+    facets: { topics: ['one', 'gone', 'zero'], languages: ['de', 'fr', 'xx'] },
+    facetCounts: { topics: new Map([['one', 4]]), languages: new Map([['de', 29]]) },
+    catalogTotal: 400,
+    catalogEntryCount: 400,
+    filteredTotal: 400,
+    pageItems: [entry('a.example/one'), entry('a.example/two', { channelUrl: '', topics: ['one'] })],
+    totalPages: 8,
+    expandedEntryId: null,
+    openMoreEntryId: null,
+    parametersById: {},
+    copiedEntryId: null,
+  };
+
+  it('shows live topic counts and disables zero-count chips unless selected', () => {
+    const html = renderFilters(base);
+    expect(html).toMatch(/data-topic="one"[^>]*>one <span class="fd-chip-count">4<\/span>/);
+    expect(html).toMatch(/data-topic="zero"[^>]*disabled/);
+    expect(html).not.toMatch(/data-topic="gone"[^>]*disabled/);
+  });
+
+  it('labels languages by autonym with counts and keeps code values', () => {
+    const html = renderFilters(base);
+    expect(html).toContain('<option value="de">Deutsch (29)</option>');
+    expect(html).toMatch(/<option value="fr" selected>[^<]*\(0\)<\/option>/);
+    expect(html).toMatch(/<option value="xx" disabled>[^<]*\(0\)<\/option>/);
+  });
+
+  it('renders numbered pages with one aria-current and ellipses', () => {
+    const html = renderResults(base);
+    expect(html.match(/aria-current="page"/g)).toHaveLength(1);
+    expect(html).toMatch(/data-page="3"[^>]*aria-current="page"/);
+    expect(html).toContain('fd-page-gap');
+    expect(html).toContain('data-action="page-next"');
+  });
+
+  it('keeps rows dense: two topics plus +N, full summary in title, More only with extras', () => {
+    const html = renderResults(base);
+    expect(html).toContain('title="A long summary"');
+    expect(html).toContain('>+2</span>');
+    expect(html.match(/<details class="fd-more"/g)).toHaveLength(1);
+    expect(html.match(/>Copy</g)).toHaveLength(2);
+  });
+
+  it('opens the More menu from state', () => {
+    expect(renderResults({ ...base, openMoreEntryId: 'a.example/one' })).toMatch(
+      /<details class="fd-more" data-entry-id="a.example\/one" open>/
+    );
   });
 });

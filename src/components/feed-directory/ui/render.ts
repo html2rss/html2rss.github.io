@@ -1,9 +1,9 @@
 import { escapeHtml } from '../lib/escape';
 import { buildFeedUrl, formatInstanceLabel } from '../domain/feed-url';
-import { hasActiveFilters, PAGE_SIZE } from '../domain/filters';
-import { displayLanguage, normalizeFilterLanguage } from '../domain/language';
+import { hasActiveFilters, PAGE_SIZE, paginationItems } from '../domain/filters';
+import { displayLanguage, languageAutonym, normalizeFilterLanguage } from '../domain/language';
 import { isFailingLastResult } from '../domain/last-result';
-import type { CatalogFacets, FeedDirectoryEntry, LastResult } from '../domain/types';
+import type { CatalogFacets, FacetCounts, FeedDirectoryEntry, LastResult } from '../domain/types';
 import type { FeedDirectoryViewModel } from '../app/view-model';
 
 export function renderLastResultIndicator(lastResult: LastResult): string {
@@ -19,7 +19,7 @@ export function renderLastResultIndicator(lastResult: LastResult): string {
   }
 }
 
-function renderTopicChips(facets: CatalogFacets, selected: string[]): string {
+function renderTopicChips(facets: CatalogFacets, counts: FacetCounts, selected: string[]): string {
   if (facets.topics.length === 0) {
     return `<p class="fd-muted fd-empty-hint">Topics appear after the catalog loads.</p>`;
   }
@@ -27,18 +27,22 @@ function renderTopicChips(facets: CatalogFacets, selected: string[]): string {
   return facets.topics
     .map((topic) => {
       const active = selected.includes(topic);
-      return `<button type="button" class="fd-chip${active ? ' is-active' : ''}" data-action="toggle-topic" data-topic="${escapeHtml(topic)}" aria-pressed="${active}">${escapeHtml(topic)}</button>`;
+      const count = counts.topics.get(topic) ?? 0;
+      const disabled = count === 0 && !active;
+      return `<button type="button" class="fd-chip${active ? ' is-active' : ''}" data-action="toggle-topic" data-topic="${escapeHtml(topic)}" aria-pressed="${active}"${disabled ? ' disabled' : ''}>${escapeHtml(topic)} <span class="fd-chip-count">${count}</span></button>`;
     })
     .join('');
 }
 
-function renderLanguageOptions(facets: CatalogFacets, selected: string): string {
+function renderLanguageOptions(facets: CatalogFacets, counts: FacetCounts, selected: string): string {
   const normalizedSelected = normalizeFilterLanguage(selected);
   const options = facets.languages
-    .map(
-      (language) =>
-        `<option value="${escapeHtml(language)}"${language === normalizedSelected ? ' selected' : ''}>${escapeHtml(language)}</option>`
-    )
+    .map((language) => {
+      const active = language === normalizedSelected;
+      const count = counts.languages.get(language) ?? 0;
+      const disabled = count === 0 && !active;
+      return `<option value="${escapeHtml(language)}"${active ? ' selected' : ''}${disabled ? ' disabled' : ''}>${escapeHtml(languageAutonym(language))} (${count})</option>`;
+    })
     .join('');
 
   return `<option value=""${normalizedSelected ? '' : ' selected'}>All languages</option>${options}`;
@@ -61,6 +65,8 @@ function renderParameterFields(entry: FeedDirectoryEntry, values: Record<string,
   return `<div class="fd-params">${fields}</div>`;
 }
 
+const MAX_ROW_TOPICS = 2;
+
 function renderFeedRow(entry: FeedDirectoryEntry, vm: FeedDirectoryViewModel): string {
   const language = displayLanguage(entry.language);
   const params = vm.parametersById[entry.id] ?? {};
@@ -71,20 +77,38 @@ function renderFeedRow(entry: FeedDirectoryEntry, vm: FeedDirectoryViewModel): s
   const failing = isFailingLastResult(entry.lastResult);
   const resultIndicator = renderLastResultIndicator(entry.lastResult);
 
+  const visibleTopics = entry.topics.slice(0, MAX_ROW_TOPICS);
+  const hiddenTopics = entry.topics.slice(MAX_ROW_TOPICS);
   const topicBadges =
-    entry.topics.length > 0
-      ? entry.topics.map((topic) => `<span class="fd-badge">${escapeHtml(topic)}</span>`).join('')
-      : '';
+    visibleTopics.map((topic) => `<span class="fd-badge">${escapeHtml(topic)}</span>`).join('') +
+    (hiddenTopics.length > 0
+      ? `<span class="fd-badge" title="${escapeHtml(hiddenTopics.join(', '))}">+${hiddenTopics.length}</span>`
+      : '');
 
   const domainMarkup = entry.channelUrl
     ? `<a class="fd-domain fd-domain-link" href="${escapeHtml(entry.channelUrl)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(entry.siteKey)}</a>`
     : `<code class="fd-domain">${escapeHtml(entry.siteKey)}</code>`;
 
+  const moreActions =
+    (entry.channelUrl
+      ? `<a class="fd-btn fd-btn-ghost fd-btn-compact" href="${escapeHtml(entry.channelUrl)}" target="_blank" rel="noopener noreferrer nofollow">Source</a>`
+      : '') +
+    (hasParameters
+      ? `<button type="button" class="fd-btn fd-btn-ghost fd-btn-compact" data-action="toggle-params" data-entry-id="${escapeHtml(entry.id)}" aria-expanded="${expanded}">${expanded ? 'Hide params' : 'Params'}</button>`
+      : '');
+
+  const moreMenu = moreActions
+    ? `<details class="fd-more" data-entry-id="${escapeHtml(entry.id)}"${vm.openMoreEntryId === entry.id ? ' open' : ''}>
+          <summary class="fd-btn fd-btn-ghost fd-btn-compact" data-action="toggle-more" data-entry-id="${escapeHtml(entry.id)}">More</summary>
+          <div class="fd-more-menu">${moreActions}</div>
+        </details>`
+    : '';
+
   return `<tr class="fd-row${failing ? ' fd-row-failing' : ''}" data-entry-id="${escapeHtml(entry.id)}">
     <td class="fd-cell-feed">
       <article class="fd-feed-card">
         <h3 class="fd-feed-title">${escapeHtml(entry.title)}</h3>
-        ${entry.summary ? `<p class="fd-feed-summary">${escapeHtml(entry.summary)}</p>` : ''}
+        ${entry.summary ? `<p class="fd-feed-summary" title="${escapeHtml(entry.summary)}">${escapeHtml(entry.summary)}</p>` : ''}
         <div class="fd-feed-meta">
           ${domainMarkup}
           ${language !== '—' ? `<span class="fd-lang">${escapeHtml(language)}</span>` : ''}
@@ -97,8 +121,7 @@ function renderFeedRow(entry: FeedDirectoryEntry, vm: FeedDirectoryViewModel): s
       <div class="fd-action-bar">
         <a class="fd-btn fd-btn-primary fd-btn-compact" href="${escapeHtml(feedUrl)}" target="_blank" rel="noopener noreferrer nofollow" data-action="open-feed" data-entry-id="${escapeHtml(entry.id)}">RSS</a>
         <button type="button" class="fd-btn fd-btn-ghost fd-btn-compact" data-action="copy-feed" data-entry-id="${escapeHtml(entry.id)}" aria-label="Copy RSS link">${copied ? 'Copied' : 'Copy'}</button>
-        ${entry.channelUrl ? `<a class="fd-btn fd-btn-ghost fd-btn-compact" href="${escapeHtml(entry.channelUrl)}" target="_blank" rel="noopener noreferrer nofollow">Source</a>` : ''}
-        ${hasParameters ? `<button type="button" class="fd-btn fd-btn-ghost fd-btn-compact" data-action="toggle-params" data-entry-id="${escapeHtml(entry.id)}" aria-expanded="${expanded}">${expanded ? 'Hide' : 'Params'}</button>` : ''}
+        ${moreMenu}
       </div>
     </td>
   </tr>
@@ -121,10 +144,17 @@ function renderPagination(vm: FeedDirectoryViewModel): string {
 
   const prevDisabled = vm.filters.page <= 1;
   const nextDisabled = vm.filters.page >= vm.totalPages;
+  const pages = paginationItems(vm.filters.page, vm.totalPages)
+    .map((item) =>
+      item.kind === 'ellipsis'
+        ? `<li class="fd-page-gap" aria-hidden="true">…</li>`
+        : `<li><button type="button" class="fd-btn fd-btn-ghost fd-page${item.current ? ' is-current' : ''}" data-action="page-goto" data-page="${item.page}" aria-label="Page ${item.page}"${item.current ? ' aria-current="page"' : ''}>${item.page}</button></li>`
+    )
+    .join('');
 
   return `<nav class="fd-pagination" aria-label="Feed list pages">
     <button type="button" class="fd-btn fd-btn-ghost" data-action="page-prev" ${prevDisabled ? 'disabled' : ''}>Previous</button>
-    <span class="fd-pagination-label">Page ${vm.filters.page} of ${vm.totalPages}</span>
+    <ol class="fd-page-list">${pages}</ol>
     <button type="button" class="fd-btn fd-btn-ghost" data-action="page-next" ${nextDisabled ? 'disabled' : ''}>Next</button>
   </nav>`;
 }
@@ -238,13 +268,13 @@ export function renderInstancePanel(vm: FeedDirectoryViewModel): string {
 export function renderFilters(vm: FeedDirectoryViewModel): string {
   return `<div class="fd-filter-group">
         <span class="fd-field-label">Topics</span>
-        <div class="fd-chip-row" role="group" aria-label="Filter by topic">${renderTopicChips(vm.facets, vm.filters.topics)}</div>
+        <div class="fd-chip-row" role="group" aria-label="Filter by topic">${renderTopicChips(vm.facets, vm.facetCounts, vm.filters.topics)}</div>
       </div>
 
       <div class="fd-filter-row">
         <label class="fd-field fd-field-inline">
           <span class="fd-field-label">Language</span>
-          <select class="fd-select" data-ref="language">${renderLanguageOptions(vm.facets, vm.filters.language)}</select>
+          <select class="fd-select" data-ref="language">${renderLanguageOptions(vm.facets, vm.facetCounts, vm.filters.language)}</select>
         </label>
 
         <label class="fd-field fd-field-inline">
