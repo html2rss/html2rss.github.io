@@ -99,18 +99,22 @@ function renderFeedRow(entry: FeedDirectoryEntry, vm: FeedDirectoryViewModel): s
       ? `<button type="button" class="fd-btn fd-btn-ghost fd-btn-compact" data-action="toggle-params" data-entry-id="${escapeHtml(entry.id)}" aria-expanded="${expanded}">${expanded ? 'Hide' : 'Params'}</button>`
       : '');
 
-  const moreMenu = moreActions
-    ? `<details class="fd-more" data-entry-id="${escapeHtml(entry.id)}"${vm.openMoreEntryId === entry.id ? ' open' : ''}>
-          <summary class="fd-btn fd-btn-ghost fd-btn-compact" data-action="toggle-more" data-entry-id="${escapeHtml(entry.id)}">More</summary>
-          <div class="fd-more-menu">${moreActions}</div>
+  // Opening More also unclamps this row's summary, so every summary stays reachable.
+  const moreOpen = vm.openMoreEntryId === entry.id;
+  const summaryId = `fd-summary-${encodeURIComponent(entry.id)}`;
+  const moreMenu =
+    moreActions || entry.summary
+      ? `<details class="fd-more" data-entry-id="${escapeHtml(entry.id)}"${moreOpen ? ' open' : ''}>
+          <summary class="fd-btn fd-btn-ghost fd-btn-compact" data-action="toggle-more" data-entry-id="${escapeHtml(entry.id)}"${entry.summary ? ` aria-controls="${escapeHtml(summaryId)}"` : ''}>More</summary>
+          ${moreActions ? `<div class="fd-more-menu">${moreActions}</div>` : ''}
         </details>`
-    : '';
+      : '';
 
   return `<tr class="fd-row${failing ? ' fd-row-failing' : ''}" data-entry-id="${escapeHtml(entry.id)}">
     <td class="fd-cell-feed">
       <article class="fd-feed-card">
         <h3 class="fd-feed-title">${escapeHtml(entry.title)}</h3>
-        ${entry.summary ? `<p class="fd-feed-summary" title="${escapeHtml(entry.summary)}">${escapeHtml(entry.summary)}</p>` : ''}
+        ${entry.summary ? `<p class="fd-feed-summary${moreOpen ? ' is-expanded' : ''}" id="${escapeHtml(summaryId)}" title="${escapeHtml(entry.summary)}">${escapeHtml(entry.summary)}</p>` : ''}
         <div class="fd-feed-meta">
           ${domainMarkup}
           ${language !== '—' ? `<span class="fd-lang">${escapeHtml(language)}</span>` : ''}

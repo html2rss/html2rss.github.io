@@ -372,6 +372,12 @@
   line-clamp: 1;
 }
 
+.fd-feed-summary.is-expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+}
+
 .fd-feed-meta {
   display: flex;
   flex-wrap: wrap;
