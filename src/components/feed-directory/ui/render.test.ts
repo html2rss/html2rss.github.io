@@ -140,11 +140,10 @@ describe('scannable results', () => {
     expect(html).toContain('data-action="page-next"');
   });
 
-  it('keeps rows dense: two topics plus +N, full summary in title, More only with extras', () => {
+  it('keeps rows dense: two topics plus +N, full summary in title', () => {
     const html = renderResults(base);
     expect(html).toContain('title="A long summary"');
     expect(html).toContain('>+2</span>');
-    expect(html.match(/<details class="fd-more"/g)).toHaveLength(1);
     expect(html.match(/>Copy</g)).toHaveLength(2);
   });
 
@@ -152,5 +151,30 @@ describe('scannable results', () => {
     expect(renderResults({ ...base, openMoreEntryId: 'a.example/one' })).toMatch(
       /<details class="fd-more" data-entry-id="a.example\/one" open>/
     );
+  });
+
+  describe('row summary and More', () => {
+    const rowHtml = (html: string, id: string) =>
+      html.split('<tr class="fd-row').find((row) => row.includes(`data-entry-id="${id}"`)) ?? '';
+    const withRows = (openMoreEntryId: string | null) =>
+      renderResults({
+        ...base,
+        openMoreEntryId,
+        pageItems: [entry('a.example/one'), entry('a.example/two')],
+      });
+
+    it('clamps closed rows and unclamps only the open row', () => {
+      const html = withRows('a.example/one');
+      expect(rowHtml(html, 'a.example/one')).toContain('class="fd-feed-summary is-expanded"');
+      expect(rowHtml(html, 'a.example/two')).toContain('class="fd-feed-summary"');
+      expect(rowHtml(withRows(null), 'a.example/one')).toContain('class="fd-feed-summary"');
+      expect(rowHtml(html, 'a.example/one')).toContain('title="A long summary"');
+    });
+
+    it('renders no summary id or aria-controls, and tolerates a lone surrogate in an entry id', () => {
+      const html = renderResults({ ...base, pageItems: [entry('a.example/\ud800x')] });
+      expect(html).not.toContain('aria-controls');
+      expect(html).not.toContain('fd-summary-');
+    });
   });
 });
