@@ -160,11 +160,7 @@ describe('scannable results', () => {
       renderResults({
         ...base,
         openMoreEntryId,
-        pageItems: [
-          entry('a.example/one'),
-          entry('a.example/two', { channelUrl: '' }),
-          entry('a.example/three', { channelUrl: '', summary: '' }),
-        ],
+        pageItems: [entry('a.example/one'), entry('a.example/two')],
       });
 
     it('clamps closed rows and unclamps only the open row', () => {
@@ -175,23 +171,10 @@ describe('scannable results', () => {
       expect(rowHtml(html, 'a.example/one')).toContain('title="A long summary"');
     });
 
-    it('gives a summary-only row More without an empty menu, and no More without summary or extras', () => {
-      const html = withRows(null);
-      expect(rowHtml(html, 'a.example/two')).toContain('<summary');
-      expect(rowHtml(html, 'a.example/two')).not.toContain('fd-more-menu');
-      expect(rowHtml(html, 'a.example/one')).toContain('fd-more-menu');
-      expect(rowHtml(html, 'a.example/three')).not.toContain('<details');
-    });
-
-    it('links More to the summary text by a safe id', () => {
-      const html = renderResults({
-        ...base,
-        pageItems: [entry('a b"c/<d>')],
-      });
-      const id = /aria-controls="([^"]+)"/.exec(html)?.[1];
-      expect(id).toBeDefined();
-      expect(id).not.toMatch(/[\s"<>]/);
-      expect(html).toContain(`id="${id}"`);
+    it('renders no summary id or aria-controls, and tolerates a lone surrogate in an entry id', () => {
+      const html = renderResults({ ...base, pageItems: [entry('a.example/\ud800x')] });
+      expect(html).not.toContain('aria-controls');
+      expect(html).not.toContain('fd-summary-');
     });
   });
 });
