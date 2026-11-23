@@ -25,7 +25,7 @@ When the config uses `auto_source` (no custom `selectors`), each strategy attemp
 
 Gates, defaults, and Status fields: [Auto Source — Entry URL resolution](/ruby-gem/reference/auto-source/#entry-url-resolution).
 
-Auto fallback shares one request budget across all strategy attempts. The baseline reserves a NativeFeed follow-up slot and, when entry resolution is enabled, `max_probes` probe slots plus one retry GET. Raise `request.max_requests` (or `--max-requests`) when builds exhaust the budget.
+Auto fallback shares one request budget across all strategy attempts. The baseline reserves a NativeFeed follow-up slot and, when entry resolution is enabled, `max_probes` probe slots. Raise `request.max_requests` (or `--max-requests`) when builds exhaust the budget.
 
 Under `auto`, `Html2rss.feed_result(...).status` exposes scrape telemetry: `selected_strategy`, `attempt_count`, `strategy_attempts`, and when resolution ran `entry_url`, `scrape_url`, and `entry_resolution` (see [Managing Feed Configs](/ruby-gem/guides/managing-feed-configs/#ruby-api-feedresult)). Strategy selection is also visible at `LOG_LEVEL=info` (hidden at the default `LOG_LEVEL=warn`).
 
