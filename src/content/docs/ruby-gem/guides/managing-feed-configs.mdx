@@ -100,6 +100,29 @@ For URL-only auto discovery, `Html2rss.scrape(url)` returns the same `FeedResult
 
 Depth and method contracts: [YARD for `html2rss`](https://www.rubydoc.info/gems/html2rss).
 
+### Ruby API: apply
+
+Use `Html2rss.apply` to ship a feed. It builds the feed once and returns an `Html2rss::Apply::Result`. Unlike `Html2rss.feed`, it also exposes `empty?`, `item_count` and a `quality_report`.
+
+<Code
+  code={`
+  require 'html2rss'
+  config = Html2rss.config_from_yaml_file('feeds.yml', 'my-first-feed')
+  result = Html2rss.apply(config)
+  # apply returns an empty result instead of raising, so check it
+  abort 'feed has no items' if result.empty?
+  File.write('my-first-feed.xml', result.to_rss.to_s)
+  result.item_count
+  # => 12
+  result.to_json_feed(feed_url: 'https://example.com/feeds/my-first-feed.json')
+  result.quality_report.warnings
+  # => []
+`}
+  lang="ruby"
+/>
+
+The CLI exits 1 on an empty feed and the MCP tool returns `isError`; the Ruby method leaves that decision to you. Full method list: [Ruby API Reference](/ruby-gem/reference/ruby-api/#apply).
+
 ### Command Line
 
 <Code
