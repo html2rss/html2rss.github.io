@@ -148,7 +148,7 @@ Because no remote network connection is established, `local_file` skips remote n
 
 ## Network safeguards
 
-Every strategy that makes network requests runs the same guard before it connects and on every redirect hop. The default HTTPX transport also filters the addresses a hostname resolves to.
+Every strategy that makes network requests checks the requested URL against the guard before fetching. The default HTTPX transport also checks every redirect hop and filters the addresses a hostname resolves to. With `botasaurus`, redirects happen inside the Botasaurus service, so its own network policy applies to them. `local_file` makes no network requests.
 
 - **Private networks are denied.** Local hostnames, loopback, link-local, private (RFC 1918), unique-local and multicast addresses fail with `RequestService::PrivateNetworkDenied`.
 - **Embedded IPv4 addresses are checked.** An IPv4-mapped IPv6 address (`::ffff:a.b.c.d`) is judged by the IPv4 address inside it. So are NAT64 (`64:ff9b::/96`) and 6to4 (`2002::/16`) addresses.
