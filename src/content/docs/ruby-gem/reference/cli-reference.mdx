@@ -38,7 +38,7 @@ Fetches one URL and prints cheap diagnostics: final URL, status, feed alternates
   code={`
   html2rss inspect https://example.com/articles ; \\
   html2rss inspect https://example.com/articles --format json ; \\
-  html2rss inspect https://example.com/articles --strategy botasaurus --deep ; \\
+  html2rss inspect https://example.com --deep ; \\
   html2rss inspect --file urls.txt
 `}
   lang="bash"
@@ -53,7 +53,7 @@ Available options:
 - `--strategy`: Request strategy (see [Strategies](#strategies)). With `auto`, `inspect` makes one `default` request.
 - `--file`: Candidate list file. One URL per line, or `slug<TAB>url`. Blank lines and lines starting with `#` are skipped. Switches to batch mode.
 - `--format`: `text` (default) or `json`.
-- `--deep`: Add one Botasaurus diagnostic hop. Needs `BOTASAURUS_SCRAPER_URL`. Single URL only.
+- `--deep`: Only matters with strategy `auto` and `BOTASAURUS_SCRAPER_URL` set. The probe then goes through Botasaurus instead of the default fetch. Single URL only.
 
 ### Recon
 
@@ -74,6 +74,8 @@ Probes a URL, or a list of URLs, for redirect chains, native feeds and surface r
 />
 
 Command: `html2rss recon [TARGET]`
+
+`TARGET` is a URL, or `-` to read a candidate list from stdin.
 
 Available options:
 
@@ -192,7 +194,7 @@ When the config comes from piped stdin and stdout is not a terminal, `test` echo
 
 ### Apply
 
-Loads a YAML config, builds the feed, and prints it to stdout. (`html2rss feed` is a Thor alias.)
+Loads a YAML config, builds the feed, and prints it to stdout. (`html2rss feed` is an alias.)
 
 <Code
   code={`
@@ -211,7 +213,7 @@ Loads a YAML config, builds the feed, and prints it to stdout. (`html2rss feed` 
 
 Command: `html2rss apply [CONFIG_INPUT] [feed_name]`
 
-`CONFIG_INPUT` is a YAML file path or `-` for stdin.
+`CONFIG_INPUT` is a YAML file path, raw YAML text, or `-` for stdin.
 
 Available options:
 
@@ -229,7 +231,7 @@ The CLI keeps `strategy` as a top-level override and writes runtime request limi
 
 ### Scrape
 
-Automatically discovers items from a page and prints the generated RSS or JSON Feed to stdout. (`html2rss auto` is a Thor alias.)
+Automatically discovers items from a page and prints the generated RSS or JSON Feed to stdout. (`html2rss auto` is an alias.)
 
 <Code
   code={`
@@ -254,11 +256,11 @@ Available options:
 - `--limit`: Maximum number of articles to extract during discovery (defaults to `25`).
 - `--items-selector`: Optional CSS selector hint for item extraction.
 - `--max-redirects`: Maximum redirects to follow per request.
-- `--max-requests`: Maximum requests to allow for this feed build (defaults to `4` for auto discovery).
+- `--max-requests`: Maximum requests to allow for this feed build. Without it, the budget is derived from the pipeline (page and pager, auto-source, entry resolution, fallback) and capped at `10`; a default auto-source run ends at `10`.
 - `--input`: Local HTML file path to read input from without making network requests. When provided without a `URL`, `html2rss` attempts to detect the base URL from `<link rel="canonical">` or OpenGraph metadata in the HTML.
 - `--keep-different-domain`: Let published items link to any domain the source supplies. Off by default; there is no affiliation or safety check when on.
 - `--keep-sponsored`: Keep items the page marks as sponsored (`rel="sponsored"` or ad labels). Off by default.
-- `--explain`: Print `Html2rss::Status` JSON to stderr (`version`, `dedup_dropped`, and when present `scraper_tallies`, `selected_strategy`, `attempt_count`, `strategy_attempts`, `admission_drops`, `entry_url`, `scrape_url`, `entry_resolution`). Stdout stays the RSS or JSON Feed.
+- `--explain`: Print status JSON to stderr (`version`, `dedup_dropped`, and when present `scraper_tallies`, `selected_strategy`, `attempt_count`, `strategy_attempts`, `admission_drops`, `entry_url`, `scrape_url`, `entry_resolution`). Stdout stays the RSS or JSON Feed.
 
 #### URL surface guidance for `scrape`
 
