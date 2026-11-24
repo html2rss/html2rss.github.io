@@ -1,0 +1,86 @@
+---
+title: Language Support
+description: "Which languages html2rss understands when it tells articles apart from page furniture, how the page language is chosen, and how to help improve a language."
+---
+
+import { Code } from "@astrojs/starlight/components";
+
+html2rss recognizes words such as "read more", "sponsored", "advertisement", "related" and "comments" to tell real articles from page furniture. It reads these words in the page's own language.
+
+## Supported languages
+
+29 languages:
+
+| Code | Language | Code | Language   | Code | Language   |
+| :--- | :------- | :--- | :--------- | :--- | :--------- |
+| `ar` | Arabic   | `hi` | Hindi      | `ro` | Romanian   |
+| `cs` | Czech    | `hu` | Hungarian  | `ru` | Russian    |
+| `da` | Danish   | `id` | Indonesian | `sv` | Swedish    |
+| `de` | German   | `it` | Italian    | `th` | Thai       |
+| `el` | Greek    | `ja` | Japanese   | `tr` | Turkish    |
+| `en` | English  | `ko` | Korean     | `uk` | Ukrainian  |
+| `es` | Spanish  | `nl` | Dutch      | `vi` | Vietnamese |
+| `fa` | Persian  | `no` | Norwegian  | `zh` | Chinese    |
+| `fi` | Finnish  | `pl` | Polish     |      |            |
+| `fr` | French   | `pt` | Portuguese |      |            |
+| `he` | Hebrew   |      |            |      |            |
+
+Chinese covers Simplified and Traditional text in one list. A regional tag such as `de-AT` or `zh-Hant-TW` uses its main language.
+
+## How the page language is chosen
+
+html2rss takes the first of these:
+
+1. `channel.language` in your config
+2. the `Content-Language` response header (upper or lower case; only the two-letter main tag counts)
+3. the `lang` attribute of the page's root element
+
+<Code
+  code={`
+  channel:
+    url: https://example.de
+    language: de # override when the page declares none or the wrong one
+  auto_source: {}
+  `}
+  lang="yaml"
+/>
+
+Quote Norwegian in YAML: `language: "no"`. An unquoted `no` is read as `false` and fails validation. The tags `nb` (Bokmål) and `nn` (Nynorsk) use the Norwegian list.
+
+A word that is also a common word or name in some language, such as the Swedish share label "dela" (also a surname), counts only on a page in that language. If the language is blank or not in the list, every language's words apply.
+
+## Text and encodings
+
+- **Right-to-left text.** Invisible direction marks in Arabic, Hebrew and Persian text are ignored, so they no longer break title and sponsorship matching.
+- **Chinese encodings.** Pages labeled `gbk` or `big5` decode the way browsers decode them.
+- **Unknown encodings.** A page that declares a character set Ruby cannot convert is cleaned up instead of failing.
+
+## Help improve a language
+
+No native speaker has reviewed the word lists of these 18 languages: Arabic (`ar`), Chinese (`zh`), Czech (`cs`), Danish (`da`), Finnish (`fi`), Greek (`el`), Hebrew (`he`), Hindi (`hi`), Hungarian (`hu`), Indonesian (`id`), Korean (`ko`), Norwegian (`no`), Persian (`fa`), Romanian (`ro`), Thai (`th`), Turkish (`tr`), Ukrainian (`uk`) and Vietnamese (`vi`). If you read one of them, please check its file. You may spot a missing "read more", a wrong "sponsored", or a word that misfires.
+
+Each language is one small Ruby file: `lib/html2rss/vocabulary/<code>.rb` in the [`html2rss` repository](https://github.com/html2rss/html2rss/tree/master/lib/html2rss/vocabulary). For example, `de.rb` is German.
+
+1. Open the file on GitHub.
+2. Click the pencil (**Edit**) button. [GitHub explains how editing files works](https://docs.github.com/en/repositories/working-with-files/managing-files/editing-files).
+3. Change the words and propose the change as a pull request.
+
+You do not need a local Ruby setup.
+
+### Add a new language
+
+Developers can add a language by following `CONTEXT.md` in the `html2rss` repository (section "Vocabulary"):
+
+1. Write `lib/html2rss/vocabulary/<code>.rb` against the concept list of an existing language.
+2. Add it to `Vocabulary::PAGE_ONLY`. New languages start there, so their words apply only on a page in that language.
+3. Run the report against a folder of saved pages with a `manifest.tsv`:
+
+<Code
+  code={`
+  # from the html2rss repository
+  make language-check CODE=<code> PAGES=<dir of saved pages + manifest.tsv>
+  `}
+  lang="bash"
+/>
+
+The report lists how feeds and link classification change, which words hit on your pages, and the memory cost. It decides nothing; a person reads the differences.

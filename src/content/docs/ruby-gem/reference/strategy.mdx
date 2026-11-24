@@ -151,7 +151,7 @@ Use this split consistently:
 - `strategy`: selects `auto`, `default`, `botasaurus`, or `local_file`
 - `headers`: top-level headers shared by remote strategies (defaults to `html2rss/<VERSION>` User-Agent)
 - `request.max_redirects`: redirect limit for the request session (default: `5`)
-- `request.max_requests`: total request budget for the whole feed build (default: `10`)
+- `request.max_requests`: total request budget for the whole feed build. Hard ceiling: `10`; a higher value is capped. Without this key, html2rss reserves the slots your config needs (the page, extra pages, enabled `auto_source` follow-ups, entry probes, fallback steps), at least `1`, and never more than `10`. The CLI `--max-requests` flag and the Ruby `max_requests:` option set it explicitly. `Html2rss.scrape` without that option sets `4`.
 - `request.total_timeout_seconds`: maximum total wall-clock budget for the entire feed build
 - `request.local_file_path`: file path for `local_file` strategy
 - `request.botasaurus.*`: Botasaurus-only options

@@ -51,6 +51,19 @@ Drop reasons (counts) land on `Html2rss::Status#admission_drops`. Print them wit
 
 Ruby `limit:` and CLI `--limit` cap kept articles (default `25`).
 
+**Dates from URL paths.** When an item has no date from any other source, html2rss uses a date in its URL if the path holds exactly one unambiguous date, such as `/2023/01/02/story` or `/2023-01-02-story`. The item gets midnight of that day in your [`channel.time_zone`](/ruby-gem/reference/channel/#dates-without-a-time-zone). Bare numeric ids, paths without a day (`/2020/06/88083`) and a bare `/2024/01/01/` give no date. With [`enrich`](/ruby-gem/reference/configuration/#per-feed-option-enrich) on, a date from the article page wins.
+
+### What gets kept and merged
+
+html2rss then filters the items before they reach the feed:
+
+- **Non-article pages are dropped.** Links to section indexes, profile pages, bare media file routes and similar non-story destinations never become items.
+- **Copies of one article merge into one item.** Links that differ only by `http` versus `https`, a trailing slash, a fragment, or a tracking parameter count as the same article. So do links that differ only by a placement parameter (for example `?pos=top` and `?pos=latest`), which html2rss recognizes from how the page repeats it. The first copy keeps its fields; later copies fill only what it lacks.
+- **The main list beats sidebars.** On card-grid front pages, the main article list ranks above sidebars and topical modules.
+- **Other drops.** Sponsored items, links to other domains, untitled items, titles under three words and junk titles are dropped. `keep_sponsored` and `keep_different_domain` in [Cleanup Options](#cleanup-options) opt out of the first two. `--explain` shows the counts.
+
+Words like "read more" or "advertisement" are matched in the page's language. See [Language support](/ruby-gem/reference/language-support/).
+
 **`json_state` / `xhr_articles`:** both need discoverable arrays of hashes with clear `title` and `url` fields. Minified or obfuscated payloads, heavily encoded values, or blobs that require executing embedded functions are ignored. `xhr_articles` only sees JSON bodies captured during the current Botasaurus browser scrape (capped by the scrape API).
 
 **`wordpress_api`:** depends on a public WordPress REST API root. The scraper fetches post records directly; it does not resolve category names or featured media metadata.

@@ -33,21 +33,37 @@ This example is a complete feed config so you can see the `channel` block in con
 
 ## Options
 
-| Attribute     | Required     | Description                                                                                                                              |
-| :------------ | :----------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
-| `url`         | **Required** | The URL of the website to scrape.                                                                                                        |
-| `title`       | Optional     | The title of the RSS feed. Defaults to the website's title.                                                                              |
-| `description` | Optional     | A description for the RSS feed. Defaults to the website's meta description.                                                              |
-| `author`      | Optional     | The author of the feed, in the format `email (Name)`.                                                                                    |
-| `ttl`         | Optional     | The "time to live" for the feed in minutes. Defaults to the `max-age` from the response headers, or `360`.                               |
-| `language`    | Optional     | The language of the feed. Defaults to the `lang` attribute of the `<html>` tag.                                                          |
-| `time_zone`   | Optional     | The time zone for parsing dates. See the [list of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). |
+| Attribute     | Required     | Description                                                                                                                                                                        |
+| :------------ | :----------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `url`         | **Required** | The URL of the website to scrape.                                                                                                                                                  |
+| `title`       | Optional     | The title of the RSS feed. Defaults to the website's title.                                                                                                                        |
+| `description` | Optional     | A description for the RSS feed. Defaults to the website's meta description.                                                                                                        |
+| `author`      | Optional     | The author of the feed, in the format `email (Name)`.                                                                                                                              |
+| `ttl`         | Optional     | The "time to live" for the feed in minutes. Defaults to the `max-age` from the response headers, or `360`.                                                                         |
+| `language`    | Optional     | The language of the feed. Defaults to the `Content-Language` header, then the `lang` attribute of the `<html>` tag. See [Language support](/ruby-gem/reference/language-support/). |
+| `time_zone`   | Optional     | The time zone for dates that state none. See the [list of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).                                   |
 
 ## Notes
 
 - `language` is runtime-validated. Use a valid language code such as `en`, not an arbitrary string.
 - `author` should follow the RSS-style `email (Name)` format when you set it explicitly. The RSS `managingEditor` element is written only when `author` is an email address (`editor@example.com` or `editor@example.com (Name)`); a plain name is omitted from `managingEditor`.
-- `time_zone` must be a known TZ database identifier such as `UTC` or `Europe/Berlin`.
+- `time_zone` should be a TZ database identifier such as `UTC` or `Europe/Berlin`. An unknown or missing zone reads as `UTC`.
+
+## Dates without a time zone
+
+Many pages print a date like `2025-03-04 18:30` with no zone. With `auto_source`, html2rss reads such a date in your `channel.time_zone`. This holds for HTML pages and for structured data: JSON-LD, Microdata, embedded JSON and sitemaps. WordPress posts use their exact UTC time.
+
+A date that names a zone, such as `GMT` or `EST`, keeps its real instant and is not shifted.
+
+<Code
+  code={`
+  channel:
+    url: https://example.com
+    time_zone: "Europe/Berlin" # "2025-03-04 18:30" becomes 18:30 Berlin time
+  auto_source: {}
+  `}
+  lang="yaml"
+/>
 
 ---
 

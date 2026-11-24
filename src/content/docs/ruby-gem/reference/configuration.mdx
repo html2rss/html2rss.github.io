@@ -140,6 +140,31 @@ Specifies a custom formatter for the default logger. This must be a callable obj
   lang="ruby"
 />
 
+## Per-feed option: `enrich`
+
+`enrich` is not a `Html2rss.configure` option. Set it at the top level of a feed config.
+
+Listing pages often lack a date, author or image. With `enrich` on, html2rss fetches each item's own page and fills in only what is missing. It reads the page's JSON-LD (`author`, `datePublished`) and meta tags (`og:image`, `article:published_time`, `article:author`).
+
+<Code
+  code={`
+  channel:
+    url: https://example.com
+  auto_source: {}
+  enrich:
+    article_metadata: true # default: off
+    max_fetches: 10 # default and maximum: 10
+  `}
+  lang="yaml"
+/>
+
+- **Opt-in.** Nothing is fetched unless `article_metadata` is `true`.
+- **Fill only.** A value found on the listing is never overwritten. A date from the article page wins over a date guessed from the URL. Titles, descriptions and body text are never touched.
+- **Extra requests.** A build makes up to `max_fetches` additional requests (`1` to `10`) with the same request strategy. They do not use up `request.max_requests`; the two limits add up.
+- **Same site only.** Links to other origins are skipped. A failed or blocked fetch leaves the item as it was and never fails the build.
+
+`html2rss scrape URL --explain` reports `enriched`, `enrich_failed` and `enrich_skipped_cross_origin` counts when enrichment ran.
+
 ---
 
 For detailed documentation on the Ruby API, see the [official YARD documentation](https://www.rubydoc.info/gems/html2rss).
