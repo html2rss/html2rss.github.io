@@ -45,7 +45,7 @@ What each scraper does:
 
 After scrapers, **Cleanup** is the admission gate: merge, dedupe, hard-exclude non-article destinations, drop junk titles, trim to `limit`. Scoring ranks and demotes; it does not refill `limit` after Cleanup.
 
-Drop reasons (counts) land on `Html2rss::Status#admission_drops`. Print them with `html2rss scrape URL --explain` (JSON on stderr; the feed stays on stdout). Prefer `Html2rss.auto_feed_result` in Ruby when you need that status object.
+Drop reasons (counts) land on `Html2rss::Status#admission_drops`. Print them with `html2rss scrape URL --explain` (JSON on stderr; the feed stays on stdout). Prefer `Html2rss.scrape` in Ruby when you need that status object.
 
 `auto_source` also prepends kicker/teaser labels to titles when present, and discovers channel-level `author` and `image` (favicon, touch-icon, or OpenGraph images) from the host page.
 

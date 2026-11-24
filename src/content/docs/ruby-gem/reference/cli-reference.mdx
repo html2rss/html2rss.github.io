@@ -129,6 +129,8 @@ Available options:
 - `--max-requests`: Total request budget allowed for this feed build.
 - `--input`: Local HTML file path to read input from instead of making a network request.
 
+`apply` exits `1` with empty stdout and the message on stderr when the feed has zero items.
+
 The CLI keeps `strategy` as a top-level override and writes runtime request limits into the generated config under `request`.
 
 ### Capture

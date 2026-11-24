@@ -7,6 +7,15 @@ import { Code } from "@astrojs/starlight/components";
 
 This page outlines breaking changes, purged legacy aliases, and migration steps when upgrading the gem.
 
+## Unreleased
+
+Breaking Ruby API removals, with no deprecation period:
+
+1. **Auto-source helpers** — `Html2rss.auto_feed_result(url)` is now `Html2rss.scrape(url)`; `Html2rss.auto_source(url)` is `Html2rss.scrape(url).to_rss`; `Html2rss.auto_json_feed(url)` is `Html2rss.scrape(url).to_json_feed`.
+2. **`Html2rss.json_feed`** — Use `Html2rss.feed_result(config).to_json_feed(feed_url:)`.
+3. **`default_strategy` and `min_ttl`** — Removed from `Html2rss.configure`, with no replacement. The default strategy is always `auto`; pin one with `strategy:` in the feed config. TTL comes from `channel.ttl`, else `Cache-Control`, else the default, with no minimum clamp.
+4. **`html2rss apply` on an empty feed** — The CLI now exits `1` with empty stdout and the message on stderr when the feed has zero items, so `apply cfg.yml > feed.xml` cannot overwrite a good feed. `Html2rss.apply` in Ruby still returns the empty result without raising.
+
 ## 0.27.0
 
 Upgrade notes for configs and integrators targeting gem **0.27.0** (current `master` after `0.26.0`):
@@ -117,4 +126,4 @@ When upgrading from releases before **0.26.0**:
 6. **Rename date selectors**: Use `published_at` rather than `updated` or `pubDate`.
 7. **Move channel-level transport keys**: Put `strategy` and `headers` at the top level of the YAML file.
 8. **Use `enclosure` for RSS media**: Select podcast/media URLs with `enclosure`; `image` does not become RSS `<enclosure>`.
-9. **Prefer `feed_result` for dual-format / cache**: Use `Html2rss.feed_result` / `Html2rss.auto_feed_result` and `status.to_h`.
+9. **Prefer `feed_result` for dual-format / cache**: Use `Html2rss.feed_result` / `Html2rss.scrape` and `status.to_h`.
