@@ -67,7 +67,7 @@ You can define global settings that apply to all feeds, and then define individu
 
 ### Ruby API: FeedResult
 
-Prefer `Html2rss.feed_result` when one scrape must render as both RSS and JSON Feed, or when you Marshal-cache the scrape and render later. `Html2rss.feed` and `Html2rss.json_feed` remain convenience wrappers over the same path.
+Prefer `Html2rss.feed_result` when one scrape must render as both RSS and JSON Feed, or when you Marshal-cache the scrape and render later. `Html2rss.feed` remains a convenience wrapper over the same path.
 
 `FeedResult` is an opaque handle. Public surface:
 
@@ -83,7 +83,7 @@ Prefer `Html2rss.feed_result` when one scrape must render as both RSS and JSON F
 - `entry_url` / `scrape` (pasted vs effective URL after entry resolution)
 - `entry_resolution` (`applied`, `probe_count`, `reason`, optional `winner_score`)
 
-For URL-only auto discovery, `Html2rss.auto_feed_result(url)` returns the same `FeedResult` (CLI `html2rss scrape --explain` prints `status.to_h` on stderr).
+For URL-only auto discovery, `Html2rss.scrape(url)` returns the same `FeedResult` (CLI `html2rss scrape --explain` prints `status.to_h` on stderr).
 
 <Code
   code={`

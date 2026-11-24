@@ -1,6 +1,6 @@
 ---
 title: Global Configuration
-description: "Learn how to use Html2rss.configure to set up global defaults like custom headers, minimum TTL boundaries, custom stylesheets, and default request strategies."
+description: "Learn how to use Html2rss.configure to set up global defaults like custom headers, log level, and custom stylesheets."
 ---
 
 import { Code } from "@astrojs/starlight/components";
@@ -15,7 +15,6 @@ Global configuration is thread-safe and implements an RCU (Read-Copy-Update) mec
 
 Html2rss.configure do |config|
 config.log_level = :info
-config.min_ttl = 60
 config.headers = { 'User-Agent' => 'MyCustomUserAgent/1.0' }
 end
 `}
@@ -73,37 +72,9 @@ Defines HTTP headers that are globally appended/prepended to all requests. You c
   lang="ruby"
 />
 
-### `default_strategy`
+### Removed options
 
-Overrides the strategy used when a feed configuration does not specify one. Keep the gem default (`auto`) unless every feed in the process requires a fixed fetch mode.
-
-- **Type**: `Symbol`, `String`, or `nil`
-- **Default**: `nil` (uses `auto`)
-
-<Code
-  code={`
-  Html2rss.configure do |config|
-    config.default_strategy = :auto
-  end
-  `}
-  lang="ruby"
-/>
-
-### `min_ttl`
-
-Enforces a strict lower bound on the computed Time to Live (TTL) in minutes for generated feeds. If a feed's calculated TTL or config-override TTL is lower than `min_ttl`, it will be clamped to `min_ttl`.
-
-- **Type**: `Integer` or `String` (must represent a positive integer)
-- **Default**: `nil` (no minimum boundary enforced)
-
-<Code
-  code={`
-  Html2rss.configure do |config|
-    config.min_ttl = 60 # Clamps all feed TTLs to at least 60 minutes
-  end
-  `}
-  lang="ruby"
-/>
+`default_strategy` and `min_ttl` no longer exist. The default strategy is always `auto`; set `strategy:` in a feed config to pin another. The feed TTL comes from the config `channel.ttl`, else the response `Cache-Control`, else the default, with no minimum clamp.
 
 ### `stylesheets`
 
