@@ -1,0 +1,246 @@
+---
+title: Ruby API Reference
+description: Every public Html2rss method with signature, return type and examples, plus the error classes it raises.
+---
+
+import { Code } from "@astrojs/starlight/components";
+
+All entry points are module methods on `Html2rss`. Options are keyword arguments. Method contracts in full: [YARD for `html2rss`](https://www.rubydoc.info/gems/html2rss).
+
+The curation verbs follow one path: `inspect`, `recon`, `capture`, `validate`, `test`, `apply`, plus `scrape` for one-shot extraction. The same verbs exist in the [CLI](/ruby-gem/reference/cli-reference/) and the [MCP server](/ruby-gem/reference/mcp-server/).
+
+## Overview
+
+| Method                                                         | Returns                          |
+| -------------------------------------------------------------- | -------------------------------- |
+| `Html2rss.inspect(url, strategy: :auto, deep: false)`          | `PageRecon::Diagnostics::Report` |
+| `Html2rss.recon(url, strategy: :auto)`                         | `Recon::Result`                  |
+| `Html2rss.capture(url, strategy: :auto, **options)`            | `Capture::CaptureResult`         |
+| `Html2rss.validate(config_input, feed_name = nil, params: {})` | `Config::ValidationReport`       |
+| `Html2rss.test(config_input, feed_name = nil, **options)`      | `Test::Result`                   |
+| `Html2rss.apply(raw_config)`                                   | `Apply::Result`                  |
+| `Html2rss.scrape(url, **options)`                              | `FeedResult`                     |
+| `Html2rss.batch_scrape` / `batch_inspect` / `batch_recon`      | `Batch::BatchResult`             |
+| `Html2rss.feed_result(raw_config)`                             | `FeedResult`                     |
+| `Html2rss.feed(raw_config)`                                    | `RSS::Rss`                       |
+| `Html2rss.config_from_yaml_file(file, feed_name = nil)`        | `Hash`                           |
+| `Html2rss.schema_json(pretty: true)`                           | `String`                         |
+| `Html2rss.configure` (block)                                   | `Html2rss::Defaults` (frozen)    |
+
+`strategy` is `:auto` (default), `:default` or `:botasaurus`. See [Strategy](/ruby-gem/reference/strategy/).
+
+## Curation verbs
+
+### `inspect`
+
+Cheap diagnostics for a URL: final URL, status, `rel=alternate` feeds, page surface. With `deep: true` and `strategy: :auto`, it makes one Botasaurus hop when Botasaurus is configured.
+
+<Code
+  code={`
+  report = Html2rss.inspect('https://example.com/blog')
+  report.to_wire_h
+`}
+  lang="ruby"
+/>
+
+### `recon`
+
+Adds a curation verdict (`build?`, `defer?`, `drop?`) and a native feed preference. `Recon::Result` carries `requested_url`, `final_url`, `status`, `verdict`, `native_feed`, `surface_category`, `articles_count`, `scheme_downgrade`, `notes` and `html_bytesize`.
+
+<Code
+  code={`
+  result = Html2rss.recon('https://example.com/blog')
+  result.build?
+  result.native_feed
+`}
+  lang="ruby"
+/>
+
+### `capture`
+
+Derives a reusable feed config from a URL. The result has `config` (Hash), `yaml` (String, with the schema modeline), `articles_count`, `channel_title`, `has_selectors`, `segment_strategy`, `selected_strategy`, `admission_drops`, `inferred_topics`, `native_feed`, `suggested_channel_url` and `candidates`.
+
+Options:
+
+- `items_selector` (CSS hint), `topics`, `title`, `summary`, `enhance`
+- `force` (skip native feed detection)
+- `limit`, `max_redirects`, `max_requests`
+- `total_timeout_seconds` (positive Integer, default 30): bounds the whole request chain, including auto-fallback hops
+- `local_file_path` (with `strategy: :local_file`)
+
+`candidates[:candidates_by_item]` lists title, link and date candidates for each of the top five item selectors. Details: [Capturing Feed Configs](/ruby-gem/guides/capturing-feed-configs/).
+
+<Code
+  code={`
+  capture = Html2rss.capture('https://example.com/blog', total_timeout_seconds: 20)
+  File.write('my-feed.yml', capture.yaml)
+  capture.candidates[:candidates_by_item].first
+`}
+  lang="ruby"
+/>
+
+### `validate`
+
+Schema-only check. `config_input` is a Hash, a YAML string or a file path. It does not fetch anything.
+
+`ValidationReport` responds to `success?`, `failure?`, `issues` and `to_h` (`{ success:, issues: }`). Each `ValidationIssue` has `path` (Array), `code`, `message`, `expected` and `actual`. `code` is one of `:missing_key`, `:type_mismatch`, `:unknown_value`, `:invalid_value`, `:constraint`, `:parse`.
+
+<Code
+  code={`
+  report = Html2rss.validate(config)
+  report.success?
+  report.issues.each { |issue| puts issue }
+  # each issue prints as: path [code] message
+`}
+  lang="ruby"
+/>
+
+### `test`
+
+Validates the schema, then runs a live extraction and checks the result.
+
+Options:
+
+- `min_items` (default `1`, must be `>= 0`): fewer items fail the test
+- `strict_quality` (default `false`): also fail on ship-quality audit thresholds
+- `compare_enhance` (default `false`): diagnostic comparison of `enhance` off and on, using the cached HTML
+- `sample_limit` (default `3`, must be `>= 0`): maximum number of `result.items`
+- `params`: dynamic feed parameters; `strategy`: override the config's strategy
+
+`Test::Result` has `success`, `item_count`, `sample_items`, `items` (title, url, published_at, description, image, categories), `channel_title`, `channel_url`, `strategy_used`, `duration_seconds`, `validation_issues`, `error_message`, `failure_kind`, `rss`, `quality_report` and `enhance_compare`. `to_h` is the stable wire hash. On a schema failure, `validation_issues` holds the same `ValidationIssue` list as `validate`.
+
+<Code
+  code={`
+  result = Html2rss.test(config, min_items: 3, strict_quality: true, sample_limit: 5)
+  result.success
+  result.items.first
+  result.quality_report&.warnings
+`}
+  lang="ruby"
+/>
+
+### `apply`
+
+Builds the feed from a config Hash and returns an `Apply::Result`. This is the ship step.
+
+| Method                        | Returns                                  |
+| ----------------------------- | ---------------------------------------- |
+| `to_rss`                      | the `RSS::Rss` document (built once)     |
+| `to_json_feed(feed_url: nil)` | JSON Feed 1.1 Hash                       |
+| `empty?`                      | `true` when the feed has no items        |
+| `item_count`                  | number of items in the RSS document      |
+| `status`                      | `Html2rss::Status` scrape telemetry      |
+| `quality_report`              | ship-quality audit of the rendered items |
+| `feed_result`                 | the underlying `FeedResult`              |
+
+`Html2rss.apply` does not raise on an empty feed. Check `empty?` yourself. The CLI exits 1 and the MCP tool returns `isError` on zero items. The result is not Marshal-cacheable; cache `feed_result` instead.
+
+<Code
+  code={`
+  result = Html2rss.apply(config)
+  abort 'no items' if result.empty?
+  File.write('feed.xml', result.to_rss.to_s)
+  result.item_count
+  result.quality_report.to_h
+`}
+  lang="ruby"
+/>
+
+## One-shot and batch
+
+### `scrape`
+
+Auto-source scrape from a URL, with no selectors. Returns a `FeedResult`.
+
+Options: `strategy`, `items_selector`, `max_redirects`, `max_requests` (default `4`), `local_file_path`, `limit` (default is the auto-source default), `keep_different_domain` and `keep_sponsored`. The last two override `auto_source.cleanup.*` when set.
+
+<Code
+  code={`
+  result = Html2rss.scrape('https://example.com/blog', limit: 10, keep_sponsored: false)
+  result.to_rss
+  result.to_json_feed(feed_url: 'https://example.com/feeds/blog.json')
+`}
+  lang="ruby"
+/>
+
+### `batch_scrape`, `batch_inspect`, `batch_recon`
+
+Run one verb over many URLs on a thread pool. Each URL is isolated: one failure does not stop the others. Results keep input order.
+
+- `urls`: the list of URLs
+- `strategy`: default `:auto`
+- `concurrency`: worker threads, `1..10`, default `5`
+- `limit` (`batch_scrape` only): articles per URL, default `10`
+- `cache_dir` (`batch_recon` only): optional HTML cache directory
+
+`Batch::BatchResult` has `total`, `successful` and `results`.
+
+<Code
+  code={`
+  batch = Html2rss.batch_scrape(['https://example.com/a', 'https://example.com/b'], limit: 5, concurrency: 2)
+  batch.successful
+  batch.results
+`}
+  lang="ruby"
+/>
+
+## Building feeds
+
+### `feed_result` and `feed`
+
+`feed_result(raw_config)` runs the pipeline once and returns an opaque, Marshal-cacheable `FeedResult` (`to_rss`, `to_json_feed(feed_url:)`, `empty?`, `channel_title`, `status`). `feed(raw_config)` is `feed_result(raw_config).to_rss`. See [Managing Feed Configs](/ruby-gem/guides/managing-feed-configs/#ruby-api-feedresult).
+
+### `config_from_yaml_file`
+
+Loads a config Hash from a YAML file. Pass `feed_name` for a multi-feed file.
+
+<Code
+  code={`
+  config = Html2rss.config_from_yaml_file('feeds.yml', 'my-first-feed')
+  Html2rss.feed(config)
+`}
+  lang="ruby"
+/>
+
+### `schema_json`
+
+Returns the config JSON Schema as a String. `pretty: false` returns compact JSON.
+
+## Global defaults
+
+`Html2rss.configure` yields a copy of the defaults, then freezes it. Settings include `headers`, `stylesheets`, `logger` and `log_level`. See [Configuration](/ruby-gem/reference/configuration/). `default_strategy` and `min_ttl` were removed in 0.36.0 ([Backward Compatibility](/ruby-gem/guides/backward-compatibility/)).
+
+## Error handling
+
+Every error html2rss raises on purpose is an `Html2rss::Error`. Rescue that class, not `StandardError`.
+
+<Code
+  code={`
+  attempts = 0
+  begin
+    attempts += 1
+    Html2rss.scrape('https://example.com/blog')
+  rescue Html2rss::Error => e
+    retry if e.retryable? && attempts < 3
+    raise
+  end
+`}
+  lang="ruby"
+/>
+
+| Member         | Meaning                                                                                                   |
+| -------------- | --------------------------------------------------------------------------------------------------------- |
+| `#kind`        | Stable failure class: `:timeout`, `:blocked`, `:connection`, `:invalid_url`, `:budget` or `:other`        |
+| `#retryable?`  | `true` only for `:timeout` and `:connection`. Other kinds fail the same way again                         |
+| `#diagnostics` | Sparse telemetry Hash (strategy attempts, transport metadata, timeout phase, surface category) when known |
+
+`#kind` and `#retryable?` exist since 0.34.0. Branch on them instead of on class names.
+
+Classes you will meet:
+
+- `Html2rss::InvalidOption`: a caller-supplied option is malformed or out of range, for example `min_items: -1` or a `concurrency` above 10.
+- `Html2rss::Url::InvalidUrlError` (since 0.33.0): a string is not a valid URL. Its `kind` is `:invalid_url`.
+- `Html2rss::RequestService::PrivateNetworkDenied`: the target is a private or local address. `kind` is `:blocked`. See [Network safeguards](/ruby-gem/reference/strategy/#network-safeguards).
+- `Html2rss::RequestService::RequestTimedOut`: `kind` is `:timeout`. It may carry `timeout_phase`.
+- `Html2rss::NoFeedItemsExtracted`: auto fallback tried every strategy and found no items. `attempts` lists each try.
+- `Html2rss::ContractError`: a programmer error. Something was built from wrong parts, or a component broke its contract. It is a subclass of `Html2rss::Error`, but html2rss never swallows it in its own broad rescues. Fix the code rather than retrying.

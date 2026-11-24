@@ -103,6 +103,16 @@ Common configuration-related errors:
 - **`stylesheet.type invalid`:** Only `text/css` and `text/xsl` are supported for stylesheets.
 - **`request.botasaurus` validation:** Unknown keys are rejected. Valid scroll, window size, and wait-timeout shapes are documented in [Strategy — Botasaurus](/ruby-gem/reference/strategy/#botasaurus).
 
+### Empty Feeds On IPv6-Only Hosts
+
+If the host has only IPv6 connectivity (DNS64/NAT64, common on some cloud and mobile networks) and feeds from IPv4-only sites come back empty, upgrade `html2rss` to 0.35.0 or later. Earlier versions could not reach those sites through the NAT64 prefix.
+
+### `PrivateNetworkDenied` Or `InvalidUrlError`
+
+- **`PrivateNetworkDenied`:** the URL points at a local or private address, or its hostname resolves to one. html2rss refuses these by design. See [Network safeguards](/ruby-gem/reference/strategy/#network-safeguards).
+- **`Url::InvalidUrlError`:** the URL is malformed. Since 0.35.0 this includes IPv4 hosts with leading zeros (`01.2.3.4`) and IPv6 hosts with a zone id. Write the address without them.
+- `error.kind` and `error.retryable?` tell you whether a retry can help. See [Ruby API: Error handling](/ruby-gem/reference/ruby-api/#error-handling).
+
 ### Missing Item Parts
 
 If parts of your items (e.g., title, link) are missing, check the following:

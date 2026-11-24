@@ -30,7 +30,7 @@ Daemon logs go to **stderr** (stdout is JSON-RPC). Default `LOG_LEVEL` for the M
 
 `scrape` and `capture` use `strategy: "auto"` by default so html2rss can choose an available fetch path from the scrape result. Prefer native RSS/Atom when present; weak homepage URLs may be rewritten via entry resolution.
 
-Keep `auto` for normal use. Pin `strategy: "botasaurus"` only when a diagnostic requires browser rendering or browser-specific controls.
+The published `strategy` values are `auto`, `default`, `httpx` and `botasaurus`. Keep `auto` for normal use. For `inspect` and `recon`, `auto` stays on the cheap default fetch; pin `botasaurus` when you need browser rendering there. Pin `strategy: "botasaurus"` only when a diagnostic requires browser rendering or browser-specific controls.
 
 Read `html2rss://runtime` for `botasaurus_configured` (boolean only). Set `BOTASAURUS_SCRAPER_URL` on the **MCP process** env.
 
@@ -51,6 +51,8 @@ Every tool returns one JSON object in text content and `structuredContent`:
 />
 
 `isError` matches `ok: false`. Articles live in `payload.items`; YAML in `payload.yaml`; RSS in `payload.rss`.
+
+When a result was built from cached pages, the envelope also carries `cache: { hits, max_age_seconds }`. See [Response cache](#response-cache).
 
 `next_step` is one of: `done`, `inspect`, `recon`, `validate`, `apply`, `scrape`, `capture`, `read_runtime`, `test`.
 
@@ -83,7 +85,7 @@ Curation verdict and `native_feed` preference (`BUILD` / `DEFER` / `DROP`).
 
 Derive a reusable YAML draft (`payload.yaml`). Same serializer as CLI `html2rss capture`. Catalog feeds still need `directory.topics` and explicit channel `title` / `url`.
 
-- **Parameters:** `url` (required); `strategy`; optional `items_selector`
+- **Parameters:** `url` (required); `strategy`; `items_selector`; `force` (skip native feed detection); `topics` (array of directory topics); `title`; `summary`; `enhance` (force on or off); `limit`; `max_redirects`; `max_requests`
 - Typical `next_step`: `test` or `inspect`
 
 ### `validate`
@@ -91,20 +93,25 @@ Derive a reusable YAML draft (`payload.yaml`). Same serializer as CLI `html2rss 
 Schema-only check against `html2rss://schema`. Exactly one of `config` or `yaml`.
 
 - Success `next_step` is usually `test`
+- Failure returns `isError` with `payload.issues`, an array of `{ path, code, message, expected, actual }`. `path` is an array of keys. `code` is one of `missing_key`, `type_mismatch`, `unknown_value`, `invalid_value`, `constraint`, `parse`.
 
 ### `test`
 
-Schema validation plus live extraction (`min_items`, optional `strict_quality`, `compare_enhance`).
+Schema validation plus live extraction.
 
+- **Parameters:** exactly one of `config` or `yaml`; `min_items` (default `1`); `strict_quality` (default `false`); `compare_enhance` (default `false`); `strategy`
 - Success `next_step` is `apply`
-- Payload includes sample items, timing, and `quality_report` when present
+- A schema failure returns the same issue shape as `validate`, under `payload.validation_issues`, and `next_step` is `validate`. Any other failure points back to `capture`
+- Payload includes `sample_items`, `items`, timing, `failure_kind` and `quality_report` when present
+- The MCP tool does not expose the Ruby `sample_limit` option; it uses the default of 3
 
 ### `apply`
 
 Ship gate: build RSS from a config. Required `url` plus exactly one of `config` or `yaml`.
 
-- **Payload:** `rss`, `item_count`
-- `isError` when zero items
+- **Payload:** `rss`, `item_count`, `quality_report`
+- `isError` when zero items; `next_step` is then `inspect`
+- A missing `channel.url` is filled from `url`
 
 ### Batch trio
 
@@ -114,14 +121,16 @@ Ship gate: build RSS from a config. Required `url` plus exactly one of `config` 
 | `batch_inspect` | Parallel inspect                       |
 | `batch_recon`   | Parallel recon                         |
 
+All three take `urls` (1 to 25), `strategy` and `concurrency` (worker threads, `1..10`, default `5`). `batch_scrape` also takes `limit` (default `10` per URL).
+
 ## Resources
 
-| URI                     | Description                                                                                                        |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `html2rss://schema`     | Feed config JSON Schema                                                                                            |
-| `html2rss://extractors` | Extractor names                                                                                                    |
-| `html2rss://strategies` | Runtime strategy names for client discovery; prefer `auto`, `default`, or `botasaurus`                             |
-| `html2rss://runtime`    | `version`, `mcp_contract_version`, `catalog_fingerprint`, `tools`, `botasaurus_configured` — never the scraper URL |
+| URI                     | Description                                                                                                                                                                |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `html2rss://schema`     | Feed config JSON Schema                                                                                                                                                    |
+| `html2rss://extractors` | Extractor names                                                                                                                                                            |
+| `html2rss://strategies` | Published strategy names: `auto`, `default`, `httpx`, `botasaurus`; prefer `auto`                                                                                          |
+| `html2rss://runtime`    | `version`, `mcp_contract_version` (currently `4`), `catalog_fingerprint`, `tools`, `botasaurus_configured`, `response_cache_ttl` (`null` when off) — never the scraper URL |
 
 `validate` / `apply` reject `strategy: local_file` and `request.local_file_path`. Use CLI `--input` for fixtures.
 
@@ -131,6 +140,17 @@ Ship gate: build RSS from a config. Required `url` plus exactly one of `config` 
 | --------------------- | ------------------------------------------------------------------------------ |
 | `scrape-webpage`      | One `scrape` call; `inspect` only if weak                                      |
 | `capture-feed-config` | `capture` → `test` → `apply` (catalog rewrite when targeting html2rss-configs) |
+
+## Response cache
+
+The MCP process is long-lived, so an agent that runs `inspect`, `capture`, `validate` and `test` on one URL should not refetch it. The server caches initial page fetches in memory.
+
+- **On by default, 300 seconds.** Set `HTML2RSS_RESPONSE_CACHE_TTL=<seconds>` on the MCP process to change it.
+- **Disable it** with `0`, `off` or `false`. An unusable value logs a warning and falls back to 300.
+- Only initial 2xx fetches are cached. Follow-up requests and block pages always hit the network.
+- Memory is bounded to 32 entries and 32 MiB of bodies; the oldest entry goes first.
+- To force a refetch, wait out the TTL or restart with the cache off.
+- The cache is an MCP server setting. The Ruby library and the CLI do not cache by default.
 
 ## Client setup
 

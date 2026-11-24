@@ -35,6 +35,8 @@ Under `auto`, `Html2rss.feed_result(...).status` exposes scrape telemetry: `sele
 
 When no custom `User-Agent` header is supplied in `headers`, html2rss sends `html2rss/<VERSION>`. The shared request policy enforces redirect, request, timeout, and private-network safeguards and accepts supported compressed HTML responses.
 
+Since 0.30.0 the default transport is HTTPX, which speaks HTTP/2 where the site offers it. Existing configs need no change.
+
 ## `botasaurus`
 
 `botasaurus` delegates page fetching to the companion scrape API. `auto` can use it when configured; pin `strategy: botasaurus` only when you need browser-specific behavior.
@@ -143,6 +145,19 @@ Because no remote network connection is established, `local_file` skips remote n
   `}
   lang="yml"
 />
+
+## Network safeguards
+
+Every strategy that makes network requests runs the same guard before it connects and again on the address it connected to.
+
+- **Private networks are denied.** Local hostnames, loopback, link-local, private (RFC 1918), unique-local and multicast addresses fail with `RequestService::PrivateNetworkDenied`.
+- **Embedded IPv4 addresses are checked.** An IPv4-mapped IPv6 address (`::ffff:a.b.c.d`) is judged by the IPv4 address inside it. So are NAT64 (`64:ff9b::/96`) and 6to4 (`2002::/16`) addresses.
+- **Teredo and local-use NAT64 are denied.** The `2001::/32` and `64:ff9b:1::/48` prefixes are never reachable.
+- **IPv6-only networks work.** Sites reached through DNS64/NAT64 resolve and fetch as normal (0.35.0 and later). If the installed HTTPX version is untested for this, NAT64 support switches off and the guard denies the whole NAT64 prefix instead of loosening.
+- **Hosts are validated strictly.** An IPv4 literal with a leading zero (`01.2.3.4`), a numeric pseudo-host, or an IPv6 literal with a zone id is rejected as an invalid URL.
+- **Bad links are skipped.** A `javascript:` or `mailto:` pager link is not followed. A malformed link on a page is skipped, and the rest of the feed is still built.
+
+Rejected URLs raise `Html2rss::Url::InvalidUrlError`. Denied targets raise `PrivateNetworkDenied`, whose `kind` is `:blocked`. See [Ruby API: Error handling](/ruby-gem/reference/ruby-api/#error-handling).
 
 ## Request Structure
 
