@@ -55,7 +55,7 @@ Ruby `limit:` and CLI `--limit` cap kept articles (default `25`).
 
 ### What gets kept and merged
 
-After the scrapers run, Cleanup decides which items reach the feed:
+html2rss then filters the items before they reach the feed:
 
 - **Non-article pages are dropped.** Links to section indexes, profile pages, bare media file routes and similar non-story destinations never become items.
 - **Copies of one article merge into one item.** Links that differ only by `http` versus `https`, a trailing slash, a fragment, or a tracking parameter count as the same article. So do links that differ only by a placement parameter (for example `?pos=top` and `?pos=latest`), which html2rss recognizes from how the page repeats it. The first copy keeps its fields; later copies fill only what it lacks.
