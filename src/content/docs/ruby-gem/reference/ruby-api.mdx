@@ -27,7 +27,7 @@ The curation verbs follow one path: `inspect`, `recon`, `capture`, `validate`, `
 | `Html2rss.schema_json(pretty: true)`                           | `String`                         |
 | `Html2rss.configure` (block)                                   | `Html2rss::Defaults` (frozen)    |
 
-`strategy` is `:auto` (default), `:default` or `:botasaurus`. See [Strategy](/ruby-gem/reference/strategy/).
+`strategy` is `:auto` (default), `:default`, `:httpx` or `:botasaurus`. See [Strategy](/ruby-gem/reference/strategy/).
 
 ## Curation verbs
 
@@ -68,7 +68,7 @@ Options:
 - `total_timeout_seconds` (positive Integer, default 30): bounds the whole request chain, including auto-fallback hops
 - `local_file_path` (with `strategy: :local_file`)
 
-`candidates[:candidates_by_item]` lists title, link and date candidates for each of the top five item selectors. Details: [Capturing Feed Configs](/ruby-gem/guides/capturing-feed-configs/).
+`candidates[:candidates_by_item]` lists title, link and published candidates for each of the top five item selectors. Details: [Capturing Feed Configs](/ruby-gem/guides/capturing-feed-configs/).
 
 <Code
   code={`
@@ -152,7 +152,7 @@ Builds the feed from a config Hash and returns an `Apply::Result`. This is the s
 
 Auto-source scrape from a URL, with no selectors. Returns a `FeedResult`.
 
-Options: `strategy`, `items_selector`, `max_redirects`, `max_requests` (default `4`), `local_file_path`, `limit` (default is the auto-source default), `keep_different_domain` and `keep_sponsored`. The last two override `auto_source.cleanup.*` when set.
+Options: `strategy`, `items_selector`, `max_redirects`, `max_requests` (default `4`), `local_file_path`, `limit` (default `25`), `keep_different_domain` and `keep_sponsored`. The last two override `auto_source.cleanup.*` when set.
 
 <Code
   code={`
