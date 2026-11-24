@@ -15,6 +15,218 @@ For detailed documentation on the Ruby API, please refer to the official YARD do
 
 The `html2rss` executable is the primary way to interact with the gem from your terminal.
 
+The curation workflow uses seven commands in this order: `inspect`, `recon`, `capture`, `validate`, `test`, `apply`, `scrape`. The other commands (`mcp`, `schema`, `doctor`, `tree`, `help`) support them. The same seven verbs exist as MCP tools.
+
+### Strategies
+
+Every command with `--strategy` accepts these values:
+
+| Value        | Meaning                                                                              |
+| ------------ | ------------------------------------------------------------------------------------ |
+| `auto`       | Try `default`, then `botasaurus`. This is the default.                               |
+| `default`    | Plain HTTP requests through HTTPX.                                                   |
+| `botasaurus` | Browser rendering through the Botasaurus scrape API. Needs `BOTASAURUS_SCRAPER_URL`. |
+| `local_file` | Read a local HTML file. The CLI picks it for you when you pass `--input`.            |
+
+`httpx` and `faraday` are accepted aliases for `default`. `browserless` is an accepted alias for `botasaurus`. `faraday` and `browserless` are deprecated. Prefer the canonical names.
+
+### Inspect
+
+Fetches one URL and prints cheap diagnostics: final URL, status, feed alternates and the surface type. Run it before you build anything.
+
+<Code
+  code={`
+  html2rss inspect https://example.com/articles ; \\
+  html2rss inspect https://example.com/articles --format json ; \\
+  html2rss inspect https://example.com/articles --strategy botasaurus --deep ; \\
+  html2rss inspect --file urls.txt
+`}
+  lang="bash"
+/>
+
+Command: `html2rss inspect [TARGET]`
+
+`TARGET` is a URL, or `-` to read a candidate list from stdin.
+
+Available options:
+
+- `--strategy`: Request strategy (see [Strategies](#strategies)). With `auto`, `inspect` makes one `default` request.
+- `--file`: Candidate list file. One URL per line, or `slug<TAB>url`. Blank lines and lines starting with `#` are skipped. Switches to batch mode.
+- `--format`: `text` (default) or `json`.
+- `--deep`: Add one Botasaurus diagnostic hop. Needs `BOTASAURUS_SCRAPER_URL`. Single URL only.
+
+### Recon
+
+Probes a URL, or a list of URLs, for redirect chains, native feeds and surface readiness. It ends with a verdict per URL:
+
+- `BUILD`: the surface looks ready for a config.
+- `DEFER`: the site already publishes a native feed. Use it.
+- `DROP`: the request failed (no response or status 400 and up), downgraded from https to http, or the surface is blocked.
+
+<Code
+  code={`
+  html2rss recon https://example.com/articles ; \\
+  html2rss recon --file urls.txt --format tsv ; \\
+  html2rss recon --file urls.txt --verdict BUILD --url-only ; \\
+  html2rss recon --file urls.txt --cache-dir tmp/recon-cache
+`}
+  lang="bash"
+/>
+
+Command: `html2rss recon [TARGET]`
+
+Available options:
+
+- `--strategy`: Request strategy (see [Strategies](#strategies)).
+- `--file`: Candidate list file, same format as `inspect`. Switches to batch mode.
+- `--cache-dir`: Directory to cache raw HTML snapshots.
+- `--verdict`: Keep only results with this verdict (`BUILD`, `DEFER` or `DROP`).
+- `--url-only`: Print only the URLs of the kept results, for piping.
+- `--format`: `text` (default), `json` or `tsv`.
+
+With a single URL, the exit code carries the verdict. See [Exit codes](#exit-codes).
+
+### Capture
+
+Analyzes a URL using auto-source structural analysis and prints a reusable YAML feed configuration (`items` selector + `enhance: true`) to stdout.
+
+<Code
+  code={`
+  html2rss capture https://example.com/articles ; \\
+  html2rss capture https://example.com/articles --strategy botasaurus ; \\
+  html2rss capture https://example.com/articles --items-selector ".post-card" ; \\
+  html2rss capture https://example.com/articles --explain ; \\
+  html2rss capture --input sample.html ; \\
+  html2rss capture https://example.com/articles --output-dir configs --topics news,tech ; \\
+  html2rss capture https://example.com/articles --write configs/example.yml
+`}
+  lang="bash"
+/>
+
+Command: `html2rss capture [TARGET]`
+
+`TARGET` is a URL. With `--input`, it is optional.
+
+Available options:
+
+- `--strategy`: Request strategy (see [Strategies](#strategies)). Defaults to `auto`.
+- `--items-selector`: Optional CSS selector hint for item extraction.
+- `--limit`: Maximum number of articles to keep (defaults to `25`).
+- `--max-redirects`: Maximum redirects to follow per request.
+- `--max-requests`: Maximum requests to allow for this feed build.
+- `--input`: Local HTML file path to read input from without making network requests.
+- `--output-dir` / `-o`: Write the YAML to `<output-dir>/<domain>/index.yml` instead of stdout. `<domain>` is the URL host without a leading `www.`. Missing directories are created.
+- `--write` / `-w`: Write the YAML to this exact file path instead of stdout. Missing directories are created. `--output-dir` wins when both are set.
+- `--topics` / `-t`: Comma-separated `directory` topics to put in the config.
+- `--title`: Override the directory and channel title.
+- `--summary`: Override the directory summary.
+- `--enhance` / `--no-enhance`: Force `enhance` on or off on the items selector. Without it, capture decides from its evidence.
+- `--force`: Capture even when the page advertises a native RSS, Atom or RDF feed.
+- `--explain`: Print capture diagnostics JSON to stderr (`articles_count`, `channel_title`, `has_selectors`, `segment_strategy`, `selected_strategy`, `inferred_topics`, `admission_drops`). Stdout stays YAML.
+
+When it writes a file, capture prints `Wrote captured config to <path>` instead of the YAML.
+
+Capture records the concrete strategy that produced the draft as a top-level `strategy:` so later `html2rss apply` can reproduce that fetch path.
+
+If the page advertises a native feed, capture prints a note to stderr and exits `3` without a config. Pass `--force` to capture anyway.
+
+### Validate
+
+Validates configs with the runtime validator without generating a feed. It checks the schema only and makes no requests.
+
+<Code
+  code={`
+  html2rss validate single.yml ; \\
+  html2rss validate feeds.yml my-first-feed ; \\
+  html2rss validate configs/*.yml ; \\
+  html2rss validate single.yml --params id:42 ; \\
+  html2rss validate single.yml --quiet
+`}
+  lang="bash"
+/>
+
+Command: `html2rss validate [CONFIG_FILES...]`
+
+Pass one or more file paths or globs. Pass a file and a feed name to validate one named feed of a multi-feed file. With no argument, or `-`, it reads YAML from stdin.
+
+Available options:
+
+- `--params`: Dynamic parameters to interpolate before validation (default: `{}`).
+- `--quiet` / `-q`: Print nothing on success. Failures still print.
+
+With several files it prints `ok <file>` or `FAIL <file>` plus the issues, then a failure count.
+
+### Test
+
+Validates the schema and runs a live extraction. Use it before `apply` to confirm the config yields items.
+
+<Code
+  code={`
+  html2rss test single.yml ; \\
+  html2rss test feeds.yml my-first-feed ; \\
+  html2rss test single.yml --min-items 5 --strict-quality ; \\
+  html2rss test single.yml --compare-enhance ; \\
+  html2rss test single.yml --json ; \\
+  html2rss test single.yml --xml ; \\
+  html2rss test single.yml --params id:42 --quiet
+`}
+  lang="bash"
+/>
+
+Command: `html2rss test [CONFIG_INPUT] [feed_name]`
+
+`CONFIG_INPUT` is a YAML file path, raw YAML text, or `-` for stdin.
+
+Available options:
+
+- `--params`: Dynamic parameters as key-value pairs (e.g. `--params id:42 section:news`).
+- `--min-items`: Minimum number of articles needed to pass (default: `1`).
+- `--strict-quality`: Fail when the ship-quality audit thresholds are exceeded. Without it, quality findings are warnings.
+- `--compare-enhance`: Also compare extraction with `enhance` on and off. Diagnostic only; it never changes the result.
+- `--strategy`: Request strategy override (see [Strategies](#strategies)).
+- `--json`: Print the test outcome as JSON.
+- `--xml`: Print the RSS XML after the summary on success.
+- `--quiet` / `-q`: Print nothing on success. On failure, print the error to stderr.
+
+When the config comes from piped stdin and stdout is not a terminal, `test` echoes the config to stdout on success. That lets you chain `capture | test | apply`.
+
+### Apply
+
+Loads a YAML config, builds the feed, and prints it to stdout. (`html2rss feed` is a Thor alias.)
+
+<Code
+  code={`
+  html2rss apply single.yml ; \\
+  html2rss apply feeds.yml my-first-feed ; \\
+  html2rss apply single.yml --format jsonfeed ; \\
+  html2rss apply single.yml --strategy auto ; \\
+  BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss apply single.yml --strategy botasaurus ; \\
+  html2rss apply single.yml --max-redirects 5 --max-requests 6 ; \\
+  html2rss apply single.yml --params id:42 foo:bar ; \\
+  html2rss apply single.yml --explain ; \\
+  html2rss apply single.yml --input sample.html
+`}
+  lang="bash"
+/>
+
+Command: `html2rss apply [CONFIG_INPUT] [feed_name]`
+
+`CONFIG_INPUT` is a YAML file path or `-` for stdin.
+
+Available options:
+
+- `--format`: Output format, `rss` (default) or `jsonfeed`.
+- `--strategy`: Request strategy override (see [Strategies](#strategies)).
+- `--params`: Dynamic parameters passed as key-value pairs (e.g. `--params id:42 section:news`).
+- `--max-redirects`: Maximum redirects to follow per request.
+- `--max-requests`: Total request budget allowed for this feed build.
+- `--input`: Local HTML file path to read input from instead of making a network request.
+- `--explain`: Print status JSON to stderr.
+
+`apply` exits `1` with empty stdout and the message on stderr when the feed has zero items.
+
+The CLI keeps `strategy` as a top-level override and writes runtime request limits into the generated config under `request`.
+
 ### Scrape
 
 Automatically discovers items from a page and prints the generated RSS or JSON Feed to stdout. (`html2rss auto` is a Thor alias.)
@@ -25,7 +237,7 @@ Automatically discovers items from a page and prints the generated RSS or JSON F
   html2rss scrape https://example.com/articles --format jsonfeed ; \\
   html2rss scrape https://example.com/articles --limit 10 ; \\
   BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss scrape https://example.com/protected --strategy botasaurus ; \\
-  html2rss scrape https://example.com/articles --items_selector ".post-card" ; \\
+  html2rss scrape https://example.com/articles --items-selector ".post-card" ; \\
   html2rss scrape https://example.com/articles --explain ; \\
   html2rss scrape --input sample.html ; \\
   html2rss scrape https://example.com/articles --input sample.html
@@ -37,13 +249,15 @@ Command: `html2rss scrape [URL]`
 
 Available options:
 
-- `--strategy`: Optional request strategy (`auto`, `default`, `botasaurus`, `local_file`). Defaults to `auto`, which chooses an available fetch path based on scrape results. Use a concrete value only for diagnosis or strategy-specific controls.
+- `--strategy`: Request strategy (see [Strategies](#strategies)). Defaults to `auto`, which tries `default`, then `botasaurus`. Use a concrete value only for diagnosis or strategy-specific controls.
 - `--format`: Output format for the auto-sourced feed (`rss` or `jsonfeed`). Defaults to `rss`.
 - `--limit`: Maximum number of articles to extract during discovery (defaults to `25`).
-- `--items_selector`: Optional CSS selector hint for item extraction.
+- `--items-selector`: Optional CSS selector hint for item extraction.
 - `--max-redirects`: Maximum redirects to follow per request.
 - `--max-requests`: Maximum requests to allow for this feed build (defaults to `4` for auto discovery).
 - `--input`: Local HTML file path to read input from without making network requests. When provided without a `URL`, `html2rss` attempts to detect the base URL from `<link rel="canonical">` or OpenGraph metadata in the HTML.
+- `--keep-different-domain`: Let published items link to any domain the source supplies. Off by default; there is no affiliation or safety check when on.
+- `--keep-sponsored`: Keep items the page marks as sponsored (`rel="sponsored"` or ad labels). Off by default.
 - `--explain`: Print `Html2rss::Status` JSON to stderr (`version`, `dedup_dropped`, and when present `scraper_tallies`, `selected_strategy`, `attempt_count`, `strategy_attempts`, `admission_drops`, `entry_url`, `scrape_url`, `entry_resolution`). Stdout stays the RSS or JSON Feed.
 
 #### URL surface guidance for `scrape`
@@ -102,66 +316,6 @@ If you see a Botasaurus configuration error, check:
 - `BOTASAURUS_SCRAPER_URL` is a valid URL
 - the Botasaurus scrape API is reachable from the shell environment running `html2rss`
 
-### Apply
-
-Loads a YAML config, builds the feed, and prints the RSS XML to stdout. (`html2rss feed` is a Thor alias.)
-
-<Code
-  code={`
-  html2rss apply single.yml ; \\
-  html2rss apply feeds.yml my-first-feed ; \\
-  html2rss apply single.yml --strategy auto ; \\
-  BOTASAURUS_SCRAPER_URL="http://localhost:4010" html2rss apply single.yml --strategy botasaurus ; \\
-  html2rss apply single.yml --max-redirects 5 --max-requests 6 ; \\
-  html2rss apply single.yml --params id:42 foo:bar ; \\
-  html2rss apply single.yml --input sample.html
-`}
-  lang="bash"
-/>
-
-Command: `html2rss apply YAML_FILE [feed_name]`
-
-Available options:
-
-- `--strategy`: Request strategy override (`auto`, `default`, `botasaurus`, `local_file`).
-- `--params`: Dynamic parameters passed as key-value pairs (e.g. `--params id:42 section:news`).
-- `--max-redirects`: Maximum redirects to follow per request.
-- `--max-requests`: Total request budget allowed for this feed build.
-- `--input`: Local HTML file path to read input from instead of making a network request.
-
-`apply` exits `1` with empty stdout and the message on stderr when the feed has zero items.
-
-The CLI keeps `strategy` as a top-level override and writes runtime request limits into the generated config under `request`.
-
-### Capture
-
-Analyzes a URL using auto-source structural analysis and prints a reusable YAML feed configuration (`items` selector + `enhance: true`) to stdout.
-
-<Code
-  code={`
-  html2rss capture https://example.com/articles ; \\
-  html2rss capture https://example.com/articles --strategy botasaurus ; \\
-  html2rss capture https://example.com/articles --items_selector ".post-card" ; \\
-  html2rss capture https://example.com/articles --explain ; \\
-  html2rss capture --input sample.html
-`}
-  lang="bash"
-/>
-
-Command: `html2rss capture [URL]`
-
-Available options:
-
-- `--strategy`: Optional request strategy (`auto`, `default`, `botasaurus`, `local_file`). Defaults to `auto`.
-- `--items_selector`: Optional CSS selector hint for item extraction.
-- `--limit`: Maximum number of articles to keep (defaults to `25`).
-- `--max-redirects`: Maximum redirects to follow per request.
-- `--max-requests`: Maximum requests to allow for this feed build.
-- `--input`: Local HTML file path to read input from without making network requests.
-- `--explain`: Print capture quality JSON to stderr (`articles_count`, `channel_title`, `has_selectors`, `segment_strategy`, `selected_strategy`, `admission_drops`). Stdout stays YAML.
-
-Capture records the concrete strategy that produced the draft as a top-level `strategy:` so later `html2rss apply` can reproduce that fetch path.
-
 ### MCP
 
 Starts the Model Context Protocol (MCP) server for integration with AI clients and agent workflows (Cursor, Claude Desktop, Copilot).
@@ -202,35 +356,83 @@ Command: `html2rss schema`
 Available options:
 
 - `--pretty` / `--no-pretty`: Pretty-print the schema JSON (default: `true`).
-- `--write PATH`: Write the schema JSON directly to the given file path, creating any missing parent directories.
+- `--write PATH` / `-w PATH`: Write the schema JSON to the given file path, creating missing parent directories, and print the path.
 
-### Validate
+### Doctor
 
-Validates a config with the runtime validator without generating a feed.
+Runs a runtime preflight check. The only check type is `botasaurus`, which is also the default.
 
 <Code
   code={`
-  html2rss validate single.yml ; \\
-  html2rss validate feeds.yml my-first-feed ; \\
-  html2rss validate single.yml --params id:42
+  html2rss doctor ; \\
+  html2rss doctor botasaurus ; \\
+  html2rss doctor --sample https://example.com/articles
 `}
   lang="bash"
 />
 
-Command: `html2rss validate YAML_FILE [feed_name]`
+Command: `html2rss doctor [TYPE]`
 
 Available options:
 
-- `--params`: Dynamic parameters to interpolate before validation (default: `{}`).
+- `--sample`: URL for a sample Botasaurus scrape.
+
+`doctor` prints the check result as JSON to stderr and exits `1` when a check fails or `TYPE` is unknown.
+
+### Tree
+
+Prints a tree of all available commands with their descriptions.
+
+Command: `html2rss tree`
 
 ### Help
 
-Displays the help message with available commands and options.
+Displays the help message with available commands and options. Pass a command name for its options.
 
-Command: `html2rss help`
+<Code
+  code={`
+  html2rss help ; \\
+  html2rss help capture
+`}
+  lang="bash"
+/>
+
+Command: `html2rss help [COMMAND]`
 
 ### Version
 
 Displays the installed version of `html2rss`.
 
 Command: `html2rss --version`
+
+## Exit codes
+
+Every command exits `0` on success and `1` on any error, including unknown options and missing arguments. These commands add detail:
+
+| Command              | Exit | When                                                                                                          |
+| -------------------- | ---- | ------------------------------------------------------------------------------------------------------------- |
+| `scrape`             | `0`  | Feed printed.                                                                                                 |
+| `scrape`             | `1`  | No items extracted, request or budget error, blocked surface, or bad input.                                   |
+| `apply`              | `0`  | Feed printed with at least one item.                                                                          |
+| `apply`              | `1`  | Zero items (empty stdout, message on stderr), or an error as for `scrape`.                                    |
+| `validate`           | `0`  | Every config is valid.                                                                                        |
+| `validate`           | `1`  | At least one config is invalid or missing.                                                                    |
+| `test`               | `0`  | Schema is valid and the extraction meets `--min-items`. With `--strict-quality`, quality thresholds hold too. |
+| `test`               | `1`  | Invalid schema, too few items, or a failed strict quality check.                                              |
+| `capture`            | `0`  | Config printed or written.                                                                                    |
+| `capture`            | `1`  | Extraction or input error.                                                                                    |
+| `capture`            | `3`  | A native feed is advertised and `--force` is not set.                                                         |
+| `recon` (single URL) | `0`  | Verdict `BUILD`.                                                                                              |
+| `recon` (single URL) | `3`  | Verdict `DEFER`.                                                                                              |
+| `recon` (single URL) | `1`  | Verdict `DROP`, or `--verdict` matched nothing.                                                               |
+| `recon` (batch)      | `0`  | Results printed. Read the verdict per line.                                                                   |
+| `doctor`             | `1`  | A check failed or `TYPE` is unknown.                                                                          |
+
+Use the codes to gate scripts:
+
+<Code
+  code={`
+  html2rss test single.yml --quiet && html2rss apply single.yml > feed.xml
+`}
+  lang="bash"
+/>
